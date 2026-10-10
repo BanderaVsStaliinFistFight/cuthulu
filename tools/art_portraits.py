@@ -668,16 +668,16 @@ def king_real_setup():
         q = R.mirror_x(p)
         d = R.sd_ellipsoid(p, (0, 1.705, -0.012), (0.071, 0.094, 0.090))
         d = R.smin(d, R.sd_ellipsoid(p, (0, 1.712, 0.050), (0.060, 0.040, 0.034)), 0.02)       # forehead
-        d = R.smin(d, R.sd_ellipsoid(q, (0.046, 1.650, 0.052), (0.022, 0.013, 0.026)), 0.015)  # cheekbones
-        d = R.smin(d, R.sd_ellipsoid(p, (0, 1.603, 0.058), (0.037, 0.026, 0.034)), 0.02)       # mouth
+        d = R.smin(d, R.sd_ellipsoid(q, (0.045, 1.652, 0.050), (0.017, 0.009, 0.021)), 0.012)  # cheekbones
+        d = R.smin(d, R.sd_ellipsoid(p, (0, 1.603, 0.056), (0.032, 0.024, 0.032)), 0.02)       # mouth
         d = R.smin(d, R.sd_ellipsoid(p, (0, 1.588, 0.026), (0.051, 0.034, 0.058)), 0.02)       # jaw
         d = R.smin(d, R.sd_sphere(p, (0, 1.566, 0.066), 0.017), 0.015)                          # chin
         d = R.smin(d, R.sd_ellipsoid(p, (0, 1.688, 0.072), (0.056, 0.011, 0.017)), 0.008)      # brow ridge
         nose = R.sd_round_cone(p, (0, 1.678, 0.086), (0, 1.633, 0.102), 0.0062, 0.0092)
         nose = R.smin(nose, R.sd_ellipsoid(q, (0.0105, 1.628, 0.091), (0.0075, 0.006, 0.007)), 0.005)
         d = R.smin(d, nose, 0.006)
-        d = R.smax(d, -R.sd_ellipsoid(q, (0.030, 1.676, 0.084), (0.019, 0.015, 0.022)), 0.007)  # sunken sockets
-        d = R.smax(d, -R.sd_ellipsoid(q, (0.055, 1.612, 0.058), (0.016, 0.024, 0.014)), 0.02)   # hollow cheeks
+        d = R.smax(d, -R.sd_ellipsoid(q, (0.030, 1.677, 0.084), (0.019, 0.010, 0.022), R.rot_z(-12)), 0.007)
+        d = R.smax(d, -R.sd_ellipsoid(q, (0.052, 1.612, 0.056), (0.017, 0.028, 0.016)), 0.018)  # hollow cheeks
         d = R.smax(d, -R.sd_ellipsoid(q, (0.066, 1.700, 0.030), (0.012, 0.025, 0.02)), 0.02)    # hollow temples
         d = R.smax(d, -R.sd_ellipsoid(p, (0, 1.600, 0.090), (0.021, 0.0022, 0.012)), 0.002)    # thin mouth
         d = R.smax(d, -R.sd_ellipsoid(q, (0.0065, 1.625, 0.097), (0.003, 0.0022, 0.004)), 0.002)
@@ -688,7 +688,7 @@ def king_real_setup():
             d[near] += 0.0008 * smoothstep(0.90, 0.975, R.ridged3(pn * 26, 4, seed + 3)) \
                 - 0.0003 * R.fbm3(pn * 300, 2, seed + 8)
         f.add(d, 2)
-        f.add(R.sd_sphere(q, (0.030, 1.675, 0.066), 0.0118), 3)
+        f.add(R.sd_sphere(q, (0.030, 1.676, 0.064), 0.0112), 3)
         # lank dark hair falling inside the hood
         hair = np.full(len(p), 1e9)
         for sx in (1, -1):
@@ -704,18 +704,23 @@ def king_real_setup():
     # ----- the hood ------------------------------------------------------------
     def hood(p):
         f = Field(len(p))
-        shell = np.abs(R.sd_ellipsoid(p, (0, 1.70, -0.025), (0.104, 0.130, 0.122))) - 0.009
-        flare = np.abs(R.sd_round_cone(p, (0, 1.62, -0.03), (0, 1.50, -0.035), 0.095, 0.135)) - 0.009
+        shell = np.abs(R.sd_ellipsoid(p, (0, 1.705, -0.005), (0.098, 0.135, 0.135))) - 0.009
+        flare = np.abs(R.sd_round_cone(p, (0, 1.62, -0.02), (0, 1.50, -0.03), 0.092, 0.120)) - 0.009
         cloth = R.smin(shell, flare, 0.04)
-        opening = R.sd_ellipsoid(p, (0, 1.655, 0.10), (0.074, 0.118, 0.088))
-        cloth = R.smax(cloth, -opening, 0.012)
+        opening = R.sd_ellipsoid(p, (0, 1.650, 0.125), (0.072, 0.120, 0.080))
+        cloth = R.smax(cloth, -opening, 0.010)
         cloth = R.smax(cloth, 1.50 - p[:, 1], 0.02)
+        # the hood's long sides fall down in front of the shoulders
+        for sx in (1, -1):
+            panel = R.sd_box(p, (sx * 0.085, 1.39, 0.085), (0.042, 0.17, 0.010), R.rot_z(sx * 6) @ R.rot_x(-8), 0.008)
+            cloth = R.smin(cloth, panel, 0.03)
         near = np.abs(cloth) < 0.02
         if near.any():
             cq = p[near]
-            cloth[near] -= 0.006 * np.abs(np.sin(np.arctan2(cq[:, 0], cq[:, 2] + 0.06) * 7
+            cloth[near] -= 0.008 * np.abs(np.sin(np.arctan2(cq[:, 0], cq[:, 2] + 0.06) * 7
                                                  + 2.5 * R.fbm3(cq * 8, 3, seed))) ** 0.8 \
-                + 0.0015 * R.fbm3(cq * 40, 3, seed + 2)
+                + 0.006 * np.abs(np.sin(cq[:, 0] * 140 + 2.0 * R.fbm3(cq * np.array([6, 1.5, 6]), 3, seed + 3))) ** 0.7 \
+                * smoothstep(1.62, 1.45, cq[:, 1]) + 0.0015 * R.fbm3(cq * 40, 3, seed + 2)
         f.add(cloth, 0)
         return f
 
@@ -772,9 +777,9 @@ def king_real_setup():
         f = Field(len(p))
         chest = R.sd_ellipsoid(p, (0, 1.31, -0.03), (0.17, 0.19, 0.115))
         belly = R.sd_ellipsoid(p, (0, 1.08, -0.02), (0.16, 0.20, 0.11))
-        sh = [np.array([sx * 0.195, 1.445, -0.04]) for sx in (1, -1)]
-        traps = np.minimum(R.sd_round_cone(p, (0, 1.53, -0.045), sh[0], 0.06, 0.055),
-                           R.sd_round_cone(p, (0, 1.53, -0.045), sh[1], 0.06, 0.055))
+        sh = [np.array([sx * 0.200, 1.455, -0.04]) for sx in (1, -1)]
+        traps = np.minimum(R.sd_round_cone(p, (0, 1.53, -0.045), sh[0], 0.05, 0.040),
+                           R.sd_round_cone(p, (0, 1.53, -0.045), sh[1], 0.05, 0.040))
         arms = np.minimum(R.sd_round_cone(p, sh[0], (0.235, 1.10, -0.02), 0.058, 0.05),
                           R.sd_round_cone(p, sh[1], (-0.235, 1.10, -0.02), 0.058, 0.05))
         torso = R.smin(R.smin(R.smin(chest, belly, 0.08), traps, 0.06), arms, 0.05)
@@ -784,7 +789,7 @@ def king_real_setup():
         robe = R.smin(robe, cowl, 0.05)
         near = np.abs(robe) < 0.03
         if near.any():
-            robe[near] -= drapery(p[near], 0.016, 13, seed, (0.0, -0.035), top=1.50)
+            robe[near] -= drapery(p[near], 0.022, 16, seed, (0.0, -0.035), top=1.52)
         f.add(robe, 0)
         # dark leather straps hanging down the front
         straps = np.full(len(p), 1e9)
@@ -798,9 +803,10 @@ def king_real_setup():
         return f
 
     # ----- a tentacle curling out from under the robe ---------------------------
-    tent_pts = [(-0.30, 1.20, -0.20), (-0.33, 1.42, -0.16), (-0.33, 1.58, -0.10), (-0.29, 1.70, -0.05),
-                (-0.23, 1.74, -0.01), (-0.205, 1.715, 0.02), (-0.215, 1.69, 0.035)]
-    tent_r = [0.045, 0.038, 0.030, 0.021, 0.012, 0.006, 0.0025]
+    tent_pts = [(-0.21, 1.20, -0.15), (-0.25, 1.37, -0.12), (-0.268, 1.52, -0.09), (-0.252, 1.64, -0.06),
+                (-0.215, 1.715, -0.035), (-0.175, 1.735, -0.015), (-0.152, 1.708, 0.0), (-0.163, 1.682, 0.008),
+                (-0.180, 1.690, 0.012)]
+    tent_r = [0.048, 0.040, 0.032, 0.024, 0.017, 0.011, 0.007, 0.0045, 0.002]
 
     def tentacle(p):
         f = Field(len(p))
@@ -814,10 +820,10 @@ def king_real_setup():
     def scene(p):
         f = Field(len(p))
         f.add_group(p, (0, 1.65, 0.03), 0.17, face)
-        f.add_group(p, (0, 1.64, -0.02), 0.20, hood)
+        f.add_group(p, (0, 1.55, 0.0), 0.30, hood)
         f.add_group(p, (0, 1.93, -0.03), 0.30, crown)
         f.add_group(p, (0, 1.10, -0.03), 0.55, body)
-        f.add_group(p, (-0.28, 1.47, -0.09), 0.33, tentacle)
+        f.add_group(p, (-0.20, 1.50, -0.07), 0.36, tentacle)
         return f
 
     return scene, mats, seed
@@ -848,6 +854,43 @@ def king_in_yellow_real(scale=1, ss=2):
     img = R.halation(img, 0.8, 1.5 * scale, 0.18)
     img = R.vignette(img, 0.45, 2.0)
     return R.to_image(img)
+
+
+
+KING_PAINT = {
+    0: ((0.99, 0.80, 0.22), (0.96, 0.62, 0.10), (0.82, 0.40, 0.05), (0.30, 0.12, 0.03)),    # robe
+    1: ((0.42, 0.25, 0.15), (0.30, 0.17, 0.10), (0.17, 0.09, 0.05), (0.07, 0.04, 0.02)),    # straps
+    2: ((0.86, 0.87, 0.72), (0.70, 0.73, 0.56), (0.45, 0.48, 0.35), (0.16, 0.16, 0.12)),    # pallid skin
+    3: ((0.05, 0.04, 0.03), (0.04, 0.03, 0.02), (0.03, 0.02, 0.02), (0.02, 0.015, 0.01)),   # eyes
+    4: ((0.58, 0.56, 0.55), (0.42, 0.40, 0.39), (0.24, 0.23, 0.23), (0.10, 0.10, 0.10)),    # iron crown
+    5: ((1.00, 0.86, 0.35), (0.96, 0.72, 0.18), (0.75, 0.50, 0.10), (0.40, 0.25, 0.05)),    # spiral sign
+    6: ((0.76, 0.66, 0.52), (0.58, 0.48, 0.36), (0.38, 0.29, 0.20), (0.18, 0.12, 0.08)),    # antlers
+    7: ((0.10, 0.08, 0.06), (0.07, 0.05, 0.04), (0.04, 0.03, 0.03), (0.02, 0.02, 0.02)),    # hair
+    8: ((0.66, 0.44, 0.31), (0.50, 0.31, 0.20), (0.32, 0.18, 0.11), (0.14, 0.07, 0.04)),    # tentacle
+}
+
+
+def king_gbuffers(scale=4):
+    """Forms and light for the painted King: G-buffers at scale x the portrait."""
+    scene, mats, seed = king_real_setup()
+    cam = Camera((0.30, 1.70, 2.9), (0.0, 1.715, 0.0), fov=15.0)
+    lights = [Light((1.0, 0.95, 0.85), 2.4, direction=(-0.80, 0.50, 0.40), softness=12),
+              Light((0.75, 0.80, 0.90), 0.30, direction=(0.85, 0.10, 0.45), shadow=False)]
+    return R.render(scene, mats, cam, lights, PORTRAIT_SIZE, ss=scale, ambient=(0.14, 0.14, 0.14),
+                    ao_scale=0.08, max_dist=8.0, shadow_dist=3.0, full=True), seed
+
+
+def king_painted_from(gb, seed, master=False):
+    H, W = gb["mat"].shape
+    paper = R.aged_paper((W, H), seed, base=(0.93, 0.87, 0.72), stains=0.18, edge=0.25, foxing=6)
+    img = R.painted_illustration(gb, KING_PAINT, PORTRAIT_SIZE, paper, seed, master=master,
+                                 ignore_crease=(7,), same=None, depth_rel=0.003)
+    return img
+
+
+def king_in_yellow_painted_hr():
+    gb, seed = king_gbuffers(4)
+    return R.to_image(king_painted_from(gb, seed))
 
 
 PORTRAITS = {

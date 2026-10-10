@@ -642,6 +642,72 @@ def ink_illustration(gb, colors, out_size, light_dir_tones=(0.62, 0.30), tone_mu
     return np.asarray(pil.resize(out_size, Image.LANCZOS)).astype(float) / 255
 
 
+def painted_illustration(gb, palettes, out_size, paper, seed=0, tone_edges=(0.62, 0.36, 0.14), soft=0.05,
+                         ink=(0.06, 0.045, 0.035), depth_rel=0.006, crease=0.62, streak_dir=None,
+                         hatch=0.5, same=None, ignore_crease=(), master=False):
+    """A hand-painted look from G-buffers: each material is painted with its
+    own colour ramp (light, mid, shadow, deep) in soft-edged bands, brushed
+    with streaks, then inked with loose sketchy outlines that vary in weight,
+    skip, and double up, plus sparse scratchy hatching in the deep shadows.
+
+    palettes: material -> (light, mid, shadow, deep) display colours.
+    Returns the picture at the G-buffer size when master=True, otherwise
+    reduced to out_size."""
+    m, light = gb["mat"], gb["light"]
+    H, W = m.shape
+    hit = m >= 0
+    lv = light[hit]
+    ref = np.percentile(lv, 96) if lv.size else 1.0
+    L = np.clip(light / max(ref, 1e-6), 0, 1.2)
+    # paint texture: brush streaks along each material's grain
+    yy, xx = np.mgrid[0:H, 0:W].astype(float)
+    streak = fbm2(xx / (W * 0.012), yy / (H * 0.09), 4, seed)
+    fine = fbm2(xx / 4.0, yy / 4.0, 2, seed + 1)
+    L = L + 0.06 * streak + 0.03 * fine
+    t1, t2, t3 = tone_edges
+    k1 = smoothstep(t1 - soft, t1 + soft, L)
+    k2 = smoothstep(t2 - soft, t2 + soft, L)
+    k3 = smoothstep(t3 - soft, t3 + soft, L)
+    col = np.zeros((H, W, 3))
+    for mi, (c_light, c_mid, c_shadow, c_deep) in palettes.items():
+        sel = m == mi
+        if not sel.any():
+            continue
+        cl, cm, cs, cd = (np.asarray(c, float) for c in (c_light, c_mid, c_shadow, c_deep))
+        a1, a2, a3 = k1[sel][:, None], k2[sel][:, None], k3[sel][:, None]
+        # a gentle gradient inside each band keeps it painterly rather than flat
+        g = np.clip(L[sel], 0, 1)[:, None]
+        band = cd * (1 - a3) + cs * a3
+        band = band * (1 - a2) + (cm * (0.92 + 0.12 * g)) * a2
+        band = band * (1 - a1) + (cl * (0.94 + 0.08 * g)) * a1
+        col[sel] = band
+    # sparse, scratchy hatching in the deepest shadows
+    if hatch:
+        h1 = hatching((H, W), max(6.0, W / 70), 58, 0.16, wobble=1.2, seed=seed)
+        gate = (fbm2(xx / 25.0, yy / 25.0, 3, seed + 4) > -0.1) & hit
+        hmask = h1 * (1 - k3 * 0.7) * (1 - k2) * gate
+        col = col * (1 - hatch * hmask[..., None]) + np.asarray(ink) * hatch * hmask[..., None]
+    img = np.where(hit[..., None], col, paper)
+    # loose ink outlines
+    outline, crease_m = ink_lines(gb, depth_rel, crease, outline=1, inner=1, ignore_crease=ignore_crease, same=same)
+    weight = fbm2(xx / 28.0, yy / 28.0, 3, seed + 5)
+    heavy = _dilate(outline, max(1, W // 300)) & (weight > -0.05)
+    light_line = outline
+    gaps = fbm2(xx / 10.0, yy / 10.0, 2, seed + 6) < -0.5
+    lines = (heavy | light_line) & ~gaps
+    # a second, slightly offset pass where the hand went over the line again
+    dy, dx = max(1, H // 400), max(1, W // 300)
+    redo = _shift(outline, dy, -dx) & (fbm2(xx / 18.0, yy / 18.0, 2, seed + 7) > 0.25)
+    cm_ = crease_m & (fbm2(xx / 14.0, yy / 14.0, 2, seed + 8) > -0.15)
+    img = img * (1 - 0.55 * cm_[..., None]) + np.asarray(ink) * 0.55 * cm_[..., None]
+    img = img * (1 - 0.6 * redo[..., None]) + np.asarray(ink) * 0.6 * redo[..., None]
+    img = np.where(lines[..., None], np.asarray(ink) * (0.9 + 0.1 * fine[..., None]), img)
+    if master:
+        return np.clip(img, 0, 1)
+    pil = Image.fromarray((np.clip(img, 0, 1) * 255).astype(np.uint8))
+    return np.asarray(pil.resize(out_size, Image.LANCZOS)).astype(float) / 255
+
+
 def aged_paper(size, seed=0, base=(0.90, 0.85, 0.72), stains=0.25, edge=0.35, foxing=60):
     """Old, stained, foxed paper."""
     w, h = size
