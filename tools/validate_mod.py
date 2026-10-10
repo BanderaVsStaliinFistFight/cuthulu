@@ -5,6 +5,8 @@ catches the mistakes that are easy to make by hand:
   * unbalanced braces / unparseable script
   * missing localisation for decisions, ideas, traits, units, techs, events,
     tooltips and custom cost texts
+  * custom battalion sprites without an entity, entities without a mesh
+    definition, mesh definitions without a .mesh file
   * icons / pictures without a sprite, sprites without a texture file,
     battalions without a designer icon, traits without an icon, missing
     portrait files
@@ -185,6 +187,26 @@ def main():
                         if "unit_leader" in path:
                             need_sprite("GFX_trait_" + trait, path)
 
+    # 3D models: pdxmesh definitions (gfx/entities/*.gfx) and entities (*.asset)
+    meshes = {}
+    for path, items in load_script("gfx/entities/*.gfx", problems).items():
+        for key, _, value in walk(items):
+            if key == "pdxmesh" and isinstance(value, list):
+                fields = {k: v for k, _, v in value}
+                name, mfile = fields.get("name", "").strip('"'), fields.get("file", "").strip('"')
+                meshes[name] = mfile
+                if not os.path.exists(os.path.join(ROOT, mfile)):
+                    problems.append(f"{path}: pdxmesh {name} points to missing file {mfile}")
+    entities = set()
+    for path, items in load_script("gfx/entities/*.asset", problems).items():
+        for key, _, value in items:
+            if key == "entity" and isinstance(value, list):
+                fields = {k: v for k, _, v in value}
+                entities.add(fields.get("name", "").strip('"'))
+                mesh = fields.get("pdxmesh", "").strip('"')
+                if mesh not in meshes:
+                    problems.append(f"{path}: entity {fields.get('name')} uses undefined pdxmesh {mesh}")
+
     subunits = set()
     for path, items in load_script("common/units/*.txt", problems).items():
         for key, _, value in items:
@@ -194,6 +216,9 @@ def main():
                     need_loc(unit, path)
                     need_loc(unit + "_desc", path)
                     need_sprite(f"GFX_unit_{unit}_icon_medium", path)
+                    sprite = {k: v for k, _, v in body}.get("sprite", "")
+                    if sprite.startswith("eldritch_") and sprite + "_entity" not in entities:
+                        problems.append(f"{path}: {unit} uses sprite {sprite} but {sprite}_entity is not defined")
 
     techs = set()
     for path, items in load_script("common/technologies/*.txt", problems).items():

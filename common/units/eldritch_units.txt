@@ -5,6 +5,10 @@
 # eldritch_<god>_rites_1 (see common/technologies) unlocks the pair
 # that belongs to the god a country has made its pact with.
 # Combat bonuses for these battalions also live on those technologies.
+#
+# sprite = X draws the battalion with X_entity. The King in Yellow units
+# use custom 3D models (gfx/entities/eldritch_hastur_units.asset); the
+# others reuse vanilla models.
 #####################################################################
 
 sub_units = {
@@ -202,7 +206,7 @@ sub_units = {
 
 	eldritch_yellow_zealots = {
 		abbreviation = "YSZ"
-		sprite = infantry
+		sprite = eldritch_yellow_zealots
 		map_icon_category = infantry
 		priority = 614
 		ai_priority = 200
@@ -242,7 +246,7 @@ sub_units = {
 
 	eldritch_byakhee_riders = {
 		abbreviation = "BYK"
-		sprite = infantry
+		sprite = eldritch_byakhee_riders
 		map_icon_category = infantry
 		priority = 615
 		ai_priority = 100
@@ -567,13 +571,16 @@ sub_units = {
 	# time keeps them from being trained normally, so each god only
 	# takes the field when summoned. Their combat bonuses come from
 	# the hidden eldritch_<god>_incarnation technology.
+	#
+	# The very high priority makes the god's model represent its whole
+	# division on the map (the battalion with the highest priority wins).
 	#################################################################
 
 	eldritch_cthulhu_incarnate = {
 		abbreviation = "GCT"
 		sprite = infantry
 		map_icon_category = infantry
-		priority = 700
+		priority = 5000
 		ai_priority = 0
 		active = no
 
@@ -623,7 +630,7 @@ sub_units = {
 		abbreviation = "NYA"
 		sprite = infantry
 		map_icon_category = infantry
-		priority = 700
+		priority = 5000
 		ai_priority = 0
 		active = no
 
@@ -668,9 +675,9 @@ sub_units = {
 
 	eldritch_hastur_incarnate = {
 		abbreviation = "HAS"
-		sprite = infantry
+		sprite = eldritch_hastur_incarnate
 		map_icon_category = infantry
-		priority = 700
+		priority = 5000
 		ai_priority = 0
 		active = no
 
@@ -720,7 +727,7 @@ sub_units = {
 		abbreviation = "SHB"
 		sprite = infantry
 		map_icon_category = infantry
-		priority = 700
+		priority = 5000
 		ai_priority = 0
 		active = no
 
@@ -769,7 +776,7 @@ sub_units = {
 		abbreviation = "YOG"
 		sprite = infantry
 		map_icon_category = infantry
-		priority = 700
+		priority = 5000
 		ai_priority = 0
 		active = no
 
@@ -818,7 +825,7 @@ sub_units = {
 		abbreviation = "AZA"
 		sprite = infantry
 		map_icon_category = infantry
-		priority = 700
+		priority = 5000
 		ai_priority = 0
 		active = no
 

@@ -101,7 +101,18 @@ From Tier II, **Incarnate [God] in the Flesh** brings the god onto the battlefie
 
 A god battalion has 400 strength, 150+ organization, 80% morale and +200% attack / +300% defense and breakthrough, rising further at Tier III. It takes 8 combat width. You can't put it in your own templates or train it: it only arrives through the ritual. Losses are reinforced from your normal stockpile.
 
-### 6. The god's whims
+### 6. 3D models for the King in Yellow's forces
+Hastur's units have their own map models instead of reusing vanilla infantry:
+
+| Battalion | Model |
+|---|---|
+| **Zealots of the Yellow Sign** | hooded cultist in yellow robes and a pale mask, with a spear and a black banner bearing the Yellow Sign |
+| **Byakhee Riders** | masked rider on a bat-winged Byakhee with glowing eyes |
+| **The King in Yellow** (incarnate) | giant crowned figure in tattered yellow robes and mantle, pale mask, Yellow Sign sceptre, tentacles spilling from under the hem |
+
+The models are static: they have no walk or attack animation. A division is drawn with the model of its highest-priority battalion, so the *Host of the Yellow Sign* shows a Byakhee rider and the King's division shows the King himself.
+
+### 7. The god's whims
 About once every eight months on average, your patron makes itself known: it demands tribute, a prophet preaches in the streets, the stars align, or your soldiers share a dream. Each event trades Favor against manpower, political power, stability or war support.
 
 ---
@@ -141,8 +152,11 @@ gfx/                               generated art (DDS): spirit, decision, battal
                                    event pictures, and avatar portraits (gfx/leaders/eldritch/)
 localisation/english/              all text (UTF-8 with BOM)
 install/eldritch_pacts.mod         launcher file to copy into your mod/ folder
+gfx/entities/                      King in Yellow mesh definitions (.gfx) and unit entities (.asset)
+gfx/models/units/eldritch/         King in Yellow .mesh models and their texture atlas
 tools/generate_art.py              regenerates every texture and the thumbnail
-tools/validate_mod.py              static checks: braces, localisation, sprites, references
+tools/generate_models.py           regenerates the 3D models (add --preview DIR to render PNG previews)
+tools/validate_mod.py              static checks: braces, localisation, sprites, entities, references
 ```
 
 Run `python3 tools/validate_mod.py` after editing to catch missing localisation, sprites, effects, traits or events. Run `python3 tools/generate_art.py` (needs Pillow and numpy) to rebuild the art.
@@ -154,6 +168,7 @@ Run `python3 tools/validate_mod.py` after editing to catch missing localisation,
 The script is written against the standard HoI4 modding syntax. It passes the bundled static validator but **has not been run in-game yet**. If something misbehaves, check `Documents/Paradox Interactive/Hearts of Iron IV/logs/error.log`. These parts are the most likely to need a tweak on a new game version:
 
 * `create_unit` (servitor and god spawning) and the locked `division_template`.
+* **The 3D models.** They're written in Paradox's binary `.mesh` format by `tools/generate_models.py`, following the community io_pdx_mesh exporter's layout, and read back and checked. They have never been loaded by the game. If they look too big or too small, change `scale` in `gfx/entities/eldritch_hastur_meshes.gfx` (default 2.0). If they cause any problem, set `sprite = infantry` again on `eldritch_yellow_zealots`, `eldritch_byakhee_riders` and `eldritch_hastur_incarnate` in `common/units/eldritch_units.txt` to go back to vanilla models.
 * The god battalions are deliberately never unlocked for the designer. If the game refuses to spawn a template that contains them, the god division will not appear. `error.log` will say so.
 * The hidden rite technologies, which have no tech-tree folder and are granted with `set_technology`.
 * Icon sizes. The textures are 64×67 (spirits), 46×46 (decisions), 60×40 (battalions), 40×40 (traits), 156×210 (portraits) and 210×176 / 397×153 (events). If the UI expects different sizes, change the constants at the top of `tools/generate_art.py` and regenerate.
