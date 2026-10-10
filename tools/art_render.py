@@ -192,9 +192,12 @@ class Field:
         self.m = np.where(closer, mat, self.m)
         return self
 
-    def add_group(self, p, center, radius, fn, margin=0.02):
+    def add_group(self, p, center, radius, fn, margin=0.02, pad=0.0):
         """Union with a multi-material sub-scene fn(points) -> Field that is
-        only evaluated inside a bounding sphere."""
+        only evaluated inside a bounding sphere. pad: how far inside the
+        sphere the sub-scene is guaranteed to stay; it is added to the
+        distance outside, so soft shadows do not mistake the sphere itself
+        for an occluder."""
         db = length(p - np.asarray(center, float)) - radius
         inside = db < margin
         if inside.any():
@@ -204,7 +207,7 @@ class Field:
             self.d[idx] = np.minimum(self.d[idx], sub.d)
             self.m[idx] = np.where(closer, sub.m, self.m[idx])
         out = ~inside
-        self.d[out] = np.minimum(self.d[out], db[out])
+        self.d[out] = np.minimum(self.d[out], db[out] + pad)
         return self
 
 
@@ -309,10 +312,10 @@ def calc_normals(sdf, p, e=6e-4):
     return normalize(n)
 
 
-def soft_shadow(sdf, p, l, k, tmax, steps=48):
+def soft_shadow(sdf, p, l, k, tmax, steps=48, t0=0.01):
     n = len(p)
     res = np.ones(n)
-    t = np.full(n, 0.01)
+    t = np.full(n, t0)
     active = np.arange(n)
     for _ in range(steps):
         if active.size == 0:
@@ -337,12 +340,16 @@ def ambient_occlusion(sdf, p, n, scale):
 
 def render(scene, materials, camera, lights, size, ss=2, background=None, ambient=(0.05, 0.05, 0.06),
            ground_ambient=None, rim=None, fog=None, max_dist=40.0, steps=160, eps=4e-4, ao_scale=0.25,
-           shadow_dist=12.0):
+           shadow_dist=12.0, coverage=None, shadow_bias=(0.003, 0.01)):
     """Ray-march scene (a function p -> Field) and shade it.
 
     background(rd) -> (N, 3) linear RGB for rays that miss; rim = (rgb, power)
     adds edge light; fog = (rgb, density, start). Returns linear 'rgb'
-    (h, w, 3), 'alpha' coverage and 'depth', supersampled ss x ss.
+    (h, w, 3), 'alpha' coverage and 'depth', supersampled ss x ss; with
+    coverage (material indices) also 'coverage', the share of each pixel
+    covered by those materials alone. shadow_bias = (normal offset, start
+    distance) of shadow rays; rough surfaces need them larger, or the rays
+    shadow the surface's own bumps in bands.
 
     """
     w, h = size
@@ -350,6 +357,7 @@ def render(scene, materials, camera, lights, size, ss=2, background=None, ambien
     ro, rd = camera.rays(W, H)
     t, hit = march(scene, ro, rd, max_dist, steps, eps)
     rgb = np.zeros((W * H, 3))
+    covered = np.zeros(W * H)
     if background is not None:
         rgb[~hit] = background(rd[~hit])
     idx = np.where(hit)[0]
@@ -357,6 +365,8 @@ def render(scene, materials, camera, lights, size, ss=2, background=None, ambien
         p = ro[idx] + rd[idx] * t[idx, None]
         n = calc_normals(scene, p)
         mat = scene(p).m
+        if coverage is not None:
+            covered[idx] = np.isin(mat, coverage)
         v = -rd[idx]
         ao = ambient_occlusion(scene, p, n, ao_scale)
         albedo = np.zeros((idx.size, 3))
@@ -402,7 +412,8 @@ def render(scene, materials, camera, lights, size, ss=2, background=None, ambien
             lit = diff > 0
             if light.shadow and lit.any():
                 li = np.where(lit)[0]
-                sh[li] = soft_shadow(scene, p[li] + n[li] * 0.003, ldir[li], light.softness, tmax[li])
+                sh[li] = soft_shadow(scene, p[li] + n[li] * shadow_bias[0], ldir[li], light.softness, tmax[li],
+                                     t0=shadow_bias[1])
                 sh = np.maximum(sh, wrap * 0.3 * (1 - np.clip(ndl, 0, 1)))
             hvec = normalize(ldir + v)
             ndh = np.clip(np.einsum("ij,ij->i", n, hvec), 0, 1)
@@ -429,7 +440,10 @@ def render(scene, materials, camera, lights, size, ss=2, background=None, ambien
     rgb = rgb.reshape(H, W, 3).reshape(h, ss, w, ss, 3).mean(axis=(1, 3))
     alpha = hit.reshape(H, W).astype(float).reshape(h, ss, w, ss).mean(axis=(1, 3))
     depth = depth.reshape(H, W).reshape(h, ss, w, ss).min(axis=(1, 3))
-    return {"rgb": rgb, "alpha": alpha, "depth": depth}
+    out = {"rgb": rgb, "alpha": alpha, "depth": depth}
+    if coverage is not None:
+        out["coverage"] = covered.reshape(H, W).reshape(h, ss, w, ss).mean(axis=(1, 3))
+    return out
 
 
 # ---------------------------------------------------------------------------

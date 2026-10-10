@@ -170,9 +170,12 @@ localisation/english/              all text (UTF-8 with BOM)
 install/eldritch_pacts.mod         launcher file to copy into your mod/ folder
 gfx/entities/                      King in Yellow mesh definitions (.gfx) and unit entities with their animation states (.asset)
 gfx/models/units/eldritch/         King in Yellow .mesh models, .anim animations, their definitions and the texture atlas
-tools/generate_art.py              regenerates every texture and the thumbnail
+tools/generate_art.py              regenerates every texture and the thumbnail (`units` for the battalion icons only)
 tools/art_portraits.py             the King in Yellow's painted portrait: forms sculpted and lit by
                                    art_render.py, then repainted stroke by stroke by art_paint.py
+tools/art_units.py                 the battalion icons: each unit as a small scene (figures, mud or sea, smoky
+                                   sky) rendered by art_render.py and graded like a worn war photograph, with
+                                   the figures' silhouette as the white variant
 tools/generate_models.py           regenerates the 3D models and animations (add --preview DIR to render PNG
                                    previews, an animated GIF per animation and a contact sheet per model)
 tools/validate_mod.py              static checks: braces, localisation, sprites, entities, animations, references
@@ -190,4 +193,4 @@ The script is written against the standard HoI4 modding syntax. It passes the bu
 * **The 3D models.** They're written in Paradox's binary `.mesh` and `.anim` formats by `tools/generate_models.py`, read back and checked, and compared byte for byte against animated units that work in game (Millennium Dawn's infantry). They follow the same conventions: the `PdxMeshAdvanced` shader that HoI4's own skinned units use, up to four bone weights per vertex, at most 44 bones, a `Collision` box shape, animation definitions that name each `.anim` file relative to their own folder, and the size set by `scale` on the entity rather than on the mesh. The textures use normal map X in green, Y in alpha and an emissive mask in blue; specular R mask, G specular, B metalness, A roughness. If surfaces look oddly lit, inverted or glowing, the in-game layout differs from that. If units look too big or too small, change `scale` in `gfx/entities/eldritch_hastur_units.asset` (default 3.0; vanilla-sized infantry stands about 6 units tall). If a unit stands in its rest pose without moving, the game didn't accept the animation files or the state names; `error.log` will name the file. If they cause any problem, set `sprite = infantry` again on `eldritch_yellow_zealots`, `eldritch_byakhee_riders` and `eldritch_hastur_incarnate` in `common/units/eldritch_units.txt` to go back to vanilla models.
 * The god battalions are deliberately never unlocked for the designer. If the game refuses to spawn a template that contains them, the god division will not appear. `error.log` will say so.
 * The hidden rite technologies, which have no tech-tree folder and are granted with `set_technology`.
-* Icon sizes. The textures are 64×67 (spirits), 46×46 (decisions), 60×40 (battalions), 40×40 (traits), 156×210 (portraits) and 210×176 / 397×153 (events). If the UI expects different sizes, change the constants at the top of `tools/generate_art.py` and regenerate.
+* Icon sizes. The textures are 64×67 (spirits), 46×46 (decisions), 60×40 (battalions), 40×40 (traits), 156×210 (portraits) and 210×176 / 397×153 (events). If the UI expects different sizes, change the constants at the top of `tools/generate_art.py` (battalions: `ICON_SIZE` in `tools/art_units.py`) and regenerate.

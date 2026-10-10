@@ -228,12 +228,16 @@ def king_setup():
     return scene, mats, seed
 
 
+def king_camera():
+    return Camera((0.06, 1.50, 1.85), (0.0, 1.57, 0.0), fov=23.0)
+
+
 def king_paint(scale=2, ss=1):
     """Render the forms at scale x the portrait size, then repaint them
     stroke by stroke as a dark oil. Returns the picture (0..1) and seed."""
     scene, mats, seed = king_setup()
     size = (PORTRAIT_SIZE[0] * scale, PORTRAIT_SIZE[1] * scale)
-    cam = Camera((0.06, 1.50, 1.85), (0.0, 1.57, 0.0), fov=23.0)
+    cam = king_camera()
     lights = [Light((1.0, 0.84, 0.55), 6.0, direction=(-0.05, 0.40, -1.0), softness=8),    # the blaze behind
               Light((1.0, 0.55, 0.25), 0.22, direction=(0.70, 0.40, 0.55), softness=10),    # a faint warm key
               Light((0.45, 0.15, 0.08), 0.10, direction=(-0.6, -0.4, 0.6), shadow=False)]   # bounce

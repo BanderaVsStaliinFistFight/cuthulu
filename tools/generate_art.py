@@ -9,19 +9,25 @@ every texture. Run from anywhere:
 
 Requires Pillow and numpy. Output is deterministic (fixed random seeds).
 The King in Yellow's portrait is sculpted, lit and painted by
-tools/art_portraits.py, which takes about a minute; everything else is drawn
-here.
+tools/art_portraits.py, which takes about a minute; the battalion icons are
+small rendered scenes from tools/art_units.py, rendered in parallel (a few
+minutes in all); everything else is drawn here. To redo only some of it:
+
+    python3 tools/generate_art.py units       # battalion icons only
 """
 
 import math
 import os
 import random
 import struct
+import sys
+from concurrent.futures import ProcessPoolExecutor
 
 import numpy as np
 from PIL import Image, ImageDraw, ImageFilter, ImageFont
 
 import art_portraits
+import art_units
 
 ROOT = os.path.dirname(os.path.dirname(os.path.abspath(__file__)))
 SS = 4  # supersampling factor for anti-aliased drawing
@@ -31,7 +37,6 @@ DECISION_SIZE = (46, 46)
 REPORT_SIZE = (210, 176)
 NEWS_SIZE = (397, 153)
 PORTRAIT_SIZE = (156, 210)
-UNIT_ICON_SIZE = (60, 40)
 TRAIT_SIZE = (40, 40)
 
 GODS = ["cthulhu", "nyarlathotep", "hastur", "shub_niggurath", "yog_sothoth", "azathoth"]
@@ -970,109 +975,20 @@ def make_portraits():
 # Battalion icons for the division designer (GFX_unit_<name>_icon_medium)
 # ---------------------------------------------------------------------------
 
-def glyph_soldier(c, col, x=0.5, scale=1.0, shield=False):
-    k = scale
-    c.ellipse(x, 0.26, 0.07 * k, 0.07 * k, col)
-    c.poly([(x - 0.07 * k, 0.36), (x + 0.07 * k, 0.36), (x + 0.09 * k, 0.66), (x - 0.09 * k, 0.66)], col)
-    c.line([(x - 0.04 * k, 0.66), (x - 0.06 * k, 0.92)], col, 0.04 * k)
-    c.line([(x + 0.04 * k, 0.66), (x + 0.06 * k, 0.92)], col, 0.04 * k)
-    c.line([(x + 0.13 * k, 0.10), (x + 0.13 * k, 0.92)], col, 0.025 * k)
-    if shield:
-        c.ellipse(x - 0.11 * k, 0.50, 0.08 * k, 0.12 * k, col)
+UNIT_ICONS = list(art_units.ICONS)
 
 
-def glyph_monster(c, col, eye):
-    for i, x in enumerate([0.36, 0.46, 0.54, 0.64]):
-        tentacle(c, x, 0.55, 0.38, 0.05 * (1 if i % 2 else -1), i, 0.05, 0.015, col, dx=(x - 0.5) * 0.8)
-    c.ellipse(0.5, 0.42, 0.22, 0.26, col)
-    for ex in (0.43, 0.57):
-        c.ellipse(ex, 0.38, 0.035, 0.03, eye)
-
-
-def glyph_rider(c, col, eye):
-    c.poly([(0.50, 0.40), (0.10, 0.12), (0.22, 0.42), (0.08, 0.55), (0.42, 0.55)], col)
-    c.poly([(0.50, 0.40), (0.90, 0.12), (0.78, 0.42), (0.92, 0.55), (0.58, 0.55)], col)
-    c.ellipse(0.5, 0.56, 0.16, 0.12, col)
-    c.ellipse(0.66, 0.46, 0.07, 0.06, col)
-    c.ellipse(0.69, 0.45, 0.015, 0.015, eye)
-    c.ellipse(0.47, 0.34, 0.04, 0.04, col)
-    c.line([(0.47, 0.38), (0.47, 0.50)], col, 0.04)
-    c.line([(0.40, 0.66), (0.36, 0.86)], col, 0.035)
-    c.line([(0.60, 0.66), (0.64, 0.86)], col, 0.035)
-
-
-UNIT_COLORS = {
-    "cthulhu": (120, 210, 150),
-    "nyarlathotep": (185, 140, 235),
-    "hastur": (245, 205, 80),
-    "shub_niggurath": (190, 150, 115),
-    "yog_sothoth": (175, 200, 255),
-    "azathoth": (240, 110, 200),
-}
-
-
-def unit_icon(god, glyph, white=False):
-    pal = PALETTE[god]
-    w, h = UNIT_ICON_SIZE
-    col = (235, 235, 235, 255) if white else UNIT_COLORS[god] + (255,)
-    eye = (20, 20, 20, 255) if white else pal["glow"] + (255,)
-    if glyph == "god":
-        fig = SYMBOLS[god](h)
-        if white:
-            alpha = fig.split()[3]
-            fig = Image.new("RGBA", fig.size, (235, 235, 235, 0))
-            fig.putalpha(alpha)
-    elif glyph == "spiral":
-        fig = sym_azathoth(h)
-    else:
-        c = Canvas(h, h)
-        if glyph == "soldier":
-            glyph_soldier(c, col)
-        elif glyph == "shield":
-            glyph_soldier(c, col, shield=True)
-        elif glyph == "swarm":
-            for x in (0.24, 0.5, 0.76):
-                glyph_soldier(c, col, x=x, scale=0.75)
-        elif glyph == "monster":
-            glyph_monster(c, col, eye)
-        elif glyph == "rider":
-            glyph_rider(c, col, eye)
-        fig = c.done(h, h)
-    if white:
-        img = Image.new("RGBA", UNIT_ICON_SIZE, (0, 0, 0, 0))
-        return paste_center(img, fig, 0.5, 0.5)
-    bg = radial_bg(UNIT_ICON_SIZE, tuple(min(255, int(v * 2.5 + 15)) for v in pal["bg"]), pal["bg"])
-    if glyph != "god":
-        fig = glow_under(fig, pal["glow"], 2, 0.5)
-    img = paste_center(bg, fig, 0.5, 0.5)
-    d = ImageDraw.Draw(img)
-    border = (235, 195, 90, 255) if glyph == "god" else (120, 110, 90, 255)
-    d.rectangle([0, 0, w - 1, h - 1], outline=border)
-    return img
-
-
-UNIT_ICONS = {
-    "eldritch_deep_one_brood": ("cthulhu", "soldier"),
-    "eldritch_star_spawn": ("cthulhu", "monster"),
-    "eldritch_faceless_cult": ("nyarlathotep", "soldier"),
-    "eldritch_shantak_riders": ("nyarlathotep", "rider"),
-    "eldritch_yellow_zealots": ("hastur", "soldier"),
-    "eldritch_byakhee_riders": ("hastur", "rider"),
-    "eldritch_dark_young": ("shub_niggurath", "monster"),
-    "eldritch_thousand_young": ("shub_niggurath", "swarm"),
-    "eldritch_gate_wardens": ("yog_sothoth", "shield"),
-    "eldritch_dunwich_horror": ("yog_sothoth", "monster"),
-    "eldritch_chaos_spawn": ("azathoth", "soldier"),
-    "eldritch_void_pipers": ("azathoth", "spiral"),
-}
-for _god in GODS:
-    UNIT_ICONS[f"eldritch_{_god}_incarnate"] = (_god, "god")
+def _render_unit_icon(unit):
+    return unit, art_units.ICONS[unit]()
 
 
 def make_unit_icons():
-    for unit, (god, glyph) in UNIT_ICONS.items():
-        save_dds(unit_icon(god, glyph), f"gfx/interface/counters/divisions_large/{unit}.dds")
-        save_dds(unit_icon(god, glyph, white=True), f"gfx/interface/counters/divisions_large/{unit}_white.dds")
+    """Each battalion as a small lit scene, plus a white silhouette of its
+    figures for the _white variant. Rendered in parallel."""
+    with ProcessPoolExecutor() as pool:
+        for unit, (icon, white) in pool.map(_render_unit_icon, UNIT_ICONS):
+            save_dds(icon, f"gfx/interface/counters/divisions_large/{unit}.dds")
+            save_dds(white, f"gfx/interface/counters/divisions_large/{unit}_white.dds")
 
 
 # ---------------------------------------------------------------------------
@@ -1156,6 +1072,10 @@ def write_gfx():
 
 
 def main():
+    if sys.argv[1:] == ["units"]:
+        make_unit_icons()
+        print("Battalion icons generated.")
+        return
     make_ideas()
     make_decisions()
     make_report_events()
