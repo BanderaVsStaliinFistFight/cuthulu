@@ -395,6 +395,10 @@
  eldritch.1.d:0 "Our agents have come back. Three of the five who went, anyway, and one of those three has not stopped whispering since. They brought a book: a thick, crumbling volume whose pages feel warm to the touch, its margins crowded with notes in a dozen hands and a dozen languages.\n\nThe translators worked in shifts so that no one read too much at once. What they found were rituals. Six of them, each one calling something vast and old that has waited since before the first human looked at the stars.\n\nThe book is clear on one point above all: a nation can be bound to only one of them."
  eldritch.1.a:0 "That is not dead which can eternal lie..."
 
+ eldritch.2.t:0 "Eldritch Pacts Is Active"
+ eldritch.2.d:0 "The Old Ones are listening.\n\nTo begin, open the §YDecisions§! tab (the button in the top-left corner of the screen) and find the category §YThe Forbidden Rites§!. Take §YSeek the Forbidden Lore§! to reveal the six summoning rituals.\n\nYou can bind only §Rone§! god. Choose carefully."
+ eldritch.2.a:0 "Ph'nglui mglw'nafh..."
+
  eldritch.11.t:0 "Cthulhu Answers"
  eldritch.11.d:0 "On the sixtieth night of the ritual the sea went still. Then, far out past the breakwater, it began to boil. The priests on the shore kept chanting while green light rose from the depths, and the shapes that came out of the surf walked on two legs.\n\nThey are the Deep Ones, and they have come to serve. Somewhere in the South Pacific a sunken city has felt our call, and in his house at R'lyeh, dead Cthulhu dreams of [ROOT.GetNameDef]."
  eldritch.11.a:0 "Cthulhu fhtagn!"

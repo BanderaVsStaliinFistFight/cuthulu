@@ -1,0 +1,20 @@
+#####################################################################
+# Eldritch Pacts - on actions
+#####################################################################
+
+on_actions = {
+	on_startup = {
+		effect = {
+			# Guarded by a global flag so the welcome is shown only once,
+			# however many times on_startup is evaluated.
+			if = {
+				limit = { NOT = { has_global_flag = eldritch_welcome_shown } }
+				set_global_flag = eldritch_welcome_shown
+				every_country = {
+					limit = { is_ai = no }
+					country_event = { id = eldritch.2 days = 1 }
+				}
+			}
+		}
+	}
+}

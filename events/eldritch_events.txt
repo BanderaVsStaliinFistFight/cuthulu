@@ -2,6 +2,7 @@
 # Eldritch Pacts - events
 #
 #   eldritch.1        the forbidden lore is found
+#   eldritch.2        welcome message for human players at game start
 #   eldritch.11-16    a summoning succeeds (one per god)
 #   eldritch.20/30    the pact deepens (tier II / tier III)
 #   eldritch.40-43    the patron's whims (random, monthly)
@@ -28,6 +29,24 @@ country_event = {
 	option = {
 		name = eldritch.1.a
 		custom_effect_tooltip = eldritch_summonings_unlocked_tt
+	}
+}
+
+#####################################################################
+# WELCOME - fired once for every human player at game start
+# (common/on_actions/eldritch_on_actions.txt)
+#####################################################################
+
+country_event = {
+	id = eldritch.2
+	title = eldritch.2.t
+	desc = eldritch.2.d
+	picture = GFX_report_event_eldritch_omen
+
+	is_triggered_only = yes
+
+	option = {
+		name = eldritch.2.a
 	}
 }
 

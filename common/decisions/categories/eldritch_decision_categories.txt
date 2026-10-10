@@ -5,7 +5,13 @@
 eldritch_forbidden_rites = {
 	icon = eldritch_rites
 	priority = 150
+	allowed = {
+		always = yes
+	}
 	visible = {
 		always = yes
 	}
+	# Show the category even when none of its decisions are visible, so it
+	# is easy to confirm in-game that the mod is loaded.
+	visible_when_empty = yes
 }

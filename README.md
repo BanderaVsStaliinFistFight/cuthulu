@@ -8,25 +8,39 @@ Everything is in a new decision category, **The Forbidden Rites**, open to every
 
 ## Installation
 
-1. Copy this folder to your HoI4 mod directory:
-   * Windows: `Documents\Paradox Interactive\Hearts of Iron IV\mod\eldritch_pacts`
-   * Linux: `~/.local/share/Paradox Interactive/Hearts of Iron IV/mod/eldritch_pacts`
-   * macOS: `~/Documents/Paradox Interactive/Hearts of Iron IV/mod/eldritch_pacts`
-2. Next to that folder (in `mod/`), create a file named `eldritch_pacts.mod` with this content:
+Your HoI4 `mod` folder is here:
+* Windows: `Documents\Paradox Interactive\Hearts of Iron IV\mod\`
+* Linux: `~/.local/share/Paradox Interactive/Hearts of Iron IV/mod/`
+* macOS: `~/Documents/Paradox Interactive/Hearts of Iron IV/mod/`
+
+1. Put the mod files in a folder called **`eldritch_pacts`** inside `mod/`. `descriptor.mod`, `common`, `events` and the other folders must sit **directly** inside `eldritch_pacts`:
 
    ```
-   version="1.0.0"
-   tags={ "Alternative History" "Gameplay" "Military" }
-   name="Eldritch Pacts - Call of the Old Ones"
-   picture="thumbnail.png"
-   supported_version="1.16.*"
-   path="mod/eldritch_pacts"
+   mod/
+   ├── eldritch_pacts.mod          <- step 2
+   └── eldritch_pacts/
+       ├── descriptor.mod
+       ├── common/
+       ├── events/
+       ├── gfx/
+       ├── interface/
+       ├── localisation/
+       └── ...
    ```
 
-   On Linux and macOS, `path` must be absolute, e.g. `path="/home/you/.local/share/Paradox Interactive/Hearts of Iron IV/mod/eldritch_pacts"`.
-3. Enable **Eldritch Pacts** in a playset in the Paradox launcher and start the game.
+   GitHub's "Download ZIP" puts everything inside an extra folder (e.g. `cuthulu-claude-happy-curie-tj0rkv`). Move the *contents* of that folder into `eldritch_pacts`, or rename that folder itself to `eldritch_pacts`. A clone ends up in a folder called `cuthulu`; rename it to `eldritch_pacts`.
+2. Copy `install/eldritch_pacts.mod` into `mod/`, next to the `eldritch_pacts` folder, as shown above.
+   On Linux and macOS, edit its `path` line to the absolute path, e.g. `path="/home/you/.local/share/Paradox Interactive/Hearts of Iron IV/mod/eldritch_pacts"`.
+3. Open the Paradox launcher, add **Eldritch Pacts - Call of the Old Ones** to your playset, make sure it is ticked, and start a game from that playset.
 
-If the launcher shows a version warning, change `supported_version` in both `descriptor.mod` and `eldritch_pacts.mod` to your game version. The mod does not depend on a specific patch.
+If the launcher shows a version warning, change `supported_version` in `descriptor.mod` and `eldritch_pacts.mod` to your game version. The mod does not depend on a specific patch.
+
+### Can't see the decisions?
+
+When the mod is loaded, every human player gets an **"Eldritch Pacts Is Active"** pop-up on the first day of a new game. The **Decisions** tab (top-left button) always shows the **The Forbidden Rites** category.
+
+* **No pop-up and no category:** the game is not loading the mod. Check that the folder name matches the `path` in `eldritch_pacts.mod`, that `descriptor.mod` is directly inside that folder (not one level deeper), and that the mod is enabled in the playset you launched.
+* **The category is there but empty, or something else looks wrong:** open `Documents/Paradox Interactive/Hearts of Iron IV/logs/error.log`, search for `eldritch`, and report the lines you find.
 
 ---
 
@@ -105,10 +119,12 @@ common/technologies/               hidden "rite" techs that unlock and buff the 
 common/scripted_effects|triggers/  shared logic (summoning, blessings, tiers, favor)
 common/scripted_localisation/      [ROOT.GetEldritchGodName] etc.
 common/game_rules/                 the AI rule
+common/on_actions/                 welcome pop-up at game start
 events/                            summoning, tier, whim, curse, news and monthly-pulse events
 interface/eldritch.gfx             sprite definitions
 gfx/                               generated icons and event pictures (DDS)
 localisation/english/              all text (UTF-8 with BOM)
+install/eldritch_pacts.mod         launcher file to copy into your mod/ folder
 tools/generate_art.py              regenerates every texture and the thumbnail
 tools/validate_mod.py              static checks: braces, localisation, sprites, references
 ```
