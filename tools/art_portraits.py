@@ -380,6 +380,218 @@ def king_in_yellow():
                         smoke=0.16, smoke_src=(0.8, 0.1))
 
 
+# ---------------------------------------------------------------------------
+# 2D (inked and hand-coloured) versions
+# ---------------------------------------------------------------------------
+
+def gritty_paper_finish(img, seed, grain=0.035, vig=0.25):
+    """Age a finished drawing: paper grain, a little foxing over the ink, a
+    soft darkening toward the edges."""
+    img = R.vignette(img, vig, 2.0)
+    return R.film(img, seed, grain=grain, dust=0.25, scratches=1, scratch_strength=0.08, blotches=0.08)
+
+
+def king_in_yellow_2d():
+    scene, mats, seed = king_setup()
+    ss = 4
+    cam = Camera((0.0, 1.50, 3.0), (0.0, 1.50, 0.0), fov=21.5)
+    lights = [Light((1.0, 0.95, 0.85), 2.0, direction=(-0.55, 0.65, 0.55), softness=14),
+              Light((0.7, 0.75, 0.85), 0.35, direction=(0.8, 0.2, 0.5), shadow=False)]
+    gb = R.render(scene, mats, cam, lights, PORTRAIT_SIZE, ss=ss, ambient=(0.25, 0.25, 0.25),
+                  ao_scale=0.10, max_dist=7.0, shadow_dist=3.0, full=True)
+    colors = {
+        0: (0.80, 0.64, 0.24),   # mustard robe
+        1: (0.70, 0.13, 0.11),   # red ribbons
+        2: (0.90, 0.84, 0.66),   # bone mask
+        3: (0.08, 0.06, 0.05),   # eye holes
+        4: (0.86, 0.67, 0.25),   # gold
+        5: (0.78, 0.61, 0.63),   # dusty pink feathers
+        6: (0.42, 0.32, 0.18),   # scepter rod
+        7: (0.95, 0.80, 0.35),   # glints
+        8: (0.66, 0.50, 0.52),   # feather shafts
+        9: (0.86, 0.78, 0.60),   # bony hands
+    }
+    H, W = gb["mat"].shape
+    paper = R.aged_paper((W, H), seed)
+    img = R.ink_illustration(gb, colors, PORTRAIT_SIZE, paper=paper, hatch_spacing=6.0, seed=seed,
+                             ignore_crease=(5, 8), same={8: 5})
+    return R.to_image(gritty_paper_finish(img, seed))
+
+
+# ---------------------------------------------------------------------------
+# Painted (2D) portraits
+# ---------------------------------------------------------------------------
+
+def king_in_yellow_painted():
+    """The King in Yellow as a dry-brush acrylic on black canvas: a tall
+    pointed hood round a void, arms spread under curtain-like sleeves, the
+    robe parted on darkness, a bony hand, a staff, and something stirring
+    in the dark between the robes."""
+    import art_paint as A
+    seed = 33
+    P = A.Painter(PORTRAIT_SIZE, scale=2, seed=seed)
+    rng = P.rng
+    # matte acrylic: raw umber shadows, yellow ochre, a little cadmium, a buff highlight
+    ochre = A.ramp([(0.0, (0.05, 0.035, 0.012)), (0.25, (0.36, 0.22, 0.04)), (0.5, (0.80, 0.55, 0.10)),
+                    (0.72, (0.92, 0.67, 0.15)), (0.88, (0.96, 0.78, 0.30)), (1.0, (0.96, 0.88, 0.60))])
+
+    def nz(s, t, k, fs=3.0, ft=3.0):
+        return float(R.fbm3(np.array([[s * fs + k * 1.7, t * ft, k * 0.7]]), 4, seed)[0])
+
+    # ----- background: black canvas worked over with near-black strokes -----
+    for _ in range(160):
+        x, y = rng.uniform(-0.1, 1.1), rng.uniform(-0.1, 1.1)
+        a = rng.uniform(0, math.pi)
+        L = rng.uniform(0.15, 0.5)
+        pts = np.array([[x + math.cos(a) * L * u, y + math.sin(a) * L * u + 0.03 * math.sin(u * 4)]
+                        for u in np.linspace(0, 1, 16)])
+        v = rng.uniform(0.035, 0.085)
+        P.stroke(pts, rng.uniform(0.03, 0.08), (v, v * 0.9, v * 0.72), 0.5, 8, dry=0.35)
+
+    # ----- shapes ------------------------------------------------------------
+    hood_l = A.Curve([(0.515, 0.10), (0.470, 0.15), (0.432, 0.24), (0.400, 0.33), (0.360, 0.405)])
+    hood_r = A.Curve([(0.515, 0.10), (0.560, 0.15), (0.598, 0.24), (0.630, 0.33), (0.672, 0.405)])
+    void_l = A.Curve([(0.515, 0.150), (0.490, 0.20), (0.476, 0.28), (0.470, 0.37), (0.468, 0.47)])
+    void_r = A.Curve([(0.515, 0.150), (0.540, 0.20), (0.554, 0.28), (0.560, 0.37), (0.562, 0.47)])
+    drape_l_in = A.Curve([(0.468, 0.42), (0.462, 0.58), (0.445, 0.75), (0.420, 0.90), (0.40, 1.05)])
+    drape_l_out = A.Curve([(0.040, 0.50), (0.018, 0.62), (0.035, 0.76), (0.065, 0.90), (0.09, 1.05)])
+    drape_r_in = A.Curve([(0.562, 0.42), (0.570, 0.58), (0.590, 0.75), (0.618, 0.90), (0.64, 1.05)])
+    drape_r_out = A.Curve([(0.940, 0.46), (0.965, 0.60), (0.955, 0.76), (0.930, 0.90), (0.91, 1.05)])
+    shoulder_l_top = A.Curve([(0.43, 0.30), (0.33, 0.37), (0.20, 0.42), (0.04, 0.48)])
+    shoulder_l_low = A.Curve([(0.47, 0.44), (0.33, 0.47), (0.20, 0.50), (0.05, 0.535)])
+    shoulder_r_top = A.Curve([(0.60, 0.30), (0.70, 0.36), (0.83, 0.40), (0.945, 0.44)])
+    shoulder_r_low = A.Curve([(0.56, 0.44), (0.70, 0.46), (0.83, 0.48), (0.94, 0.50)])
+
+    def drape_value(side, s, t):
+        """Brightness of the robe at (s, t): soft irregular folds, lit from
+        the upper left, darkening downward, black inside the left sleeve."""
+        streak = nz(s, t, side, 7.0, 0.55)                       # irregular streaks down the cloth
+        fold = 0.5 + 0.5 * math.sin(2 * math.pi * (s * 2.6 + 0.6 * nz(s, t, 11 + side, 1.5, 0.8)))
+        light = (1.15 - 0.75 * t) * (1.0 if side < 0 else 0.84)
+        edge = min(1.0, s * 7) * min(1.0, (1 - s) * 6)
+        v = light * (0.30 + 0.70 * smoothstep(-0.45, 0.55, streak)) * (0.55 + 0.45 * fold) * (0.4 + 0.6 * edge)
+        v += 0.08 * nz(s, t, 21 + side, 12, 4)
+        if side < 0:  # the open left sleeve shows its black inside under the arm
+            v *= 1 - 0.85 * smoothstep(0.62, 0.85, s) * smoothstep(0.55, 0.15, t) * smoothstep(0.0, 0.08, t)
+        return float(np.clip(v, 0, 1))
+
+    def paint_band(inner, outer, value, n_base, n_mid, n_hi, n_dark, t_range=(0.0, 1.0)):
+        # broad dark-ochre underpainting, then mid strokes coloured by value,
+        # pale highlights on the fold crests and dark accents in the hollows
+        A.band_strokes(P, inner, outer, n_base, lambda s, t: ochre(value(s, t) * 0.5), width=0.030,
+                       length=(0.15, 0.35), alpha=0.6, bristles=9, dry=0.32, t_range=t_range)
+        # mid strokes: where the cloth is in shadow, leave the black canvas bare
+        # or drag a dry brush over it; lit cloth gets fuller, wetter strokes
+        for _ in range(n_mid):
+            s, t0 = rng.uniform(-0.04, 1.04), rng.uniform(t_range[0] - 0.05, t_range[1])
+            v = value(min(max(s, 0.0), 1.0), max(t0, t_range[0]))
+            if s < 0 or s > 1:  # strokes straying past the edge are dry and broken
+                v *= 0.8
+            if v < 0.2 and rng.random() < 0.8:
+                continue
+            ts = np.linspace(t0, t0 + rng.uniform(0.07, 0.28), 20)
+            ts = ts[(ts >= t_range[0]) & (ts <= t_range[1])]
+            if len(ts) < 3:
+                continue
+            sw = s + 0.006 * np.sin(ts * 11 + s * 30)
+            pts = inner.at(ts) * (1 - sw)[:, None] + outer.at(ts) * sw[:, None]
+            c = ochre(np.clip(v + rng.normal(0, 0.07), 0, 1)) * (1 + rng.normal(0, 0.05, 3))
+            P.stroke(pts, rng.uniform(0.007, 0.018), c, 0.85, int(rng.integers(3, 6)),
+                     dry=0.2 + 0.45 * (1 - v) + (0.2 if (s < 0.03 or s > 0.97) else 0.0),
+                     load=(1.0, rng.uniform(0.15, 0.55)))
+
+        def hi(s, t):
+            v = value(s, t)
+            return ochre(min(1.0, v + 0.25)) if v > 0.62 else None
+
+        def dk(s, t):
+            v = value(s, t)
+            return np.array([0.03, 0.022, 0.01]) if v < 0.35 else None
+
+        for fn, count, w, dry in ((hi, n_hi, 0.005, 0.38), (dk, n_dark, 0.007, 0.25)):
+            done = 0
+            for _ in range(count * 4):
+                if done >= count:
+                    break
+                s, t0 = rng.uniform(0, 1), rng.uniform(t_range[0], t_range[1])
+                c = fn(s, t0)
+                if c is None:
+                    continue
+                done += 1
+                ts = np.linspace(t0, min(t_range[1], t0 + rng.uniform(0.06, 0.22)), 14)
+                pts = inner.at(ts) * (1 - s) + outer.at(ts) * s
+                P.stroke(pts, w * rng.uniform(0.7, 1.4), c, 0.8, 3, dry=dry)
+
+    for side, inner, outer in ((-1, drape_l_in, drape_l_out), (1, drape_r_in, drape_r_out)):
+        paint_band(inner, outer, lambda s, t, sd=side: drape_value(sd, s, t), 240, 1500, 500, 300)
+    for side, top, low in ((-1, shoulder_l_top, shoulder_l_low), (1, shoulder_r_top, shoulder_r_low)):
+        val = (lambda s, t, sd=side: float(np.clip((0.95 - 0.45 * s) * (1.0 if sd < 0 else 0.8)
+                                                   * (0.75 + 0.25 * math.sin(t * 14 + 3 * nz(s, t, 31 + sd)))
+                                                   + 0.1 * nz(s, t, 41 + sd, 8, 8), 0, 1)))
+        paint_band(top, low, val, 60, 450, 160, 60)
+
+    def hood_value(side, s, t):
+        rim = 0.35 * math.exp(-((s - 0.08) / 0.10) ** 2) + 0.15 * math.exp(-((s - 0.92) / 0.08) ** 2)
+        v = (0.45 + 0.35 * math.sin(s * 8 + 2 * nz(s, t, 51 + side))) * (1.0 if side < 0 else 0.78)
+        return float(np.clip((v + rim) * (1.08 - 0.25 * t), 0, 1))
+
+    for side, inner, outer in ((-1, void_l, hood_l), (1, void_r, hood_r)):
+        paint_band(inner, outer, lambda s, t, sd=side: hood_value(sd, s, t), 90, 650, 220, 70)
+
+    # the face: a void, with only the faintest pale shapes in it
+    for _ in range(14):
+        x = 0.515 + rng.normal(0, 0.012)
+        y0 = rng.uniform(0.19, 0.27)
+        pts = np.array([[x + 0.002 * math.sin(u * 5), y0 + 0.05 * u] for u in np.linspace(0, 1, 8)])
+        P.stroke(pts, 0.004, (0.55, 0.48, 0.32), 0.2, 3, dry=0.45)
+    for ex in (0.503, 0.527):
+        P.dab(ex, 0.243, 0.0045, (0.95, 0.78, 0.25), 0.45)
+        P.dab(ex, 0.243, 0.0022, (1.0, 0.95, 0.70), 0.95)
+
+    # ----- something stirring in the dark between the robes -------------------
+    for x0, h, curl in ((0.485, 0.17, -1), (0.525, 0.24, 1), (0.56, 0.13, 1)):
+        us = np.linspace(0, 1, 30)
+        pts = np.array([[x0 + curl * 0.035 * math.sin(u * 3.2) * u + 0.008 * math.sin(u * 9),
+                         1.04 - h * u] for u in us])
+        P.stroke(pts, 0.020, (0.14, 0.09, 0.03), 0.85, 5, load=(1.0, 0.35), dry=0.2)
+        P.stroke(pts + np.array([-0.004 * curl, 0]), 0.008, (0.40, 0.27, 0.07), 0.7, 3, load=(1.0, 0.2), dry=0.3)
+        P.stroke(pts + np.array([-0.008 * curl, 0]), 0.003, (0.78, 0.60, 0.25), 0.5, 2, load=(1.0, 0.1), dry=0.35)
+
+    # ----- the hands and the staff --------------------------------------------
+    for k in range(5):  # long bony fingers dripping from the left sleeve
+        x0 = 0.030 + k * 0.012 + rng.normal(0, 0.003)
+        L = rng.uniform(0.06, 0.10)
+        pts = np.array([[x0 - 0.010 * u * u + 0.003 * math.sin(u * 7), 0.50 + L * u] for u in np.linspace(0, 1, 12)])
+        P.stroke(pts, 0.007, (0.88, 0.84, 0.70), 0.9, 3, load=(1.0, 0.6), dry=0.18)
+        P.stroke(pts + np.array([0.003, 0]), 0.003, (0.25, 0.20, 0.12), 0.5, 2, dry=0.3)
+    for _ in range(10):
+        P.dab(rng.uniform(0.02, 0.09), rng.uniform(0.48, 0.52), rng.uniform(0.004, 0.009), (0.92, 0.89, 0.78), 0.8)
+    for _ in range(4):  # drips of pale paint
+        x0 = rng.uniform(0.025, 0.085)
+        pts = np.array([[x0, 0.53 + 0.11 * u * rng.uniform(0.5, 1.0)] for u in np.linspace(0, 1, 8)])
+        P.stroke(pts, 0.004, (0.82, 0.78, 0.62), 0.6, 2, load=(1.0, 0.3), dry=0.2)
+    staff = np.array([[0.948 + 0.002 * math.sin(u * 13), -0.02 + 1.06 * u] for u in np.linspace(0, 1, 60)])
+    P.stroke(staff, 0.011, (0.18, 0.12, 0.04), 0.8, 4, load=(1.0, 0.8), dry=0.1)
+    P.stroke(staff, 0.0045, (0.86, 0.72, 0.38), 0.85, 3, load=(1.0, 0.45), dry=0.25)
+    P.stroke(np.array([[0.81 + 0.21 * u, 0.125 - 0.004 * u] for u in np.linspace(0, 1, 20)]), 0.005,
+             (0.88, 0.78, 0.45), 0.85, 3, dry=0.2)
+    P.stroke(np.array([[0.785 + 0.165 * u, -0.02 + 0.30 * u] for u in np.linspace(0, 1, 30)]), 0.0035,
+             (0.92, 0.88, 0.70), 0.8, 2, dry=0.3)
+    for _ in range(7):  # knuckles round the staff
+        P.dab(0.948 + rng.normal(0, 0.01), 0.465 + rng.normal(0, 0.012), rng.uniform(0.004, 0.008),
+              (0.86, 0.80, 0.62), 0.8)
+
+    img = P.finish(sharpen=False)
+    # the canvas weave pressed into the paint
+    h_, w_ = img.shape[:2]
+    yy, xx = np.mgrid[0:h_, 0:w_]
+    weave = 0.5 + 0.5 * np.sin(xx * 2.3) * np.sin(yy * 2.3)
+    lum = img.mean(axis=2, keepdims=True)
+    img = img * (1 - 0.10 * weave[..., None] * np.clip(lum * 3, 0, 1))
+    img = R.vignette(img, 0.35, 2.0)
+    img = R.film(img, seed, grain=0.03, dust=0.2, scratches=0, blotches=0.05)
+    return R.to_image(img)
+
 PORTRAITS = {
     "eldritch_avatar_pallid_mask": king_in_yellow,
 }
