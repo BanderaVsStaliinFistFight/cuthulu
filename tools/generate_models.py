@@ -1,7 +1,9 @@
 #!/usr/bin/env python3
 """Generate the 3D map models for the King in Yellow (Hastur) units.
 
-Builds three detailed static models procedurally and writes them in the
+Builds three detailed static models procedurally - human figures on real
+anatomical proportions dressed in hanging cloth, and a Byakhee with plausible
+flying-creature anatomy - and writes them in the
 Clausewitz binary .mesh format, together with a 1024px texture set and the
 mesh/entity definitions HoI4 needs:
 
@@ -231,9 +233,10 @@ class MeshBuilder:
         self.lathe([(0.0, 0.0), (radius, 0.0), (radius * 0.6, h * 0.5), (0.0, h)], region, segs=segs,
                    center=base, rot=align_y_to(apex - base), scale=(1, 1, flat))
 
-    def tube(self, path, radii, region, segs=10, inner=None, cap=True):
+    def tube(self, path, radii, region, segs=10, inner=None, cap=True, ring_mod=None):
         """Tube along a polyline. inner: per-point 'inner side' direction; that side
-        maps to u = 0.5 of the region. Returns the ring frames for placing details."""
+        maps to u = 0.5 of the region. ring_mod(i, a) scales the radius around each
+        ring (cloth folds). Returns the ring frames for placing details."""
         path = [np.asarray(p, float) for p in path]
         n_pts = len(path)
         tangents = [normalize(path[min(i + 1, n_pts - 1)] - path[max(i - 1, 0)]) for i in range(n_pts)]
@@ -255,14 +258,29 @@ class MeshBuilder:
         for i in range(1, n_pts):
             length.append(length[-1] + np.linalg.norm(path[i] - path[i - 1]))
         total = max(length[-1], 1e-9)
-        rings = []
+        pos = np.zeros((n_pts, segs + 1, 3))
+        dirs = np.zeros((n_pts, segs + 1, 3))
         for i in range(n_pts):
             T, I, S = frames[i]
-            ring = []
             for j in range(segs + 1):
                 a = 2 * math.pi * j / segs
                 d = -math.cos(a) * I + math.sin(a) * S  # a = pi -> inner side
-                ring.append(self.vert(path[i] + d * radii[i], d, region_uv(region, j / segs, length[i] / total)))
+                r = radii[i] * (ring_mod(i, a) if ring_mod else 1.0)
+                pos[i, j] = path[i] + d * r
+                dirs[i, j] = d
+        rings = []
+        for i in range(n_pts):
+            ring = []
+            for j in range(segs + 1):
+                n = dirs[i, j]
+                if ring_mod:
+                    da = pos[i, (j + 1) % segs] - pos[i, (j - 1) % segs]
+                    dl = pos[min(i + 1, n_pts - 1), j] - pos[max(i - 1, 0), j]
+                    c = np.cross(dl, da)
+                    if np.linalg.norm(c) > 1e-12:
+                        c = normalize(c)
+                        n = c if np.dot(c, dirs[i, j]) > 0 else -c
+                ring.append(self.vert(pos[i, j], n, region_uv(region, j / segs, length[i] / total)))
             rings.append(ring)
         for i in range(n_pts - 1):
             for j in range(segs):
@@ -292,6 +310,10 @@ class MeshBuilder:
 
 # ---------------------------------------------------------------------------
 # Models (Y up, facing -Z; the back of every model is +Z)
+#
+# Every figure is built on real human proportions - 1.80 m tall, a 0.23 m
+# head, 0.42 m shoulders, 0.30 m upper arms and 0.27 m forearms - and dressed
+# in cloth that hangs from that body.
 # ---------------------------------------------------------------------------
 
 def radial(theta):
@@ -299,105 +321,251 @@ def radial(theta):
     return np.array([math.sin(theta), 0.0, math.cos(theta)])
 
 
-def hooded_figure(robe_bottom=0.0, hem_flare=0.75, seed=0, arms=True, detail=1.0):
-    """A hooded cultist in a draped robe and cowl with a bandage-wrapped face.
+def catmull(keys, x):
+    """Catmull-Rom interpolation of value tuples over keys [(x, values), ...] sorted by x."""
+    xs = [k[0] for k in keys]
+    vals = [np.asarray(k[1], float) for k in keys]
+    if x <= xs[0]:
+        return vals[0]
+    if x >= xs[-1]:
+        return vals[-1]
+    i = max(j for j in range(len(xs) - 1) if xs[j] <= x)
+    x0, x1 = xs[i], xs[i + 1]
+    u = (x - x0) / (x1 - x0)
+    p0, p1, p2, p3 = vals[max(i - 1, 0)], vals[i], vals[i + 1], vals[min(i + 2, len(vals) - 1)]
+    m1 = (p2 - p0) / max(xs[i + 1] - xs[max(i - 1, 0)], 1e-9) * (x1 - x0)
+    m2 = (p3 - p1) / max(xs[min(i + 2, len(xs) - 1)] - xs[i], 1e-9) * (x1 - x0)
+    u2, u3 = u * u, u * u * u
+    return (2 * u3 - 3 * u2 + 1) * p1 + (u3 - 2 * u2 + u) * m1 + (-2 * u3 + 3 * u2) * p2 + (u3 - u2) * m2
 
-    Authored ~1.95 units tall; the shoulders sit at y ~1.38 and the head at ~1.68.
-    detail scales the mesh resolution (1.0 = hero quality).
+
+def polyline_point(pts, s):
+    """Point at fraction s along a polyline (by length)."""
+    pts = [np.asarray(p, float) for p in pts]
+    seg = [np.linalg.norm(pts[i + 1] - pts[i]) for i in range(len(pts) - 1)]
+    target = s * sum(seg)
+    for i, L in enumerate(seg):
+        if target <= L or i == len(seg) - 1:
+            f = min(target / max(L, 1e-9), 1.0)
+            return pts[i] + (pts[i + 1] - pts[i]) * f
+        target -= L
+    return pts[-1]
+
+
+def smooth_path(pts, n):
+    """Catmull-Rom resampling of control points into n points."""
+    keys = [(i / (len(pts) - 1), p) for i, p in enumerate(pts)]
+    return [catmull(keys, k / (n - 1)) for k in range(n)]
+
+
+def superellipse(theta, W, D, n=2.4):
+    s, c = math.sin(theta), math.cos(theta)
+    return W * math.copysign(abs(s) ** (2 / n), s), D * math.copysign(abs(c) ** (2 / n), c)
+
+
+def drape(theta, y, seed, ks=(9, 14, 23), weights=(0.55, 0.30, 0.15)):
+    """Hanging cloth folds in [-1, 1]."""
+    k, amp, ph, _ = _noise_coeffs(seed)
+    v = 0.0
+    for i, (kk, w) in enumerate(zip(ks, weights)):
+        v += w * math.sin(kk * theta + ph[i] + y * (1.2 + 0.9 * i) * (amp[i] * 4 - 1))
+    return v
+
+
+def cloth_sweep(m, keys, y_top, y_bot, fold_amp, seed, nu, nv, region="cloth", inner="lining", n_exp=2.4,
+                skip=None, ks=(9, 14, 23)):
+    """A garment hanging from y_top down to y_bot(s) (number or function of s).
+
+    keys: [(y, (W, D, zc)), ...] sorted by y - half-width, half-depth and centre z
+    of the body/garment cross-section at that height. fold_amp(y): fold depth (m).
     """
-    m = MeshBuilder()
-    top_y = 1.40
-    span = top_y - robe_bottom
+    def hem(s):
+        return y_bot(s) if callable(y_bot) else y_bot
 
-    def res(n):
-        return max(6, int(n * detail))
-
-    # Robe: deep vertical folds that grow towards a ragged, holed hem pooling on the ground.
-    def robe(s, t):
+    def fn(s, t):
         th = 2 * math.pi * s
-        r = 0.19 + 0.02 * math.sin(math.pi * min(t * 2.2, 1.0)) + 0.15 * hem_flare * t ** 1.6
-        amp = 0.03 + 0.17 * t ** 1.2
-        fold = (0.55 * math.sin(7 * th + 0.9 + 1.4 * t) + 0.30 * math.sin(11 * th + 2.1 - 2.0 * t)
-                + 0.18 * math.sin(17 * th + 4.0 + 2.5 * t * math.sin(th)))
-        r *= 1 + amp * fold
-        hem = robe_bottom + 0.02 + 0.05 * (0.5 + 0.5 * hash_noise(s, seed + 1))
-        y = top_y - span * t + (hem - robe_bottom) * t ** 6
-        d = radial(th)
-        return np.array([d[0] * r * 1.06, y, d[2] * r * 0.94])
+        y = y_top + (hem(s) - y_top) * t
+        W, D, zc = catmull(keys, y)
+        x, z = superellipse(th, W, D, n_exp)
+        g = normalize((x / max(W, 1e-6) ** 2, z / max(D, 1e-6) ** 2))
+        a = fold_amp(y) * drape(th, y, seed, ks)
+        return np.array([x + g[0] * a, y, z + g[1] * a + zc])
 
-    def tatters(s, t):
-        if t < 0.82:
-            return False
-        holes = hash_noise(s * 3 % 1.0, seed + 7) * 0.6 + hash_noise((s * 7 + t * 0.5) % 1.0, seed + 9) * 0.4
-        return holes > 0.62 - (t - 0.82) * 1.4
+    def outward(p, s, t):
+        zc = catmull(keys, p[1])[2]
+        return np.array([p[0], 0.0, p[2] - zc])
 
-    m.surface(robe, res(64), res(30), "cloth", closed_u=True, inner_region="lining", skip=tatters,
-              outward=lambda p, s, t: np.array([p[0], 0.0, p[2]]))
+    m.surface(fn, nu, nv, region, closed_u=True, inner_region=inner, skip=skip, outward=outward)
 
-    # Cowl draped over narrow shoulders, hanging lower at the front in loose folds.
-    def cowl(s, t):
+
+def bandaged_head(m, c, scale, res):
+    """A head with brow, eye sockets, nose, cheekbones and chin, wrapped in bandages."""
+    c = np.asarray(c, float)
+    hx, hy, hz = 0.074, 0.115, 0.096
+
+    def fn(s, t):
         th = 2 * math.pi * s
-        front = 0.5 - 0.5 * math.cos(th)  # 1 at the front
-        r = 0.075 + 0.19 * t ** 0.6
-        r *= 1 + (0.02 + 0.11 * t) * (0.6 * math.sin(8 * th + 1.3) + 0.4 * math.sin(13 * th + 0.4 + 2 * t))
-        r *= 1 + 0.16 * front * math.sin(math.pi * t)
-        y = 1.54 - t * (0.40 + 0.24 * front) - 0.045 * math.sin(t * math.pi * 3.0) * front * t
-        y += 0.03 * hash_noise(s, seed + 3) * t ** 3
-        d = radial(th)
-        return np.array([d[0] * r * 1.22, y, d[2] * r * 0.95])
+        e = -math.pi / 2 + math.pi * t
+        ce, se = math.cos(e), math.sin(e)
+        x, y, z = hx * ce * math.sin(th), hy * se, hz * ce * math.cos(th)
+        if se < 0:  # jaw narrows
+            x *= 1 - 0.22 * -se
+            z *= 1 - 0.06 * -se
+        front = max(0.0, -math.cos(th))
+        lat = math.sin(th)
+        bump = (0.024 * math.exp(-(lat / 0.11) ** 2) * math.exp(-((se + 0.08) / 0.20) ** 2)      # nose
+                + 0.010 * math.exp(-((se - 0.30) / 0.08) ** 2) * (1 - 0.5 * abs(lat))             # brow
+                - 0.012 * math.exp(-((abs(lat) - 0.33) / 0.12) ** 2) * math.exp(-((se - 0.14) / 0.10) ** 2)
+                + 0.010 * math.exp(-(lat / 0.25) ** 2) * math.exp(-((se + 0.78) / 0.14) ** 2)      # chin
+                + 0.006 * math.exp(-((abs(lat) - 0.55) / 0.2) ** 2) * math.exp(-((se + 0.05) / 0.2) ** 2))
+        z -= bump * front
+        return c + scale * np.array([x, y, z])
 
-    def cowl_rag(s, t):
-        return t > 0.86 and hash_noise((s * 5) % 1.0, seed + 5) > 0.55
+    m.surface(fn, res(22), res(18), "bandage", closed_u=True, outward=lambda p, s, t: p - c)
 
-    m.surface(cowl, res(56), res(14), "cloth", closed_u=True, inner_region="lining", skip=cowl_rag,
-              outward=lambda p, s, t: np.array([p[0], 0.25, p[2]]))
 
-    # Long, bandage-wrapped head.
-    m.ellipsoid((0.0, 1.68, -0.015), (0.085, 0.135, 0.098), "bandage", segs=res(18), rings=res(12))
+def hood(m, hc, scale, res, seed):
+    """Cloth hood sitting ~4 cm off the head, its opening framing the face."""
+    hc = np.asarray(hc, float)
 
-    # Tall pointed hood, open at the front, its brim overhanging the face.
-    hc = np.array([0.0, 1.69, 0.02])
-
-    def hood(s, t):
-        e = -0.30 * math.pi + t * 0.80 * math.pi
-        w = 1.15 * (1 - smoothstep(-0.35, 1.05, e)) + 0.015
+    def fn(s, t):
+        e = -0.46 * math.pi + t * 0.96 * math.pi
+        ec, er = -0.05 * math.pi, 0.34 * math.pi
+        w = 1.02 * math.sqrt(max(0.0, 1 - ((e - ec) / er) ** 2)) if e > ec else 1.02
+        w += 0.01
         a = w + s * (2 * math.pi - 2 * w)  # a = 0 is the front (-Z)
         ce, se = math.cos(e), math.sin(e)
-        peak = max(0.0, se) ** 4
-        front = 0.5 + 0.5 * math.cos(a)
-        x = 0.140 * ce * math.sin(a) * (1 + 0.05 * math.sin(5 * a + t * 3))
-        y = 0.190 * se + 0.17 * peak
-        z = -0.165 * ce * math.cos(a) - 0.045 * front * max(0.0, se) + 0.11 * peak
-        return hc + np.array([x, y, z])
+        back = 0.5 - 0.5 * math.cos(a)
+        front = 1 - back
+        peak = max(0.0, se) ** 4 * back
+        flare = 1 + 0.55 * smoothstep(-0.28 * math.pi, -0.46 * math.pi, e)
+        wob = 1 + 0.035 * math.sin(6 * a + 2.5 * t + seed)
+        x = 0.112 * ce * math.sin(a) * flare * wob
+        y = 0.152 * se + 0.05 * peak
+        z = -0.135 * ce * math.cos(a) * flare * wob + 0.018 - 0.03 * front * max(0.0, se) + 0.12 * peak
+        return hc + scale * np.array([x, y, z])
 
-    m.surface(hood, res(28), res(18), "cloth", inner_region="lining",
-              outward=lambda p, s, t: p - hc)
-
-    if arms:
-        for sx, wrist in ((1, (0.23, 1.02, -0.20)), (-1, (-0.21, 0.97, -0.12))):
-            sh = np.array([sx * 0.17, 1.32, -0.01])
-            el = (sh + np.array(wrist)) / 2 + np.array([sx * 0.04, 0.0, 0.03])
-            m.tube([sh, el, wrist], [0.06, 0.065, 0.08], "cloth", segs=res(12), cap=False)
-            m.ellipsoid(np.array(wrist) + np.array([0.0, -0.035, -0.02]), (0.036, 0.048, 0.036), "bandage",
-                        segs=res(10), rings=res(6))
-    return m
+    m.surface(fn, res(30), res(18), "cloth", inner_region="lining", outward=lambda p, s, t: p - hc)
 
 
-def spear_with_banner(m, x, z, top=2.25, seed=11):
-    m.tube([(x, 0.02, z), (x, top, z)], [0.018, 0.016], "wood", segs=8)
-    m.lathe([(0.0, 0.0), (0.024, 0.0), (0.024, 0.05), (0.0, 0.06)], "metal", segs=8, center=(x, top - 0.02, z))
-    # leaf-shaped iron blade, flattened
-    m.lathe([(0.0, 0.0), (0.020, 0.02), (0.045, 0.10), (0.030, 0.20), (0.0, 0.30)], "metal", segs=8,
-            center=(x, top + 0.03, z), scale=(1, 1, 0.3))
-    # crossbar and tattered banner
-    bw, bh = 0.34, 0.50
-    y0 = top - 0.12
-    m.tube([(x - 0.02, y0, z), (x + bw + 0.03, y0, z)], [0.012, 0.012], "wood", segs=6)
+def cowl(m, neck, scale, res, seed):
+    """Capelet draped from the neck over the shoulders, hanging lower at the front."""
+    nx, ny, nz = neck
+    keys = [(-0.43, (0.285, 0.205, -0.005)), (-0.28, (0.275, 0.188, -0.005)), (-0.15, (0.262, 0.168, 0.0)),
+            (-0.08, (0.228, 0.148, 0.004)), (-0.03, (0.160, 0.118, 0.008)), (0.015, (0.100, 0.092, 0.010)),
+            (0.035, (0.086, 0.084, 0.010))]
+    keys = [(ny + k * scale, (W * scale, D * scale, nz + zc * scale)) for k, (W, D, zc) in keys]
+
+    def hem(s):
+        front = 0.5 - 0.5 * math.cos(2 * math.pi * s)
+        return ny + scale * (-0.40 - 0.11 * front + 0.03 * hash_noise(s, seed + 3))
+
+    cloth_sweep(m, keys, ny + 0.035 * scale, hem, lambda y: scale * (0.002 + 0.018 * smoothstep(ny, ny - 0.4 * scale, y)),
+                seed + 1, res(56), res(14), ks=(8, 13, 21),
+                skip=lambda s, t: t > 0.88 and hash_noise((s * 5) % 1.0, seed + 5) > 0.55)
+
+
+def sleeve(m, shoulder, elbow, wrist, scale, res, seed):
+    """Bell sleeve over a real-length arm, with a bandaged hand."""
+    shoulder, elbow, wrist = (np.asarray(v, float) for v in (shoulder, elbow, wrist))
+    fore = normalize(wrist - elbow)
+    pts = smooth_path([shoulder, (shoulder + elbow) / 2, elbow, (elbow + wrist) / 2, wrist + fore * 0.03 * scale],
+                      res(10))
+    n = len(pts)
+    radii = [scale * (0.066 + 0.006 * math.sin(math.pi * min(i / (n - 1) * 1.6, 1)) + 0.034 * (i / (n - 1)) ** 3)
+             for i in range(n)]
+    m.tube(pts, radii, "cloth", segs=res(14), cap=False,
+           ring_mod=lambda i, a: 1 + 0.07 * math.sin(5 * a + i * 0.6 + seed) + 0.04 * math.sin(9 * a - i * 0.4))
+    # hand: palm and fingers curled into a fist, thumb along the side
+    hand_c = wrist + fore * 0.055 * scale
+    m.ellipsoid(hand_c, (0.044 * scale, 0.058 * scale, 0.030 * scale), "bandage", segs=res(10), rings=res(7),
+                rot=align_y_to(fore))
+    side = normalize(np.cross(fore, [0.0, 1.0, 0.0]))
+    m.ellipsoid(hand_c + side * 0.03 * scale - fore * 0.01 * scale, (0.014 * scale, 0.032 * scale, 0.014 * scale),
+                "bandage", segs=res(6), rings=res(4), rot=align_y_to(fore))
+
+
+def robed_cultist(scale=1.0, detail=1.0, seed=0, arms="spear", arms_inside=False):
+    """A standing cultist, 1.80 m tall at scale 1. Returns the mesh and the spear hand position."""
+    m = MeshBuilder()
+
+    def res(n):
+        return max(5, int(n * detail))
+
+    K = scale
+    wide = 0.05 if arms_inside else 0.0
+    keys = [(0.00, (0.305, 0.250, 0.000)), (0.25, (0.262, 0.200, 0.000)), (0.55, (0.228, 0.168, 0.000)),
+            (0.90, (0.200, 0.142, 0.004)), (1.08, (0.170 + wide * 0.6, 0.122, 0.000)),
+            (1.28, (0.186 + wide, 0.132, -0.010)), (1.40, (0.205 + wide * 0.6, 0.126, -0.004)),
+            (1.47, (0.150, 0.100, 0.006)), (1.53, (0.080, 0.070, 0.010))]
+    keys = [(y * K, (W * K, D * K, zc * K)) for y, (W, D, zc) in keys]
+
+    def fold_amp(y):
+        y = y / K
+        belt = 1 - 0.85 * math.exp(-((y - 1.08) / 0.04) ** 2)
+        return K * (0.003 + 0.042 * smoothstep(1.25, 0.0, y)) * belt
+
+    def tatters(s, t):
+        if t < 0.88:
+            return False
+        holes = hash_noise(s * 3 % 1.0, seed + 7) * 0.6 + hash_noise((s * 7 + t * 0.5) % 1.0, seed + 9) * 0.4
+        return holes > 0.66 - (t - 0.88) * 2.0
+
+    cloth_sweep(m, keys, 1.53 * K, lambda s: K * (0.012 + 0.03 * (0.5 + 0.5 * hash_noise(s, seed + 1))),
+                fold_amp, seed, res(64), res(40), skip=tatters)
+
+    # rope belt with hanging, knotted ends
+    W, D, zc = catmull(keys, 1.08 * K)
+    belt = []
+    for k in range(res(40) + 1):
+        th = 2 * math.pi * k / res(40)
+        x, z = superellipse(th, W + 0.012 * K, D + 0.012 * K)
+        belt.append((x, 1.08 * K, z + zc))
+    m.tube(belt, [0.011 * K] * len(belt), "leather", segs=6, cap=False)
+    for dx, L in ((-0.05, 0.30), (-0.02, 0.24)):
+        x0 = dx * K
+        z0 = -(D + 0.015 * K)
+        m.tube([(x0, 1.07 * K, z0), (x0 - 0.01 * K, (1.07 - L / 2) * K, z0 - 0.01 * K), (x0, (1.07 - L) * K, z0)],
+               [0.009 * K] * 3, "leather", segs=6)
+        m.ellipsoid((x0, (1.07 - L) * K, z0), (0.015 * K,) * 3, "leather", segs=6, rings=4)
+
+    # boots peeking out from under the hem
+    for sx in (-1, 1):
+        m.ellipsoid((sx * 0.085 * K, 0.04 * K, -0.20 * K), (0.048 * K, 0.04 * K, 0.08 * K), "leather",
+                    segs=res(10), rings=res(6))
+
+    neck = np.array([0.0, 1.53 * K, 0.010 * K])
+    head_c = np.array([0.0, 1.665 * K, 0.0])
+    m.tube([neck, head_c - np.array([0, 0.09 * K, 0])], [0.052 * K, 0.050 * K], "bandage", segs=res(10), cap=False)
+    bandaged_head(m, head_c, K, res)
+    hood(m, head_c, K, res, seed)
+    cowl(m, neck, K, res, seed)
+
+    hand = None
+    if arms == "spear":
+        sleeve(m, (0.19 * K, 1.43 * K, 0.0), (0.27 * K, 1.17 * K, 0.04 * K), (0.28 * K, 1.06 * K, -0.17 * K), K, res,
+               seed)
+        sleeve(m, (-0.19 * K, 1.43 * K, 0.0), (-0.24 * K, 1.16 * K, 0.03 * K), (-0.21 * K, 0.93 * K, -0.07 * K), K,
+               res, seed + 2)
+        hand = np.array([0.28 * K, 1.06 * K, -0.215 * K])
+    return m, hand
+
+
+def spear_with_banner(m, x, z, top=2.30, seed=11):
+    m.tube([(x, 0.02, z), (x, top, z)], [0.016, 0.014], "wood", segs=8)
+    m.lathe([(0.0, 0.0), (0.021, 0.0), (0.021, 0.07), (0.0, 0.08)], "metal", segs=8, center=(x, top - 0.03, z))
+    m.lathe([(0.0, 0.0), (0.016, 0.02), (0.040, 0.10), (0.028, 0.20), (0.0, 0.30)], "metal", segs=8,
+            center=(x, top + 0.04, z), scale=(1, 1, 0.28))
+    bw, bh = 0.42, 0.62
+    y0 = top - 0.14
+    m.tube([(x - 0.02, y0, z), (x + bw + 0.03, y0, z)], [0.011, 0.011], "wood", segs=6)
+    for cx in (x + bw * 0.25, x + bw * 0.75):  # cords
+        m.tube([(cx, y0, z), (cx, y0 - 0.03, z)], [0.004, 0.004], "leather", segs=4)
 
     def banner(s, t):
         return np.array([x + 0.02 + s * bw,
-                         y0 - 0.02 - t * bh - 0.03 * math.sin(s * math.pi),
-                         z + 0.035 * math.sin(s * 5.0 + t * 2.5) + 0.02 * t * math.sin(s * 11)])
+                         y0 - 0.03 - t * bh - 0.025 * math.sin(s * math.pi),
+                         z + 0.030 * math.sin(s * 5.0 + t * 2.5) + 0.02 * t * math.sin(s * 11)])
 
     def rag(s, t):
         cut = 0.80 + 0.18 * hash_noise(s, seed)
@@ -409,20 +577,22 @@ def spear_with_banner(m, x, z, top=2.25, seed=11):
 
 
 def zealot():
-    m = hooded_figure(seed=0, detail=0.75)
-    spear_with_banner(m, 0.23, -0.24)
+    m, hand = robed_cultist(detail=0.7, seed=0)
+    spear_with_banner(m, hand[0], hand[2])
     return m
 
 
-def tentacle_path(L, lift, curl, twist, start_r, theta, steps=48):
-    """Integrate a tentacle that runs along the ground, rises and hooks over."""
+# ----- tentacles ---------------------------------------------------------------
+
+def tentacle_path(L, lift, curl, twist, start_r, theta, steps=56):
+    """Integrate a tentacle that slides out along the ground, rises and hooks over."""
     pts, inner = [], []
-    p = np.array([math.sin(theta) * start_r, 0.12, math.cos(theta) * start_r])
+    p = np.array([math.sin(theta) * start_r, 0.14, math.cos(theta) * start_r])
     d0 = radial(theta)
     up = np.array([0.0, 1.0, 0.0])
     for i in range(steps):
         s = i / (steps - 1)
-        phi = (lift * smoothstep(0.10, 0.55, s) + curl * smoothstep(0.55, 1.0, s)) * math.pi / 2
+        phi = (lift * smoothstep(0.12, 0.55, s) + curl * smoothstep(0.55, 1.0, s)) * math.pi / 2
         side = np.cross(up, d0)
         d = normalize(d0 * math.cos(twist * s) + side * math.sin(twist * s))
         tangent = d * math.cos(phi) + up * math.sin(phi)
@@ -433,141 +603,273 @@ def tentacle_path(L, lift, curl, twist, start_r, theta, steps=48):
     return pts, inner
 
 
-def add_tentacle(m, L, r0, lift, curl, twist, start_r, theta, suckers=True):
+def add_tentacle(m, L, r0, lift, curl, twist, start_r, theta):
     pts, inner = tentacle_path(L, lift, curl, twist, start_r, theta)
     n = len(pts)
-    radii = [r0 * (1 - i / (n - 1)) ** 1.1 + 0.01 for i in range(n)]
-    # gentle irregular bulges along the length
-    radii = [r * (1 + 0.06 * math.sin(i * 0.9 + theta * 3)) for i, r in enumerate(radii)]
-    frames = m.tube(pts, radii, "tentacle", segs=14, inner=inner)
-    if not suckers:
-        return
-    k = 0
-    i = 3
-    while i < n - 2:
+    # octopus-arm taper: thick, muscular base narrowing to a fine tip
+    radii = [r0 * (1 - i / (n - 1)) ** 1.25 + 0.008 for i in range(n)]
+    radii = [r * (1 + 0.04 * math.sin(i * 0.8 + theta * 3)) for i, r in enumerate(radii)]
+    frames = m.tube(pts, radii, "tentacle", segs=16, inner=inner)
+    # two alternating rows of suckers, sized to the arm, spaced along its length
+    seglen = [np.linalg.norm(pts[i + 1] - pts[i]) for i in range(n - 1)]
+    pos, i, row = 0.0, 2, 0
+    while i < n - 3:
         T, I, S = frames[i]
-        for row in (-1, 1):
-            if (k + (row > 0)) % 2:
-                continue
-            a = math.pi + row * 0.55
-            d = -math.cos(a) * I + math.sin(a) * S
-            rs = radii[i] * 0.30
-            m.sucker(pts[i] + d * radii[i] * 0.92, d, rs)
-        k += 1
-        i += 1
+        rs = radii[i] * 0.40
+        a = math.pi + (0.42 if row % 2 else -0.42)
+        d = -math.cos(a) * I + math.sin(a) * S
+        m.sucker(pts[i] + d * radii[i] * 0.93, d, rs, segs=8 if rs > 0.03 else 6)
+        row += 1
+        step = rs * 1.15
+        acc = 0.0
+        while i < n - 3 and acc < step:
+            acc += seglen[i]
+            i += 1
 
 
 def king_in_yellow():
     K = 2.5
-    m = MeshBuilder()
-    m.merge(hooded_figure(seed=3, arms=False, hem_flare=0.65), scale=K)
+    m, _ = robed_cultist(scale=K, detail=1.0, seed=3, arms="none", arms_inside=True)
     rng = np.random.default_rng(21)
     for k in range(8):
         theta = 2 * math.pi * (k + 0.5) / 8 + rng.uniform(-0.25, 0.25)
-        L = rng.uniform(3.8, 5.2)
+        L = rng.uniform(3.6, 5.0)
         lift = rng.uniform(0.9, 1.1)
         curl = rng.choice([-1, 1]) * rng.uniform(0.5, 1.3)
         twist = rng.uniform(-0.5, 0.5)
-        add_tentacle(m, L, 0.30, lift, curl, twist, 0.55, theta)
+        add_tentacle(m, L, 0.27, lift, curl, twist, 0.50, theta)
     return m
+
+
+# ----- the Byakhee and its rider -------------------------------------------------
+
+# torso cross-sections along the spine: z -> (half width, height above spine,
+# depth below spine, spine height)
+BYAKHEE_TORSO = [(-0.60, (0.14, 0.11, 0.15, 1.40)), (-0.42, (0.28, 0.15, 0.32, 1.33)),
+                 (-0.18, (0.30, 0.13, 0.35, 1.27)), (0.08, (0.24, 0.12, 0.23, 1.21)),
+                 (0.32, (0.22, 0.13, 0.17, 1.17)), (0.55, (0.10, 0.09, 0.09, 1.13))]
+
+
+def byakhee_top(z):
+    W, top, bot, ys = catmull(BYAKHEE_TORSO, z)
+    return ys + top
 
 
 def byakhee_rider():
     m = MeshBuilder()
-    # Gaunt body along the spine (z from the tail end 0.62 to the chest -0.38), ribs on the flanks.
-    def body(s, t):
-        th = 2 * math.pi * s
-        z = 0.62 - t * 1.00
-        w = 0.06 + 0.24 * math.sin(math.pi * min(max(t * 1.05, 0.0), 1.0)) ** 0.8
-        h = 0.06 + 0.26 * math.sin(math.pi * min(max(t * 1.02, 0.0), 1.0)) ** 0.9
-        ribs = 0.035 * max(0.0, math.sin(t * math.pi * 11)) * smoothstep(0.35, 0.55, t) * (1 - smoothstep(0.85, 1.0, t))
-        side = abs(math.cos(th))
-        r_w = w * (1 + ribs * side * 4)
-        x = math.cos(th) * r_w
-        y = 1.15 + math.sin(th) * h - 0.04 * (1 - math.sin(th)) * side
+
+    def torso(s, t):
+        th = 2 * math.pi * s  # 0 = top of the back, pi = keel
+        z = -0.60 + t * 1.15
+        W, top, bot, ys = catmull(BYAKHEE_TORSO, z)
+        c = math.cos(th)
+        x = W * math.sin(th) * (1 - 0.38 * max(0.0, -c) ** 1.5)  # narrows into a keel
+        y = ys + (top if c > 0 else bot) * c
+        ribs = (0.016 * max(0.0, math.sin((z + 0.45) * math.pi / 0.065)) * smoothstep(-0.48, -0.40, z)
+                * (1 - smoothstep(0.0, 0.08, z)) * abs(math.sin(th)) ** 2)
+        x += math.copysign(ribs, x)
+        if 0.02 < z < 0.30:  # emaciated, sunken belly
+            y += 0.05 * max(0.0, -c) * math.sin((z - 0.02) / 0.28 * math.pi)
         return np.array([x, y, z])
 
-    m.surface(body, 28, 30, "leather", closed_u=True,
-              outward=lambda p, s, t: np.array([p[0], p[1] - 1.15, 0.0]))
-    # bony spine ridge
-    for i in range(9):
-        z = 0.45 - i * 0.10
-        m.cone((0.0, 1.38 - abs(z - 0.05) * 0.12, z), (0.0, 1.50 - abs(z - 0.05) * 0.14, z + 0.05), 0.025,
-               "bone", segs=6)
-    # neck and skull-like head with a long toothed beak and burning eyes
-    neck = [(0.0, 1.22, -0.30), (0.0, 1.38, -0.52), (0.0, 1.52, -0.70), (0.0, 1.58, -0.82)]
-    m.tube(neck, [0.14, 0.10, 0.08, 0.075], "leather", segs=12, cap=False)
-    m.ellipsoid((0.0, 1.60, -0.92), (0.085, 0.09, 0.17), "bone", segs=14, rings=10)
-    m.lathe([(0.0, 0.0), (0.05, 0.02), (0.04, 0.15), (0.0, 0.34)], "bone", segs=8, center=(0.0, 1.57, -1.04),
-            rot=align_y_to((0.0, -0.2, -1.0)), scale=(1, 1, 0.75))
+    m.surface(torso, 30, 34, "leather", closed_u=True,
+              outward=lambda p, s, t: np.array([p[0], p[1] - catmull(BYAKHEE_TORSO, p[2])[3], 0.0]))
+    for k in range(10):  # bony spine
+        z = 0.48 - k * 0.105
+        y = byakhee_top(z)
+        m.cone((0.0, y - 0.01, z), (0.0, y + 0.07 - abs(k - 5) * 0.006, z + 0.05), 0.022, "bone", segs=6)
+
+    # long S-curved neck and a skull with a hooked beak, toothed jaw and burning eyes
+    neck = smooth_path([(0, 1.40, -0.56), (0, 1.62, -0.80), (0, 1.88, -0.94), (0, 2.03, -1.10), (0, 2.08, -1.20)], 14)
+    m.tube(neck, [0.13 - 0.045 * i / 13 for i in range(14)], "leather", segs=12, cap=False,
+           ring_mod=lambda i, a: 1 + 0.08 * max(0.0, math.cos(a)) * abs(math.sin(i * 1.6)))
+    m.ellipsoid((0, 2.11, -1.25), (0.085, 0.092, 0.13), "bone", segs=14, rings=10)
+    beak = smooth_path([(0, 2.10, -1.34), (0, 2.07, -1.50), (0, 2.01, -1.64), (0, 1.94, -1.71)], 10)
+    m.tube(beak, [0.052 - 0.046 * (i / 9) ** 1.2 for i in range(10)], "bone", segs=10,
+           ring_mod=lambda i, a: 1 - 0.25 * abs(math.sin(a)))
+    jaw = smooth_path([(0, 2.03, -1.30), (0, 1.98, -1.44), (0, 1.95, -1.56)], 8)
+    m.tube(jaw, [0.040 - 0.034 * i / 7 for i in range(8)], "bone", segs=8,
+           ring_mod=lambda i, a: 1 - 0.3 * abs(math.sin(a)))
     for k in range(6):
-        z = -1.06 - k * 0.045
+        b = polyline_point(beak, 0.15 + k * 0.12)
+        j = polyline_point(jaw, 0.10 + k * 0.13)
         for sx in (-1, 1):
-            m.cone((sx * 0.022, 1.545 - k * 0.006, z), (sx * 0.020, 1.505 - k * 0.006, z - 0.01), 0.008,
-                   "bone", segs=4)
+            m.cone(b + np.array([sx * 0.02, -0.02, 0]), b + np.array([sx * 0.018, -0.055, -0.005]), 0.007, "bone", segs=4)
+            m.cone(j + np.array([sx * 0.016, 0.015, 0]), j + np.array([sx * 0.015, 0.045, -0.005]), 0.006, "bone", segs=4)
     for sx in (-1, 1):
-        m.ellipsoid((sx * 0.062, 1.64, -0.98), (0.026, 0.022, 0.026), "glow", segs=8, rings=6)
-        m.cone((sx * 0.05, 1.67, -0.86), (sx * 0.13, 1.84, -0.66), 0.025, "bone", segs=6)
-    # legs with talons
+        m.ellipsoid((sx * 0.058, 2.135, -1.30), (0.03, 0.026, 0.03), "lining", segs=8, rings=6)
+        m.ellipsoid((sx * 0.062, 2.135, -1.31), (0.018, 0.016, 0.018), "glow", segs=8, rings=6)
+        for k, (dy, dz) in enumerate(((0.07, 0.10), (0.05, 0.16), (0.02, 0.19))):
+            base = np.array([sx * 0.04, 2.15 + dy * 0.3, -1.20 + dz * 0.2])
+            m.cone(base, base + np.array([sx * 0.05, dy, dz]), 0.018 - k * 0.003, "bone", segs=5)
+
+    # bird-like digitigrade legs with talons, under the centre of mass
     for sx in (-1, 1):
-        for z, bend in ((-0.16, -0.14), (0.38, 0.12)):
-            hip = (sx * 0.15, 1.02, z)
-            knee = (sx * 0.27, 0.62, z + bend)
-            ankle = (sx * 0.22, 0.20, z - 0.06)
-            foot = (sx * 0.22, 0.06, z - 0.10)
-            m.tube([hip, knee, ankle, foot], [0.06, 0.04, 0.03, 0.025], "leather", segs=8)
-            for k in (-1, 0, 1):
-                m.cone(foot, (sx * 0.22 + k * 0.06, 0.0, z - 0.25), 0.014, "bone", segs=5)
+        hip = (sx * 0.17, 1.12, 0.26)
+        knee = (sx * 0.25, 0.80, 0.00)
+        ankle = (sx * 0.22, 0.38, 0.20)
+        foot = np.array([sx * 0.20, 0.07, 0.04])
+        thigh = smooth_path([hip, knee], 6)
+        m.tube(thigh, [0.115, 0.11, 0.10, 0.09, 0.08, 0.07], "leather", segs=12)
+        m.tube(smooth_path([knee, ankle], 6), [0.065, 0.058, 0.05, 0.045, 0.042, 0.04], "leather", segs=10)
+        m.tube(smooth_path([ankle, foot], 5), [0.038, 0.034, 0.032, 0.03, 0.03], "leather", segs=8)
+        for k, ang in enumerate((-0.45, 0.0, 0.45)):
+            d = np.array([math.sin(ang) * sx, 0.0, -math.cos(ang)])
+            toe = foot + d * 0.16 + np.array([0, -0.05, 0])
+            m.tube([foot, foot + d * 0.08 + np.array([0, -0.03, 0]), toe], [0.022, 0.018, 0.014], "leather", segs=6)
+            m.cone(toe, toe + d * 0.07 + np.array([0, -0.025, 0]), 0.013, "bone", segs=5)
+        back_toe = foot + np.array([0, -0.04, 0.10])
+        m.tube([foot, back_toe], [0.018, 0.013], "leather", segs=6)
+        m.cone(back_toe, back_toe + np.array([0, -0.02, 0.06]), 0.011, "bone", segs=5)
+
     # tail
-    tail = [(0.0, 1.10, 0.60), (0.0, 1.00, 0.90), (0.0, 0.80, 1.15), (0.0, 0.62, 1.32), (0.05, 0.50, 1.48)]
-    m.tube(tail, [0.08, 0.06, 0.04, 0.025, 0.008], "leather", segs=8)
-    # wings: arm bones, finger struts and a torn membrane between them
+    tail = smooth_path([(0, 1.13, 0.55), (0, 1.03, 0.90), (0, 0.90, 1.25), (0.06, 0.80, 1.55), (0.12, 0.76, 1.82)], 16)
+    m.tube(tail, [0.085 * (1 - i / 15) ** 1.1 + 0.006 for i in range(16)], "leather", segs=8)
+
+    # bat wings: the forelimb is the wing, with finger bones carrying a torn membrane
     for sx in (-1, 1):
-        sh = np.array([sx * 0.18, 1.34, -0.08])
-        elbow = np.array([sx * 0.85, 1.88, 0.02])
-        wrist = np.array([sx * 1.45, 2.22, 0.20])
-        tips = [np.array([sx * 2.15, 2.00, 0.42]), np.array([sx * 1.95, 1.50, 0.62]),
-                np.array([sx * 1.45, 1.20, 0.66]), np.array([sx * 0.95, 1.08, 0.55])]
-        m.tube([sh, elbow, wrist], [0.05, 0.04, 0.03], "leather", segs=8)
-        m.cone(wrist, wrist + np.array([sx * 0.05, 0.16, -0.08]), 0.02, "bone", segs=5)
-        for tip in tips:
-            m.tube([wrist, (wrist + tip) / 2 + np.array([0, 0.04, 0]), tip], [0.022, 0.015, 0.006], "bone", segs=6)
-        edge = [sh + np.array([0, -0.06, 0.25])] + tips[::-1]  # body-side root to the leading tip
+        S = np.array([sx * 0.20, 1.44, -0.40])
+        E = np.array([sx * 0.72, 1.96, -0.30])
+        W = np.array([sx * 1.28, 2.36, -0.10])
+        F = [np.array([sx * 2.32, 2.52, 0.25]), np.array([sx * 2.20, 1.88, 0.66]),
+             np.array([sx * 1.74, 1.33, 0.86]), np.array([sx * 1.14, 1.06, 0.80])]
+        B = np.array([sx * 0.22, 1.17, 0.32])
+        m.tube(smooth_path([S, E], 5), [0.06, 0.055, 0.05, 0.045, 0.04], "leather", segs=10)
+        m.tube(smooth_path([E, W], 5), [0.04, 0.034, 0.03, 0.028, 0.026], "leather", segs=8)
+        m.ellipsoid(E, (0.045,) * 3, "leather", segs=8, rings=6)
+        m.ellipsoid(W, (0.035,) * 3, "leather", segs=8, rings=6)
+        m.cone(W, W + np.array([sx * 0.03, 0.12, -0.10]), 0.018, "bone", segs=5)  # thumb claw
+        for tip in F:
+            mid = W + (tip - W) * 0.45 + np.array([0, 0.03, 0])
+            m.tube(smooth_path([W, mid, tip], 6), [0.02, 0.017, 0.014, 0.011, 0.008, 0.004], "bone", segs=6)
+            m.ellipsoid(mid, (0.018,) * 3, "bone", segs=6, rings=4)
 
-        def membrane(s, t, edge=edge, wrist=wrist, sh=sh, elbow=elbow):
-            # t = 0 along the arm (shoulder -> elbow -> wrist), t = 1 at the trailing edge
-            a = sh + (elbow - sh) * min(s * 2, 1) + (wrist - elbow) * max(s * 2 - 1, 0)
-            k = s * (len(edge) - 1)
-            i = min(int(k), len(edge) - 2)
-            f = k - i
-            b = edge[i] * (1 - f) + edge[i + 1] * f
-            scallop = 0.10 * t * abs(math.sin(k * math.pi))
-            p = a + (b - a) * t
-            return p + normalize(a - b) * scallop + np.array([0, -0.03 * math.sin(t * math.pi), 0])
+        def torn(s, t, sx=sx, k=0):
+            # ragged trailing edge
+            depth = 0.10 + 0.10 * (0.5 + 0.5 * hash_noise(s, 30 + sx + k))
+            if t > 1 - depth:
+                return True
+            # one long rip running in from the edge
+            centre = 0.3 + 0.4 * (0.5 + 0.5 * hash_noise(0.37, 50 + sx + k))
+            width = 0.035 * (0.5 + 0.5 * hash_noise((t * 2) % 1.0, 60 + sx + k))
+            return t > 0.45 + 0.2 * (0.5 + 0.5 * hash_noise(0.11, 70 + sx + k)) and abs(s - centre) < width
 
-        def torn(s, t, sx=sx):
-            rip = hash_noise((s * 1.7 + t * 0.4) % 1.0, 30 + sx) + 0.6 * hash_noise((t * 1.3 + s * 0.2) % 1.0, 40 + sx)
-            return t > 0.30 and rip > 0.55 - 0.35 * t
+        def panel(fa, fb, k):
+            def fn(s, t):
+                edge = fa + (fb - fa) * s
+                p = W + (edge - W) * t
+                p += normalize(W - edge) * 0.20 * np.linalg.norm(fb - fa) * math.sin(math.pi * s) * t ** 2
+                return p + np.array([0, -0.05, 0.03]) * math.sin(math.pi * s) * math.sin(math.pi * t)
+            m.surface(fn, 14, 18, "membrane", inner_region="membrane",
+                      skip=lambda s, t: torn(s, t, k=k), outward=lambda p, s, t: np.array([0.0, 1.0, 0.0]))
 
-        m.surface(membrane, 22, 10, "membrane", inner_region="membrane", skip=torn,
-                  outward=lambda p, s, t: np.array([0.0, 1.0, 0.0]),
-                  uv_fn=lambda s, t: region_uv("membrane", s, t))
-    # the rider: a seated cultist with a lance and a ragged pennant
-    rider = hooded_figure(robe_bottom=0.72, hem_flare=1.8, seed=5, detail=0.55)
-    m.merge(rider, offset=(0.0, 0.80, 0.10), scale=0.70)
-    lance = [(0.20, 1.60, 0.25), (0.20, 2.05, -0.95)]
-    m.tube(lance, [0.016, 0.014], "wood", segs=6)
-    m.lathe([(0.0, 0.0), (0.03, 0.03), (0.02, 0.18), (0.0, 0.26)], "metal", segs=8, center=lance[1],
-            rot=align_y_to(np.array(lance[1]) - np.array(lance[0])), scale=(1, 1, 0.35))
+        for k in range(3):
+            panel(F[k], F[k + 1], k + 1)
+
+        def inner_panel(s, t):
+            arm = polyline_point([S, E, W], s)
+            trail = B + (F[3] - B) * s
+            trail = trail + normalize(arm - trail) * 0.25 * math.sin(math.pi * s)
+            return arm + (trail - arm) * t + np.array([0, -0.06, 0.02]) * math.sin(math.pi * s) * math.sin(math.pi * t)
+
+        m.surface(inner_panel, 20, 14, "membrane", inner_region="membrane", skip=lambda s, t: torn(s, t, k=7),
+                  outward=lambda p, s, t: np.array([0.0, 1.0, 0.0]))
+
+    # saddle cloth bearing the Yellow Sign, draped over the back
+    def saddle(s, t):
+        x = (s - 0.5) * 0.95
+        z = -0.32 + t * 0.62
+        W = catmull(BYAKHEE_TORSO, z)[0]
+        y = byakhee_top(z) + 0.012 - max(0.0, abs(x) - 0.55 * W) * 1.7 - 0.6 * max(0.0, abs(x) - 0.9 * W)
+        x *= 1 - 0.1 * max(0.0, abs(x) - W)
+        return np.array([x, y, z])
+
+    m.surface(saddle, 16, 10, "banner", inner_region="lining",
+              skip=lambda s, t: (s < 0.06 or s > 0.94) and hash_noise((t * 2) % 1.0, 55) > 0.3,
+              outward=lambda p, s, t: np.array([p[0] * 0.5, 1.0, 0.0]))
+    rider(m)
+    return m
+
+
+def rider(m):
+    """A cultist sitting astride the Byakhee: thighs over its flanks, boots in the
+    air, a couched lance in the right hand and the reins in the left."""
+    def res(n):
+        return max(5, int(n * 0.6))
+
+    seat_y = byakhee_top(0.02) + 0.10
+    pelvis = np.array([0.0, seat_y, 0.02])
+    neck = np.array([0.0, seat_y + 0.52, -0.04])
+    head_c = np.array([0.0, seat_y + 0.665, -0.05])
+
+    # upper body garment, leaning slightly forward
+    keys = [(seat_y + 0.02, (0.175, 0.125, 0.02)), (seat_y + 0.15, (0.165, 0.118, 0.01)),
+            (seat_y + 0.33, (0.182, 0.128, -0.012)), (seat_y + 0.44, (0.205, 0.124, -0.028)),
+            (seat_y + 0.49, (0.150, 0.100, -0.034)), (seat_y + 0.535, (0.080, 0.070, -0.040))]
+    cloth_sweep(m, keys, seat_y + 0.535, seat_y + 0.05, lambda y: 0.004 + 0.01 * smoothstep(seat_y + 0.4, seat_y, y),
+                21, res(48), res(16))
+
+    # robe skirts spreading over the saddle and hanging down the creature's flanks
+    def skirt(s, t):
+        th = 2 * math.pi * s
+        d = radial(th)
+        front = 0.5 - 0.5 * math.cos(th)
+        side = abs(math.sin(th))
+        r = 0.17 + (0.16 + 0.10 * side) * t ** 0.7
+        y = seat_y + 0.06 - (0.16 + 0.42 * side ** 1.2) * t ** 1.15
+        z = 0.02 + d[2] * r * 0.80 - 0.06 * front * t
+        x = d[0] * r * (1 + 0.25 * side)
+        a = (0.004 + 0.03 * t) * drape(th, t, 23, (7, 12, 19))
+        return np.array([x + d[0] * a, y, z + d[2] * a])
+
+    m.surface(skirt, res(48), res(12), "cloth", closed_u=True, inner_region="lining",
+              skip=lambda s, t: t > 0.85 and hash_noise((s * 4) % 1.0, 24) > 0.5,
+              outward=lambda p, s, t: np.array([p[0], 0.3, p[2] - 0.02]))
+
+    # legs: trousered thighs over the flanks, booted shins hanging free
+    for sx in (-1, 1):
+        hip = np.array([sx * 0.10, seat_y, 0.02])
+        knee = np.array([sx * 0.31, seat_y - 0.17, -0.30])
+        ankle = np.array([sx * 0.34, seat_y - 0.55, -0.24])
+        toe = np.array([sx * 0.34, seat_y - 0.58, -0.38])
+        m.tube(smooth_path([hip, knee], 6), [0.085, 0.08, 0.075, 0.068, 0.062, 0.058], "cloth", segs=10,
+               ring_mod=lambda i, a: 1 + 0.06 * math.sin(4 * a + i))
+        m.tube(smooth_path([knee, ankle], 6), [0.058, 0.055, 0.052, 0.05, 0.048, 0.046], "leather", segs=10)
+        m.ellipsoid(knee, (0.062,) * 3, "leather", segs=8, rings=6)
+        m.ellipsoid((ankle + toe) / 2 + np.array([0, 0.0, 0.01]), (0.05, 0.045, 0.11), "leather", segs=10, rings=6,
+                    rot=align_y_to(np.array([0, 0.25, 1.0])))
+
+    m.tube([neck, head_c - np.array([0, 0.09, 0])], [0.052, 0.050], "bandage", segs=8, cap=False)
+    bandaged_head(m, head_c, 1.0, res)
+    hood(m, head_c, 1.0, res, 25)
+    cowl(m, neck, 1.0, res, 26)
+
+    # right arm couches the lance, left arm holds the reins
+    sh_r = np.array([0.19, seat_y + 0.44, -0.03])
+    sh_l = np.array([-0.19, seat_y + 0.44, -0.03])
+    hand_r = np.array([0.24, seat_y + 0.12, -0.20])
+    hand_l = np.array([-0.17, seat_y + 0.16, -0.28])
+    sleeve(m, sh_r, sh_r + np.array([0.06, -0.25, 0.07]), hand_r, 1.0, res, 27)
+    sleeve(m, sh_l, sh_l + np.array([-0.06, -0.23, 0.0]), hand_l, 1.0, res, 28)
+    butt = np.array([0.26, seat_y - 0.10, 0.42])
+    d = normalize(hand_r + np.array([0.0, 0.0, -0.05]) - butt)
+    tip = butt + d * 2.9
+    m.tube([butt, tip], [0.016, 0.013], "wood", segs=6)
+    m.lathe([(0.0, 0.0), (0.028, 0.03), (0.02, 0.18), (0.0, 0.28)], "metal", segs=8, center=tip, rot=align_y_to(d),
+            scale=(1, 1, 0.35))
 
     def pennant(s, t):
-        base = np.array(lance[0]) + (np.array(lance[1]) - np.array(lance[0])) * (0.62 + 0.25 * s)
-        return base + np.array([0.0, -0.20 * t * (1 - 0.6 * s), 0.10 * t + 0.03 * math.sin(s * 6 + t * 3)])
+        base = butt + d * (2.25 + 0.5 * s)
+        return base + np.array([0.0, -0.22 * t * (1 - 0.6 * s), 0.10 * t]) + \
+            np.array([0.03, 0, 0]) * math.sin(s * 6 + t * 3)
 
     m.surface(pennant, 8, 6, "banner", inner_region="banner",
               skip=lambda s, t: t > 0.7 + 0.25 * hash_noise(s, 77),
               outward=lambda p, s, t: np.array([1.0, 0.0, 0.0]))
-    return m
+    # reins to the creature's jaw
+    for sx in (-1, 1):
+        m.tube([hand_l + np.array([0, 0, -0.04]), np.array([sx * 0.07, 1.78, -0.92]), np.array([sx * 0.05, 2.02, -1.32])],
+               [0.006, 0.006, 0.006], "leather", segs=4)
 
 
 MODELS = {

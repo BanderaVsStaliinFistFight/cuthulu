@@ -106,9 +106,9 @@ Hastur's units have their own detailed map models instead of reusing vanilla inf
 
 | Battalion | Model |
 |---|---|
-| **Zealots of the Yellow Sign** | a gaunt cultist in a grimy, frayed yellow robe and draped cowl, a tall pointed hood over a bandage-wrapped face, holding a spear with a torn black banner bearing a faded Yellow Sign (~8k triangles) |
-| **Byakhee Riders** | a hooded rider on an emaciated Byakhee: ribbed leathery body, bony spine, skull-like toothed beak, glowing eyes, torn bat wings on bone struts, taloned legs (~9k triangles) |
-| **The King in Yellow** (incarnate) | a towering hooded figure with a bandaged face, layered robe and cowl with deep folds and a ragged, holed hem, and eight thick tentacles covered in suckers rising and curling around him (~43k triangles; only one is ever on the map) |
+| **Zealots of the Yellow Sign** | a cultist built on real human proportions (1.8 m, 0.23 m head, 0.42 m shoulders): a robe hanging from the shoulders in gravity folds and cinched by a knotted rope belt, a capelet, a hood framing a bandaged face with brow, nose and chin, bell sleeves over real-length arms with bandaged hands, boots under the hem, and a spear with a torn banner bearing a faded Yellow Sign (~10k triangles) |
+| **Byakhee Riders** | a mount with flying-creature anatomy: a deep-keeled ribbed torso, two bird-like legs with talons under its centre of mass, bat wings that are its forelimbs (finger bones carrying a membrane with ragged edges and rips), a long neck, a skull with a hooked beak, teeth and burning eyes, and a tail. A saddle cloth bears the Yellow Sign. The rider sits properly astride: thighs over the flanks, booted feet, robe hanging down the sides, a couched lance with a pennant, and reins in the other hand (~19k triangles) |
+| **The King in Yellow** (incarnate) | the same anatomy at giant scale (~4.5 m): hood, bandaged face, capelet and long robe with a ragged, holed hem, and eight octopus-like tentacles that taper from a thick muscular base, with two alternating rows of suckers sized to the arm (~48k triangles; only one is ever on the map) |
 
 They share a 1024px texture set: woven cloth with sun-bleaching, grime and stains climbing from the hem, wrapped bandages with old blood, mottled tentacle skin with green slime, wrinkled leather, veined wing membrane, tarnished iron and weathered wood. Each texture has a matching normal map for surface detail.
 
