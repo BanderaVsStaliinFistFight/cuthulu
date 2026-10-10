@@ -2,7 +2,8 @@
 """Procedurally generate every texture used by Eldritch Pacts.
 
 Writes uncompressed 32-bit DDS files (A8R8G8B8) that HoI4 can load directly,
-plus thumbnail.png for the launcher. Run from anywhere:
+thumbnail.png for the launcher, and interface/eldritch.gfx with a sprite for
+every texture. Run from anywhere:
 
     python3 tools/generate_art.py
 
@@ -24,6 +25,9 @@ IDEA_SIZE = (64, 67)
 DECISION_SIZE = (46, 46)
 REPORT_SIZE = (210, 176)
 NEWS_SIZE = (397, 153)
+PORTRAIT_SIZE = (156, 210)
+UNIT_ICON_SIZE = (60, 40)
+TRAIT_SIZE = (40, 40)
 
 GODS = ["cthulhu", "nyarlathotep", "hastur", "shub_niggurath", "yog_sothoth", "azathoth"]
 
@@ -480,6 +484,21 @@ def sym_elder_sign(size, color=None):
     return glow_under(c.done(size, size), (150, 255, 190), size / 14, 0.8)
 
 
+def sym_incarnate(size, color=None):
+    c = Canvas(size, size)
+    body = (25, 18, 35, 255)
+    for i, x in enumerate([0.22, 0.34, 0.66, 0.78]):
+        tentacle(c, 0.5 + (x - 0.5) * 0.4, 0.42, 0.42, 0.06 * (1 if i % 2 else -1), i, 0.05, 0.012, body,
+                 dx=(x - 0.5) * 0.9)
+    c.ellipse(0.5, 0.50, 0.22, 0.20, body)
+    c.ellipse(0.5, 0.26, 0.14, 0.16, body)
+    for ex in (0.44, 0.56):
+        c.ellipse(ex, 0.26, 0.03, 0.022, (255, 220, 90, 255))
+    c.poly([(0.0, 0.86), (0.08, 0.86), (0.08, 0.78), (0.16, 0.78), (0.16, 0.86), (0.84, 0.86), (0.84, 0.74),
+            (0.92, 0.74), (0.92, 0.86), (1.0, 0.86), (1.0, 1.0), (0.0, 1.0)], (10, 10, 14, 255))
+    return glow_under(c.done(size, size), (190, 120, 255), size / 10, 1.2)
+
+
 SYMBOLS = {
     "cthulhu": sym_cthulhu,
     "nyarlathotep": sym_nyarlathotep,
@@ -496,6 +515,7 @@ SYMBOLS = {
     "servitors": sym_servitors,
     "curse": sym_curse,
     "rites": sym_elder_sign,
+    "incarnate": sym_incarnate,
 }
 
 
@@ -550,7 +570,7 @@ def make_ideas():
 
 
 def make_decisions():
-    for name in ["tome", "altar", "sacrifice", "deepen", "anoint", "crown", "servitors", "curse"] + GODS:
+    for name in ["tome", "altar", "sacrifice", "deepen", "anoint", "crown", "servitors", "curse", "incarnate"] + GODS:
         pal = PALETTE.get(name, {"bg": (16, 14, 24)})
         inner = tuple(min(255, int(v * 2.4 + 12)) for v in pal["bg"])
         img = framed(DECISION_SIZE, inner, pal["bg"], SYMBOLS[name], (150, 130, 95), border_width=1,
@@ -743,12 +763,428 @@ def make_thumbnail():
     vignette(img, 0.5).convert("RGB").save(os.path.join(ROOT, "thumbnail.png"))
 
 
+# ---------------------------------------------------------------------------
+# Avatar portraits (156x210, used by portrait_path on the avatar commanders)
+# ---------------------------------------------------------------------------
+
+def portrait_frame(top, bottom, glow_center=(0.5, 0.35)):
+    return radial_bg(PORTRAIT_SIZE, top, bottom, center=glow_center, scale=0.8)
+
+
+def finish_portrait(bg, figure, rim, seed):
+    figure = glow_under(figure, rim, 5, 0.9)
+    img = Image.alpha_composite(bg, figure)
+    # soft key light from the upper left
+    w, h = img.size
+    yy, xx = np.mgrid[0:h, 0:w]
+    light = 1.0 + 0.18 * np.clip(1 - np.sqrt(((xx - w * 0.3) / w) ** 2 + ((yy - h * 0.25) / h) ** 2) * 2, 0, 1)
+    arr = np.array(img).astype(float)
+    arr[..., :3] *= light[..., None]
+    img = Image.fromarray(arr.clip(0, 255).astype(np.uint8), "RGBA")
+    return grain(vignette(img, 0.55), 5, seed)
+
+
+def shoulders(c, color, y=1.02, rx=0.62, ry=0.34):
+    c.ellipse(0.5, y, rx, ry, color)
+
+
+def fish_head(c, skin, belly, eye_col, crest_col):
+    # crest fin
+    c.poly([(0.34, 0.22), (0.40, 0.08), (0.45, 0.18), (0.50, 0.04), (0.55, 0.18), (0.60, 0.08), (0.66, 0.22)],
+           crest_col + (255,))
+    c.ellipse(0.5, 0.38, 0.30, 0.38, skin + (255,))
+    c.ellipse(0.5, 0.56, 0.17, 0.10, belly + (255,))
+    for side in (-1, 1):
+        ex = 0.5 + side * 0.17
+        c.ellipse(ex, 0.33, 0.085, 0.085, (235, 230, 190, 255))
+        c.ellipse(ex, 0.33, 0.06, 0.06, eye_col + (255,))
+        c.ellipse(ex, 0.33, 0.028, 0.028, (5, 5, 5, 255))
+        for k in range(3):
+            gx = 0.5 + side * (0.24 + k * 0.025)
+            c.line([(gx, 0.42 + k * 0.03), (gx + side * 0.02, 0.47 + k * 0.03)], (30, 50, 40, 255), 0.012)
+    # wide, down-turned maw with needle teeth
+    mouth = [(0.33, 0.56), (0.40, 0.51), (0.60, 0.51), (0.67, 0.56), (0.60, 0.585), (0.40, 0.585)]
+    c.poly(mouth, (15, 20, 18, 255))
+    for k in range(7):
+        x = 0.39 + k * 0.037
+        c.poly([(x - 0.012, 0.515), (x + 0.012, 0.515), (x, 0.545)], (225, 220, 200, 255))
+
+
+def scales(c, x0, x1, y0, y1, color, step=0.05):
+    y = y0
+    row = 0
+    while y < y1:
+        x = x0 + (step / 2 if row % 2 else 0)
+        while x < x1:
+            c.d.arc([c.p(x - step / 2, y)[0], c.p(x, y - step / 3)[1], c.p(x + step / 2, y)[0], c.p(x, y + step / 3)[1]],
+                    0, 180, fill=color, width=max(1, int(c.s(0.008))))
+            x += step
+        y += step * 0.6
+        row += 1
+
+
+def portrait_dagon():
+    bg = portrait_frame((30, 80, 75), (4, 14, 16))
+    c = Canvas(*PORTRAIT_SIZE)
+    shoulders(c, (20, 55, 50, 255))
+    scales(c, 0.1, 0.9, 0.80, 1.0, (60, 120, 100, 255))
+    c.poly([(0.43, 0.62), (0.57, 0.62), (0.60, 0.80), (0.40, 0.80)], (60, 95, 80, 255))
+    fish_head(c, (80, 125, 105), (150, 175, 140), (255, 210, 60), (40, 90, 80))
+    # coral crown
+    for x, h in [(0.36, 0.10), (0.44, 0.14), (0.50, 0.16), (0.56, 0.14), (0.64, 0.10)]:
+        c.line([(x, 0.10), (x, 0.10 - h * 0.5)], (220, 90, 70, 255), 0.022)
+        c.line([(x, 0.07), (x + 0.03, 0.03)], (220, 90, 70, 255), 0.015)
+    return finish_portrait(bg, c.done(*PORTRAIT_SIZE), (120, 255, 200), 41)
+
+
+def portrait_hydra():
+    bg = portrait_frame((50, 60, 95), (8, 8, 22))
+    c = Canvas(*PORTRAIT_SIZE)
+    shoulders(c, (35, 40, 75, 255))
+    for i, x in enumerate([0.22, 0.28, 0.72, 0.78]):
+        tentacle(c, x, 0.20, 0.62, 0.05 * (1 if i % 2 else -1), i, 0.035, 0.012, (70, 110, 120, 255))
+    c.poly([(0.43, 0.62), (0.57, 0.62), (0.60, 0.80), (0.40, 0.80)], (70, 100, 110, 255))
+    fish_head(c, (85, 120, 130), (160, 180, 185), (180, 120, 255), (60, 70, 120))
+    for k in range(9):
+        a = math.radians(200 + k * 17.5)
+        c.ellipse(0.5 + 0.20 * math.cos(a), 0.80 - 0.10 * math.sin(a), 0.022, 0.022, (240, 235, 225, 255))
+    return finish_portrait(bg, c.done(*PORTRAIT_SIZE), (170, 140, 255), 42)
+
+
+def portrait_black_pharaoh():
+    bg = portrait_frame((120, 70, 30), (14, 6, 18), glow_center=(0.5, 0.25))
+    c = Canvas(*PORTRAIT_SIZE)
+    shoulders(c, (20, 14, 26, 255))
+    # broad collar
+    for k, col in enumerate([(210, 170, 60), (40, 60, 140), (210, 170, 60), (40, 60, 140), (210, 170, 60)]):
+        c.ellipse(0.5, 0.66, 0.40 - k * 0.05, 0.22 - k * 0.03, col + (255,))
+    c.poly([(0.44, 0.56), (0.56, 0.56), (0.57, 0.66), (0.43, 0.66)], (22, 16, 26, 255))
+    # nemes headdress
+    stripes = [(215, 175, 60), (35, 55, 130)]
+    pts = [(0.28, 0.16), (0.72, 0.16), (0.84, 0.66), (0.16, 0.66)]
+    c.poly(pts, stripes[0] + (255,))
+    for k in range(9):
+        y0 = 0.18 + k * 0.055
+        f = (y0 - 0.16) / 0.50
+        xl, xr = 0.28 - 0.12 * f, 0.72 + 0.12 * f
+        c.poly([(xl, y0), (xr, y0), (xr + 0.006, y0 + 0.025), (xl - 0.006, y0 + 0.025)], stripes[1] + (255,))
+    c.ellipse(0.5, 0.38, 0.20, 0.26, (22, 16, 26, 255))
+    for side in (-1, 1):
+        c.poly([(0.5 + side * 0.06, 0.34), (0.5 + side * 0.14, 0.32), (0.5 + side * 0.13, 0.35)], (255, 60, 30, 255))
+    c.line([(0.47, 0.50), (0.53, 0.50)], (90, 30, 30, 255), 0.012)
+    c.poly([(0.47, 0.20), (0.53, 0.20), (0.5, 0.12)], (230, 190, 70, 255))
+    c.ellipse(0.5, 0.11, 0.025, 0.03, (230, 190, 70, 255))
+    return finish_portrait(bg, c.done(*PORTRAIT_SIZE), (255, 120, 60), 43)
+
+
+def portrait_pallid_mask():
+    bg = portrait_frame((150, 115, 30), (24, 16, 4))
+    c = Canvas(*PORTRAIT_SIZE)
+    robe = (200, 160, 40, 255)
+    shoulders(c, robe)
+    # tattered hem of the hood falling over the shoulders
+    rng = random.Random(5)
+    rag = [(0.08, 1.0)]
+    for k in range(13):
+        x = 0.1 + k * 0.065
+        rag.append((x, 0.86 + rng.uniform(-0.05, 0.05)))
+    rag.append((0.92, 1.0))
+    c.poly(rag, (170, 130, 30, 255))
+    c.poly([(0.5, 0.04), (0.82, 0.40), (0.86, 0.80), (0.14, 0.80), (0.18, 0.40)], robe)
+    c.ellipse(0.5, 0.42, 0.24, 0.30, (35, 25, 10, 255))
+    c.ellipse(0.5, 0.42, 0.17, 0.23, (232, 228, 214, 255))
+    for side in (-1, 1):
+        c.ellipse(0.5 + side * 0.07, 0.38, 0.022, 0.012, (20, 15, 10, 255))
+    # the Yellow Sign brooch
+    brooch = sym_hastur(28)
+    img = c.done(*PORTRAIT_SIZE)
+    img = paste_center(img, brooch, 0.5, 0.86)
+    return finish_portrait(bg, img, (255, 220, 120), 44)
+
+
+def portrait_shepherd():
+    bg = portrait_frame((60, 25, 15), (6, 10, 6), glow_center=(0.5, 0.6))
+    c = Canvas(*PORTRAIT_SIZE)
+    shoulders(c, (18, 16, 14, 255))
+    c.line([(0.86, 1.0), (0.86, 0.20)], (90, 65, 40, 255), 0.03)
+    c.d.arc([c.p(0.80, 0.12)[0], c.p(0.80, 0.12)[1], c.p(0.92, 0.12)[0] + c.s(0.0), c.p(0.92, 0.26)[1]],
+            180, 360, fill=(90, 65, 40, 255), width=int(c.s(0.03)))
+    c.poly([(0.5, 0.10), (0.80, 0.50), (0.84, 0.84), (0.16, 0.84), (0.20, 0.50)], (28, 24, 20, 255))
+    for side in (-1, 1):
+        p0, p1, p2 = (0.5 + side * 0.10, 0.22), (0.5 + side * 0.48, 0.02), (0.5 + side * 0.38, 0.40)
+        pts = [((1 - t) ** 2 * p0[0] + 2 * (1 - t) * t * p1[0] + t * t * p2[0],
+                (1 - t) ** 2 * p0[1] + 2 * (1 - t) * t * p1[1] + t * t * p2[1]) for t in np.linspace(0, 1, 60)]
+        c.stroke(pts, (160, 140, 115, 255), 0.05, 0.012)
+    c.poly([(0.36, 0.26), (0.64, 0.26), (0.58, 0.58), (0.5, 0.68), (0.42, 0.58)], (45, 32, 26, 255))
+    for side in (-1, 1):
+        c.ellipse(0.5 + side * 0.07, 0.36, 0.035, 0.02, (255, 50, 40, 255))
+    rng = random.Random(9)
+    for _ in range(5):
+        c.ellipse(rng.uniform(0.25, 0.75), rng.uniform(0.86, 0.97), 0.015, 0.012, (255, 60, 50, 255))
+    return finish_portrait(bg, c.done(*PORTRAIT_SIZE), (255, 80, 60), 45)
+
+
+def portrait_wilbur():
+    bg = portrait_frame((90, 80, 60), (14, 12, 10))
+    c = Canvas(*PORTRAIT_SIZE)
+    shoulders(c, (40, 38, 42, 255), y=1.0)
+    for i, (x, dx) in enumerate([(0.24, -0.10), (0.30, -0.06), (0.70, 0.06), (0.76, 0.10)]):
+        pts = [(x + dx * t + 0.02 * math.sin(6 * t + i), 1.0 - 0.16 * t) for t in np.linspace(0, 1, 40)]
+        c.stroke(pts, (90, 140, 80, 255), 0.03, 0.008)
+    c.poly([(0.38, 0.66), (0.62, 0.66), (0.5, 0.92)], (225, 220, 205, 255))
+    c.poly([(0.47, 0.70), (0.53, 0.70), (0.55, 0.90), (0.5, 0.95), (0.45, 0.90)], (90, 20, 25, 255))
+    c.poly([(0.30, 0.70), (0.42, 0.66), (0.5, 0.92), (0.36, 0.95)], (55, 52, 58, 255))
+    c.poly([(0.70, 0.70), (0.58, 0.66), (0.5, 0.92), (0.64, 0.95)], (55, 52, 58, 255))
+    c.poly([(0.44, 0.52), (0.56, 0.52), (0.57, 0.68), (0.43, 0.68)], (200, 185, 140, 255))
+    c.ellipse(0.5, 0.36, 0.20, 0.30, (205, 190, 145, 255))
+    c.ellipse(0.5, 0.18, 0.21, 0.13, (35, 28, 22, 255))
+    for side in (-1, 1):
+        c.ellipse(0.5 + side * 0.075, 0.33, 0.03, 0.018, (30, 25, 20, 255))
+        c.ellipse(0.5 + side * 0.075, 0.33, 0.012, 0.012, (200, 190, 80, 255))
+        c.ellipse(0.5 + side * 0.205, 0.36, 0.03, 0.05, (190, 170, 130, 255))
+    c.line([(0.5, 0.36), (0.48, 0.46), (0.51, 0.47)], (150, 130, 95, 255), 0.01)
+    c.line([(0.43, 0.53), (0.57, 0.53)], (120, 70, 60, 255), 0.018)
+    return finish_portrait(bg, c.done(*PORTRAIT_SIZE), (190, 170, 120), 46)
+
+
+def portrait_piper():
+    bg = portrait_frame((90, 20, 80), (8, 2, 12))
+    bg = stars(bg, 50, 1.0, 47)
+    c = Canvas(*PORTRAIT_SIZE)
+    rng = random.Random(4)
+    for _ in range(14):
+        x, y = rng.uniform(0.25, 0.75), rng.uniform(0.3, 1.0)
+        r = rng.uniform(0.12, 0.22)
+        shade = rng.randint(30, 70)
+        c.ellipse(x, y, r, r * 1.1, (shade + 30, shade // 3, shade + 40, 255))
+    c.ellipse(0.5, 0.36, 0.20, 0.22, (90, 35, 100, 255))
+    for x, y, r in [(0.44, 0.32, 0.03), (0.57, 0.30, 0.025), (0.5, 0.42, 0.02), (0.35, 0.55, 0.02),
+                    (0.66, 0.62, 0.025), (0.45, 0.74, 0.018)]:
+        c.ellipse(x, y, r, r, (255, 230, 120, 255))
+        c.ellipse(x, y, r * 0.4, r * 0.4, (10, 0, 10, 255))
+    c.line([(0.30, 0.50), (0.76, 0.46)], (220, 180, 80, 255), 0.022)
+    for k in range(4):
+        c.ellipse(0.40 + k * 0.08, 0.49 - k * 0.007, 0.008, 0.008, (60, 30, 10, 255))
+    img = c.done(*PORTRAIT_SIZE)
+    img = paste_center(img, sym_azathoth(70), 0.80, 0.18)
+    return finish_portrait(bg, img, (255, 120, 220), 48)
+
+
+PORTRAITS = {
+    "eldritch_avatar_dagon": portrait_dagon,
+    "eldritch_avatar_hydra": portrait_hydra,
+    "eldritch_avatar_black_pharaoh": portrait_black_pharaoh,
+    "eldritch_avatar_pallid_mask": portrait_pallid_mask,
+    "eldritch_avatar_shepherd": portrait_shepherd,
+    "eldritch_avatar_wilbur": portrait_wilbur,
+    "eldritch_avatar_piper": portrait_piper,
+}
+
+
+def make_portraits():
+    for name, fn in PORTRAITS.items():
+        save_dds(fn(), f"gfx/leaders/eldritch/{name}.dds")
+
+
+# ---------------------------------------------------------------------------
+# Battalion icons for the division designer (GFX_unit_<name>_icon_medium)
+# ---------------------------------------------------------------------------
+
+def glyph_soldier(c, col, x=0.5, scale=1.0, shield=False):
+    k = scale
+    c.ellipse(x, 0.26, 0.07 * k, 0.07 * k, col)
+    c.poly([(x - 0.07 * k, 0.36), (x + 0.07 * k, 0.36), (x + 0.09 * k, 0.66), (x - 0.09 * k, 0.66)], col)
+    c.line([(x - 0.04 * k, 0.66), (x - 0.06 * k, 0.92)], col, 0.04 * k)
+    c.line([(x + 0.04 * k, 0.66), (x + 0.06 * k, 0.92)], col, 0.04 * k)
+    c.line([(x + 0.13 * k, 0.10), (x + 0.13 * k, 0.92)], col, 0.025 * k)
+    if shield:
+        c.ellipse(x - 0.11 * k, 0.50, 0.08 * k, 0.12 * k, col)
+
+
+def glyph_monster(c, col, eye):
+    for i, x in enumerate([0.36, 0.46, 0.54, 0.64]):
+        tentacle(c, x, 0.55, 0.38, 0.05 * (1 if i % 2 else -1), i, 0.05, 0.015, col, dx=(x - 0.5) * 0.8)
+    c.ellipse(0.5, 0.42, 0.22, 0.26, col)
+    for ex in (0.43, 0.57):
+        c.ellipse(ex, 0.38, 0.035, 0.03, eye)
+
+
+def glyph_rider(c, col, eye):
+    c.poly([(0.50, 0.40), (0.10, 0.12), (0.22, 0.42), (0.08, 0.55), (0.42, 0.55)], col)
+    c.poly([(0.50, 0.40), (0.90, 0.12), (0.78, 0.42), (0.92, 0.55), (0.58, 0.55)], col)
+    c.ellipse(0.5, 0.56, 0.16, 0.12, col)
+    c.ellipse(0.66, 0.46, 0.07, 0.06, col)
+    c.ellipse(0.69, 0.45, 0.015, 0.015, eye)
+    c.ellipse(0.47, 0.34, 0.04, 0.04, col)
+    c.line([(0.47, 0.38), (0.47, 0.50)], col, 0.04)
+    c.line([(0.40, 0.66), (0.36, 0.86)], col, 0.035)
+    c.line([(0.60, 0.66), (0.64, 0.86)], col, 0.035)
+
+
+UNIT_COLORS = {
+    "cthulhu": (120, 210, 150),
+    "nyarlathotep": (185, 140, 235),
+    "hastur": (245, 205, 80),
+    "shub_niggurath": (190, 150, 115),
+    "yog_sothoth": (175, 200, 255),
+    "azathoth": (240, 110, 200),
+}
+
+
+def unit_icon(god, glyph, white=False):
+    pal = PALETTE[god]
+    w, h = UNIT_ICON_SIZE
+    col = (235, 235, 235, 255) if white else UNIT_COLORS[god] + (255,)
+    eye = (20, 20, 20, 255) if white else pal["glow"] + (255,)
+    if glyph == "god":
+        fig = SYMBOLS[god](h)
+        if white:
+            alpha = fig.split()[3]
+            fig = Image.new("RGBA", fig.size, (235, 235, 235, 0))
+            fig.putalpha(alpha)
+    elif glyph == "spiral":
+        fig = sym_azathoth(h)
+    else:
+        c = Canvas(h, h)
+        if glyph == "soldier":
+            glyph_soldier(c, col)
+        elif glyph == "shield":
+            glyph_soldier(c, col, shield=True)
+        elif glyph == "swarm":
+            for x in (0.24, 0.5, 0.76):
+                glyph_soldier(c, col, x=x, scale=0.75)
+        elif glyph == "monster":
+            glyph_monster(c, col, eye)
+        elif glyph == "rider":
+            glyph_rider(c, col, eye)
+        fig = c.done(h, h)
+    if white:
+        img = Image.new("RGBA", UNIT_ICON_SIZE, (0, 0, 0, 0))
+        return paste_center(img, fig, 0.5, 0.5)
+    bg = radial_bg(UNIT_ICON_SIZE, tuple(min(255, int(v * 2.5 + 15)) for v in pal["bg"]), pal["bg"])
+    if glyph != "god":
+        fig = glow_under(fig, pal["glow"], 2, 0.5)
+    img = paste_center(bg, fig, 0.5, 0.5)
+    d = ImageDraw.Draw(img)
+    border = (235, 195, 90, 255) if glyph == "god" else (120, 110, 90, 255)
+    d.rectangle([0, 0, w - 1, h - 1], outline=border)
+    return img
+
+
+UNIT_ICONS = {
+    "eldritch_deep_one_brood": ("cthulhu", "soldier"),
+    "eldritch_star_spawn": ("cthulhu", "monster"),
+    "eldritch_faceless_cult": ("nyarlathotep", "soldier"),
+    "eldritch_shantak_riders": ("nyarlathotep", "rider"),
+    "eldritch_yellow_zealots": ("hastur", "soldier"),
+    "eldritch_byakhee_riders": ("hastur", "rider"),
+    "eldritch_dark_young": ("shub_niggurath", "monster"),
+    "eldritch_thousand_young": ("shub_niggurath", "swarm"),
+    "eldritch_gate_wardens": ("yog_sothoth", "shield"),
+    "eldritch_dunwich_horror": ("yog_sothoth", "monster"),
+    "eldritch_chaos_spawn": ("azathoth", "soldier"),
+    "eldritch_void_pipers": ("azathoth", "spiral"),
+}
+for _god in GODS:
+    UNIT_ICONS[f"eldritch_{_god}_incarnate"] = (_god, "god")
+
+
+def make_unit_icons():
+    for unit, (god, glyph) in UNIT_ICONS.items():
+        save_dds(unit_icon(god, glyph), f"gfx/interface/counters/divisions_large/{unit}.dds")
+        save_dds(unit_icon(god, glyph, white=True), f"gfx/interface/counters/divisions_large/{unit}_white.dds")
+
+
+# ---------------------------------------------------------------------------
+# Unit leader trait icons (GFX_trait_<trait>)
+# ---------------------------------------------------------------------------
+
+def trait_icon(symbol, rim):
+    w, h = TRAIT_SIZE
+    img = Image.new("RGBA", TRAIT_SIZE, (0, 0, 0, 0))
+    disc = Canvas(w, h)
+    disc.ellipse(0.5, 0.5, 0.48, 0.48, rim + (255,))
+    disc.ellipse(0.5, 0.5, 0.42, 0.42, (18, 14, 24, 255))
+    img = Image.alpha_composite(img, disc.done(w, h))
+    return paste_center(img, symbol(int(w * 0.72)), 0.5, 0.5)
+
+
+def make_trait_icons():
+    for god in GODS:
+        for kind, rim in (("general", (160, 140, 100)), ("admiral", (110, 150, 190))):
+            save_dds(trait_icon(SYMBOLS[god], rim), f"gfx/interface/traits/eldritch_{god}_{kind}.dds")
+    save_dds(trait_icon(sym_elder_sign, (235, 195, 90)), "gfx/interface/traits/eldritch_avatar_land.dds")
+    save_dds(trait_icon(sym_elder_sign, (110, 190, 210)), "gfx/interface/traits/eldritch_avatar_navy.dds")
+
+
+
+# ---------------------------------------------------------------------------
+# Sprite definitions (interface/eldritch.gfx)
+# ---------------------------------------------------------------------------
+
+def write_gfx():
+    lines = [
+        "#####################################################################",
+        "# Eldritch Pacts - sprites",
+        "# Generated by tools/generate_art.py - edit the generator, not this file.",
+        "#####################################################################",
+        "",
+        "spriteTypes = {",
+    ]
+
+    def section(title):
+        lines.extend(["", f"\t### {title} ###"])
+
+    def sprite(name, tex):
+        lines.extend(["\tspriteType = {", f'\t\tname = "{name}"', f'\t\ttexturefile = "{tex}"', "\t}"])
+
+    section("National spirits")
+    for god in GODS:
+        for suffix in ("1", "2", "3", "blessing"):
+            sprite(f"GFX_idea_eldritch_{god}_{suffix}", f"gfx/interface/ideas/eldritch_{god}_{suffix}.dds")
+    for curse in ("dreams", "yellow"):
+        sprite(f"GFX_idea_eldritch_curse_{curse}", f"gfx/interface/ideas/eldritch_curse_{curse}.dds")
+
+    section("Decisions")
+    for name in ["tome", "altar", "sacrifice", "deepen", "anoint", "crown", "servitors", "curse", "incarnate"] + GODS:
+        sprite(f"GFX_decision_eldritch_{name}", f"gfx/interface/decisions/eldritch_{name}.dds")
+
+    section("Decision category")
+    sprite("GFX_decision_category_eldritch_rites", "gfx/interface/decisions/eldritch_category_rites.dds")
+    sprite("GFX_decision_eldritch_rites", "gfx/interface/decisions/eldritch_category_rites.dds")
+
+    section("Event pictures")
+    for name in ["tome", "omen"] + GODS:
+        sprite(f"GFX_report_event_eldritch_{name}", f"gfx/event_pictures/eldritch_{name}.dds")
+    sprite("GFX_news_event_eldritch_stars", "gfx/event_pictures/eldritch_news_stars.dds")
+
+    section("Battalion icons (division designer and unit views)")
+    for unit in UNIT_ICONS:
+        sprite(f"GFX_unit_{unit}_icon_medium", f"gfx/interface/counters/divisions_large/{unit}.dds")
+        sprite(f"GFX_unit_{unit}_icon_medium_white", f"gfx/interface/counters/divisions_large/{unit}_white.dds")
+
+    section("General and admiral traits")
+    for god in GODS:
+        for kind in ("general", "admiral"):
+            sprite(f"GFX_trait_eldritch_{god}_{kind}", f"gfx/interface/traits/eldritch_{god}_{kind}.dds")
+    for kind in ("land", "navy"):
+        sprite(f"GFX_trait_eldritch_avatar_{kind}", f"gfx/interface/traits/eldritch_avatar_{kind}.dds")
+
+    lines.append("}")
+    with open(os.path.join(ROOT, "interface", "eldritch.gfx"), "w") as f:
+        f.write("\n".join(lines) + "\n")
+
+
 def main():
     make_ideas()
     make_decisions()
     make_report_events()
     make_news_event()
+    make_portraits()
+    make_unit_icons()
+    make_trait_icons()
     make_thumbnail()
+    write_gfx()
     print("Art generated.")
 
 

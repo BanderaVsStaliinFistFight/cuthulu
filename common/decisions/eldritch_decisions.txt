@@ -484,6 +484,42 @@ eldritch_forbidden_rites = {
 		}
 	}
 
+	eldritch_incarnate_god = {
+		icon = eldritch_incarnate
+		custom_cost_trigger = {
+			check_variable = { eldritch_favor > 199 }
+		}
+		custom_cost_text = eldritch_cost_favor_200
+		fire_only_once = no
+		days_re_enable = 365
+
+		visible = {
+			eldritch_has_pact = yes
+		}
+
+		available = {
+			eldritch_pact_tier_at_least_2 = yes
+		}
+
+		days_remove = 30
+
+		complete_effect = {
+			hidden_effect = { subtract_from_variable = { eldritch_favor = 200 } }
+		}
+
+		remove_effect = {
+			eldritch_incarnate_god_effect = yes
+		}
+
+		ai_will_do = {
+			factor = 3
+			modifier = {
+				factor = 2
+				has_war = yes
+			}
+		}
+	}
+
 	#################################################################
 	# 4a. CTHULHU - The Dreamer in R'lyeh
 	#################################################################
@@ -539,6 +575,7 @@ eldritch_forbidden_rites = {
 			hidden_effect = { subtract_from_variable = { eldritch_favor = 120 } }
 			create_navy_leader = {
 				name = "Father Dagon"
+				portrait_path = "gfx/leaders/eldritch/eldritch_avatar_dagon.dds"
 				traits = { eldritch_cthulhu_admiral eldritch_avatar_navy }
 				skill = 5
 				attack_skill = 5
@@ -548,6 +585,7 @@ eldritch_forbidden_rites = {
 			}
 			create_field_marshal = {
 				name = "Mother Hydra"
+				portrait_path = "gfx/leaders/eldritch/eldritch_avatar_hydra.dds"
 				traits = { eldritch_cthulhu_general eldritch_avatar_land }
 				skill = 5
 				attack_skill = 5
@@ -655,6 +693,7 @@ eldritch_forbidden_rites = {
 			hidden_effect = { subtract_from_variable = { eldritch_favor = 120 } }
 			create_field_marshal = {
 				name = "The Black Pharaoh"
+				portrait_path = "gfx/leaders/eldritch/eldritch_avatar_black_pharaoh.dds"
 				traits = { eldritch_nyarlathotep_general eldritch_avatar_land }
 				skill = 5
 				attack_skill = 4
@@ -780,6 +819,7 @@ eldritch_forbidden_rites = {
 			hidden_effect = { subtract_from_variable = { eldritch_favor = 120 } }
 			create_field_marshal = {
 				name = "The Stranger in the Pallid Mask"
+				portrait_path = "gfx/leaders/eldritch/eldritch_avatar_pallid_mask.dds"
 				traits = { eldritch_hastur_general eldritch_avatar_land }
 				skill = 5
 				attack_skill = 5
@@ -891,6 +931,7 @@ eldritch_forbidden_rites = {
 			hidden_effect = { subtract_from_variable = { eldritch_favor = 120 } }
 			create_field_marshal = {
 				name = "The Shepherd of the Black Goat"
+				portrait_path = "gfx/leaders/eldritch/eldritch_avatar_shepherd.dds"
 				traits = { eldritch_shub_niggurath_general eldritch_avatar_land }
 				skill = 5
 				attack_skill = 4
@@ -983,6 +1024,7 @@ eldritch_forbidden_rites = {
 			hidden_effect = { subtract_from_variable = { eldritch_favor = 120 } }
 			create_field_marshal = {
 				name = "Wilbur Whateley"
+				portrait_path = "gfx/leaders/eldritch/eldritch_avatar_wilbur.dds"
 				traits = { eldritch_yog_sothoth_general eldritch_avatar_land }
 				skill = 5
 				attack_skill = 4
@@ -1086,6 +1128,7 @@ eldritch_forbidden_rites = {
 			hidden_effect = { subtract_from_variable = { eldritch_favor = 120 } }
 			create_field_marshal = {
 				name = "The Piper of the Void"
+				portrait_path = "gfx/leaders/eldritch/eldritch_avatar_piper.dds"
 				traits = { eldritch_azathoth_general eldritch_avatar_land }
 				skill = 5
 				attack_skill = 6

@@ -332,6 +332,229 @@ eldritch_spawn_servitors = {
 }
 
 #####################################################################
+# THE GODS INCARNATE
+#
+# Each god's incarnate template is the god battalion (column 0) plus an
+# escort of its servitors. Templates are created the first time the god
+# is incarnated; later incarnations only spawn a new division.
+#####################################################################
+
+eldritch_create_template_cthulhu_incarnate = {
+	division_template = {
+		name = "Great Cthulhu"
+		is_locked = yes
+		regiments = {
+			eldritch_cthulhu_incarnate = { x = 0 y = 0 }
+			eldritch_deep_one_brood = { x = 1 y = 0 }
+			eldritch_deep_one_brood = { x = 1 y = 1 }
+			eldritch_deep_one_brood = { x = 1 y = 2 }
+			eldritch_star_spawn = { x = 2 y = 0 }
+			eldritch_star_spawn = { x = 2 y = 1 }
+		}
+	}
+}
+
+eldritch_create_template_nyarlathotep_incarnate = {
+	division_template = {
+		name = "The Crawling Chaos"
+		is_locked = yes
+		regiments = {
+			eldritch_nyarlathotep_incarnate = { x = 0 y = 0 }
+			eldritch_faceless_cult = { x = 1 y = 0 }
+			eldritch_faceless_cult = { x = 1 y = 1 }
+			eldritch_faceless_cult = { x = 1 y = 2 }
+			eldritch_shantak_riders = { x = 2 y = 0 }
+			eldritch_shantak_riders = { x = 2 y = 1 }
+		}
+	}
+}
+
+eldritch_create_template_hastur_incarnate = {
+	division_template = {
+		name = "The King in Yellow"
+		is_locked = yes
+		regiments = {
+			eldritch_hastur_incarnate = { x = 0 y = 0 }
+			eldritch_yellow_zealots = { x = 1 y = 0 }
+			eldritch_yellow_zealots = { x = 1 y = 1 }
+			eldritch_yellow_zealots = { x = 1 y = 2 }
+			eldritch_byakhee_riders = { x = 2 y = 0 }
+			eldritch_byakhee_riders = { x = 2 y = 1 }
+			eldritch_byakhee_riders = { x = 2 y = 2 }
+		}
+	}
+}
+
+eldritch_create_template_shub_niggurath_incarnate = {
+	division_template = {
+		name = "The Black Goat of the Woods"
+		is_locked = yes
+		regiments = {
+			eldritch_shub_niggurath_incarnate = { x = 0 y = 0 }
+			eldritch_thousand_young = { x = 1 y = 0 }
+			eldritch_thousand_young = { x = 1 y = 1 }
+			eldritch_thousand_young = { x = 1 y = 2 }
+			eldritch_dark_young = { x = 2 y = 0 }
+			eldritch_dark_young = { x = 2 y = 1 }
+		}
+	}
+}
+
+eldritch_create_template_yog_sothoth_incarnate = {
+	division_template = {
+		name = "The All-in-One"
+		is_locked = yes
+		regiments = {
+			eldritch_yog_sothoth_incarnate = { x = 0 y = 0 }
+			eldritch_gate_wardens = { x = 1 y = 0 }
+			eldritch_gate_wardens = { x = 1 y = 1 }
+			eldritch_gate_wardens = { x = 1 y = 2 }
+			eldritch_dunwich_horror = { x = 2 y = 0 }
+			eldritch_dunwich_horror = { x = 2 y = 1 }
+		}
+	}
+}
+
+eldritch_create_template_azathoth_incarnate = {
+	division_template = {
+		name = "Fragment of Azathoth"
+		is_locked = yes
+		regiments = {
+			eldritch_azathoth_incarnate = { x = 0 y = 0 }
+			eldritch_chaos_spawn = { x = 1 y = 0 }
+			eldritch_chaos_spawn = { x = 1 y = 1 }
+			eldritch_chaos_spawn = { x = 1 y = 2 }
+			eldritch_chaos_spawn = { x = 1 y = 3 }
+			eldritch_void_pipers = { x = 2 y = 0 }
+		}
+	}
+}
+
+# Incarnates the patron as a single, very powerful division at the capital.
+eldritch_incarnate_god_effect = {
+	if = {
+		limit = { has_country_flag = eldritch_god_cthulhu }
+		custom_effect_tooltip = eldritch_incarnate_cthulhu_tt
+		hidden_effect = {
+			if = {
+				limit = { NOT = { has_country_flag = eldritch_incarnate_template_made } }
+				set_technology = { eldritch_cthulhu_incarnation = 1 popup = no }
+				eldritch_create_template_cthulhu_incarnate = yes
+			}
+			capital_scope = {
+				create_unit = {
+					division = "name = \"Great Cthulhu\" division_template = \"Great Cthulhu\" start_experience_factor = 1.0 start_equipment_factor = 1.0"
+					owner = ROOT
+					count = 1
+				}
+			}
+			country_event = { id = eldritch.31 }
+		}
+	}
+	else_if = {
+		limit = { has_country_flag = eldritch_god_nyarlathotep }
+		custom_effect_tooltip = eldritch_incarnate_nyarlathotep_tt
+		hidden_effect = {
+			if = {
+				limit = { NOT = { has_country_flag = eldritch_incarnate_template_made } }
+				set_technology = { eldritch_nyarlathotep_incarnation = 1 popup = no }
+				eldritch_create_template_nyarlathotep_incarnate = yes
+			}
+			capital_scope = {
+				create_unit = {
+					division = "name = \"The Crawling Chaos\" division_template = \"The Crawling Chaos\" start_experience_factor = 1.0 start_equipment_factor = 1.0"
+					owner = ROOT
+					count = 1
+				}
+			}
+			country_event = { id = eldritch.32 }
+		}
+	}
+	else_if = {
+		limit = { has_country_flag = eldritch_god_hastur }
+		custom_effect_tooltip = eldritch_incarnate_hastur_tt
+		hidden_effect = {
+			if = {
+				limit = { NOT = { has_country_flag = eldritch_incarnate_template_made } }
+				set_technology = { eldritch_hastur_incarnation = 1 popup = no }
+				eldritch_create_template_hastur_incarnate = yes
+			}
+			capital_scope = {
+				create_unit = {
+					division = "name = \"The King in Yellow\" division_template = \"The King in Yellow\" start_experience_factor = 1.0 start_equipment_factor = 1.0"
+					owner = ROOT
+					count = 1
+				}
+			}
+			country_event = { id = eldritch.33 }
+		}
+	}
+	else_if = {
+		limit = { has_country_flag = eldritch_god_shub_niggurath }
+		custom_effect_tooltip = eldritch_incarnate_shub_niggurath_tt
+		hidden_effect = {
+			if = {
+				limit = { NOT = { has_country_flag = eldritch_incarnate_template_made } }
+				set_technology = { eldritch_shub_niggurath_incarnation = 1 popup = no }
+				eldritch_create_template_shub_niggurath_incarnate = yes
+			}
+			capital_scope = {
+				create_unit = {
+					division = "name = \"The Black Goat of the Woods\" division_template = \"The Black Goat of the Woods\" start_experience_factor = 1.0 start_equipment_factor = 1.0"
+					owner = ROOT
+					count = 1
+				}
+			}
+			country_event = { id = eldritch.34 }
+		}
+	}
+	else_if = {
+		limit = { has_country_flag = eldritch_god_yog_sothoth }
+		custom_effect_tooltip = eldritch_incarnate_yog_sothoth_tt
+		hidden_effect = {
+			if = {
+				limit = { NOT = { has_country_flag = eldritch_incarnate_template_made } }
+				set_technology = { eldritch_yog_sothoth_incarnation = 1 popup = no }
+				eldritch_create_template_yog_sothoth_incarnate = yes
+			}
+			capital_scope = {
+				create_unit = {
+					division = "name = \"The All-in-One\" division_template = \"The All-in-One\" start_experience_factor = 1.0 start_equipment_factor = 1.0"
+					owner = ROOT
+					count = 1
+				}
+			}
+			country_event = { id = eldritch.35 }
+		}
+	}
+	else_if = {
+		limit = { has_country_flag = eldritch_god_azathoth }
+		custom_effect_tooltip = eldritch_incarnate_azathoth_tt
+		hidden_effect = {
+			if = {
+				limit = { NOT = { has_country_flag = eldritch_incarnate_template_made } }
+				set_technology = { eldritch_azathoth_incarnation = 1 popup = no }
+				eldritch_create_template_azathoth_incarnate = yes
+			}
+			capital_scope = {
+				create_unit = {
+					division = "name = \"Fragment of Azathoth\" division_template = \"Fragment of Azathoth\" start_experience_factor = 1.0 start_equipment_factor = 1.0"
+					owner = ROOT
+					count = 1
+				}
+			}
+			country_event = { id = eldritch.36 }
+		}
+	}
+	hidden_effect = {
+		set_country_flag = eldritch_incarnate_template_made
+		every_other_country = {
+			news_event = { id = eldritch_news.3 hours = 6 }
+		}
+	}
+}
+
+#####################################################################
 # SEALING A PACT
 #####################################################################
 

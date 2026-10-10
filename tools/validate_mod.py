@@ -5,7 +5,9 @@ catches the mistakes that are easy to make by hand:
   * unbalanced braces / unparseable script
   * missing localisation for decisions, ideas, traits, units, techs, events,
     tooltips and custom cost texts
-  * icons / pictures without a sprite, sprites without a texture file
+  * icons / pictures without a sprite, sprites without a texture file,
+    battalions without a designer icon, traits without an icon, missing
+    portrait files
   * scripted effects / triggers / events that are used but never defined
   * localisation file encoding (UTF-8 with BOM) and header
 
@@ -180,6 +182,8 @@ def main():
                     for trait, _, _ in value:
                         traits.add(trait)
                         need_loc(trait, path)
+                        if "unit_leader" in path:
+                            need_sprite("GFX_trait_" + trait, path)
 
     subunits = set()
     for path, items in load_script("common/units/*.txt", problems).items():
@@ -189,6 +193,7 @@ def main():
                     subunits.add(unit)
                     need_loc(unit, path)
                     need_loc(unit + "_desc", path)
+                    need_sprite(f"GFX_unit_{unit}_icon_medium", path)
 
     techs = set()
     for path, items in load_script("common/technologies/*.txt", problems).items():
@@ -302,6 +307,9 @@ def main():
                     eid = fields.get("id")
                     if eid not in events:
                         problems.append(f"{path}: fires unknown event {eid}")
+            if key == "portrait_path" and isinstance(value, str):
+                if not os.path.exists(os.path.join(ROOT, value.strip('"'))):
+                    problems.append(f"{path}: portrait_path points to missing file {value}")
             if key == "add_tech_bonus" and isinstance(value, list):
                 need_loc({k: v for k, _, v in value}.get("name"), path)
             if key == "localization_key":

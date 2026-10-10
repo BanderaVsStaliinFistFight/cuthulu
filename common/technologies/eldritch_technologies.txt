@@ -5,6 +5,8 @@
 # and cannot be researched. They are granted with set_technology when
 # a pact is sealed (rites_1) and each time it is deepened (rites_2/3).
 # rites_1 unlocks the god's battalions; every tier makes them stronger.
+# eldritch_<god>_incarnation is granted when the god itself is
+# incarnated as a division.
 #####################################################################
 
 technologies = {
@@ -58,6 +60,13 @@ technologies = {
 			hard_attack = 0.2
 			breakthrough = 0.15
 			max_organisation = 10
+		}
+		eldritch_cthulhu_incarnate = {
+			soft_attack = 0.5
+			hard_attack = 0.5
+			defense = 0.5
+			breakthrough = 0.5
+			max_organisation = 20
 		}
 		research_cost = 1
 		start_year = 1936
@@ -114,6 +123,13 @@ technologies = {
 			breakthrough = 0.2
 			max_organisation = 10
 		}
+		eldritch_nyarlathotep_incarnate = {
+			soft_attack = 0.5
+			hard_attack = 0.5
+			defense = 0.5
+			breakthrough = 0.5
+			max_organisation = 20
+		}
 		research_cost = 1
 		start_year = 1936
 		allow = { always = no }
@@ -168,6 +184,13 @@ technologies = {
 			soft_attack = 0.15
 			breakthrough = 0.2
 			max_organisation = 10
+		}
+		eldritch_hastur_incarnate = {
+			soft_attack = 0.5
+			hard_attack = 0.5
+			defense = 0.5
+			breakthrough = 0.5
+			max_organisation = 20
 		}
 		research_cost = 1
 		start_year = 1936
@@ -224,6 +247,13 @@ technologies = {
 			defense = 0.15
 			max_organisation = 10
 		}
+		eldritch_shub_niggurath_incarnate = {
+			soft_attack = 0.5
+			hard_attack = 0.5
+			defense = 0.5
+			breakthrough = 0.5
+			max_organisation = 20
+		}
 		research_cost = 1
 		start_year = 1936
 		allow = { always = no }
@@ -278,6 +308,13 @@ technologies = {
 			breakthrough = 0.15
 			max_organisation = 10
 		}
+		eldritch_yog_sothoth_incarnate = {
+			soft_attack = 0.5
+			hard_attack = 0.5
+			defense = 0.5
+			breakthrough = 0.5
+			max_organisation = 20
+		}
 		research_cost = 1
 		start_year = 1936
 		allow = { always = no }
@@ -329,6 +366,101 @@ technologies = {
 		eldritch_void_pipers = {
 			soft_attack = 0.2
 			hard_attack = 0.1
+		}
+		eldritch_azathoth_incarnate = {
+			soft_attack = 0.5
+			hard_attack = 0.5
+			defense = 0.5
+			breakthrough = 0.5
+			max_organisation = 20
+		}
+		research_cost = 1
+		start_year = 1936
+		allow = { always = no }
+		ai_will_do = { factor = 0 }
+	}
+
+	### THE GODS INCARNATE ############################################
+	# Granted the first time a god is incarnated. Holds the god
+	# battalion's combat bonuses (the battalion is never unlocked).
+
+	eldritch_cthulhu_incarnation = {
+		eldritch_cthulhu_incarnate = {
+			soft_attack = 2.0
+			hard_attack = 2.0
+			defense = 3.0
+			breakthrough = 3.0
+			max_organisation = 30
+		}
+		research_cost = 1
+		start_year = 1936
+		allow = { always = no }
+		ai_will_do = { factor = 0 }
+	}
+
+	eldritch_nyarlathotep_incarnation = {
+		eldritch_nyarlathotep_incarnate = {
+			soft_attack = 2.0
+			hard_attack = 2.0
+			defense = 3.0
+			breakthrough = 3.0
+			max_organisation = 30
+		}
+		research_cost = 1
+		start_year = 1936
+		allow = { always = no }
+		ai_will_do = { factor = 0 }
+	}
+
+	eldritch_hastur_incarnation = {
+		eldritch_hastur_incarnate = {
+			soft_attack = 2.0
+			hard_attack = 2.0
+			defense = 3.0
+			breakthrough = 3.0
+			max_organisation = 30
+		}
+		research_cost = 1
+		start_year = 1936
+		allow = { always = no }
+		ai_will_do = { factor = 0 }
+	}
+
+	eldritch_shub_niggurath_incarnation = {
+		eldritch_shub_niggurath_incarnate = {
+			soft_attack = 2.0
+			hard_attack = 2.0
+			defense = 3.0
+			breakthrough = 3.0
+			max_organisation = 30
+		}
+		research_cost = 1
+		start_year = 1936
+		allow = { always = no }
+		ai_will_do = { factor = 0 }
+	}
+
+	eldritch_yog_sothoth_incarnation = {
+		eldritch_yog_sothoth_incarnate = {
+			soft_attack = 2.0
+			hard_attack = 2.0
+			defense = 3.0
+			breakthrough = 3.0
+			max_organisation = 30
+		}
+		research_cost = 1
+		start_year = 1936
+		allow = { always = no }
+		ai_will_do = { factor = 0 }
+	}
+
+	eldritch_azathoth_incarnation = {
+		eldritch_azathoth_incarnate = {
+			soft_attack = 2.0
+			hard_attack = 2.0
+			defense = 3.0
+			breakthrough = 3.0
+			max_organisation = 30
 		}
 		research_cost = 1
 		start_year = 1936

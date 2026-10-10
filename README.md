@@ -72,7 +72,8 @@ Favor is the currency of the pact. You gain it monthly (5 / 8 / 12 by tier), fro
 | **Deepen the Pact (Tier II)** | 150 Favor | Stronger national spirit, stronger eldritch battalions, more monthly Favor, unlocks the Avatar. 45-day ritual. |
 | **Deepen the Pact (Tier III)** | 300 Favor | The ultimate spirit and battalion bonuses, more Favor, a unique gift, and world news. 90-day ritual. |
 | *God's timed blessing* | 40 Favor | A 180-day national spirit (see below). |
-| *God's avatar* | 120 Favor | A unique, extremely skilled commander. Requires Tier II. Once per game. |
+| **Incarnate the God in the Flesh** | 200 Favor | The god itself joins your army as one division (see below). Requires Tier II. 30-day ritual, then once a year. |
+| *God's avatar* | 120 Favor | A unique, extremely skilled commander with a custom portrait. Requires Tier II. Once per game. |
 | *God's unique rite* | varies | See below. |
 
 ### 4. The gods
@@ -86,7 +87,21 @@ Favor is the currency of the pact. You gain it monthly (5 / 8 / 12 by tier), fro
 | **Yog-Sothoth** – the Gate and the Key | Research speed, planning, factory efficiency | **Wardens of the Gate** (defensive infantry), **Dunwich Horror** (invisible monster) – *Wardens of the Gate* | All Is One (research, planning) | **Wilbur Whateley** | **Open the Gate** – +100% research bonus for one industry and one electronics tech | +1 research slot |
 | **Azathoth** – the Daemon Sultan *(needs 50% war support, −10% stability)* | Attack, breakthrough, factory output, at a heavy stability cost | **Spawn of the Nuclear Chaos** (shock infantry), **Void Pipers** (sorcerous artillery) – *Chaos Horde* | Mindless Fury (attack, breakthrough, speed) | **The Piper of the Void** | **Bottle the Nuclear Chaos** – a nuclear bomb (Tier II+) | Two nuclear bombs |
 
-### 5. The god's whims
+### 5. The gods incarnate
+From Tier II, **Incarnate [God] in the Flesh** brings the god onto the battlefield as a veteran division at your capital, with the world told what has happened. Each incarnate division is one colossal **god battalion** plus an escort of the god's servitors:
+
+| God | Division | Escort | Terrain where the god is strongest |
+|---|---|---|---|
+| Cthulhu | **Great Cthulhu** | 3 Deep One Brood, 2 Star-Spawn | sea landings, rivers, marsh |
+| Nyarlathotep | **The Crawling Chaos** | 3 Faceless Cultists, 2 Shantak Riders | cities, desert |
+| Hastur | **The King in Yellow** | 3 Zealots, 3 Byakhee Riders | hills, mountains, cities |
+| Shub-Niggurath | **The Black Goat of the Woods** | 3 Thousand Young, 2 Dark Young | forest, jungle |
+| Yog-Sothoth | **The All-in-One** | 3 Wardens of the Gate, 2 Dunwich Horrors | plains, hills, cities |
+| Azathoth | **Fragment of Azathoth** | 4 Spawn of the Nuclear Chaos, 1 Void Pipers | plains, desert, cities |
+
+A god battalion has 400 strength, 150+ organization, 80% morale and +200% attack / +300% defense and breakthrough, rising further at Tier III. It takes 8 combat width. You can't put it in your own templates or train it: it only arrives through the ritual. Losses are reinforced from your normal stockpile.
+
+### 6. The god's whims
 About once every eight months on average, your patron makes itself known: it demands tribute, a prophet preaches in the streets, the stars align, or your soldiers share a dream. Each event trades Favor against manpower, political power, stability or war support.
 
 ---
@@ -122,7 +137,8 @@ common/game_rules/                 the AI rule
 common/on_actions/                 welcome pop-up at game start
 events/                            summoning, tier, whim, curse, news and monthly-pulse events
 interface/eldritch.gfx             sprite definitions
-gfx/                               generated icons and event pictures (DDS)
+gfx/                               generated art (DDS): spirit, decision, battalion and trait icons,
+                                   event pictures, and avatar portraits (gfx/leaders/eldritch/)
 localisation/english/              all text (UTF-8 with BOM)
 install/eldritch_pacts.mod         launcher file to copy into your mod/ folder
 tools/generate_art.py              regenerates every texture and the thumbnail
@@ -137,6 +153,7 @@ Run `python3 tools/validate_mod.py` after editing to catch missing localisation,
 
 The script is written against the standard HoI4 modding syntax. It passes the bundled static validator but **has not been run in-game yet**. If something misbehaves, check `Documents/Paradox Interactive/Hearts of Iron IV/logs/error.log`. These parts are the most likely to need a tweak on a new game version:
 
-* `create_unit` (servitor spawning) and the locked `division_template`.
+* `create_unit` (servitor and god spawning) and the locked `division_template`.
+* The god battalions are deliberately never unlocked for the designer. If the game refuses to spawn a template that contains them, the god division will not appear. `error.log` will say so.
 * The hidden rite technologies, which have no tech-tree folder and are granted with `set_technology`.
-* Icon sizes. The textures are 64×67 (spirits), 46×46 (decisions) and 210×176 / 397×153 (events). If the UI expects different sizes, change the constants at the top of `tools/generate_art.py` and regenerate.
+* Icon sizes. The textures are 64×67 (spirits), 46×46 (decisions), 60×40 (battalions), 40×40 (traits), 156×210 (portraits) and 210×176 / 397×153 (events). If the UI expects different sizes, change the constants at the top of `tools/generate_art.py` and regenerate.

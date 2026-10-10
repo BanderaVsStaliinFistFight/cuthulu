@@ -5,10 +5,11 @@
 #   eldritch.2        welcome message for human players at game start
 #   eldritch.11-16    a summoning succeeds (one per god)
 #   eldritch.20/30    the pact deepens (tier II / tier III)
+#   eldritch.31-36    the god is incarnated as a division (one per god)
 #   eldritch.40-43    the patron's whims (random, monthly)
 #   eldritch.60-62    received by the target of a curse
 #   eldritch.100      hidden monthly pulse (Favor income, random whims)
-#   eldritch_news.1/2 world news when a god is summoned / ascends
+#   eldritch_news.1-3 world news: a god is summoned / ascends / incarnates
 #####################################################################
 
 add_namespace = eldritch
@@ -205,6 +206,88 @@ country_event = {
 
 	option = {
 		name = eldritch.30.a
+	}
+}
+
+#####################################################################
+# THE GODS INCARNATE
+#####################################################################
+
+country_event = {
+	id = eldritch.31
+	title = eldritch.31.t
+	desc = eldritch.31.d
+	picture = GFX_report_event_eldritch_cthulhu
+
+	is_triggered_only = yes
+
+	option = {
+		name = eldritch.31.a
+	}
+}
+
+country_event = {
+	id = eldritch.32
+	title = eldritch.32.t
+	desc = eldritch.32.d
+	picture = GFX_report_event_eldritch_nyarlathotep
+
+	is_triggered_only = yes
+
+	option = {
+		name = eldritch.32.a
+	}
+}
+
+country_event = {
+	id = eldritch.33
+	title = eldritch.33.t
+	desc = eldritch.33.d
+	picture = GFX_report_event_eldritch_hastur
+
+	is_triggered_only = yes
+
+	option = {
+		name = eldritch.33.a
+	}
+}
+
+country_event = {
+	id = eldritch.34
+	title = eldritch.34.t
+	desc = eldritch.34.d
+	picture = GFX_report_event_eldritch_shub_niggurath
+
+	is_triggered_only = yes
+
+	option = {
+		name = eldritch.34.a
+	}
+}
+
+country_event = {
+	id = eldritch.35
+	title = eldritch.35.t
+	desc = eldritch.35.d
+	picture = GFX_report_event_eldritch_yog_sothoth
+
+	is_triggered_only = yes
+
+	option = {
+		name = eldritch.35.a
+	}
+}
+
+country_event = {
+	id = eldritch.36
+	title = eldritch.36.t
+	desc = eldritch.36.d
+	picture = GFX_report_event_eldritch_azathoth
+
+	is_triggered_only = yes
+
+	option = {
+		name = eldritch.36.a
 	}
 }
 
@@ -413,5 +496,41 @@ news_event = {
 
 	option = {
 		name = eldritch_news.2.a
+	}
+}
+
+news_event = {
+	id = eldritch_news.3
+	title = eldritch_news.3.t
+	desc = {
+		text = eldritch_news.3.d.cthulhu
+		trigger = { FROM = { has_country_flag = eldritch_god_cthulhu } }
+	}
+	desc = {
+		text = eldritch_news.3.d.nyarlathotep
+		trigger = { FROM = { has_country_flag = eldritch_god_nyarlathotep } }
+	}
+	desc = {
+		text = eldritch_news.3.d.hastur
+		trigger = { FROM = { has_country_flag = eldritch_god_hastur } }
+	}
+	desc = {
+		text = eldritch_news.3.d.shub_niggurath
+		trigger = { FROM = { has_country_flag = eldritch_god_shub_niggurath } }
+	}
+	desc = {
+		text = eldritch_news.3.d.yog_sothoth
+		trigger = { FROM = { has_country_flag = eldritch_god_yog_sothoth } }
+	}
+	desc = {
+		text = eldritch_news.3.d.azathoth
+		trigger = { FROM = { has_country_flag = eldritch_god_azathoth } }
+	}
+	picture = GFX_news_event_eldritch_stars
+
+	is_triggered_only = yes
+
+	option = {
+		name = eldritch_news.3.a
 	}
 }

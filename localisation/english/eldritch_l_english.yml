@@ -42,6 +42,8 @@
  eldritch_cost_favor_120_blocked:0 "§R120§! Favor"
  eldritch_cost_favor_150:0 "§Y150§! Favor"
  eldritch_cost_favor_150_blocked:0 "§R150§! Favor"
+ eldritch_cost_favor_200:0 "§Y200§! Favor"
+ eldritch_cost_favor_200_blocked:0 "§R200§! Favor"
  eldritch_cost_favor_300:0 "§Y300§! Favor"
  eldritch_cost_favor_300_blocked:0 "§R300§! Favor"
  eldritch_cost_manpower_20k:0 "§Y20k§! Manpower"
@@ -83,6 +85,13 @@
  eldritch_spawn_shub_niggurath_tt:0 "Two veteran §YBrood of the Black Goat§! divisions emerge from the woods near our capital."
  eldritch_spawn_yog_sothoth_tt:0 "Two veteran §YWardens of the Gate§! divisions step through the Gate near our capital."
  eldritch_spawn_azathoth_tt:0 "Two veteran §YChaos Horde§! divisions spill out of the void near our capital."
+
+ eldritch_incarnate_cthulhu_tt:0 "§YGreat Cthulhu§! himself rises from the sea near our capital as a division, escorted by Deep Ones and Star-Spawn."
+ eldritch_incarnate_nyarlathotep_tt:0 "§YNyarlathotep§! takes physical form near our capital as a division, escorted by Faceless Cultists and Shantak Riders."
+ eldritch_incarnate_hastur_tt:0 "§YHastur, the King in Yellow§!, steps out of Carcosa near our capital as a division, escorted by Zealots and Byakhee Riders."
+ eldritch_incarnate_shub_niggurath_tt:0 "§YShub-Niggurath§! walks out of the woods near our capital as a division, escorted by Dark Young and the Thousand Young."
+ eldritch_incarnate_yog_sothoth_tt:0 "§YYog-Sothoth§! pours through the Gate near our capital as a division, escorted by Wardens of the Gate and Dunwich Horrors."
+ eldritch_incarnate_azathoth_tt:0 "§YA fragment of Azathoth§! tears into our world near our capital as a division, escorted by Spawn of the Nuclear Chaos and Void Pipers."
 
  eldritch_gate_insight:0 "Insight from Beyond the Gate"
 
@@ -126,6 +135,8 @@
  eldritch_exalt_prophet_desc:0 "[ROOT.GetLeader] has led us into this pact. Now [ROOT.GetEldritchGodName] will mark our leader as its chosen voice on Earth.\n\n§YThe current leader gains the patron's Herald and Chosen traits. If a new leader takes power, they can be exalted as well once this rite is available again.§!"
  eldritch_call_servitors:0 "Call Forth the Servitors"
  eldritch_call_servitors_desc:0 "The servants of [ROOT.GetEldritchGodName] are numberless, and the god will lend them to its faithful for a price.\n\n§YTwo veteran divisions of the god's locked template appear near our capital.§!"
+ eldritch_incarnate_god:0 "Incarnate [ROOT.GetEldritchGodName] in the Flesh"
+ eldritch_incarnate_god_desc:0 "The servants are not enough. Over thirty nights, the full congregation of [ROOT.GetNameDef] will chant [ROOT.GetEldritchGodName] into a body that can walk the earth and fight beside our armies.\n\n§YSpawns the god itself as one veteran division: a colossal god battalion with enormous strength, organization and attack, escorted by its servitors. The god cannot be trained or added to other templates. It can be incarnated again once a year.§!"
 
  ################################################################
  # DECISIONS - CTHULHU
@@ -346,6 +357,19 @@
  eldritch_void_pipers:0 "Void Pipers"
  eldritch_void_pipers_desc:0 "Amorphous flute-players whose maddening piping tears at enemy lines from afar."
 
+ eldritch_cthulhu_incarnate:0 "Great Cthulhu"
+ eldritch_cthulhu_incarnate_desc:0 "A mountain of green, rubbery flesh with an octopus head, a mass of feelers, and vast narrow wings. Shells and bullets slow him down. Nothing stops him."
+ eldritch_nyarlathotep_incarnate:0 "Nyarlathotep, the Crawling Chaos"
+ eldritch_nyarlathotep_incarnate_desc:0 "The god takes whatever form will cause the most terror: a three-lobed burning eye, a faceless sphinx, a towering column of black smoke. Enemy soldiers turn on each other just to escape it."
+ eldritch_hastur_incarnate:0 "Hastur, the King in Yellow"
+ eldritch_hastur_incarnate_desc:0 "A towering figure in tattered yellow robes, wearing a mask that is not a mask. Armies that look at it lose the will to fight."
+ eldritch_shub_niggurath_incarnate:0 "Shub-Niggurath, the Black Goat"
+ eldritch_shub_niggurath_incarnate_desc:0 "A cloud-like mass of ropy black tentacles, slavering mouths and stamping hooves. It spawns new young even as it fights."
+ eldritch_yog_sothoth_incarnate:0 "Yog-Sothoth, the All-in-One"
+ eldritch_yog_sothoth_incarnate_desc:0 "A conglomeration of iridescent globes that exists in every moment at once. It is wherever the enemy is about to be."
+ eldritch_azathoth_incarnate:0 "Fragment of Azathoth"
+ eldritch_azathoth_incarnate_desc:0 "A shard of the blind idiot god, boiling with primordial nuclear chaos. Where it passes, matter itself comes apart."
+
  ################################################################
  # HIDDEN RITE TECHNOLOGIES
  ################################################################
@@ -386,6 +410,18 @@
  eldritch_azathoth_rites_2_desc:0 "The secrets of the Nuclear Chaos."
  eldritch_azathoth_rites_3:0 "Rites of the Daemon Sultan III"
  eldritch_azathoth_rites_3_desc:0 "The secrets of the Nuclear Chaos."
+ eldritch_cthulhu_incarnation:0 "Incarnation of Cthulhu"
+ eldritch_cthulhu_incarnation_desc:0 "The Dreamer wears flesh."
+ eldritch_nyarlathotep_incarnation:0 "Incarnation of Nyarlathotep"
+ eldritch_nyarlathotep_incarnation_desc:0 "The Crawling Chaos wears flesh."
+ eldritch_hastur_incarnation:0 "Incarnation of Hastur"
+ eldritch_hastur_incarnation_desc:0 "The King in Yellow wears flesh."
+ eldritch_shub_niggurath_incarnation:0 "Incarnation of Shub-Niggurath"
+ eldritch_shub_niggurath_incarnation_desc:0 "The Black Goat wears flesh."
+ eldritch_yog_sothoth_incarnation:0 "Incarnation of Yog-Sothoth"
+ eldritch_yog_sothoth_incarnation_desc:0 "The Gate wears flesh."
+ eldritch_azathoth_incarnation:0 "Incarnation of Azathoth"
+ eldritch_azathoth_incarnation_desc:0 "The Daemon Sultan wears flesh."
 
  ################################################################
  # EVENTS
@@ -436,6 +472,25 @@
  eldritch.30.d.azathoth:0 "We have opened a door to the throne of chaos itself. Our weapons crackle with the energy of creation's birth, and the land shakes beneath our armies. Nobody in [ROOT.GetNameDef] sleeps, and nobody needs to."
  eldritch.30.a:0 "The stars are right!"
 
+ eldritch.31.t:0 "Cthulhu Walks"
+ eldritch.31.d:0 "The sea off our coast heaved and split. Something the size of a cathedral waded out of the surf, water pouring from its wings, and the earth shook with every step. Great Cthulhu is no longer dreaming. He has taken his place at the head of our armies, and his Deep Ones crowd around his feet."
+ eldritch.31.a:0 "Cthulhu fhtagn! Cthulhu walks!"
+ eldritch.32.t:0 "The Crawling Chaos Takes Form"
+ eldritch.32.d:0 "The man in the fine suit smiled, removed his face, and kept growing. What stands at the head of our army now is many things at once: a burning eye, a faceless sphinx, a pillar of black smoke. Our soldiers do not look at it directly, and they do not need to. The enemy will."
+ eldritch.32.a:0 "The thousand masks go to war."
+ eldritch.33.t:0 "The King Has Come"
+ eldritch.33.d:0 "The curtain fell, and when it rose again the stage had become a road, and down that road came the King in Yellow in his tattered mantle. He did not stop at the theatre door. He has walked out to the front, and our Zealots follow him singing."
+ eldritch.33.a:0 "Hail the King!"
+ eldritch.34.t:0 "The Black Goat Walks Among Us"
+ eldritch.34.d:0 "The woods near the capital opened like a curtain, and the Black Goat came out of them in person: a vast, churning mass of tentacles, mouths and hooves, trailing her children behind her. She has come to fight for the nation that feeds her."
+ eldritch.34.a:0 "Iä! Shub-Niggurath! The Mother walks!"
+ eldritch.35.t:0 "The Gate Opens Fully"
+ eldritch.35.d:0 "Yog-Sothoth did not arrive. It simply was there, as it always had been and always will be. The iridescent globes now hang above our army, and our generals report that the enemy's plans appear in their minds before the enemy has made them."
+ eldritch.35.a:0 "Yog-Sothoth is the key."
+ eldritch.36.t:0 "A Shard of the Daemon Sultan"
+ eldritch.36.d:0 "The flutes rose to a shriek, and the sky above the capital tore open. A sliver of the boiling chaos at the centre of all things fell through and took a shape our eyes can barely hold. It has no mind and no mercy, and for now it marches in our direction of choice."
+ eldritch.36.a:0 "Point it at the enemy. Quickly."
+
  eldritch.40.t:0 "[ROOT.GetEldritchGodName] Demands Tribute"
  eldritch.40.d:0 "The high priests have come to the capital, pale and shaking. Their god is hungry. The offerings have been too small, the rites too infrequent, the faithful too few. [ROOT.GetEldritchGodName] expects more from its chosen nation, and it is not known for patience."
  eldritch.40.a:0 "Give it blood."
@@ -473,6 +528,14 @@
  eldritch_news.2.t:0 "An Old One Walks the Earth"
  eldritch_news.2.d:0 "Whatever [From.GetNameDef] has been doing in its temples, it is finished. [From.GetEldritchGodName] has fully crossed into our world and stands at the side of [From.GetNameDef]. Governments everywhere are holding emergency sessions, and churches are full."
  eldritch_news.2.a:0 "The stars are right, and we are not ready."
+ eldritch_news.3.t:0 "A God Walks the Battlefield"
+ eldritch_news.3.d.cthulhu:0 "Reconnaissance photographs from [From.GetNameDef] show a colossal winged figure with a head like an octopus, wading ashore at the head of an army. Military analysts are unable to estimate its strength. Several of them have resigned."
+ eldritch_news.3.d.nyarlathotep:0 "Front-line reports from [From.GetNameDef] describe a shape that will not stay the same: a burning eye, a black sphinx, a smiling man fifty feet tall. Every report agrees that it is advancing."
+ eldritch_news.3.d.hastur:0 "Correspondents near [From.GetNameDef] report a giant figure in yellow rags marching at the head of its armies. Those who saw its face have not filed their stories."
+ eldritch_news.3.d.shub_niggurath:0 "Something vast and black, all tentacles and hooves, has come out of the forests of [From.GetNameDef] and joined its army. Wherever it goes, new monsters spring from the ground."
+ eldritch_news.3.d.yog_sothoth:0 "Above the armies of [From.GetNameDef] hangs a cluster of shimmering globes the size of mountains. Witnesses say it was there before they looked, and will be there after they die."
+ eldritch_news.3.d.azathoth:0 "The sky over [From.GetNameDef] has torn open, and something has come through. Instruments around the world are recording impossible readings. Whatever it is, it now marches with the army of [From.GetNameDef]."
+ eldritch_news.3.a:0 "Gods help us. Not that one."
 
  ################################################################
  # GAME RULES
