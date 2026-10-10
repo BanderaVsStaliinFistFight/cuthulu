@@ -102,13 +102,15 @@ From Tier II, **Incarnate [God] in the Flesh** brings the god onto the battlefie
 A god battalion has 400 strength, 150+ organization, 80% morale and +200% attack / +300% defense and breakthrough, rising further at Tier III. It takes 8 combat width. You can't put it in your own templates or train it: it only arrives through the ritual. Losses are reinforced from your normal stockpile.
 
 ### 6. 3D models for the King in Yellow's forces
-Hastur's units have their own map models instead of reusing vanilla infantry:
+Hastur's units have their own detailed map models instead of reusing vanilla infantry:
 
 | Battalion | Model |
 |---|---|
-| **Zealots of the Yellow Sign** | hooded cultist in yellow robes and a pale mask, with a spear and a black banner bearing the Yellow Sign |
-| **Byakhee Riders** | masked rider on a bat-winged Byakhee with glowing eyes |
-| **The King in Yellow** (incarnate) | giant crowned figure in tattered yellow robes and mantle, pale mask, Yellow Sign sceptre, tentacles spilling from under the hem |
+| **Zealots of the Yellow Sign** | a gaunt cultist in a grimy, frayed yellow robe and draped cowl, a tall pointed hood over a bandage-wrapped face, holding a spear with a torn black banner bearing a faded Yellow Sign (~8k triangles) |
+| **Byakhee Riders** | a hooded rider on an emaciated Byakhee: ribbed leathery body, bony spine, skull-like toothed beak, glowing eyes, torn bat wings on bone struts, taloned legs (~9k triangles) |
+| **The King in Yellow** (incarnate) | a towering hooded figure with a bandaged face, layered robe and cowl with deep folds and a ragged, holed hem, and eight thick tentacles covered in suckers rising and curling around him (~43k triangles; only one is ever on the map) |
+
+They share a 1024px texture set: woven cloth with sun-bleaching, grime and stains climbing from the hem, wrapped bandages with old blood, mottled tentacle skin with green slime, wrinkled leather, veined wing membrane, tarnished iron and weathered wood. Each texture has a matching normal map for surface detail.
 
 The models are static: they have no walk or attack animation. A division is drawn with the model of its highest-priority battalion, so the *Host of the Yellow Sign* shows a Byakhee rider and the King's division shows the King himself.
 
@@ -168,7 +170,7 @@ Run `python3 tools/validate_mod.py` after editing to catch missing localisation,
 The script is written against the standard HoI4 modding syntax. It passes the bundled static validator but **has not been run in-game yet**. If something misbehaves, check `Documents/Paradox Interactive/Hearts of Iron IV/logs/error.log`. These parts are the most likely to need a tweak on a new game version:
 
 * `create_unit` (servitor and god spawning) and the locked `division_template`.
-* **The 3D models.** They're written in Paradox's binary `.mesh` format by `tools/generate_models.py`, following the community io_pdx_mesh exporter's layout, and read back and checked. They have never been loaded by the game. If they look too big or too small, change `scale` in `gfx/entities/eldritch_hastur_meshes.gfx` (default 2.0). If they cause any problem, set `sprite = infantry` again on `eldritch_yellow_zealots`, `eldritch_byakhee_riders` and `eldritch_hastur_incarnate` in `common/units/eldritch_units.txt` to go back to vanilla models.
+* **The 3D models.** They're written in Paradox's binary `.mesh` format by `tools/generate_models.py`, following the community io_pdx_mesh exporter's layout, and read back and checked. They have never been loaded by the game. The textures follow the Paradox channel layout as io_pdx_mesh reads it: normal map X in green, Y in alpha and emissive in blue; specular R mask, G specular, B metalness, A roughness. If surfaces look oddly lit, inverted or glowing, the in-game layout differs from that. If they look too big or too small, change `scale` in `gfx/entities/eldritch_hastur_meshes.gfx` (default 2.0). If they cause any problem, set `sprite = infantry` again on `eldritch_yellow_zealots`, `eldritch_byakhee_riders` and `eldritch_hastur_incarnate` in `common/units/eldritch_units.txt` to go back to vanilla models.
 * The god battalions are deliberately never unlocked for the designer. If the game refuses to spawn a template that contains them, the god division will not appear. `error.log` will say so.
 * The hidden rite technologies, which have no tech-tree folder and are granted with `set_technology`.
 * Icon sizes. The textures are 64×67 (spirits), 46×46 (decisions), 60×40 (battalions), 40×40 (traits), 156×210 (portraits) and 210×176 / 397×153 (events). If the UI expects different sizes, change the constants at the top of `tools/generate_art.py` and regenerate.
