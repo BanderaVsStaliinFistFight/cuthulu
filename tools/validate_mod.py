@@ -7,7 +7,8 @@ catches the mistakes that are easy to make by hand:
     tooltips and custom cost texts
   * custom battalion sprites without an entity, entities without a mesh
     definition, mesh definitions without a .mesh file, animation states
-    without an animation on the mesh, animations without an .anim file
+    without an animation on the mesh, animations whose .anim file is not
+    next to the .asset that defines them (the game resolves it from there)
   * icons / pictures without a sprite, sprites without a texture file,
     battalions without a designer icon, traits without an icon, missing
     portrait files
@@ -197,8 +198,9 @@ def main():
                 fields = {k: v for k, _, v in value}
                 name, afile = fields.get("name", "").strip('"'), fields.get("file", "").strip('"')
                 anims.add(name)
-                if not os.path.exists(os.path.join(ROOT, afile)):
-                    problems.append(f"{path}: animation {name} points to missing file {afile}")
+                # the game looks for the file next to the .asset that defines it
+                if not os.path.exists(os.path.join(ROOT, os.path.dirname(path), afile)):
+                    problems.append(f"{path}: animation {name} file {afile} is not in {os.path.dirname(path)}/")
     meshes = {}
     for path, items in load_script("gfx/entities/*.gfx", problems).items():
         for key, _, value in walk(items):

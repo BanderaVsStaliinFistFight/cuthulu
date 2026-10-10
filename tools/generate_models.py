@@ -11,8 +11,8 @@ texture set and the definitions HoI4 needs:
     gfx/models/units/eldritch/*.anim            idle, move, attack, defend, support_attack and death per model
     gfx/models/units/eldritch/eldritch_hastur_animations.asset   animation definitions
     gfx/models/units/eldritch/*.dds             shared texture atlas (diffuse, normal, specular)
-    gfx/entities/eldritch_hastur_meshes.gfx     pdxmesh definitions (scale and animation ids)
-    gfx/entities/eldritch_hastur_units.asset    <sprite>_entity definitions with their map states
+    gfx/entities/eldritch_hastur_meshes.gfx     pdxmesh definitions and their animation ids
+    gfx/entities/eldritch_hastur_units.asset    <sprite>_entity definitions with their map states and scale
 
 Clausewitz conventions (from the community io_pdx_mesh exporter/importer):
   * Y is up, models face -Z, UV v=0 is the top of the texture, and triangles
@@ -50,10 +50,12 @@ TEXTURE = "eldritch_hastur"
 ATLAS = 1024
 SPEC_SIZE = 512
 
-# In-game size multiplier written into the pdxmesh definitions. The models are
-# authored at roughly human scale (a zealot is ~1.9 units tall); raise or lower
-# this if units look too small or too large on the map.
-MESH_SCALE = 2.0
+# In-game size multiplier written into the unit entities. The models are
+# authored at human scale (a zealot is ~1.9 units tall); vanilla-sized infantry
+# stands about 6 units tall on the map. Animated meshes are scaled on the
+# entity, never on the pdxmesh, so the skeleton and the skin scale together.
+ENTITY_SCALE = 3.0
+SHADER = "PdxMeshAdvanced"  # the shader HoI4's own animated (skinned) unit models use
 
 # Atlas regions in pixels: x0, y0, x1, y1 (y grows downwards, like UV v).
 REGIONS = {
@@ -867,7 +869,7 @@ def zealot():
 
 # ----- tentacles ---------------------------------------------------------------
 
-TENTACLE_BONES = 5
+TENTACLE_BONES = 4  # keeps the King at 38 bones, inside what animated HoI4 units use
 
 
 def tentacle_path(L, lift, curl, twist, start_r, theta, steps=56):
@@ -1530,7 +1532,7 @@ ANIMATIONS = {
         "death": (king_death, 45, False)},
 }
 # entity state -> animation id
-STATES = [("idle", "idle"), ("move", "move"), ("attack", "attack"), ("defend", "defend"),
+STATES = [("idle", "idle"), ("training", "idle"), ("move", "move"), ("attack", "attack"), ("defend", "defend"),
           ("support_attack", "support_attack"), ("retreat", "move"), ("death", "death")]
 
 
@@ -1639,13 +1641,37 @@ def mesh_arrays(m):
     }
 
 
+def collision_box(lo, hi):
+    """Box with four vertices per face and outward winding: flat p, n and tri lists."""
+    lo, hi = np.asarray(lo, float), np.asarray(hi, float)
+    p, n, tri = [], [], []
+    for axis in range(3):
+        for sign in (-1.0, 1.0):
+            normal = np.zeros(3)
+            normal[axis] = sign
+            u, v = (axis + 1) % 3, (axis + 2) % 3
+            base = len(p)
+            for cu, cv in ((0, 0), (1, 0), (1, 1), (0, 1)):
+                c = np.zeros(3)
+                c[axis] = hi[axis] if sign > 0 else lo[axis]
+                c[u] = (lo[u], hi[u])[cu]
+                c[v] = (lo[v], hi[v])[cv]
+                p.append(c)
+                n.append(normal)
+            quad = [(base, base + 1, base + 2), (base, base + 2, base + 3)]
+            for t in quad:
+                A, B, C = (p[i] for i in t)
+                tri.extend(t if np.dot(np.cross(B - A, C - A), normal) > 0 else (t[0], t[2], t[1]))
+    return np.array(p).ravel().tolist(), np.array(n).ravel().tolist(), tri
+
+
 def write_mesh(path, shape_name, a, sk=None):
     data = b"@@b@" + _prop("pdxasset", [1, 0]) + _obj("object", 1) + _obj(shape_name, 2) + _obj("mesh", 3)
     for key in ("p", "n", "ta", "u0", "tri", "boundingsphere"):
         data += _prop(key, a[key])
     data += _obj("aabb", 4) + _prop("min", a["min"]) + _prop("max", a["max"])
     data += _obj("material", 4)
-    data += _prop("shader", "PdxMeshStandard")
+    data += _prop("shader", SHADER)
     data += _prop("diff", f"{TEXTURE}_diffuse.dds")
     data += _prop("n", f"{TEXTURE}_normal.dds")
     data += _prop("spec", f"{TEXTURE}_spec.dds")
@@ -1659,6 +1685,14 @@ def write_mesh(path, shape_name, a, sk=None):
                 data += _prop("pa", [sk.parent[b]])
             # inverse bind matrix (3x4, column by column); bind rotations are identity
             data += _prop("tx", [1.0, 0.0, 0.0, 0.0, 1.0, 0.0, 0.0, 0.0, 1.0, -x, -y, -z])
+    # an unskinned box with the Collision shader, like vanilla units, for picking the model
+    box_p, box_n, box_tri = collision_box(a["min"], a["max"])
+    lo, hi = np.array(a["min"]), np.array(a["max"])
+    data += _obj("collision_boxShape", 2) + _obj("mesh", 3)
+    data += _prop("p", box_p) + _prop("n", box_n) + _prop("tri", box_tri)
+    data += _prop("boundingsphere", [*((lo + hi) / 2).tolist(), float(np.linalg.norm(hi - lo) / 2)])
+    data += _obj("aabb", 4) + _prop("min", a["min"]) + _prop("max", a["max"])
+    data += _obj("material", 4) + _prop("shader", "Collision")
     data += _obj("locator", 1)
     full = os.path.join(ROOT, path)
     os.makedirs(os.path.dirname(full), exist_ok=True)
@@ -1772,7 +1806,7 @@ def verify_mesh(path):
     assert uv.min() >= 0 and uv.max() <= 1
     kids = {c["name"]: c["props"] for c in mesh["children"]}
     assert set(kids) <= {"aabb", "material", "skin"} and {"aabb", "material"} <= set(kids)
-    assert kids["material"]["shader"] == "PdxMeshStandard"
+    assert kids["material"]["shader"] == SHADER
     shape = tree["children"][0]["children"][0]
     skel = [c for c in shape["children"] if c["name"] == "skeleton"]
     if "skin" in kids:
@@ -1788,6 +1822,16 @@ def verify_mesh(path):
         assert np.allclose(w.sum(axis=1), 1.0, atol=1e-4), "skin weights do not sum to 1"
     for slot in ("diff", "n", "spec"):
         assert os.path.exists(os.path.join(os.path.dirname(path), kids["material"][slot])), slot
+    shapes = tree["children"][0]["children"]
+    assert [s["name"] for s in shapes][1:] == ["collision_boxShape"], "missing collision shape"
+    box = shapes[1]["children"][0]
+    assert [c["name"] for c in box["children"]] == ["aabb", "material"]
+    assert box["children"][1]["props"]["shader"] == "Collision" and len(box["props"]["tri"]) == 36
+    bp = np.array(box["props"]["p"]).reshape(-1, 3)
+    bt = np.array(box["props"]["tri"]).reshape(-1, 3)
+    bn = np.array(box["props"]["n"]).reshape(-1, 3)
+    out = np.einsum("ij,ij->i", np.cross(bp[bt[:, 1]] - bp[bt[:, 0]], bp[bt[:, 2]] - bp[bt[:, 0]]), bn[bt[:, 0]])
+    assert (out > 0).all(), "collision box winding"
     p = np.array(pr["p"]).reshape(-1, 3)
     n = np.array(pr["n"]).reshape(-1, 3)
     t = np.array(pr["tri"]).reshape(-1, 3)
@@ -2073,27 +2117,28 @@ def make_textures():
 def write_definitions():
     gfx = ["#####################################################################",
            "# Eldritch Pacts - King in Yellow 3D models (pdxmesh definitions)",
-           "# Generated by tools/generate_models.py. Change MESH_SCALE there (or",
-           "# the scale values below) if the models look too large or too small.",
+           "# Generated by tools/generate_models.py. Animated meshes carry no",
+           "# scale here: the size is set on the entities (ENTITY_SCALE).",
            "#####################################################################",
            "", "objectTypes = {"]
     for mesh in MODELS:
         gfx += ["\tpdxmesh = {", f'\t\tname = "{mesh}_mesh"', f'\t\tfile = "{MODEL_DIR}/{mesh}.mesh"']
         for anim_id in ANIMATIONS[mesh]:
             gfx.append(f'\t\tanimation = {{ id = "{anim_id}" type = "{mesh}_{anim_id}_anim" }}')
-        gfx += [f"\t\tscale = {MESH_SCALE}", "\t}"]
+        gfx.append("\t}")
     gfx.append("}")
     with open(os.path.join(ROOT, "gfx/entities/eldritch_hastur_meshes.gfx"), "w") as f:
         f.write("\n".join(gfx) + "\n")
 
     anims = ["#####################################################################",
              "# Eldritch Pacts - King in Yellow animations",
-             "# Generated by tools/generate_models.py.",
+             "# Generated by tools/generate_models.py. Like vanilla, each file is",
+             "# named relative to this .asset's own folder.",
              "#####################################################################", ""]
     for mesh, table in ANIMATIONS.items():
         for anim_id in table:
             anims += ["animation = {", f'\tname = "{mesh}_{anim_id}_anim"',
-                      f'\tfile = "{MODEL_DIR}/{mesh}_{anim_id}.anim"', "}", ""]
+                      f'\tfile = "{mesh}_{anim_id}.anim"', "}", ""]
     with open(os.path.join(ROOT, MODEL_DIR, "eldritch_hastur_animations.asset"), "w") as f:
         f.write("\n".join(anims))
 
@@ -2109,7 +2154,7 @@ def write_definitions():
             loops = ANIMATIONS[mesh][anim_id][2]
             extra = "" if loops else " looping = no"
             asset.append(f'\tstate = {{ name = "{state}" animation = "{anim_id}" animation_blend_time = 0.25{extra} }}')
-        asset += ["}", ""]
+        asset += [f"\tscale = {ENTITY_SCALE}", "}", ""]
     with open(os.path.join(ROOT, "gfx/entities/eldritch_hastur_units.asset"), "w") as f:
         f.write("\n".join(asset))
 
