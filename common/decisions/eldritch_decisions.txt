@@ -497,8 +497,11 @@ eldritch_forbidden_rites = {
 			eldritch_has_pact = yes
 		}
 
+		# Only one incarnation at a time: the rite opens again once the
+		# god's division has been destroyed.
 		available = {
 			eldritch_pact_tier_at_least_2 = yes
+			eldritch_no_god_incarnate_deployed = yes
 		}
 
 		days_remove = 30

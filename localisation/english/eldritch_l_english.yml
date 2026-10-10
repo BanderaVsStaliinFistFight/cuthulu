@@ -52,6 +52,7 @@
  eldritch_no_ritual_underway_tt:0 "No summoning ritual is currently underway"
  eldritch_has_coastline_tt:0 "Owns at least one coastal state"
  eldritch_pact_tier_at_least_2_tt:0 "The pact has been deepened to at least §YTier II§!"
+ eldritch_no_god_incarnate_deployed_tt:0 "[ROOT.GetEldritchGodName] does not already walk the battlefield in the flesh"
  eldritch_has_unanointed_general_tt:0 "Has a general who has not yet been anointed"
  eldritch_has_unanointed_admiral_tt:0 "Has an admiral who has not yet been anointed"
 
@@ -136,7 +137,7 @@
  eldritch_call_servitors:0 "Call Forth the Servitors"
  eldritch_call_servitors_desc:0 "The servants of [ROOT.GetEldritchGodName] are numberless, and the god will lend them to its faithful for a price.\n\n§YTwo veteran divisions of the god's locked template appear near our capital.§!"
  eldritch_incarnate_god:0 "Incarnate [ROOT.GetEldritchGodName] in the Flesh"
- eldritch_incarnate_god_desc:0 "The servants are not enough. Over thirty nights, the full congregation of [ROOT.GetNameDef] will chant [ROOT.GetEldritchGodName] into a body that can walk the earth and fight beside our armies.\n\n§YSpawns the god itself as one veteran division: a colossal god battalion with enormous strength, organization and attack, escorted by its servitors. The god cannot be trained or added to other templates. It can be incarnated again once a year.§!"
+ eldritch_incarnate_god_desc:0 "The servants are not enough. Over thirty nights, the full congregation of [ROOT.GetNameDef] will chant [ROOT.GetEldritchGodName] into a body that can walk the earth and fight beside our armies.\n\n§YSpawns the god itself as one veteran division: a colossal god battalion with enormous strength, organization and attack, escorted by its servitors. The god cannot be trained or added to other templates. Only one incarnation can walk the earth at a time: once it is destroyed, it can be incarnated again, at most once a year.§!"
 
  ################################################################
  # DECISIONS - CTHULHU

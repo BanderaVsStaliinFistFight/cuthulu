@@ -88,7 +88,7 @@ Favor is the currency of the pact. You gain it monthly (5 / 8 / 12 by tier), fro
 | **Azathoth** – the Daemon Sultan *(needs 50% war support, −10% stability)* | Attack, breakthrough, factory output, at a heavy stability cost | **Spawn of the Nuclear Chaos** (shock infantry), **Void Pipers** (sorcerous artillery) – *Chaos Horde* | Mindless Fury (attack, breakthrough, speed) | **The Piper of the Void** | **Bottle the Nuclear Chaos** – a nuclear bomb (Tier II+) | Two nuclear bombs |
 
 ### 5. The gods incarnate
-From Tier II, **Incarnate [God] in the Flesh** brings the god onto the battlefield as a veteran division at your capital, with the world told what has happened. Each incarnate division is one colossal **god battalion** plus an escort of the god's servitors:
+From Tier II, **Incarnate [God] in the Flesh** brings the god onto the battlefield as a veteran division at your capital, with the world told what has happened. Only one incarnation can be on the map at a time: the decision stays locked while the god's division exists and reopens once it is destroyed (still at most once a year, for 200 Favor). Each incarnate division is one colossal **god battalion** plus an escort of the god's servitors:
 
 | God | Division | Escort | Terrain where the god is strongest |
 |---|---|---|---|

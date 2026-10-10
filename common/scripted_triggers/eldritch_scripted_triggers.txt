@@ -35,6 +35,22 @@ eldritch_pact_tier_at_least_2 = {
 	}
 }
 
+# None of our incarnate god divisions is on the map. Counts the god
+# battalion itself, so the check still holds if the division is renamed
+# or its template edited, and clears the moment the god's division is
+# destroyed.
+eldritch_no_god_incarnate_deployed = {
+	custom_trigger_tooltip = {
+		tooltip = eldritch_no_god_incarnate_deployed_tt
+		check_variable = { num_battalions_with_type@eldritch_cthulhu_incarnate < 1 }
+		check_variable = { num_battalions_with_type@eldritch_nyarlathotep_incarnate < 1 }
+		check_variable = { num_battalions_with_type@eldritch_hastur_incarnate < 1 }
+		check_variable = { num_battalions_with_type@eldritch_shub_niggurath_incarnate < 1 }
+		check_variable = { num_battalions_with_type@eldritch_yog_sothoth_incarnate < 1 }
+		check_variable = { num_battalions_with_type@eldritch_azathoth_incarnate < 1 }
+	}
+}
+
 # A general who has not yet been touched by the god (avatars excluded).
 eldritch_has_unanointed_general = {
 	custom_trigger_tooltip = {
