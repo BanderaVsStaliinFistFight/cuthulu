@@ -8,16 +8,34 @@ objectTypes = {
 	pdxmesh = {
 		name = "eldritch_yellow_zealot_mesh"
 		file = "gfx/models/units/eldritch/eldritch_yellow_zealot.mesh"
+		animation = { id = "idle" type = "eldritch_yellow_zealot_idle_anim" }
+		animation = { id = "move" type = "eldritch_yellow_zealot_move_anim" }
+		animation = { id = "attack" type = "eldritch_yellow_zealot_attack_anim" }
+		animation = { id = "defend" type = "eldritch_yellow_zealot_defend_anim" }
+		animation = { id = "support_attack" type = "eldritch_yellow_zealot_support_attack_anim" }
+		animation = { id = "death" type = "eldritch_yellow_zealot_death_anim" }
 		scale = 2.0
 	}
 	pdxmesh = {
 		name = "eldritch_byakhee_rider_mesh"
 		file = "gfx/models/units/eldritch/eldritch_byakhee_rider.mesh"
+		animation = { id = "idle" type = "eldritch_byakhee_rider_idle_anim" }
+		animation = { id = "move" type = "eldritch_byakhee_rider_move_anim" }
+		animation = { id = "attack" type = "eldritch_byakhee_rider_attack_anim" }
+		animation = { id = "defend" type = "eldritch_byakhee_rider_defend_anim" }
+		animation = { id = "support_attack" type = "eldritch_byakhee_rider_support_attack_anim" }
+		animation = { id = "death" type = "eldritch_byakhee_rider_death_anim" }
 		scale = 2.0
 	}
 	pdxmesh = {
 		name = "eldritch_king_in_yellow_mesh"
 		file = "gfx/models/units/eldritch/eldritch_king_in_yellow.mesh"
+		animation = { id = "idle" type = "eldritch_king_in_yellow_idle_anim" }
+		animation = { id = "move" type = "eldritch_king_in_yellow_move_anim" }
+		animation = { id = "attack" type = "eldritch_king_in_yellow_attack_anim" }
+		animation = { id = "defend" type = "eldritch_king_in_yellow_defend_anim" }
+		animation = { id = "support_attack" type = "eldritch_king_in_yellow_support_attack_anim" }
+		animation = { id = "death" type = "eldritch_king_in_yellow_death_anim" }
 		scale = 2.0
 	}
 }

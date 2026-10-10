@@ -6,7 +6,8 @@ catches the mistakes that are easy to make by hand:
   * missing localisation for decisions, ideas, traits, units, techs, events,
     tooltips and custom cost texts
   * custom battalion sprites without an entity, entities without a mesh
-    definition, mesh definitions without a .mesh file
+    definition, mesh definitions without a .mesh file, animation states
+    without an animation on the mesh, animations without an .anim file
   * icons / pictures without a sprite, sprites without a texture file,
     battalions without a designer icon, traits without an icon, missing
     portrait files
@@ -187,16 +188,32 @@ def main():
                         if "unit_leader" in path:
                             need_sprite("GFX_trait_" + trait, path)
 
-    # 3D models: pdxmesh definitions (gfx/entities/*.gfx) and entities (*.asset)
+    # 3D models: animation clips (gfx/models/**/*.asset), pdxmesh definitions
+    # (gfx/entities/*.gfx) and entities (gfx/entities/*.asset)
+    anims = set()
+    for path, items in load_script("gfx/models/**/*.asset", problems).items():
+        for key, _, value in items:
+            if key == "animation" and isinstance(value, list):
+                fields = {k: v for k, _, v in value}
+                name, afile = fields.get("name", "").strip('"'), fields.get("file", "").strip('"')
+                anims.add(name)
+                if not os.path.exists(os.path.join(ROOT, afile)):
+                    problems.append(f"{path}: animation {name} points to missing file {afile}")
     meshes = {}
     for path, items in load_script("gfx/entities/*.gfx", problems).items():
         for key, _, value in walk(items):
             if key == "pdxmesh" and isinstance(value, list):
                 fields = {k: v for k, _, v in value}
                 name, mfile = fields.get("name", "").strip('"'), fields.get("file", "").strip('"')
-                meshes[name] = mfile
+                meshes[name] = set()
                 if not os.path.exists(os.path.join(ROOT, mfile)):
                     problems.append(f"{path}: pdxmesh {name} points to missing file {mfile}")
+                for k, _, v in value:
+                    if k == "animation" and isinstance(v, list):
+                        anim = {ak: av.strip('"') for ak, _, av in v}
+                        meshes[name].add(anim.get("id"))
+                        if anim.get("type") not in anims:
+                            problems.append(f"{path}: pdxmesh {name} uses undefined animation {anim.get('type')}")
     entities = set()
     for path, items in load_script("gfx/entities/*.asset", problems).items():
         for key, _, value in items:
@@ -206,6 +223,19 @@ def main():
                 mesh = fields.get("pdxmesh", "").strip('"')
                 if mesh not in meshes:
                     problems.append(f"{path}: entity {fields.get('name')} uses undefined pdxmesh {mesh}")
+                    continue
+                states = {}
+                for k, _, v in value:
+                    if k == "state" and isinstance(v, list):
+                        state = {sk: sv.strip('"') for sk, _, sv in v}
+                        states[state.get("name")] = state.get("animation")
+                for state, anim in states.items():
+                    if anim not in meshes[mesh]:
+                        problems.append(f"{path}: state {state} of {fields.get('name')} plays animation "
+                                        f"{anim}, which {mesh} does not define")
+                default = fields.get("default_state", "").strip('"')
+                if default and default not in states:
+                    problems.append(f"{path}: {fields.get('name')} has default_state {default} but no such state")
 
     subunits = set()
     for path, items in load_script("common/units/*.txt", problems).items():

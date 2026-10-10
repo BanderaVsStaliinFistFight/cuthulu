@@ -112,7 +112,21 @@ Hastur's units have their own detailed map models instead of reusing vanilla inf
 
 They share a 1024px texture set: woven cloth with sun-bleaching, grime and stains climbing from the hem, wrapped bandages with old blood, mottled tentacle skin with green slime, wrinkled leather, veined wing membrane, tarnished iron and weathered wood. Each texture has a matching normal map for surface detail.
 
-The models are static: they have no walk or attack animation. A division is drawn with the model of its highest-priority battalion, so the *Host of the Yellow Sign* shows a Byakhee rider and the King's division shows the King himself.
+#### Animations
+Each model is rigged to a skeleton and has six animations, played by the unit's map states (`retreat` reuses the walk):
+
+| State | Zealot (19 bones) | Byakhee Rider (28 bones) | The King in Yellow (46 bones) |
+|---|---|---|---|
+| `idle` | breathes, looks around, the banner stirs | shifts its weight, turns its head, swishes its tail, wings twitch; the rider looks about | sways, all eight tentacles ripple in slow waves |
+| `move` / `retreat` | walks: legs stride under the robe, the free arm swings, the banner sways | takes off and flies: rises off the ground, beats its wings, trails its talons | glides forward on rolling tentacle waves |
+| `attack` | winds up and thrusts the spear level with a lunge | rears back with its jaws open, then snaps forward; the rider couches the lance | the front tentacles rear up, then slam down |
+| `defend` | crouches with the spear braced like a pike | mantles: wings spread low and wide, neck drawn back, jaws hissing | tentacles rise into a writhing guard |
+| `support_attack` | raises the spear and chants | shrieks skyward with wings half raised | tips its head back, tentacles undulating in a rite |
+| `death` | sinks to its knees and slumps forward, dropping the spear | its legs fold and it sinks down, wings sprawling to the ground and head dropping; the rider slumps over its neck | slumps forward and sinks into the earth, tentacles going limp |
+
+The animations are 15 fps and loop, except `death`, which plays once.
+
+A division is drawn with the model of its highest-priority battalion, so the *Host of the Yellow Sign* shows a Byakhee rider and the King's division shows the King himself.
 
 ### 7. The god's whims
 About once every eight months on average, your patron makes itself known: it demands tribute, a prophet preaches in the streets, the stars align, or your soldiers share a dream. Each event trades Favor against manpower, political power, stability or war support.
@@ -154,11 +168,12 @@ gfx/                               generated art (DDS): spirit, decision, battal
                                    event pictures, and avatar portraits (gfx/leaders/eldritch/)
 localisation/english/              all text (UTF-8 with BOM)
 install/eldritch_pacts.mod         launcher file to copy into your mod/ folder
-gfx/entities/                      King in Yellow mesh definitions (.gfx) and unit entities (.asset)
-gfx/models/units/eldritch/         King in Yellow .mesh models and their texture atlas
+gfx/entities/                      King in Yellow mesh definitions (.gfx) and unit entities with their animation states (.asset)
+gfx/models/units/eldritch/         King in Yellow .mesh models, .anim animations, their definitions and the texture atlas
 tools/generate_art.py              regenerates every texture and the thumbnail
-tools/generate_models.py           regenerates the 3D models (add --preview DIR to render PNG previews)
-tools/validate_mod.py              static checks: braces, localisation, sprites, entities, references
+tools/generate_models.py           regenerates the 3D models and animations (add --preview DIR to render PNG
+                                   previews, an animated GIF per animation and a contact sheet per model)
+tools/validate_mod.py              static checks: braces, localisation, sprites, entities, animations, references
 ```
 
 Run `python3 tools/validate_mod.py` after editing to catch missing localisation, sprites, effects, traits or events. Run `python3 tools/generate_art.py` (needs Pillow and numpy) to rebuild the art.
@@ -170,7 +185,7 @@ Run `python3 tools/validate_mod.py` after editing to catch missing localisation,
 The script is written against the standard HoI4 modding syntax. It passes the bundled static validator but **has not been run in-game yet**. If something misbehaves, check `Documents/Paradox Interactive/Hearts of Iron IV/logs/error.log`. These parts are the most likely to need a tweak on a new game version:
 
 * `create_unit` (servitor and god spawning) and the locked `division_template`.
-* **The 3D models.** They're written in Paradox's binary `.mesh` format by `tools/generate_models.py`, following the community io_pdx_mesh exporter's layout, and read back and checked. They have never been loaded by the game. The textures follow the Paradox channel layout as io_pdx_mesh reads it: normal map X in green, Y in alpha and emissive in blue; specular R mask, G specular, B metalness, A roughness. If surfaces look oddly lit, inverted or glowing, the in-game layout differs from that. If they look too big or too small, change `scale` in `gfx/entities/eldritch_hastur_meshes.gfx` (default 2.0). If they cause any problem, set `sprite = infantry` again on `eldritch_yellow_zealots`, `eldritch_byakhee_riders` and `eldritch_hastur_incarnate` in `common/units/eldritch_units.txt` to go back to vanilla models.
+* **The 3D models.** They're written in Paradox's binary `.mesh` format by `tools/generate_models.py`, following the community io_pdx_mesh exporter's layout, and read back and checked. They have never been loaded by the game. The textures follow the Paradox channel layout as io_pdx_mesh reads it: normal map X in green, Y in alpha and emissive in blue; specular R mask, G specular, B metalness, A roughness. If surfaces look oddly lit, inverted or glowing, the in-game layout differs from that. If they look too big or too small, change `scale` in `gfx/entities/eldritch_hastur_meshes.gfx` (default 2.0). The **animations** are skinned (up to four bone weights per vertex) and written in the binary `.anim` format, which is also read back and checked. If a unit stands in its rest pose without moving, the game didn't accept the animation files or the state names; `error.log` will name the file. If a model is drawn crumpled or stretched, the game reads the skeleton differently; use the vanilla-model fallback below. If they cause any problem, set `sprite = infantry` again on `eldritch_yellow_zealots`, `eldritch_byakhee_riders` and `eldritch_hastur_incarnate` in `common/units/eldritch_units.txt` to go back to vanilla models.
 * The god battalions are deliberately never unlocked for the designer. If the game refuses to spawn a template that contains them, the god division will not appear. `error.log` will say so.
 * The hidden rite technologies, which have no tech-tree folder and are granted with `set_technology`.
 * Icon sizes. The textures are 64×67 (spirits), 46×46 (decisions), 60×40 (battalions), 40×40 (traits), 156×210 (portraits) and 210×176 / 397×153 (events). If the UI expects different sizes, change the constants at the top of `tools/generate_art.py` and regenerate.

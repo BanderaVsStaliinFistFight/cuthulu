@@ -1,16 +1,18 @@
 #!/usr/bin/env python3
 """Generate the 3D map models for the King in Yellow (Hastur) units.
 
-Builds three detailed static models procedurally - human figures on real
+Builds three detailed models procedurally - human figures on real
 anatomical proportions dressed in hanging cloth, and a Byakhee with plausible
-flying-creature anatomy - and writes them in the
-Clausewitz binary .mesh format, together with a 1024px texture set and the
-mesh/entity definitions HoI4 needs:
+flying-creature anatomy - rigs each one to a skeleton, animates it, and writes
+them in the Clausewitz binary .mesh/.anim formats, together with a 1024px
+texture set and the definitions HoI4 needs:
 
-    gfx/models/units/eldritch/*.mesh            the models
+    gfx/models/units/eldritch/*.mesh            the skinned models
+    gfx/models/units/eldritch/*.anim            idle, move, attack, defend, support_attack and death per model
+    gfx/models/units/eldritch/eldritch_hastur_animations.asset   animation definitions
     gfx/models/units/eldritch/*.dds             shared texture atlas (diffuse, normal, specular)
-    gfx/entities/eldritch_hastur_meshes.gfx     pdxmesh definitions (with the in-game scale)
-    gfx/entities/eldritch_hastur_units.asset    <sprite>_entity definitions used by the battalions
+    gfx/entities/eldritch_hastur_meshes.gfx     pdxmesh definitions (scale and animation ids)
+    gfx/entities/eldritch_hastur_units.asset    <sprite>_entity definitions with their map states
 
 Clausewitz conventions (from the community io_pdx_mesh exporter/importer):
   * Y is up, models face -Z, UV v=0 is the top of the texture, and triangles
@@ -18,14 +20,21 @@ Clausewitz conventions (from the community io_pdx_mesh exporter/importer):
   * Tangents are (x, y, z, w) with w = sign(dot(cross(N, T), dP/dv)).
   * Normal maps: X in green, Y (up) in alpha; blue is an emissive mask.
   * Specular maps: R = mask, G = specular level, B = metalness, A = roughness.
+  * Skinning: up to four (bone, weight) pairs per vertex; each skeleton bone
+    stores its inverse bind matrix as 3x4, column by column. Bind poses here
+    have no rotation, so that is a translation by -position.
+  * Animations store each bone's local pose (t, q xyzw, s) in [info], and the
+    changing channels frame by frame, bone by bone, in [samples].
 
 Usage:
     python3 tools/generate_models.py                  write everything
-    python3 tools/generate_models.py --preview DIR    also render preview PNGs into DIR
+    python3 tools/generate_models.py --preview DIR    also render previews into DIR: a still per model,
+                                                      a GIF per animation and a contact sheet per model
 
 Requires numpy and Pillow. Output is deterministic.
 """
 
+import contextlib
 import functools
 import math
 import os
@@ -127,11 +136,30 @@ def hash_noise(x, seed=0):
 # ---------------------------------------------------------------------------
 
 class MeshBuilder:
+    """Accumulates vertices, triangles and skin weights.
+
+    self.binding decides which bones new vertices follow: None (bone 0), a dict
+    {bone: weight}, or a function p -> dict. Use `with m.bound(...)` to set it.
+    """
+
     def __init__(self):
-        self.p, self.n, self.uv, self.tris = [], [], [], []
+        self.p, self.n, self.uv, self.tris, self.skin = [], [], [], [], []
+        self.binding = None
+
+    @contextlib.contextmanager
+    def bound(self, binding):
+        old = self.binding
+        self.binding = binding
+        try:
+            yield
+        finally:
+            self.binding = old
 
     def vert(self, p, n, uv):
-        self.p.append(np.asarray(p, dtype=float))
+        p = np.asarray(p, dtype=float)
+        b = self.binding
+        self.skin.append(b(p) if callable(b) else (b if b is not None else {0: 1.0}))
+        self.p.append(p)
         self.n.append(normalize(n))
         self.uv.append((float(uv[0]), float(uv[1])))
         return len(self.p) - 1
@@ -148,12 +176,13 @@ class MeshBuilder:
         self.tris.append((a, b, c))
 
     def surface(self, fn, nu, nv, region, closed_u=False, outward=None, inner_region=None, skip=None,
-                uv_fn=None):
+                uv_fn=None, bind_st=None):
         """Parametric surface fn(s, t) -> point, s, t in [0, 1].
 
         Normals come from finite differences and are oriented by outward(p, s, t).
         inner_region adds a back side (double-sided cloth). skip(s, t) removes a
         quad (holes, tatters). uv_fn(s, t) overrides the (s, t) -> region mapping.
+        bind_st(s, t) -> {bone: weight} overrides the builder's binding.
         """
         eps = 1e-3
         grid_p = [[np.asarray(fn(i / nu, j / nv), float) for i in range(nu + 1)] for j in range(nv + 1)]
@@ -186,7 +215,11 @@ class MeshBuilder:
                     uv = uv_fn(s, t) if uv_fn else region_uv(reg, s, t)
                     if uv_fn and sign < 0:
                         uv = region_uv(reg, s, t)
-                    row.append(self.vert(grid_p[j][i], normals[j][i] * sign, uv))
+                    if bind_st:
+                        with self.bound(bind_st(s, t)):
+                            row.append(self.vert(grid_p[j][i], normals[j][i] * sign, uv))
+                    else:
+                        row.append(self.vert(grid_p[j][i], normals[j][i] * sign, uv))
                 idx.append(row)
             for j in range(nv):
                 for i in range(nu):
@@ -233,10 +266,11 @@ class MeshBuilder:
         self.lathe([(0.0, 0.0), (radius, 0.0), (radius * 0.6, h * 0.5), (0.0, h)], region, segs=segs,
                    center=base, rot=align_y_to(apex - base), scale=(1, 1, flat))
 
-    def tube(self, path, radii, region, segs=10, inner=None, cap=True, ring_mod=None):
+    def tube(self, path, radii, region, segs=10, inner=None, cap=True, ring_mod=None, bind_ring=None):
         """Tube along a polyline. inner: per-point 'inner side' direction; that side
         maps to u = 0.5 of the region. ring_mod(i, a) scales the radius around each
-        ring (cloth folds). Returns the ring frames for placing details."""
+        ring (cloth folds). bind_ring(i) -> {bone: weight} skins ring i.
+        Returns the ring frames for placing details."""
         path = [np.asarray(p, float) for p in path]
         n_pts = len(path)
         tangents = [normalize(path[min(i + 1, n_pts - 1)] - path[max(i - 1, 0)]) for i in range(n_pts)]
@@ -271,6 +305,9 @@ class MeshBuilder:
         rings = []
         for i in range(n_pts):
             ring = []
+            saved = self.binding
+            if bind_ring:
+                self.binding = bind_ring(i)
             for j in range(segs + 1):
                 n = dirs[i, j]
                 if ring_mod:
@@ -281,6 +318,7 @@ class MeshBuilder:
                         c = normalize(c)
                         n = c if np.dot(c, dirs[i, j]) > 0 else -c
                 ring.append(self.vert(pos[i, j], n, region_uv(region, j / segs, length[i] / total)))
+            self.binding = saved
             rings.append(ring)
         for i in range(n_pts - 1):
             for j in range(segs):
@@ -289,7 +327,8 @@ class MeshBuilder:
                 self.tri(a, c, d)
         if cap and radii[-1] > 1e-4:
             T = frames[-1][0]
-            tip = self.vert(path[-1] + T * radii[-1], T, region_uv(region, 0.5, 1.0))
+            with self.bound(bind_ring(n_pts - 1) if bind_ring else self.binding):
+                tip = self.vert(path[-1] + T * radii[-1], T, region_uv(region, 0.5, 1.0))
             for j in range(segs):
                 self.tri(rings[-1][j], rings[-1][j + 1], tip, outward=T)
         return frames
@@ -301,11 +340,173 @@ class MeshBuilder:
     def merge(self, other, rot=None, offset=(0, 0, 0), scale=1.0):
         rot = np.eye(3) if rot is None else rot
         base = len(self.p)
-        for p, n, uv in zip(other.p, other.n, other.uv):
+        for p, n, uv, w in zip(other.p, other.n, other.uv, other.skin):
             self.p.append(rot @ (p * scale) + np.asarray(offset, float))
             self.n.append(rot @ n)
             self.uv.append(uv)
+            self.skin.append(w)
         self.tris += [(a + base, b + base, c + base) for a, b, c in other.tris]
+
+
+
+# ---------------------------------------------------------------------------
+# Rigging: skeletons, skin weights and quaternions
+# ---------------------------------------------------------------------------
+
+X_AXIS, Y_AXIS, Z_AXIS = np.array([1.0, 0, 0]), np.array([0, 1.0, 0]), np.array([0, 0, 1.0])
+
+
+class Skeleton:
+    """Bones in bind pose. Every bone's bind rotation is the identity, so its
+    inverse bind matrix is just a translation back from its position."""
+
+    def __init__(self):
+        self.names, self.parent, self.pos = [], [], []
+
+    def add(self, name, pos, parent=None):
+        self.names.append(name)
+        self.parent.append(None if parent is None else self.names.index(parent))
+        self.pos.append(np.asarray(pos, float))
+        return len(self.names) - 1
+
+    def __getitem__(self, name):
+        return self.names.index(name)
+
+    def __contains__(self, name):
+        return name in self.names
+
+    def get(self, name):
+        return self.names.index(name) if name in self.names else None
+
+    def local_t(self, b):
+        pa = self.parent[b]
+        return self.pos[b] - (self.pos[pa] if pa is not None else 0.0)
+
+
+def wmix(*pairs):
+    """{bone: weight} from (bone, weight) pairs: merged, top 4 kept, normalised."""
+    d = {}
+    for b, w in pairs:
+        if b is None or w <= 1e-4:
+            continue
+        d[b] = d.get(b, 0.0) + w
+    if not d:
+        return {0: 1.0}
+    top = sorted(d.items(), key=lambda kv: -kv[1])[:4]
+    total = sum(w for _, w in top)
+    return {b: w / total for b, w in top}
+
+
+def scale_mix(weights, k):
+    return [(b, w * k) for b, w in weights.items()]
+
+
+def chain_bind(p, joints, bones, blend):
+    """Weights along a chain of joints (bones[i] spans joints[i] -> joints[i+1]),
+    blending across each joint within `blend` distance."""
+    p = np.asarray(p, float)
+    best = None
+    for i in range(len(joints) - 1):
+        a, b = np.asarray(joints[i], float), np.asarray(joints[i + 1], float)
+        ab = b - a
+        L = max(np.linalg.norm(ab), 1e-9)
+        u = float(np.clip(np.dot(p - a, ab) / (L * L), 0, 1))
+        d = np.linalg.norm(a + ab * u - p)
+        if best is None or d < best[0] - 1e-9:
+            best = (d, i, u * L, L)
+    _, i, along, L = best
+    if i > 0 and along < blend:
+        f = 0.5 * (1 - along / blend)
+        return wmix((bones[i], 1 - f), (bones[i - 1], f))
+    if i < len(bones) - 1 and L - along < blend:
+        f = 0.5 * (1 - (L - along) / blend)
+        return wmix((bones[i], 1 - f), (bones[i + 1], f))
+    return {bones[i]: 1.0}
+
+
+def qaxis(axis, deg):
+    axis = normalize(axis)
+    h = math.radians(deg) / 2
+    return np.array([axis[0] * math.sin(h), axis[1] * math.sin(h), axis[2] * math.sin(h), math.cos(h)])
+
+
+def qmul(a, b):
+    ax, ay, az, aw = a
+    bx, by, bz, bw = b
+    return np.array([aw * bx + ax * bw + ay * bz - az * by,
+                     aw * by - ax * bz + ay * bw + az * bx,
+                     aw * bz + ax * by - ay * bx + az * bw,
+                     aw * bw - ax * bx - ay * by - az * bz])
+
+
+def qmat(q):
+    x, y, z, w = q
+    return np.array([[1 - 2 * (y * y + z * z), 2 * (x * y - z * w), 2 * (x * z + y * w)],
+                     [2 * (x * y + z * w), 1 - 2 * (x * x + z * z), 2 * (y * z - x * w)],
+                     [2 * (x * z - y * w), 2 * (y * z + x * w), 1 - 2 * (x * x + y * y)]])
+
+
+class Pose:
+    """Per-frame bone offsets: rotations (axis, degrees) applied in order and translations."""
+
+    def __init__(self):
+        self.r, self.t = {}, {}
+
+    def rot(self, bone, axis, deg):
+        if abs(deg) > 1e-6:
+            self.r.setdefault(bone, []).append((axis, deg))
+        return self
+
+    def move(self, bone, vec):
+        self.t[bone] = self.t.get(bone, np.zeros(3)) + np.asarray(vec, float)
+        return self
+
+
+def bake(sk, frames_n, pose_fn):
+    """Evaluate pose_fn(frame) -> Pose for every frame into local (t, q) per bone."""
+    frames = []
+    for f in range(frames_n):
+        pose = pose_fn(f)
+        out = []
+        for b, name in enumerate(sk.names):
+            q = np.array([0.0, 0.0, 0.0, 1.0])
+            for axis, deg in pose.r.get(name, []):
+                q = qmul(q, qaxis(axis, deg))
+            out.append((sk.local_t(b) + pose.t.get(name, np.zeros(3)), q / np.linalg.norm(q)))
+        frames.append(out)
+    return frames
+
+
+def world_matrices(sk, frame):
+    mats = []
+    for b in range(len(sk.names)):
+        t, q = frame[b]
+        M = np.eye(4)
+        M[:3, :3] = qmat(q)
+        M[:3, 3] = t
+        pa = sk.parent[b]
+        mats.append(M if pa is None else mats[pa] @ M)
+    return mats
+
+
+def skin_points(sk, frame, points, normals, skin_ix, skin_w):
+    """Linear blend skinning of points/normals for one animation frame."""
+    mats = world_matrices(sk, frame)
+    S = np.zeros((len(sk.names), 4, 4))
+    for b, M in enumerate(mats):
+        inv_bind = np.eye(4)
+        inv_bind[:3, 3] = -sk.pos[b]
+        S[b] = M @ inv_bind
+    ph = np.concatenate([points, np.ones((len(points), 1))], axis=1)
+    out_p = np.zeros_like(points)
+    out_n = np.zeros_like(normals)
+    for k in range(4):
+        idx = np.where(skin_ix[:, k] < 0, 0, skin_ix[:, k])
+        w = np.where(skin_ix[:, k] < 0, 0.0, skin_w[:, k])[:, None]
+        Mk = S[idx]
+        out_p += w * np.einsum("nij,nj->ni", Mk, ph)[:, :3]
+        out_n += w * np.einsum("nij,nj->ni", Mk[:, :3, :3], normals)
+    return out_p, out_n / np.maximum(np.linalg.norm(out_n, axis=1, keepdims=True), 1e-9)
 
 
 # ---------------------------------------------------------------------------
@@ -465,8 +666,9 @@ def cowl(m, neck, scale, res, seed):
                 skip=lambda s, t: t > 0.88 and hash_noise((s * 5) % 1.0, seed + 5) > 0.55)
 
 
-def sleeve(m, shoulder, elbow, wrist, scale, res, seed):
-    """Bell sleeve over a real-length arm, with a bandaged hand."""
+def sleeve(m, shoulder, elbow, wrist, scale, res, seed, bones=None):
+    """Bell sleeve over a real-length arm, with a bandaged hand.
+    bones = (upper arm, forearm, hand) skins it to an arm chain."""
     shoulder, elbow, wrist = (np.asarray(v, float) for v in (shoulder, elbow, wrist))
     fore = normalize(wrist - elbow)
     pts = smooth_path([shoulder, (shoulder + elbow) / 2, elbow, (elbow + wrist) / 2, wrist + fore * 0.03 * scale],
@@ -474,25 +676,97 @@ def sleeve(m, shoulder, elbow, wrist, scale, res, seed):
     n = len(pts)
     radii = [scale * (0.066 + 0.006 * math.sin(math.pi * min(i / (n - 1) * 1.6, 1)) + 0.034 * (i / (n - 1)) ** 3)
              for i in range(n)]
-    m.tube(pts, radii, "cloth", segs=res(14), cap=False,
-           ring_mod=lambda i, a: 1 + 0.07 * math.sin(5 * a + i * 0.6 + seed) + 0.04 * math.sin(9 * a - i * 0.4))
+    arm_bind = None
+    hand_bind = None
+    if bones:
+        joints = [shoulder, elbow, wrist, wrist + fore * 0.2 * scale]
+        arm_bind = lambda p: chain_bind(p, joints, list(bones), 0.07 * scale)  # noqa: E731
+        hand_bind = {bones[2]: 1.0}
+    with m.bound(arm_bind if bones else m.binding):
+        m.tube(pts, radii, "cloth", segs=res(14), cap=False,
+               ring_mod=lambda i, a: 1 + 0.07 * math.sin(5 * a + i * 0.6 + seed) + 0.04 * math.sin(9 * a - i * 0.4))
     # hand: palm and fingers curled into a fist, thumb along the side
-    hand_c = wrist + fore * 0.055 * scale
-    m.ellipsoid(hand_c, (0.044 * scale, 0.058 * scale, 0.030 * scale), "bandage", segs=res(10), rings=res(7),
-                rot=align_y_to(fore))
-    side = normalize(np.cross(fore, [0.0, 1.0, 0.0]))
-    m.ellipsoid(hand_c + side * 0.03 * scale - fore * 0.01 * scale, (0.014 * scale, 0.032 * scale, 0.014 * scale),
-                "bandage", segs=res(6), rings=res(4), rot=align_y_to(fore))
+    with m.bound(hand_bind if bones else m.binding):
+        hand_c = wrist + fore * 0.055 * scale
+        m.ellipsoid(hand_c, (0.044 * scale, 0.058 * scale, 0.030 * scale), "bandage", segs=res(10), rings=res(7),
+                    rot=align_y_to(fore))
+        side = normalize(np.cross(fore, [0.0, 1.0, 0.0]))
+        m.ellipsoid(hand_c + side * 0.03 * scale - fore * 0.01 * scale,
+                    (0.014 * scale, 0.032 * scale, 0.014 * scale), "bandage", segs=res(6), rings=res(4),
+                    rot=align_y_to(fore))
 
 
-def robed_cultist(scale=1.0, detail=1.0, seed=0, arms="spear", arms_inside=False):
-    """A standing cultist, 1.80 m tall at scale 1. Returns the mesh and the spear hand position."""
+ARM_POSE = {"r": ((0.19, 1.43, 0.0), (0.27, 1.17, 0.04), (0.28, 1.06, -0.17)),
+            "l": ((-0.19, 1.43, 0.0), (-0.24, 1.16, 0.03), (-0.21, 0.93, -0.07))}
+
+
+def cultist_skeleton(K, arms, legs):
+    sk = Skeleton()
+    sk.add("root", (0, 0, 0))
+    sk.add("pelvis", (0, 0.95 * K, 0), "root")
+    sk.add("spine", (0, 1.20 * K, 0), "pelvis")
+    sk.add("chest", (0, 1.40 * K, 0), "spine")
+    sk.add("neck", (0, 1.53 * K, 0.01 * K), "chest")
+    sk.add("head", (0, 1.62 * K, 0), "neck")
+    if arms:
+        for side in ("r", "l"):
+            sh, el, wr = (np.array(v) * K for v in ARM_POSE[side])
+            sk.add(f"upperarm_{side}", sh, "chest")
+            sk.add(f"forearm_{side}", el, f"upperarm_{side}")
+            sk.add(f"hand_{side}", wr, f"forearm_{side}")
+    if legs:
+        for side, sx in (("r", 1), ("l", -1)):
+            sk.add(f"thigh_{side}", (sx * 0.10 * K, 0.92 * K, 0), "pelvis")
+            sk.add(f"shin_{side}", (sx * 0.10 * K, 0.50 * K, 0.0), f"thigh_{side}")
+            sk.add(f"foot_{side}", (sx * 0.09 * K, 0.08 * K, -0.04 * K), f"shin_{side}")
+    return sk
+
+
+def robed_cultist(scale=1.0, detail=1.0, seed=0, arms="spear", arms_inside=False, legs=True):
+    """A standing, rigged cultist, 1.80 m tall at scale 1.
+    Returns the mesh, the spear hand position and the skeleton."""
     m = MeshBuilder()
 
     def res(n):
         return max(5, int(n * detail))
 
     K = scale
+    sk = cultist_skeleton(K, arms == "spear", legs)
+    B = sk.get
+
+    def torso_bind(p):
+        x, y = p[0] / K, p[1] / K
+        if y > 1.47:
+            a = smoothstep(1.47, 1.56, y)
+            return wmix((B("chest"), 1 - a), (B("neck"), a))
+        if y > 1.25:
+            c = smoothstep(1.25, 1.40, y)
+            return wmix((B("chest"), c), (B("spine"), 1 - c))
+        if y > 1.00:
+            c = smoothstep(1.00, 1.22, y)
+            return wmix((B("spine"), c), (B("pelvis"), 1 - c))
+        if not legs:
+            return {B("pelvis"): 1.0}
+        L = 0.75 * smoothstep(0.98, 0.40, y)
+        side = smoothstep(-0.10, 0.10, x)
+        upper = smoothstep(0.38, 0.62, y)
+        return wmix((B("pelvis"), 1 - L),
+                    (B("thigh_r"), L * side * upper), (B("shin_r"), L * side * (1 - upper)),
+                    (B("thigh_l"), L * (1 - side) * upper), (B("shin_l"), L * (1 - side) * (1 - upper)))
+
+    def cowl_bind(p):
+        base = torso_bind(p)
+        x, y = p[0] / K, p[1] / K
+        if arms != "spear":
+            return base
+        armw = 0.35 * smoothstep(0.15, 0.27, abs(x)) * smoothstep(1.42, 1.12, y)
+        arm = B("upperarm_r" if x > 0 else "upperarm_l")
+        return wmix(*scale_mix(base, 1 - armw), (arm, armw))
+
+    def head_bind(p):
+        a = smoothstep(1.50 * K, 1.60 * K, p[1])
+        return wmix((B("head"), a), (B("neck"), 1 - a))
+
     wide = 0.05 if arms_inside else 0.0
     keys = [(0.00, (0.305, 0.250, 0.000)), (0.25, (0.262, 0.200, 0.000)), (0.55, (0.228, 0.168, 0.000)),
             (0.90, (0.200, 0.142, 0.004)), (1.08, (0.170 + wide * 0.6, 0.122, 0.000)),
@@ -511,56 +785,64 @@ def robed_cultist(scale=1.0, detail=1.0, seed=0, arms="spear", arms_inside=False
         holes = hash_noise(s * 3 % 1.0, seed + 7) * 0.6 + hash_noise((s * 7 + t * 0.5) % 1.0, seed + 9) * 0.4
         return holes > 0.66 - (t - 0.88) * 2.0
 
-    cloth_sweep(m, keys, 1.53 * K, lambda s: K * (0.012 + 0.03 * (0.5 + 0.5 * hash_noise(s, seed + 1))),
-                fold_amp, seed, res(64), res(40), skip=tatters)
-
-    # rope belt with hanging, knotted ends
-    W, D, zc = catmull(keys, 1.08 * K)
-    belt = []
-    for k in range(res(40) + 1):
-        th = 2 * math.pi * k / res(40)
-        x, z = superellipse(th, W + 0.012 * K, D + 0.012 * K)
-        belt.append((x, 1.08 * K, z + zc))
-    m.tube(belt, [0.011 * K] * len(belt), "leather", segs=6, cap=False)
-    for dx, L in ((-0.05, 0.30), (-0.02, 0.24)):
-        x0 = dx * K
-        z0 = -(D + 0.015 * K)
-        m.tube([(x0, 1.07 * K, z0), (x0 - 0.01 * K, (1.07 - L / 2) * K, z0 - 0.01 * K), (x0, (1.07 - L) * K, z0)],
-               [0.009 * K] * 3, "leather", segs=6)
-        m.ellipsoid((x0, (1.07 - L) * K, z0), (0.015 * K,) * 3, "leather", segs=6, rings=4)
+    with m.bound(torso_bind):
+        cloth_sweep(m, keys, 1.53 * K, lambda s: K * (0.012 + 0.03 * (0.5 + 0.5 * hash_noise(s, seed + 1))),
+                    fold_amp, seed, res(64), res(40), skip=tatters)
+        # rope belt with hanging, knotted ends
+        W, D, zc = catmull(keys, 1.08 * K)
+        belt = []
+        for k in range(res(40) + 1):
+            th = 2 * math.pi * k / res(40)
+            x, z = superellipse(th, W + 0.012 * K, D + 0.012 * K)
+            belt.append((x, 1.08 * K, z + zc))
+        m.tube(belt, [0.011 * K] * len(belt), "leather", segs=6, cap=False)
+    with m.bound({B("pelvis"): 1.0}):
+        for dx, L in ((-0.05, 0.30), (-0.02, 0.24)):
+            x0 = dx * K
+            z0 = -(D + 0.015 * K)
+            m.tube([(x0, 1.07 * K, z0), (x0 - 0.01 * K, (1.07 - L / 2) * K, z0 - 0.01 * K),
+                    (x0, (1.07 - L) * K, z0)], [0.009 * K] * 3, "leather", segs=6)
+            m.ellipsoid((x0, (1.07 - L) * K, z0), (0.015 * K,) * 3, "leather", segs=6, rings=4)
 
     # boots peeking out from under the hem
-    for sx in (-1, 1):
-        m.ellipsoid((sx * 0.085 * K, 0.04 * K, -0.20 * K), (0.048 * K, 0.04 * K, 0.08 * K), "leather",
-                    segs=res(10), rings=res(6))
+    for sx, side in ((-1, "l"), (1, "r")):
+        with m.bound({B(f"foot_{side}") if legs else B("pelvis"): 1.0}):
+            m.ellipsoid((sx * 0.085 * K, 0.04 * K, -0.20 * K), (0.048 * K, 0.04 * K, 0.08 * K), "leather",
+                        segs=res(10), rings=res(6))
 
     neck = np.array([0.0, 1.53 * K, 0.010 * K])
     head_c = np.array([0.0, 1.665 * K, 0.0])
-    m.tube([neck, head_c - np.array([0, 0.09 * K, 0])], [0.052 * K, 0.050 * K], "bandage", segs=res(10), cap=False)
-    bandaged_head(m, head_c, K, res)
-    hood(m, head_c, K, res, seed)
-    cowl(m, neck, K, res, seed)
+    with m.bound(head_bind):
+        m.tube([neck, head_c - np.array([0, 0.09 * K, 0])], [0.052 * K, 0.050 * K], "bandage", segs=res(10),
+               cap=False)
+        bandaged_head(m, head_c, K, res)
+        hood(m, head_c, K, res, seed)
+    with m.bound(cowl_bind):
+        cowl(m, neck, K, res, seed)
 
     hand = None
     if arms == "spear":
-        sleeve(m, (0.19 * K, 1.43 * K, 0.0), (0.27 * K, 1.17 * K, 0.04 * K), (0.28 * K, 1.06 * K, -0.17 * K), K, res,
-               seed)
-        sleeve(m, (-0.19 * K, 1.43 * K, 0.0), (-0.24 * K, 1.16 * K, 0.03 * K), (-0.21 * K, 0.93 * K, -0.07 * K), K,
-               res, seed + 2)
+        for side, sd in (("r", seed), ("l", seed + 2)):
+            sh, el, wr = (np.array(v) * K for v in ARM_POSE[side])
+            sleeve(m, sh, el, wr, K, res, sd, bones=(B(f"upperarm_{side}"), B(f"forearm_{side}"), B(f"hand_{side}")))
         hand = np.array([0.28 * K, 1.06 * K, -0.215 * K])
-    return m, hand
+    return m, hand, sk
 
 
-def spear_with_banner(m, x, z, top=2.30, seed=11):
-    m.tube([(x, 0.02, z), (x, top, z)], [0.016, 0.014], "wood", segs=8)
-    m.lathe([(0.0, 0.0), (0.021, 0.0), (0.021, 0.07), (0.0, 0.08)], "metal", segs=8, center=(x, top - 0.03, z))
-    m.lathe([(0.0, 0.0), (0.016, 0.02), (0.040, 0.10), (0.028, 0.20), (0.0, 0.30)], "metal", segs=8,
-            center=(x, top + 0.04, z), scale=(1, 1, 0.28))
+def spear_with_banner(m, sk, x, z, top=2.30, seed=11):
+    hand_b = sk["hand_r"]
     bw, bh = 0.42, 0.62
     y0 = top - 0.14
-    m.tube([(x - 0.02, y0, z), (x + bw + 0.03, y0, z)], [0.011, 0.011], "wood", segs=6)
-    for cx in (x + bw * 0.25, x + bw * 0.75):  # cords
-        m.tube([(cx, y0, z), (cx, y0 - 0.03, z)], [0.004, 0.004], "leather", segs=4)
+    banner_b = sk.add("banner", (x + 0.02, y0, z), "hand_r")
+    with m.bound({hand_b: 1.0}):
+        m.tube([(x, 0.02, z), (x, top, z)], [0.016, 0.014], "wood", segs=8)
+        m.lathe([(0.0, 0.0), (0.021, 0.0), (0.021, 0.07), (0.0, 0.08)], "metal", segs=8, center=(x, top - 0.03, z))
+        m.lathe([(0.0, 0.0), (0.016, 0.02), (0.040, 0.10), (0.028, 0.20), (0.0, 0.30)], "metal", segs=8,
+                center=(x, top + 0.04, z), scale=(1, 1, 0.28))
+        m.tube([(x - 0.02, y0, z), (x + bw + 0.03, y0, z)], [0.011, 0.011], "wood", segs=6)
+    with m.bound({banner_b: 1.0}):
+        for cx in (x + bw * 0.25, x + bw * 0.75):  # cords
+            m.tube([(cx, y0, z), (cx, y0 - 0.03, z)], [0.004, 0.004], "leather", segs=4)
 
     def banner(s, t):
         return np.array([x + 0.02 + s * bw,
@@ -573,16 +855,20 @@ def spear_with_banner(m, x, z, top=2.30, seed=11):
         return t > cut or hole
 
     m.surface(banner, 14, 18, "banner", inner_region="banner", skip=rag,
-              outward=lambda p, s, t: np.array([0.0, 0.0, -1.0]))
+              outward=lambda p, s, t: np.array([0.0, 0.0, -1.0]),
+              bind_st=lambda s, t: wmix((hand_b, 1 - smoothstep(0.0, 0.6, t)), (banner_b, smoothstep(0.0, 0.6, t))))
 
 
 def zealot():
-    m, hand = robed_cultist(detail=0.7, seed=0)
-    spear_with_banner(m, hand[0], hand[2])
-    return m
+    m, hand, sk = robed_cultist(detail=0.7, seed=0)
+    spear_with_banner(m, sk, hand[0], hand[2])
+    return m, sk
 
 
 # ----- tentacles ---------------------------------------------------------------
+
+TENTACLE_BONES = 5
+
 
 def tentacle_path(L, lift, curl, twist, start_r, theta, steps=56):
     """Integrate a tentacle that slides out along the ground, rises and hooks over."""
@@ -603,42 +889,65 @@ def tentacle_path(L, lift, curl, twist, start_r, theta, steps=56):
     return pts, inner
 
 
-def add_tentacle(m, L, r0, lift, curl, twist, start_r, theta):
+def add_tentacle(m, sk, k, L, r0, lift, curl, twist, start_r, theta):
     pts, inner = tentacle_path(L, lift, curl, twist, start_r, theta)
     n = len(pts)
+    # a chain of bones along the arm
+    joint_idx = [round(j * (n - 1) * 0.85 / TENTACLE_BONES) for j in range(TENTACLE_BONES)]
+    bones = []
+    for j, ji in enumerate(joint_idx):
+        bones.append(sk.add(f"tent{k}_{j}", pts[ji], "root" if j == 0 else f"tent{k}_{j - 1}"))
+
+    def bind_ring(i):
+        for j in range(TENTACLE_BONES - 1, -1, -1):
+            if i >= joint_idx[j]:
+                break
+        if j == TENTACLE_BONES - 1:
+            return {bones[j]: 1.0}
+        f = (i - joint_idx[j]) / max(joint_idx[j + 1] - joint_idx[j], 1)
+        f = smoothstep(0.0, 1.0, f)
+        return wmix((bones[j], 1 - f), (bones[j + 1], f))
+
     # octopus-arm taper: thick, muscular base narrowing to a fine tip
     radii = [r0 * (1 - i / (n - 1)) ** 1.25 + 0.008 for i in range(n)]
     radii = [r * (1 + 0.04 * math.sin(i * 0.8 + theta * 3)) for i, r in enumerate(radii)]
-    frames = m.tube(pts, radii, "tentacle", segs=16, inner=inner)
+    frames = m.tube(pts, radii, "tentacle", segs=16, inner=inner, bind_ring=bind_ring)
     # two alternating rows of suckers, sized to the arm, spaced along its length
     seglen = [np.linalg.norm(pts[i + 1] - pts[i]) for i in range(n - 1)]
-    pos, i, row = 0.0, 2, 0
+    i, row = 2, 0
     while i < n - 3:
         T, I, S = frames[i]
         rs = radii[i] * 0.40
         a = math.pi + (0.42 if row % 2 else -0.42)
         d = -math.cos(a) * I + math.sin(a) * S
-        m.sucker(pts[i] + d * radii[i] * 0.93, d, rs, segs=8 if rs > 0.03 else 6)
+        with m.bound(bind_ring(i)):
+            m.sucker(pts[i] + d * radii[i] * 0.93, d, rs, segs=8 if rs > 0.03 else 6)
         row += 1
         step = rs * 1.15
         acc = 0.0
         while i < n - 3 and acc < step:
             acc += seglen[i]
             i += 1
+    return radial(theta)
+
+
+KING_SCALE = 2.5
 
 
 def king_in_yellow():
-    K = 2.5
-    m, _ = robed_cultist(scale=K, detail=1.0, seed=3, arms="none", arms_inside=True)
+    K = KING_SCALE
+    m, _, sk = robed_cultist(scale=K, detail=1.0, seed=3, arms="none", arms_inside=True, legs=False)
     rng = np.random.default_rng(21)
+    dirs = []
     for k in range(8):
         theta = 2 * math.pi * (k + 0.5) / 8 + rng.uniform(-0.25, 0.25)
         L = rng.uniform(3.6, 5.0)
         lift = rng.uniform(0.9, 1.1)
         curl = rng.choice([-1, 1]) * rng.uniform(0.5, 1.3)
         twist = rng.uniform(-0.5, 0.5)
-        add_tentacle(m, L, 0.27, lift, curl, twist, 0.50, theta)
-    return m
+        dirs.append(add_tentacle(m, sk, k, L, 0.27, lift, curl, twist, 0.50, theta))
+    sk.tentacle_dirs = dirs
+    return m, sk
 
 
 # ----- the Byakhee and its rider -------------------------------------------------
@@ -655,8 +964,55 @@ def byakhee_top(z):
     return ys + top
 
 
+BYAKHEE_WING = {
+    "S": (0.20, 1.44, -0.40), "E": (0.72, 1.96, -0.30), "W": (1.28, 2.36, -0.10),
+    "F": ((2.32, 2.52, 0.25), (2.20, 1.88, 0.66), (1.74, 1.33, 0.86), (1.14, 1.06, 0.80)),
+    "B": (0.22, 1.17, 0.32),
+}
+BYAKHEE_LEG = {"hip": (0.17, 1.12, 0.26), "knee": (0.25, 0.80, 0.00), "ankle": (0.22, 0.38, 0.20),
+               "foot": (0.20, 0.07, 0.04)}
+SIDES = (("r", 1), ("l", -1))
+
+
+def mirror(v, sx):
+    return np.array([v[0] * sx, v[1], v[2]])
+
+
+def byakhee_skeleton():
+    sk = Skeleton()
+    sk.add("root", (0, 0, 0))
+    sk.add("body", (0, 1.24, -0.05), "root")
+    sk.add("chest", (0, 1.33, -0.42), "body")
+    sk.add("neck1", (0, 1.40, -0.56), "chest")
+    sk.add("neck2", (0, 1.75, -0.88), "neck1")
+    sk.add("head", (0, 2.08, -1.20), "neck2")
+    sk.add("jaw", (0, 2.03, -1.30), "head")
+    sk.add("tail1", (0, 1.13, 0.55), "body")
+    sk.add("tail2", (0, 0.96, 1.08), "tail1")
+    sk.add("tail3", (0.05, 0.82, 1.50), "tail2")
+    for side, sx in SIDES:
+        sk.add(f"wing_up_{side}", mirror(BYAKHEE_WING["S"], sx), "chest")
+        sk.add(f"wing_fore_{side}", mirror(BYAKHEE_WING["E"], sx), f"wing_up_{side}")
+        sk.add(f"wing_hand_{side}", mirror(BYAKHEE_WING["W"], sx), f"wing_fore_{side}")
+        sk.add(f"thigh_{side}", mirror(BYAKHEE_LEG["hip"], sx), "body")
+        sk.add(f"shin_{side}", mirror(BYAKHEE_LEG["knee"], sx), f"thigh_{side}")
+        sk.add(f"tarsus_{side}", mirror(BYAKHEE_LEG["ankle"], sx), f"shin_{side}")
+        sk.add(f"foot_{side}", mirror(BYAKHEE_LEG["foot"], sx), f"tarsus_{side}")
+    return sk
+
+
 def byakhee_rider():
     m = MeshBuilder()
+    sk = byakhee_skeleton()
+    B_ = sk.get
+
+    def torso_bind(p):
+        z = p[2]
+        c = smoothstep(-0.15, -0.40, z)
+        tw = smoothstep(0.40, 0.60, z)
+        return wmix((B_("body"), max(0.0, 1 - c - tw)), (B_("chest"), c), (B_("tail1"), tw))
+
+    m.binding = torso_bind
 
     def torso(s, t):
         th = 2 * math.pi * s  # 0 = top of the back, pi = keel
@@ -680,22 +1036,28 @@ def byakhee_rider():
         m.cone((0.0, y - 0.01, z), (0.0, y + 0.07 - abs(k - 5) * 0.006, z + 0.05), 0.022, "bone", segs=6)
 
     # long S-curved neck and a skull with a hooked beak, toothed jaw and burning eyes
+    neck_joints = [sk.pos[B_("neck1")], sk.pos[B_("neck2")], sk.pos[B_("head")], sk.pos[B_("head")] + [0, 0, -0.4]]
+    m.binding = lambda p: chain_bind(p, neck_joints, [B_("neck1"), B_("neck2"), B_("head")], 0.12)
     neck = smooth_path([(0, 1.40, -0.56), (0, 1.62, -0.80), (0, 1.88, -0.94), (0, 2.03, -1.10), (0, 2.08, -1.20)], 14)
     m.tube(neck, [0.13 - 0.045 * i / 13 for i in range(14)], "leather", segs=12, cap=False,
            ring_mod=lambda i, a: 1 + 0.08 * max(0.0, math.cos(a)) * abs(math.sin(i * 1.6)))
+    m.binding = {B_("head"): 1.0}
     m.ellipsoid((0, 2.11, -1.25), (0.085, 0.092, 0.13), "bone", segs=14, rings=10)
     beak = smooth_path([(0, 2.10, -1.34), (0, 2.07, -1.50), (0, 2.01, -1.64), (0, 1.94, -1.71)], 10)
     m.tube(beak, [0.052 - 0.046 * (i / 9) ** 1.2 for i in range(10)], "bone", segs=10,
            ring_mod=lambda i, a: 1 - 0.25 * abs(math.sin(a)))
     jaw = smooth_path([(0, 2.03, -1.30), (0, 1.98, -1.44), (0, 1.95, -1.56)], 8)
-    m.tube(jaw, [0.040 - 0.034 * i / 7 for i in range(8)], "bone", segs=8,
-           ring_mod=lambda i, a: 1 - 0.3 * abs(math.sin(a)))
+    with m.bound({B_("jaw"): 1.0}):
+        m.tube(jaw, [0.040 - 0.034 * i / 7 for i in range(8)], "bone", segs=8,
+               ring_mod=lambda i, a: 1 - 0.3 * abs(math.sin(a)))
     for k in range(6):
         b = polyline_point(beak, 0.15 + k * 0.12)
         j = polyline_point(jaw, 0.10 + k * 0.13)
         for sx in (-1, 1):
             m.cone(b + np.array([sx * 0.02, -0.02, 0]), b + np.array([sx * 0.018, -0.055, -0.005]), 0.007, "bone", segs=4)
-            m.cone(j + np.array([sx * 0.016, 0.015, 0]), j + np.array([sx * 0.015, 0.045, -0.005]), 0.006, "bone", segs=4)
+            with m.bound({B_("jaw"): 1.0}):
+                m.cone(j + np.array([sx * 0.016, 0.015, 0]), j + np.array([sx * 0.015, 0.045, -0.005]), 0.006,
+                       "bone", segs=4)
     for sx in (-1, 1):
         m.ellipsoid((sx * 0.058, 2.135, -1.30), (0.03, 0.026, 0.03), "lining", segs=8, rings=6)
         m.ellipsoid((sx * 0.062, 2.135, -1.31), (0.018, 0.016, 0.018), "glow", segs=8, rings=6)
@@ -704,15 +1066,15 @@ def byakhee_rider():
             m.cone(base, base + np.array([sx * 0.05, dy, dz]), 0.018 - k * 0.003, "bone", segs=5)
 
     # bird-like digitigrade legs with talons, under the centre of mass
-    for sx in (-1, 1):
-        hip = (sx * 0.17, 1.12, 0.26)
-        knee = (sx * 0.25, 0.80, 0.00)
-        ankle = (sx * 0.22, 0.38, 0.20)
-        foot = np.array([sx * 0.20, 0.07, 0.04])
+    for side, sx in SIDES:
+        hip, knee, ankle, foot = (mirror(BYAKHEE_LEG[k], sx) for k in ("hip", "knee", "ankle", "foot"))
+        leg_bones = [B_(f"{n}_{side}") for n in ("thigh", "shin", "tarsus")]
+        m.binding = lambda p, j=[hip, knee, ankle, foot], b=leg_bones: chain_bind(p, j, b, 0.08)
         thigh = smooth_path([hip, knee], 6)
         m.tube(thigh, [0.115, 0.11, 0.10, 0.09, 0.08, 0.07], "leather", segs=12)
         m.tube(smooth_path([knee, ankle], 6), [0.065, 0.058, 0.05, 0.045, 0.042, 0.04], "leather", segs=10)
         m.tube(smooth_path([ankle, foot], 5), [0.038, 0.034, 0.032, 0.03, 0.03], "leather", segs=8)
+        m.binding = {B_(f"foot_{side}"): 1.0}
         for k, ang in enumerate((-0.45, 0.0, 0.45)):
             d = np.array([math.sin(ang) * sx, 0.0, -math.cos(ang)])
             toe = foot + d * 0.16 + np.array([0, -0.05, 0])
@@ -723,21 +1085,24 @@ def byakhee_rider():
         m.cone(back_toe, back_toe + np.array([0, -0.02, 0.06]), 0.011, "bone", segs=5)
 
     # tail
+    tail_joints = [sk.pos[B_("tail1")], sk.pos[B_("tail2")], sk.pos[B_("tail3")], np.array([0.12, 0.76, 1.85])]
+    m.binding = lambda p: chain_bind(p, tail_joints, [B_("tail1"), B_("tail2"), B_("tail3")], 0.15)
     tail = smooth_path([(0, 1.13, 0.55), (0, 1.03, 0.90), (0, 0.90, 1.25), (0.06, 0.80, 1.55), (0.12, 0.76, 1.82)], 16)
     m.tube(tail, [0.085 * (1 - i / 15) ** 1.1 + 0.006 for i in range(16)], "leather", segs=8)
 
     # bat wings: the forelimb is the wing, with finger bones carrying a torn membrane
-    for sx in (-1, 1):
-        S = np.array([sx * 0.20, 1.44, -0.40])
-        E = np.array([sx * 0.72, 1.96, -0.30])
-        W = np.array([sx * 1.28, 2.36, -0.10])
-        F = [np.array([sx * 2.32, 2.52, 0.25]), np.array([sx * 2.20, 1.88, 0.66]),
-             np.array([sx * 1.74, 1.33, 0.86]), np.array([sx * 1.14, 1.06, 0.80])]
-        B = np.array([sx * 0.22, 1.17, 0.32])
+    for side, sx in SIDES:
+        S, E, W, B = (mirror(BYAKHEE_WING[k], sx) for k in ("S", "E", "W", "B"))
+        F = [mirror(f, sx) for f in BYAKHEE_WING["F"]]
+        arm_bones = [B_(f"wing_up_{side}"), B_(f"wing_fore_{side}"), B_(f"wing_hand_{side}")]
+        hand_b = arm_bones[2]
+        arm_joints = [S, E, W, W + (W - E) * 0.3]
+        m.binding = lambda p, j=arm_joints, b=arm_bones: chain_bind(p, j, b, 0.10)
         m.tube(smooth_path([S, E], 5), [0.06, 0.055, 0.05, 0.045, 0.04], "leather", segs=10)
         m.tube(smooth_path([E, W], 5), [0.04, 0.034, 0.03, 0.028, 0.026], "leather", segs=8)
         m.ellipsoid(E, (0.045,) * 3, "leather", segs=8, rings=6)
         m.ellipsoid(W, (0.035,) * 3, "leather", segs=8, rings=6)
+        m.binding = {hand_b: 1.0}
         m.cone(W, W + np.array([sx * 0.03, 0.12, -0.10]), 0.018, "bone", segs=5)  # thumb claw
         for tip in F:
             mid = W + (tip - W) * 0.45 + np.array([0, 0.03, 0])
@@ -766,6 +1131,10 @@ def byakhee_rider():
         for k in range(3):
             panel(F[k], F[k + 1], k + 1)
 
+        def inner_bind(s, t, S=S, E=E, W=W, j=arm_joints, b=arm_bones, hand_b=hand_b):
+            arm_w = chain_bind(polyline_point([S, E, W], s), j, b, 0.10)
+            return wmix(*scale_mix(arm_w, 1 - t), (B_("body"), t * (1 - s)), (hand_b, t * s))
+
         def inner_panel(s, t):
             arm = polyline_point([S, E, W], s)
             trail = B + (F[3] - B) * s
@@ -773,9 +1142,11 @@ def byakhee_rider():
             return arm + (trail - arm) * t + np.array([0, -0.06, 0.02]) * math.sin(math.pi * s) * math.sin(math.pi * t)
 
         m.surface(inner_panel, 20, 14, "membrane", inner_region="membrane", skip=lambda s, t: torn(s, t, k=7),
-                  outward=lambda p, s, t: np.array([0.0, 1.0, 0.0]))
+                  outward=lambda p, s, t: np.array([0.0, 1.0, 0.0]), bind_st=inner_bind)
 
     # saddle cloth bearing the Yellow Sign, draped over the back
+    m.binding = {B_("body"): 1.0}
+
     def saddle(s, t):
         x = (s - 0.5) * 0.95
         z = -0.32 + t * 0.62
@@ -787,11 +1158,12 @@ def byakhee_rider():
     m.surface(saddle, 16, 10, "banner", inner_region="lining",
               skip=lambda s, t: (s < 0.06 or s > 0.94) and hash_noise((t * 2) % 1.0, 55) > 0.3,
               outward=lambda p, s, t: np.array([p[0] * 0.5, 1.0, 0.0]))
-    rider(m)
-    return m
+    rider(m, sk)
+    m.binding = None
+    return m, sk
 
 
-def rider(m):
+def rider(m, sk):
     """A cultist sitting astride the Byakhee: thighs over its flanks, boots in the
     air, a couched lance in the right hand and the reins in the left."""
     def res(n):
@@ -801,6 +1173,14 @@ def rider(m):
     pelvis = np.array([0.0, seat_y, 0.02])
     neck = np.array([0.0, seat_y + 0.52, -0.04])
     head_c = np.array([0.0, seat_y + 0.665, -0.05])
+    sh_r = np.array([0.19, seat_y + 0.44, -0.03])
+    sh_l = np.array([-0.19, seat_y + 0.44, -0.03])
+    spine_b = sk.add("rider_spine", pelvis, "body")
+    head_b = sk.add("rider_head", neck, "rider_spine")
+    arm_r = sk.add("rider_arm_r", sh_r, "rider_spine")
+    arm_l = sk.add("rider_arm_l", sh_l, "rider_spine")
+    body_b = sk["body"]
+    m.binding = {spine_b: 1.0}
 
     # upper body garment, leaning slightly forward
     keys = [(seat_y + 0.02, (0.175, 0.125, 0.02)), (seat_y + 0.15, (0.165, 0.118, 0.01)),
@@ -824,7 +1204,9 @@ def rider(m):
 
     m.surface(skirt, res(48), res(12), "cloth", closed_u=True, inner_region="lining",
               skip=lambda s, t: t > 0.85 and hash_noise((s * 4) % 1.0, 24) > 0.5,
-              outward=lambda p, s, t: np.array([p[0], 0.3, p[2] - 0.02]))
+              outward=lambda p, s, t: np.array([p[0], 0.3, p[2] - 0.02]),
+              bind_st=lambda s, t: wmix((spine_b, 1 - smoothstep(0.0, 0.4, t)), (body_b, smoothstep(0.0, 0.4, t))))
+    m.binding = {body_b: 1.0}
 
     # legs: trousered thighs over the flanks, booted shins hanging free
     for sx in (-1, 1):
@@ -839,18 +1221,20 @@ def rider(m):
         m.ellipsoid((ankle + toe) / 2 + np.array([0, 0.0, 0.01]), (0.05, 0.045, 0.11), "leather", segs=10, rings=6,
                     rot=align_y_to(np.array([0, 0.25, 1.0])))
 
+    m.binding = {head_b: 1.0}
     m.tube([neck, head_c - np.array([0, 0.09, 0])], [0.052, 0.050], "bandage", segs=8, cap=False)
     bandaged_head(m, head_c, 1.0, res)
     hood(m, head_c, 1.0, res, 25)
+    m.binding = {spine_b: 1.0}
     cowl(m, neck, 1.0, res, 26)
 
     # right arm couches the lance, left arm holds the reins
-    sh_r = np.array([0.19, seat_y + 0.44, -0.03])
-    sh_l = np.array([-0.19, seat_y + 0.44, -0.03])
     hand_r = np.array([0.24, seat_y + 0.12, -0.20])
     hand_l = np.array([-0.17, seat_y + 0.16, -0.28])
-    sleeve(m, sh_r, sh_r + np.array([0.06, -0.25, 0.07]), hand_r, 1.0, res, 27)
+    m.binding = {arm_l: 1.0}
     sleeve(m, sh_l, sh_l + np.array([-0.06, -0.23, 0.0]), hand_l, 1.0, res, 28)
+    m.binding = {arm_r: 1.0}
+    sleeve(m, sh_r, sh_r + np.array([0.06, -0.25, 0.07]), hand_r, 1.0, res, 27)
     butt = np.array([0.26, seat_y - 0.10, 0.42])
     d = normalize(hand_r + np.array([0.0, 0.0, -0.05]) - butt)
     tip = butt + d * 2.9
@@ -867,9 +1251,292 @@ def rider(m):
               skip=lambda s, t: t > 0.7 + 0.25 * hash_noise(s, 77),
               outward=lambda p, s, t: np.array([1.0, 0.0, 0.0]))
     # reins to the creature's jaw
+    rein_bind = [{arm_l: 1.0}, wmix((arm_l, 0.3), (sk["neck2"], 0.7)), {sk["head"]: 1.0}]
     for sx in (-1, 1):
         m.tube([hand_l + np.array([0, 0, -0.04]), np.array([sx * 0.07, 1.78, -0.92]), np.array([sx * 0.05, 2.02, -1.32])],
-               [0.006, 0.006, 0.006], "leather", segs=4)
+               [0.006, 0.006, 0.006], "leather", segs=4, bind_ring=lambda i: rein_bind[i])
+
+
+# ---------------------------------------------------------------------------
+# Animations (15 fps). Rotations are degrees about world-aligned axes in each
+# bone's local frame: +X swings limbs forward and tips the torso back, +Z
+# raises a right-side limb, +Y turns to the left.
+# ---------------------------------------------------------------------------
+
+FPS = 15
+
+
+def wave(f, n, k=1, phase=0.0):
+    return math.sin(2 * math.pi * k * f / n + phase)
+
+
+def strike(u, wind=(0.0, 0.30), hit=(0.32, 0.45), back=(0.65, 0.95)):
+    """Wind-up and strike envelopes for a looping attack."""
+    w = smoothstep(*wind, u) * (1 - smoothstep(wind[1], hit[1] - 0.03, u))
+    c = smoothstep(*hit, u) * (1 - smoothstep(*back, u))
+    return w, c
+
+
+# ----- zealot ------------------------------------------------------------------
+
+def zealot_idle(sk, f, n=48):
+    ph = 2 * math.pi * f / n
+    p = Pose()
+    p.rot("chest", X_AXIS, 1.5 * math.sin(ph)).rot("spine", X_AXIS, 0.8 * math.sin(ph))
+    p.rot("head", Y_AXIS, 6 * math.sin(ph + 1)).rot("head", X_AXIS, 2 * math.sin(2 * ph))
+    p.rot("banner", X_AXIS, 6 * math.sin(ph)).rot("banner", Z_AXIS, 3 * math.sin(2 * ph + 0.5))
+    p.rot("upperarm_l", X_AXIS, 2 * math.sin(ph))
+    return p.move("pelvis", (0, 0.004 * math.sin(2 * ph), 0))
+
+
+def zealot_move(sk, f, n=20):
+    ph = 2 * math.pi * f / n
+    s, c = math.sin(ph), math.cos(ph)
+    p = Pose()
+    p.rot("thigh_r", X_AXIS, 26 * s).rot("thigh_l", X_AXIS, -26 * s)
+    p.rot("shin_r", X_AXIS, -45 * max(0.0, c) ** 2).rot("shin_l", X_AXIS, -45 * max(0.0, -c) ** 2)
+    p.rot("foot_r", X_AXIS, 12 * s).rot("foot_l", X_AXIS, -12 * s)
+    p.move("pelvis", (0, 0.025 * math.cos(2 * ph) - 0.015, 0)).rot("pelvis", Y_AXIS, 5 * s)
+    p.rot("chest", Y_AXIS, -6 * s).rot("chest", X_AXIS, -4)
+    p.rot("upperarm_l", X_AXIS, 20 * s).rot("forearm_l", X_AXIS, 12 + 8 * s)
+    p.rot("upperarm_r", X_AXIS, 3 * math.sin(2 * ph))
+    p.rot("head", X_AXIS, 2 * math.sin(2 * ph)).rot("head", Y_AXIS, 3 * s)
+    return p.rot("banner", X_AXIS, -10 + 6 * math.sin(2 * ph)).rot("banner", Z_AXIS, 4 * s)
+
+
+def zealot_attack(sk, f, n=24):
+    w, c = strike(f / n)
+    p = Pose()
+    p.rot("chest", X_AXIS, 4 * w - 14 * c).rot("spine", X_AXIS, -6 * c)
+    # the spear's tilt is the sum of the chain: lean + arm + forearm + wrist ~ -80 (thrust level)
+    p.rot("upperarm_r", X_AXIS, -20 * w + 30 * c).rot("upperarm_r", Z_AXIS, 8 * c)
+    p.rot("forearm_r", X_AXIS, -10 * w + 20 * c).rot("hand_r", X_AXIS, 12 * w - 110 * c)
+    p.rot("thigh_r", X_AXIS, 18 * c).rot("shin_r", X_AXIS, -22 * c)
+    p.rot("thigh_l", X_AXIS, -12 * c).rot("shin_l", X_AXIS, -8 * c)
+    p.move("pelvis", (0, -0.03 * c, -0.07 * c))
+    # the banner turns about the levelled shaft so it hangs instead of lying flat
+    p.rot("head", X_AXIS, 6 * c - 3 * w).rot("banner", X_AXIS, 8 * w).rot("banner", Y_AXIS, 75 * c)
+    return p.rot("upperarm_l", X_AXIS, 15 * c).rot("forearm_l", X_AXIS, 25 * c)
+
+
+def zealot_defend(sk, f, n=40):
+    b = wave(f, n)
+    p = Pose()
+    p.rot("hand_r", X_AXIS, -95).rot("upperarm_r", X_AXIS, 22).rot("forearm_r", X_AXIS, 28)  # spear braced ~55 deg
+    p.rot("chest", X_AXIS, -7 + 1.2 * b).rot("spine", X_AXIS, -3).move("pelvis", (0, -0.05, 0))
+    for side, k in (("r", 16), ("l", 10)):
+        p.rot(f"thigh_{side}", X_AXIS, k).rot(f"shin_{side}", X_AXIS, -k * 1.6).rot(f"foot_{side}", X_AXIS, 10)
+    p.rot("upperarm_l", X_AXIS, 32).rot("forearm_l", X_AXIS, 45)
+    return p.rot("head", X_AXIS, 4).rot("head", Y_AXIS, 4 * b).rot("banner", Y_AXIS, 55).rot("banner", X_AXIS, 4 * b)
+
+
+def zealot_support(sk, f, n=40):
+    ph = 2 * math.pi * f / n
+    p = Pose()
+    p.rot("upperarm_r", X_AXIS, 110 + 5 * math.sin(ph)).rot("forearm_r", X_AXIS, -20).rot("hand_r", X_AXIS, -110)
+    p.rot("upperarm_l", X_AXIS, 60 + 10 * math.sin(2 * ph)).rot("upperarm_l", Z_AXIS, -25)
+    p.rot("forearm_l", X_AXIS, 20).rot("head", X_AXIS, 15 + 3 * math.sin(2 * ph)).rot("chest", X_AXIS, 6)
+    return p.rot("banner", X_AXIS, 10 * math.sin(ph)).rot("banner", Z_AXIS, 5 * math.sin(2 * ph))
+
+
+def zealot_death(sk, f, n=36):
+    u = f / (n - 1)
+    k1, k2 = smoothstep(0.0, 0.40, u), smoothstep(0.30, 0.85, u)
+    kl, kp = smoothstep(0.0, 0.30, u), smoothstep(0.08, 0.42, u)  # the shins fold just ahead of the hips
+    p = Pose()
+    # drops to the knees (thighs near upright, shins flat behind), then slumps forward
+    for side in ("r", "l"):
+        p.rot(f"thigh_{side}", X_AXIS, 22 * kl).rot(f"shin_{side}", X_AXIS, -100 * kl)
+        p.rot(f"foot_{side}", X_AXIS, 75 * kl)
+    p.move("pelvis", (0, -0.37 * kp, 0.04 * kp))
+    p.rot("spine", X_AXIS, -40 * k2).rot("chest", X_AXIS, -25 * k2).rot("head", X_AXIS, 10 * k1 - 25 * k2)
+    # the spear tips forward out of the hand as the knees go, so its butt clears the ground
+    p.rot("upperarm_r", X_AXIS, 25 * k2).rot("hand_r", X_AXIS, -60 * k1 - 20 * k2).rot("hand_r", Z_AXIS, -40 * k2)
+    return p.rot("upperarm_l", X_AXIS, 20 * k2).rot("forearm_l", X_AXIS, 30 * k2).rot("banner", X_AXIS, 30 * k2)
+
+
+# ----- the King in Yellow ---------------------------------------------------------
+
+def curl_axis(sk, k):
+    return normalize(np.cross(sk.tentacle_dirs[k], Y_AXIS))  # + raises the tentacle
+
+
+def tentacles(p, sk, fn):
+    for k in range(len(sk.tentacle_dirs)):
+        ax = curl_axis(sk, k)
+        for j in range(TENTACLE_BONES):
+            deg, yaw = fn(k, j)
+            p.rot(f"tent{k}_{j}", ax, deg)
+            if yaw:
+                p.rot(f"tent{k}_{j}", Y_AXIS, yaw)
+    return p
+
+
+def king_idle(sk, f, n=60):
+    ph = 2 * math.pi * f / n
+    p = Pose().rot("chest", X_AXIS, 1.2 * math.sin(ph)).rot("head", Y_AXIS, 5 * math.sin(ph + 1))
+    p.rot("head", X_AXIS, 2 * math.sin(2 * ph))
+    return tentacles(p, sk, lambda k, j: (5 * math.sin(ph - 0.9 * j + 0.8 * k),
+                                          3 * math.sin(ph + k) if j == 0 else 0))
+
+
+def king_move(sk, f, n=30):
+    ph = 2 * math.pi * f / n
+    p = Pose().move("root", (0, 0.03 * KING_SCALE * math.sin(2 * ph), 0))
+    p.rot("pelvis", Z_AXIS, 3 * math.sin(ph)).rot("chest", X_AXIS, -4).rot("chest", Y_AXIS, 3 * math.sin(ph))
+    p.rot("head", X_AXIS, 3)
+    return tentacles(p, sk, lambda k, j: (5 + 9 * math.sin(ph - 1.1 * j + k * math.pi / 2),
+                                          6 * math.sin(ph + k * math.pi / 2) if j == 0 else 0))
+
+
+def king_attack(sk, f, n=30):
+    u = f / n
+    w, c = strike(u)
+    p = Pose().rot("chest", X_AXIS, 3 * w - 10 * c).rot("spine", X_AXIS, -4 * c).rot("head", X_AXIS, -6 * c)
+
+    def fn(k, j):
+        if sk.tentacle_dirs[k][2] < 0:  # the front tentacles rear up, then slam down and forward
+            return (24 * w - 6 * c) * (1.0 - 0.15 * j), 0
+        return 4 + 6 * math.sin(2 * math.pi * 2 * u - j + k), 0
+    return tentacles(p, sk, fn)
+
+
+def king_defend(sk, f, n=40):
+    ph = 2 * math.pi * f / n
+    p = Pose().rot("chest", X_AXIS, 5).rot("head", X_AXIS, 3 + 2 * math.sin(ph))
+    return tentacles(p, sk, lambda k, j: (16 + 3 * math.sin(ph - j + k), 0))
+
+
+def king_support(sk, f, n=40):
+    ph = 2 * math.pi * f / n
+    p = Pose().rot("chest", X_AXIS, 4).rot("head", X_AXIS, 12)
+    return tentacles(p, sk, lambda k, j: (10 + 8 * math.sin(ph - 0.8 * j + k), 0))
+
+
+def king_death(sk, f, n=45):
+    u = f / (n - 1)
+    k1, k2 = smoothstep(0.0, 0.5, u), smoothstep(0.3, 1.0, u)
+    p = Pose().move("pelvis", (0, -0.45 * KING_SCALE * k2, 0)).rot("pelvis", Z_AXIS, 6 * k2)
+    p.rot("chest", X_AXIS, -25 * k2).rot("spine", X_AXIS, -12 * k2).rot("head", X_AXIS, -30 * k2)
+    return tentacles(p, sk, lambda k, j: (-14 * k1 * (1.0 if j else 0.5),
+                                          8 * k1 * (1 if k % 2 else -1) if j == 0 else 0))
+
+
+# ----- the Byakhee and its rider ------------------------------------------------
+
+def wings(p, fn):
+    for side, sx in SIDES:
+        for bone, (flap, sweep) in fn().items():
+            if flap:
+                p.rot(f"{bone}_{side}", Z_AXIS, sx * flap)
+            if sweep:
+                p.rot(f"{bone}_{side}", Y_AXIS, sx * sweep)
+    return p
+
+
+def legs(p, thigh, shin, tarsus=0.0, foot=0.0):
+    for side, _ in SIDES:
+        p.rot(f"thigh_{side}", X_AXIS, thigh).rot(f"shin_{side}", X_AXIS, shin)
+        p.rot(f"tarsus_{side}", X_AXIS, tarsus).rot(f"foot_{side}", X_AXIS, foot)
+    return p
+
+
+def byakhee_idle(sk, f, n=45):
+    ph = 2 * math.pi * f / n
+    p = Pose().rot("body", X_AXIS, 1.5 * math.sin(ph)).rot("chest", X_AXIS, math.sin(ph))
+    wings(p, lambda: {"wing_up": (3 * math.sin(ph), 0), "wing_fore": (2 * math.sin(ph + 0.5), 0),
+                      "wing_hand": (1.5 * math.sin(ph + 1), 0)})
+    p.rot("neck2", Y_AXIS, 10 * math.sin(ph)).rot("head", Y_AXIS, 10 * math.sin(ph + 0.7))
+    p.rot("head", X_AXIS, 4 * math.sin(2 * ph)).rot("jaw", X_AXIS, -4 * max(0.0, math.sin(2 * ph)) ** 2)
+    for i, bone in enumerate(("tail1", "tail2", "tail3")):
+        p.rot(bone, Y_AXIS, (8 + 2 * i) * math.sin(ph - 0.6 * i))
+    return p.rot("rider_spine", X_AXIS, 1.5 * math.sin(ph + 1)).rot("rider_head", Y_AXIS, 8 * math.sin(ph + 2))
+
+
+def byakhee_move(sk, f, n=16):
+    ph = 2 * math.pi * f / n
+    p = Pose().move("root", (0, 0.45 + 0.07 * math.sin(ph), 0)).rot("body", X_AXIS, -6)
+    wings(p, lambda: {"wing_up": (12 + 42 * math.sin(ph), -8 * math.cos(ph)),
+                      "wing_fore": (22 * math.sin(ph - 0.7), 0), "wing_hand": (18 * math.sin(ph - 1.3), 0)})
+    legs(p, -55, 70, -45, -40)
+    p.rot("neck1", X_AXIS, -14).rot("neck2", X_AXIS, -12).rot("head", X_AXIS, 14 + 3 * math.sin(ph))
+    p.rot("tail1", X_AXIS, 8).rot("tail2", X_AXIS, 6 * math.sin(ph - 1)).rot("tail3", X_AXIS, 8 * math.sin(ph - 2))
+    return p.rot("rider_spine", X_AXIS, -10 + 2 * math.sin(ph)).rot("rider_head", X_AXIS, 6)
+
+
+def byakhee_attack(sk, f, n=20):
+    w, c = strike(f / n)
+    p = Pose()
+    p.rot("neck1", X_AXIS, 18 * w - 30 * c).rot("neck2", X_AXIS, 14 * w - 28 * c).rot("head", X_AXIS, -8 * w + 22 * c)
+    p.rot("jaw", X_AXIS, -32 * w)
+    wings(p, lambda: {"wing_up": (28 * w + 12 * c, 8 * w)})
+    p.rot("body", X_AXIS, 6 * w - 8 * c).move("root", (0, 0, -0.18 * c))
+    legs(p, 10 * c, -10 * c)
+    p.rot("rider_spine", X_AXIS, 4 * w - 12 * c)
+    return p.rot("rider_arm_r", X_AXIS, -6 * c).move("rider_arm_r", (0, 0, -0.12 * c))
+
+
+def byakhee_defend(sk, f, n=40):
+    ph = 2 * math.pi * f / n
+    p = Pose()
+    wings(p, lambda: {"wing_up": (-12, 32), "wing_fore": (-28, 0), "wing_hand": (-10, 0)})
+    p.rot("neck1", X_AXIS, 16).rot("neck2", X_AXIS, 10).rot("head", X_AXIS, -14)
+    p.rot("jaw", X_AXIS, -18 - 10 * max(0.0, math.sin(3 * ph)))
+    p.rot("body", X_AXIS, -3 + 2 * math.sin(ph)).move("root", (0, -0.04, 0))
+    legs(p, 10, -15)
+    return p.rot("rider_spine", X_AXIS, -12)
+
+
+def byakhee_support(sk, f, n=30):
+    ph = 2 * math.pi * f / n
+    p = Pose().rot("neck1", X_AXIS, 10).rot("neck2", X_AXIS, 22).rot("head", X_AXIS, 26)
+    p.rot("jaw", X_AXIS, -40 + 8 * math.sin(3 * ph))
+    wings(p, lambda: {"wing_up": (30 + 8 * math.sin(ph), 0), "wing_fore": (10 * math.sin(ph + 0.5), 0)})
+    return p.rot("tail1", X_AXIS, 12).rot("rider_arm_r", X_AXIS, 25)
+
+
+def byakhee_death(sk, f, n=40):
+    """Legs buckle and it collapses onto its belly, wings sprawled flat and neck
+    stretched along the ground; the rider slumps over its neck."""
+    u = f / (n - 1)
+    k1, k2 = smoothstep(0.0, 0.45, u), smoothstep(0.25, 0.90, u)
+    p = Pose().move("root", (0, -0.62 * k1, 0))  # comes to rest on its folded legs
+    legs(p, 40 * k1, -100 * k1, 90 * k1, 30 * k1)
+    arm = normalize(np.array(BYAKHEE_WING["E"]) - BYAKHEE_WING["S"])
+    for side, sx in SIDES:
+        # twist each wing about its arm so the membrane turns flat, lower it to the ground and
+        # bend the wrist so the fingers lie along it
+        p.rot(f"wing_up_{side}", Z_AXIS, -62 * sx * k2).rot(f"wing_up_{side}", mirror(arm, sx), -40 * sx * k2)
+        p.rot(f"wing_fore_{side}", Z_AXIS, -8 * sx * k2).rot(f"wing_hand_{side}", Z_AXIS, 25 * sx * k2)
+    p.rot("neck1", X_AXIS, -45 * k2).rot("neck2", X_AXIS, -30 * k2).rot("head", X_AXIS, 10 * k2)
+    p.rot("jaw", X_AXIS, -20 * k2).rot("tail1", X_AXIS, -8 * k2)
+    p.rot("rider_spine", X_AXIS, -40 * k2).rot("rider_head", X_AXIS, -20 * k2)
+    return p.rot("rider_arm_r", X_AXIS, 12 * k2)  # keeps the lance off the ground
+
+
+# id -> (pose function, frame count, loops). "retreat" reuses "move".
+ANIMATIONS = {
+    "eldritch_yellow_zealot": {
+        "idle": (zealot_idle, 48, True), "move": (zealot_move, 20, True), "attack": (zealot_attack, 24, True),
+        "defend": (zealot_defend, 40, True), "support_attack": (zealot_support, 40, True),
+        "death": (zealot_death, 36, False)},
+    "eldritch_byakhee_rider": {
+        "idle": (byakhee_idle, 45, True), "move": (byakhee_move, 16, True), "attack": (byakhee_attack, 20, True),
+        "defend": (byakhee_defend, 40, True), "support_attack": (byakhee_support, 30, True),
+        "death": (byakhee_death, 40, False)},
+    "eldritch_king_in_yellow": {
+        "idle": (king_idle, 60, True), "move": (king_move, 30, True), "attack": (king_attack, 30, True),
+        "defend": (king_defend, 40, True), "support_attack": (king_support, 40, True),
+        "death": (king_death, 45, False)},
+}
+# entity state -> animation id
+STATES = [("idle", "idle"), ("move", "move"), ("attack", "attack"), ("defend", "defend"),
+          ("support_attack", "support_attack"), ("retreat", "move"), ("death", "death")]
+
+
+def bake_animation(sk, anim):
+    fn, n, _ = anim
+    return bake(sk, n, lambda f: fn(sk, f, n))
 
 
 MODELS = {
@@ -934,6 +1601,21 @@ def tangents(p, n, uv, tris):
     return np.array(out)
 
 
+def skin_arrays(m):
+    """Four (bone, weight) influences per vertex, padded with (-1, 0.0)."""
+    ix, w = [], []
+    for weights in m.skin:
+        top = sorted(weights.items(), key=lambda kv: -kv[1])[:4]
+        total = sum(v for _, v in top) or 1.0
+        for b, v in top:
+            ix.append(int(b))
+            w.append(float(v / total))
+        for _ in range(4 - len(top)):
+            ix.append(-1)
+            w.append(0.0)
+    return ix, w
+
+
 def mesh_arrays(m):
     p = np.array(m.p)
     n = np.array(m.n)
@@ -942,7 +1624,10 @@ def mesh_arrays(m):
     lo, hi = p.min(axis=0), p.max(axis=0)
     centre = (lo + hi) / 2
     radius = float(np.max(np.linalg.norm(p - centre, axis=1)))
+    skin_ix, skin_w = skin_arrays(m)
     return {
+        "skin_ix": skin_ix,
+        "skin_w": skin_w,
         "p": p.flatten().tolist(),
         "n": n.flatten().tolist(),
         "ta": ta.flatten().tolist(),
@@ -954,7 +1639,7 @@ def mesh_arrays(m):
     }
 
 
-def write_mesh(path, shape_name, a):
+def write_mesh(path, shape_name, a, sk=None):
     data = b"@@b@" + _prop("pdxasset", [1, 0]) + _obj("object", 1) + _obj(shape_name, 2) + _obj("mesh", 3)
     for key in ("p", "n", "ta", "u0", "tri", "boundingsphere"):
         data += _prop(key, a[key])
@@ -964,6 +1649,16 @@ def write_mesh(path, shape_name, a):
     data += _prop("diff", f"{TEXTURE}_diffuse.dds")
     data += _prop("n", f"{TEXTURE}_normal.dds")
     data += _prop("spec", f"{TEXTURE}_spec.dds")
+    if sk is not None:
+        data += _obj("skin", 4) + _prop("bones", [4]) + _prop("ix", a["skin_ix"]) + _prop("w", a["skin_w"])
+        data += _obj("skeleton", 3)
+        for b, name in enumerate(sk.names):
+            x, y, z = (float(v) for v in sk.pos[b])
+            data += _obj(name, 4) + _prop("ix", [b])
+            if sk.parent[b] is not None:
+                data += _prop("pa", [sk.parent[b]])
+            # inverse bind matrix (3x4, column by column); bind rotations are identity
+            data += _prop("tx", [1.0, 0.0, 0.0, 0.0, 1.0, 0.0, 0.0, 0.0, 1.0, -x, -y, -z])
     data += _obj("locator", 1)
     full = os.path.join(ROOT, path)
     os.makedirs(os.path.dirname(full), exist_ok=True)
@@ -1017,6 +1712,52 @@ def read_mesh(path):
     return tree
 
 
+def write_anim(path, sk, frames, fps=FPS):
+    """Clausewitz .anim: initial local pose per bone, then the samples of every
+    animated channel, frame by frame and bone by bone."""
+    data = b"@@b@" + _prop("pdxasset", [1, 0]) + _obj("info", 1)
+    data += _prop("fps", [float(fps)]) + _prop("sa", [len(frames)]) + _prop("j", [len(sk.names)])
+    flags = []
+    for b, name in enumerate(sk.names):
+        ts = np.array([fr[b][0] for fr in frames])
+        qs = np.array([fr[b][1] for fr in frames])
+        fl = ("t" if np.abs(ts - ts[0]).max() > 1e-6 else "") + ("q" if np.abs(qs - qs[0]).max() > 1e-6 else "")
+        flags.append(fl)
+        data += _obj(name, 2) + _prop("sa", fl) + _prop("t", [float(v) for v in ts[0]])
+        data += _prop("q", [float(v) for v in qs[0]]) + _prop("s", [1.0])
+    data += _obj("samples", 1)
+    t_packed, q_packed = [], []
+    for fr in frames:
+        for b in range(len(sk.names)):
+            if "t" in flags[b]:
+                t_packed.extend(float(v) for v in fr[b][0])
+            if "q" in flags[b]:
+                q_packed.extend(float(v) for v in fr[b][1])
+    if t_packed:
+        data += _prop("t", t_packed)
+    if q_packed:
+        data += _prop("q", q_packed)
+    full = os.path.join(ROOT, path)
+    with open(full, "wb") as f:
+        f.write(data)
+    return flags
+
+
+def verify_anim(path, sk, n_frames):
+    tree = read_mesh(path)
+    info = next(c for c in tree["children"] if c["name"] == "info")
+    samples = next(c for c in tree["children"] if c["name"] == "samples")
+    assert info["props"]["sa"] == [n_frames] and info["props"]["j"] == [len(sk.names)]
+    assert [c["name"] for c in info["children"]] == sk.names
+    n_t = sum("t" in c["props"]["sa"] for c in info["children"])
+    n_q = sum("q" in c["props"]["sa"] for c in info["children"])
+    assert len(samples["props"].get("t", [])) == n_t * 3 * n_frames
+    assert len(samples["props"].get("q", [])) == n_q * 4 * n_frames
+    q = np.array(samples["props"].get("q", [0, 0, 0, 1])).reshape(-1, 4)
+    assert np.allclose(np.linalg.norm(q, axis=1), 1.0, atol=1e-4), "non-unit quaternion"
+    return n_t, n_q
+
+
 def verify_mesh(path):
     tree = read_mesh(path)
     assert tree["props"]["pdxasset"] == [1, 0]
@@ -1030,8 +1771,21 @@ def verify_mesh(path):
     uv = np.array(pr["u0"])
     assert uv.min() >= 0 and uv.max() <= 1
     kids = {c["name"]: c["props"] for c in mesh["children"]}
-    assert set(kids) == {"aabb", "material"}
+    assert set(kids) <= {"aabb", "material", "skin"} and {"aabb", "material"} <= set(kids)
     assert kids["material"]["shader"] == "PdxMeshStandard"
+    shape = tree["children"][0]["children"][0]
+    skel = [c for c in shape["children"] if c["name"] == "skeleton"]
+    if "skin" in kids:
+        bones = skel[0]["children"]
+        assert len(bones) <= 64, "too many bones"
+        for i, bone in enumerate(bones):
+            assert bone["props"]["ix"] == [i] and len(bone["props"]["tx"]) == 12
+            assert "pa" not in bone["props"] or bone["props"]["pa"][0] < i, "parent after child"
+        ix = np.array(kids["skin"]["ix"]).reshape(-1, 4)
+        w = np.array(kids["skin"]["w"]).reshape(-1, 4)
+        assert kids["skin"]["bones"] == [4] and len(ix) == nv and len(w) == nv
+        assert ix.max() < len(bones) and ix.min() >= -1 and (ix[:, 0] >= 0).all()
+        assert np.allclose(w.sum(axis=1), 1.0, atol=1e-4), "skin weights do not sum to 1"
     for slot in ("diff", "n", "spec"):
         assert os.path.exists(os.path.join(os.path.dirname(path), kids["material"][slot])), slot
     p = np.array(pr["p"]).reshape(-1, 3)
@@ -1324,20 +2078,38 @@ def write_definitions():
            "#####################################################################",
            "", "objectTypes = {"]
     for mesh in MODELS:
-        gfx += ["\tpdxmesh = {", f'\t\tname = "{mesh}_mesh"', f'\t\tfile = "{MODEL_DIR}/{mesh}.mesh"',
-                f"\t\tscale = {MESH_SCALE}", "\t}"]
+        gfx += ["\tpdxmesh = {", f'\t\tname = "{mesh}_mesh"', f'\t\tfile = "{MODEL_DIR}/{mesh}.mesh"']
+        for anim_id in ANIMATIONS[mesh]:
+            gfx.append(f'\t\tanimation = {{ id = "{anim_id}" type = "{mesh}_{anim_id}_anim" }}')
+        gfx += [f"\t\tscale = {MESH_SCALE}", "\t}"]
     gfx.append("}")
     with open(os.path.join(ROOT, "gfx/entities/eldritch_hastur_meshes.gfx"), "w") as f:
         f.write("\n".join(gfx) + "\n")
 
+    anims = ["#####################################################################",
+             "# Eldritch Pacts - King in Yellow animations",
+             "# Generated by tools/generate_models.py.",
+             "#####################################################################", ""]
+    for mesh, table in ANIMATIONS.items():
+        for anim_id in table:
+            anims += ["animation = {", f'\tname = "{mesh}_{anim_id}_anim"',
+                      f'\tfile = "{MODEL_DIR}/{mesh}_{anim_id}.anim"', "}", ""]
+    with open(os.path.join(ROOT, MODEL_DIR, "eldritch_hastur_animations.asset"), "w") as f:
+        f.write("\n".join(anims))
+
     asset = ["#####################################################################",
              "# Eldritch Pacts - King in Yellow unit entities",
              "# Generated by tools/generate_models.py. A battalion with",
-             "# sprite = X is drawn with X_entity. The models are static (no",
-             "# animation states).",
+             "# sprite = X is drawn with X_entity.",
              "#####################################################################", ""]
     for sprite, mesh in ENTITIES.items():
-        asset += ["entity = {", f'\tname = "{sprite}_entity"', f'\tpdxmesh = "{mesh}_mesh"', "}", ""]
+        asset += ["entity = {", f'\tname = "{sprite}_entity"', f'\tpdxmesh = "{mesh}_mesh"',
+                  '\tdefault_state = "idle"']
+        for state, anim_id in STATES:
+            loops = ANIMATIONS[mesh][anim_id][2]
+            extra = "" if loops else " looping = no"
+            asset.append(f'\tstate = {{ name = "{state}" animation = "{anim_id}" animation_blend_time = 0.25{extra} }}')
+        asset += ["}", ""]
     with open(os.path.join(ROOT, "gfx/entities/eldritch_hastur_units.asset"), "w") as f:
         f.write("\n".join(asset))
 
@@ -1347,16 +2119,18 @@ def write_definitions():
 # mapping, key and rim light - only for checking the models by eye)
 # ---------------------------------------------------------------------------
 
-def render_preview(a, diffuse, nmap, size=640, yaw=-30, pitch=-12):
+def render_preview(a, diffuse, nmap, size=640, yaw=-30, pitch=-12, fit=None):
+    """fit: optional points to frame the camera on (keeps an animation steady)."""
     p = np.array(a["p"]).reshape(-1, 3)
     n = np.array(a["n"]).reshape(-1, 3)
     ta = np.array(a["ta"]).reshape(-1, 4)
     uv = np.array(a["u0"]).reshape(-1, 2)
     tris = np.array(a["tri"]).reshape(-1, 3)
     rot = rot_x(math.radians(pitch)) @ rot_y(math.radians(yaw))
-    centre = (p.min(axis=0) + p.max(axis=0)) / 2
+    fit = p if fit is None else fit
+    centre = (fit.min(axis=0) + fit.max(axis=0)) / 2
     q = (p - centre) @ rot.T
-    extent = np.abs(q[:, :2]).max() * 1.08
+    extent = np.abs((fit - centre) @ rot.T)[:, :2].max() * 1.08
     sx = (q[:, 0] / extent * 0.5 + 0.5) * size
     sy = (0.5 - q[:, 1] / extent * 0.5) * size
     depth = q[:, 2]
@@ -1419,17 +2193,60 @@ def render_preview(a, diffuse, nmap, size=640, yaw=-30, pitch=-12):
     return Image.fromarray(img.clip(0, 255).astype(np.uint8))
 
 
+def render_animation_previews(name, a, sk, baked, diffuse, nmap, out_dir, size=300, step=2, columns=6):
+    """Skin the mesh on the CPU for every other frame of each animation and
+    write <name>_<anim>.gif plus a <name>_anims.png contact sheet."""
+    p = np.array(a["p"]).reshape(-1, 3)
+    n = np.array(a["n"]).reshape(-1, 3)
+    ta = np.array(a["ta"]).reshape(-1, 4)
+    ix = np.array(a["skin_ix"]).reshape(-1, 4)
+    w = np.array(a["skin_w"]).reshape(-1, 4)
+    rows = []
+    for anim_id, frames in baked.items():
+        poses = []
+        for f in range(0, len(frames), step):
+            sp, sn = skin_points(sk, frames[f], p, n, ix, w)
+            _, st = skin_points(sk, frames[f], p, ta[:, :3], ix, w)
+            poses.append((sp, sn, st))
+        fit = np.concatenate([sp[::7] for sp, _, _ in poses] + [p[::7]])
+        images = []
+        for sp, sn, st in poses:
+            posed = dict(a, p=sp.ravel(), n=sn.ravel(), ta=np.concatenate([st, ta[:, 3:]], axis=1).ravel())
+            images.append(render_preview(posed, diffuse, nmap, size=size, fit=fit))
+        images[0].save(os.path.join(out_dir, f"{name}_{anim_id}.gif"), save_all=True, append_images=images[1:],
+                       duration=int(1000 * step / FPS), loop=0)
+        picks = np.linspace(0, len(images) - 1, columns).round().astype(int)
+        rows.append((anim_id, [images[i] for i in picks]))
+    label_w = 110
+    sheet = Image.new("RGB", (label_w + size * columns, size * len(rows)), (14, 18, 14))
+    draw = ImageDraw.Draw(sheet)
+    for r, (anim_id, imgs) in enumerate(rows):
+        draw.text((8, r * size + size // 2), anim_id, fill=(220, 200, 90))
+        for c, img in enumerate(imgs):
+            sheet.paste(img, (label_w + c * size, r * size))
+    sheet.save(os.path.join(out_dir, f"{name}_anims.png"))
+
+
 def main():
     preview_dir = None
     if "--preview" in sys.argv:
         preview_dir = sys.argv[sys.argv.index("--preview") + 1]
     diffuse, nmap = make_textures()
     for name, build in MODELS.items():
-        a = mesh_arrays(build())
+        m, sk = build()
+        a = mesh_arrays(m)
         path = f"{MODEL_DIR}/{name}.mesh"
-        write_mesh(path, f"{name}Shape", a)
+        write_mesh(path, f"{name}Shape", a, sk)
         nv, nt, lo, hi = verify_mesh(os.path.join(ROOT, path))
-        print(f"{name}: {nv} vertices, {nt} triangles, height {hi[1] - lo[1]:.2f}")
+        print(f"{name}: {nv} vertices, {nt} triangles, {len(sk.names)} bones, height {hi[1] - lo[1]:.2f}")
+        baked = {}
+        for anim_id, anim in ANIMATIONS[name].items():
+            frames = bake_animation(sk, anim)
+            baked[anim_id] = frames
+            anim_path = f"{MODEL_DIR}/{name}_{anim_id}.anim"
+            write_anim(anim_path, sk, frames)
+            n_t, n_q = verify_anim(os.path.join(ROOT, anim_path), sk, len(frames))
+            print(f"    {anim_id}: {len(frames)} frames, {n_q} rotating / {n_t} moving bones")
         if preview_dir:
             os.makedirs(preview_dir, exist_ok=True)
             front = render_preview(a, diffuse, nmap, yaw=-30)
@@ -1438,6 +2255,7 @@ def main():
             sheet.paste(front, (0, 0))
             sheet.paste(back, (front.width, 0))
             sheet.save(os.path.join(preview_dir, f"{name}.png"))
+            render_animation_previews(name, a, sk, baked, diffuse, nmap, preview_dir)
     write_definitions()
     print("Models generated.")
 
