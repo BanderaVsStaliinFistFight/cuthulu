@@ -708,6 +708,53 @@ def painted_illustration(gb, palettes, out_size, paper, seed=0, tone_edges=(0.62
     return np.asarray(pil.resize(out_size, Image.LANCZOS)).astype(float) / 255
 
 
+def kuwahara(img, radius):
+    """Kuwahara filter: each pixel takes the mean colour of whichever of its
+    four surrounding quadrants is most uniform. Smooth gradients break into
+    flat, edge-respecting patches, the look of oil paint laid with a brush."""
+    r = int(radius)
+    H, W, _ = img.shape
+    pad = np.pad(img, ((r, r), (r, r), (0, 0)), mode="edge")
+    lum = pad @ np.array([0.299, 0.587, 0.114])
+
+    def integral(a):
+        s = a.cumsum(0).cumsum(1)
+        pw = ((1, 0), (1, 0)) + ((0, 0),) * (a.ndim - 2)
+        return np.pad(s, pw)
+
+    S, SL, S2 = integral(pad), integral(lum), integral(lum * lum)
+    yy, xx = np.mgrid[0:H, 0:W]
+    cy, cx = yy + r, xx + r
+    n = float((r + 1) ** 2)
+    best = np.full((H, W), np.inf)
+    out = np.zeros_like(img)
+    for y0, x0 in ((cy - r, cx - r), (cy - r, cx), (cy, cx - r), (cy, cx)):
+        y1, x1 = y0 + r + 1, x0 + r + 1
+        m = (S[y1, x1] - S[y0, x1] - S[y1, x0] + S[y0, x0]) / n
+        ml = (SL[y1, x1] - SL[y0, x1] - SL[y1, x0] + SL[y0, x0]) / n
+        var = (S2[y1, x1] - S2[y0, x1] - S2[y1, x0] + S2[y0, x0]) / n - ml * ml
+        take = var < best
+        best = np.where(take, var, best)
+        out[take] = m[take]
+    return out
+
+
+def oil_paint(img, radius, seed=0, strokes=0.05):
+    """Kuwahara patches plus a little directional brush texture following
+    the image's own edges, and a fine canvas tooth."""
+    out = kuwahara(img, radius)
+    H, W, _ = out.shape
+    lum = out @ np.array([0.299, 0.587, 0.114])
+    gy, gx = np.gradient(blur(np.repeat(lum[..., None], 3, 2), 2.0)[..., 0])
+    ang = np.arctan2(gy, gx) + math.pi / 2  # strokes run along edges, across gradients
+    yy, xx = np.mgrid[0:H, 0:W].astype(float)
+    u = xx * np.cos(ang) + yy * np.sin(ang)
+    v = -xx * np.sin(ang) + yy * np.cos(ang)
+    tex = fbm2(u / 14.0 + seed, v / 2.2, 3, seed)
+    tooth = fbm2(xx / 1.6, yy / 1.6, 2, seed + 1)
+    return np.clip(out * (1 + strokes * tex[..., None] + 0.02 * tooth[..., None]), 0, 1)
+
+
 def aged_paper(size, seed=0, base=(0.90, 0.85, 0.72), stains=0.25, edge=0.35, foxing=60):
     """Old, stained, foxed paper."""
     w, h = size
