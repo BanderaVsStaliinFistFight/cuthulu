@@ -1,0 +1,18 @@
+#####################################################################
+# Eldritch Pacts - game rules
+#####################################################################
+
+eldritch_ai_pacts = {
+	name = "RULE_ELDRITCH_AI_PACTS"
+	group = "RULE_GROUP_ELDRITCH"
+	default = {
+		name = DISABLED
+		text = "RULE_ELDRITCH_AI_PACTS_DISABLED"
+		desc = "RULE_ELDRITCH_AI_PACTS_DISABLED_DESC"
+	}
+	option = {
+		name = ALLOWED
+		text = "RULE_ELDRITCH_AI_PACTS_ALLOWED"
+		desc = "RULE_ELDRITCH_AI_PACTS_ALLOWED_DESC"
+	}
+}

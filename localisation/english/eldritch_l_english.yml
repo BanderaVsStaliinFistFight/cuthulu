@@ -1,0 +1,482 @@
+﻿l_english:
+
+ ################################################################
+ # DECISION CATEGORY
+ ################################################################
+
+ eldritch_forbidden_rites:0 "The Forbidden Rites"
+ eldritch_forbidden_rites_desc:0 "Beneath the cities of men, beneath the seas, and in the spaces between the stars, things older than humanity wait. They do not care for flags or ideologies, but they can be bargained with.\n\n§HPatron:§! §Y[ROOT.GetEldritchGodName]§!\n§HPact:§! [ROOT.GetEldritchPactStage]\n[ROOT.GetEldritchFavorLine]"
+
+ eldritch_god_name_cthulhu:0 "Cthulhu"
+ eldritch_god_name_nyarlathotep:0 "Nyarlathotep"
+ eldritch_god_name_hastur:0 "Hastur"
+ eldritch_god_name_shub_niggurath:0 "Shub-Niggurath"
+ eldritch_god_name_yog_sothoth:0 "Yog-Sothoth"
+ eldritch_god_name_azathoth:0 "Azathoth"
+ eldritch_god_name_none:0 "None"
+
+ eldritch_stage_none:0 "Nobody in this nation has looked beyond the veil yet."
+ eldritch_stage_lore:0 "§YWe have the lore. A god waits to be summoned.§!"
+ eldritch_stage_ritual:0 "§YA summoning ritual is underway...§!"
+ eldritch_stage_1:0 "§YBound§! (Tier I)"
+ eldritch_stage_2:0 "§YStirring§! (Tier II)"
+ eldritch_stage_3:0 "§RAscendant§! (Tier III)"
+ eldritch_favor_line:0 "§HEldritch Favor:§! §Y[?eldritch_favor|0]§! / 999"
+ eldritch_favor_line_none:0 ""
+
+ ################################################################
+ # COSTS & TOOLTIPS
+ ################################################################
+
+ eldritch_cost_favor_40:0 "§Y40§! Favor"
+ eldritch_cost_favor_40_blocked:0 "§R40§! Favor"
+ eldritch_cost_favor_50:0 "§Y50§! Favor"
+ eldritch_cost_favor_50_blocked:0 "§R50§! Favor"
+ eldritch_cost_favor_60:0 "§Y60§! Favor"
+ eldritch_cost_favor_60_blocked:0 "§R60§! Favor"
+ eldritch_cost_favor_75:0 "§Y75§! Favor"
+ eldritch_cost_favor_75_blocked:0 "§R75§! Favor"
+ eldritch_cost_favor_80:0 "§Y80§! Favor"
+ eldritch_cost_favor_80_blocked:0 "§R80§! Favor"
+ eldritch_cost_favor_120:0 "§Y120§! Favor"
+ eldritch_cost_favor_120_blocked:0 "§R120§! Favor"
+ eldritch_cost_favor_150:0 "§Y150§! Favor"
+ eldritch_cost_favor_150_blocked:0 "§R150§! Favor"
+ eldritch_cost_favor_300:0 "§Y300§! Favor"
+ eldritch_cost_favor_300_blocked:0 "§R300§! Favor"
+ eldritch_cost_manpower_20k:0 "§Y20k§! Manpower"
+ eldritch_cost_manpower_20k_blocked:0 "§R20k§! Manpower"
+
+ eldritch_no_ritual_underway_tt:0 "No summoning ritual is currently underway"
+ eldritch_has_coastline_tt:0 "Owns at least one coastal state"
+ eldritch_pact_tier_at_least_2_tt:0 "The pact has been deepened to at least §YTier II§!"
+ eldritch_has_unanointed_general_tt:0 "Has a general who has not yet been anointed"
+ eldritch_has_unanointed_admiral_tt:0 "Has an admiral who has not yet been anointed"
+
+ eldritch_gain_favor_10_tt:0 "Gain §G10§! Eldritch Favor"
+ eldritch_gain_favor_15_tt:0 "Gain §G15§! Eldritch Favor"
+ eldritch_gain_favor_20_tt:0 "Gain §G20§! Eldritch Favor"
+ eldritch_gain_favor_25_tt:0 "Gain §G25§! Eldritch Favor"
+ eldritch_gain_favor_30_tt:0 "Gain §G30§! Eldritch Favor"
+ eldritch_gain_favor_40_tt:0 "Gain §G40§! Eldritch Favor"
+ eldritch_lose_favor_10_tt:0 "Lose §R10§! Eldritch Favor"
+ eldritch_lose_favor_40_tt:0 "Lose §R40§! Eldritch Favor"
+
+ eldritch_lore_found_tt:0 "The §Ysummoning rituals§! of the Old Ones are revealed."
+ eldritch_summonings_unlocked_tt:0 "Six summoning rituals are now available in §YThe Forbidden Rites§!.\n§RChoose carefully: only one god can ever be bound to us.§!"
+ eldritch_pact_sealed_tt:0 "The pact is sealed. §YBlessings§! become available in §YThe Forbidden Rites§!, and every other nation will learn what we have done."
+ eldritch_start_favor_tt:0 "Start with §G50§! Eldritch Favor and gain §G5§! more each month."
+ eldritch_units_empowered_tt:0 "Our §Yeldritch battalions§! grow stronger, with better attack, defense, breakthrough and organization."
+ eldritch_monthly_favor_tier_2_tt:0 "Monthly Eldritch Favor rises to §G8§!."
+ eldritch_monthly_favor_tier_3_tt:0 "Monthly Eldritch Favor rises to §G12§!."
+
+ eldritch_units_cthulhu_tt:0 "Unlocks the §YDeep One Brood§! and §YStar-Spawn of Cthulhu§! battalions and the locked §YDeep One Swarm§! division template."
+ eldritch_units_nyarlathotep_tt:0 "Unlocks the §YFaceless Cultists§! and §YShantak Riders§! battalions and the locked §YFaceless Legion§! division template."
+ eldritch_units_hastur_tt:0 "Unlocks the §YZealots of the Yellow Sign§! and §YByakhee Riders§! battalions and the locked §YHost of the Yellow Sign§! division template."
+ eldritch_units_shub_niggurath_tt:0 "Unlocks the §YDark Young§! and §YThousand Young§! battalions and the locked §YBrood of the Black Goat§! division template."
+ eldritch_units_yog_sothoth_tt:0 "Unlocks the §YWardens of the Gate§! and §YDunwich Horror§! battalions and the locked §YWardens of the Gate§! division template."
+ eldritch_units_azathoth_tt:0 "Unlocks the §YSpawn of the Nuclear Chaos§! and §YVoid Pipers§! battalions and the locked §YChaos Horde§! division template."
+
+ eldritch_spawn_cthulhu_tt:0 "Two veteran §YDeep One Swarm§! divisions crawl out of the sea near our capital."
+ eldritch_spawn_nyarlathotep_tt:0 "Two veteran §YFaceless Legion§! divisions assemble near our capital."
+ eldritch_spawn_hastur_tt:0 "Two veteran §YHost of the Yellow Sign§! divisions march out of Carcosa near our capital."
+ eldritch_spawn_shub_niggurath_tt:0 "Two veteran §YBrood of the Black Goat§! divisions emerge from the woods near our capital."
+ eldritch_spawn_yog_sothoth_tt:0 "Two veteran §YWardens of the Gate§! divisions step through the Gate near our capital."
+ eldritch_spawn_azathoth_tt:0 "Two veteran §YChaos Horde§! divisions spill out of the void near our capital."
+
+ eldritch_gate_insight:0 "Insight from Beyond the Gate"
+
+ ################################################################
+ # DECISIONS - THE FORBIDDEN LORE & SUMMONINGS
+ ################################################################
+
+ eldritch_seek_forbidden_lore:0 "Seek the Forbidden Lore"
+ eldritch_seek_forbidden_lore_desc:0 "People talk of a book bound in something that is not leather, the verses of a mad poet copied by monks who later put out their own eyes. Our agents could find a copy: in the restricted stacks of Miskatonic University, in a bazaar in Sana'a, in a crypt under Prague. Once we read it, there is no going back.\n\n§YFinding it reveals the summoning rituals of six Old Ones. Only ONE of them can ever be bound to [ROOT.GetNameDef].§!"
+
+ eldritch_summon_cthulhu:0 "Summon Cthulhu, the Dreamer in R'lyeh"
+ eldritch_summon_cthulhu_desc:0 "§HPh'nglui mglw'nafh Cthulhu R'lyeh wgah'nagl fhtagn.§!\nIn his house at R'lyeh, dead Cthulhu waits dreaming. At the darkest tide our priests will go down to the sea and sing the words until the drowned city answers.\n\nCthulhu favours §Ynavies and invasions from the sea§!, and sends the amphibious §YDeep Ones§! and the colossal §YStar-Spawn§!.\n\n§RThis choice is final. All other summonings will be closed forever.§!"
+ eldritch_summon_nyarlathotep:0 "Summon Nyarlathotep, the Crawling Chaos"
+ eldritch_summon_nyarlathotep_desc:0 "He is the soul and messenger of the Outer Gods, and he wears a thousand masks: the Black Pharaoh, the Haunter of the Dark, the smiling stranger in a fine suit. He has always been eager to bargain.\n\nNyarlathotep favours §Ypolitics, intrigue and subversion§!, and lends §YFaceless Cultists§! and swift §YShantak Riders§!.\n\n§RThis choice is final. All other summonings will be closed forever.§!"
+ eldritch_summon_hastur:0 "Summon Hastur, the King in Yellow"
+ eldritch_summon_hastur_desc:0 "§HAlong the shore the cloud waves break, the twin suns sink behind the lake.§!\nWe will stage the forbidden play in full, all the way to the second act. When the Stranger takes off his mask, the King in Yellow will have come to [ROOT.GetNameDef].\n\nHastur favours §Ymorale and the air§!, and lends fanatical §YZealots of the Yellow Sign§! and winged §YByakhee Riders§!.\n\n§RThis choice is final. All other summonings will be closed forever.§!"
+ eldritch_summon_shub_niggurath:0 "Summon Shub-Niggurath, the Black Goat"
+ eldritch_summon_shub_niggurath_desc:0 "§HIä! Shub-Niggurath! The Black Goat of the Woods with a Thousand Young!§!\nOn the hills where the old stones stand, the faithful will light the fires and give her what she asks for. In return, she gives life: endless, overflowing and monstrous.\n\nShub-Niggurath favours §Ypopulation, manpower and endurance§!, and sends the towering §YDark Young§! and the swarming §YThousand Young§!.\n\n§RThis choice is final. All other summonings will be closed forever.§!"
+ eldritch_summon_yog_sothoth:0 "Summon Yog-Sothoth, the Gate and the Key"
+ eldritch_summon_yog_sothoth_desc:0 "§HYog-Sothoth knows the gate. Yog-Sothoth is the gate. Yog-Sothoth is the key and guardian of the gate.§!\nPast, present and future are all one in Yog-Sothoth. Our scholars will open the Gate and look through, if their minds can bear it.\n\nYog-Sothoth favours §Yresearch and planning§!, and lends the stalwart §YWardens of the Gate§! and the unseen §YDunwich Horror§!.\n\n§RThis choice is final. All other summonings will be closed forever.§!"
+ eldritch_summon_azathoth:0 "Summon Azathoth, the Daemon Sultan"
+ eldritch_summon_azathoth_desc:0 "At the centre of all infinity, the blind idiot god Azathoth gnaws hungrily in unlit chambers beyond time, lulled by the thin, monotonous whine of accursed flutes. Calling him is madness. Calling him works.\n\nAzathoth offers §Ypure destruction§!: unmatched §Yattack and breakthrough§!, the §YSpawn of the Nuclear Chaos§! and the §YVoid Pipers§!. The price is our nation's §Rstability§!.\n\n§RThis choice is final. All other summonings will be closed forever.§!"
+
+ ################################################################
+ # DECISIONS - COMMON RITES
+ ################################################################
+
+ eldritch_rite_of_worship:0 "Hold a Rite of Worship"
+ eldritch_rite_of_worship_desc:0 "Black tallow candles, an altar of unknown stone, and chanting in a language no human throat was made for. The rite is unpleasant, but [ROOT.GetEldritchGodName] is listening."
+ eldritch_blood_sacrifice:0 "Offer a Blood Sacrifice"
+ eldritch_blood_sacrifice_desc:0 "Prayer alone does not sustain [ROOT.GetEldritchGodName]. The conscription offices will send some of their intake to the temple instead of the barracks. Nobody will ask questions. Nobody who asks will be heard from again."
+ eldritch_deepen_pact_2:0 "Deepen the Pact: Rouse [ROOT.GetEldritchGodName]"
+ eldritch_deepen_pact_2_desc:0 "So far [ROOT.GetEldritchGodName] has given us only a fraction of its attention. A grander rite, held over many nights, will draw its gaze fully onto [ROOT.GetNameDef].\n\n§YRaises the pact to Tier II: a stronger national spirit, stronger eldritch battalions, more Favor each month, and access to the god's Avatar.§!"
+ eldritch_deepen_pact_3:0 "Deepen the Pact: [ROOT.GetEldritchGodName] Ascendant"
+ eldritch_deepen_pact_3_desc:0 "The final rite. When it is done, [ROOT.GetEldritchGodName] will not merely favour [ROOT.GetNameDef]; it will walk beside us. The world will notice.\n\n§YRaises the pact to Tier III: the ultimate national spirit, the strongest eldritch battalions, the most Favor each month, and a unique gift from the god.§!"
+ eldritch_anoint_general:0 "Anoint a Champion of [ROOT.GetEldritchGodName]"
+ eldritch_anoint_general_desc:0 "One of our commanders will be taken to the inner sanctum and shown what lies behind the veil. Most survive, and those who do lead with terrible certainty.\n\n§YAn un-anointed general gains the patron's blessing trait. Field marshals are chosen first.§!"
+ eldritch_anoint_admiral:0 "Anoint an Admiral of [ROOT.GetEldritchGodName]"
+ eldritch_anoint_admiral_desc:0 "The sea is older than the land, and it remembers the Old Ones. One of our admirals will be blessed so that the deep waters fight for us.\n\n§YAn un-anointed admiral gains the patron's blessing trait.§!"
+ eldritch_exalt_prophet:0 "Exalt the Prophet"
+ eldritch_exalt_prophet_desc:0 "[ROOT.GetLeader] has led us into this pact. Now [ROOT.GetEldritchGodName] will mark our leader as its chosen voice on Earth.\n\n§YThe current leader gains the patron's Herald and Chosen traits. If a new leader takes power, they can be exalted as well once this rite is available again.§!"
+ eldritch_call_servitors:0 "Call Forth the Servitors"
+ eldritch_call_servitors_desc:0 "The servants of [ROOT.GetEldritchGodName] are numberless, and the god will lend them to its faithful for a price.\n\n§YTwo veteran divisions of the god's locked template appear near our capital.§!"
+
+ ################################################################
+ # DECISIONS - CTHULHU
+ ################################################################
+
+ eldritch_cthulhu_tide_blessing:0 "Beseech the Tide of R'lyeh"
+ eldritch_cthulhu_tide_blessing_desc:0 "Ask the Dreamer to send his dreams into the sea. For a season the waves will favour our ships and our landings, and the enemy's sailors will wake screaming."
+ eldritch_cthulhu_avatar:0 "Raise Father Dagon and Mother Hydra"
+ eldritch_cthulhu_avatar_desc:0 "Two ancient Deep Ones, vast with age, rule the hybrid cities under the waves. They will rise to command our fleets and armies.\n\n§YCreates a unique admiral and a unique field marshal.§!"
+ eldritch_cthulhu_send_nightmares:0 "Send Nightmares to [From.GetNameDef]"
+ eldritch_cthulhu_send_nightmares_desc:0 "Artists, poets and sensitive souls across [From.GetNameDef] will dream of a green, slimy city of impossible angles. Some of them will not stop screaming.\n\n§YPlaces the 'Dreams of R'lyeh' curse on the enemy for 90 days.§!"
+
+ ################################################################
+ # DECISIONS - NYARLATHOTEP
+ ################################################################
+
+ eldritch_nyarlathotep_masks_blessing:0 "Don the Thousand Masks"
+ eldritch_nyarlathotep_masks_blessing_desc:0 "Nyarlathotep walks among our ministers wearing their own faces. Opposition crumbles and rivals become allies, and nobody can say exactly why."
+ eldritch_nyarlathotep_avatar:0 "Summon the Black Pharaoh"
+ eldritch_nyarlathotep_avatar_desc:0 "Nephren-Ka was the pharaoh whose name was struck from every monument. He has waited a long time to wage war again.\n\n§YCreates a unique field marshal.§!"
+ eldritch_nyarlathotep_whispers:0 "Whisper Madness into [From.GetNameDef]"
+ eldritch_nyarlathotep_whispers_desc:0 "A charismatic stranger is touring [From.GetNameDef], giving lectures on electricity and the stars. Crowds follow him. Afterwards they cannot remember what he said, but they believe it completely.\n\n§YDestabilizes the target and spreads our ideology there.§!"
+
+ ################################################################
+ # DECISIONS - HASTUR
+ ################################################################
+
+ eldritch_hastur_sign_blessing:0 "Unveil the Yellow Sign"
+ eldritch_hastur_sign_blessing_desc:0 "The Yellow Sign will be painted on every banner and every wing. Those who see it will follow it without fear or hesitation."
+ eldritch_hastur_avatar:0 "Invite the Stranger in the Pallid Mask"
+ eldritch_hastur_avatar_desc:0 "'You, sir, should unmask.' 'Indeed?' 'Indeed it's time. We all have laid aside disguise but you.' 'I wear no mask.'\n\n§YCreates a unique field marshal.§!"
+ eldritch_hastur_stage_play:0 "Stage 'The King in Yellow' in [From.GetNameDef]"
+ eldritch_hastur_stage_play_desc:0 "A touring company will perform the forbidden play in the theatres of [From.GetNameDef]. The first act is harmless. Nobody who sees the second act is ever the same.\n\n§YPlaces 'The Yellow Madness' curse on the enemy for 90 days.§!"
+
+ ################################################################
+ # DECISIONS - SHUB-NIGGURATH
+ ################################################################
+
+ eldritch_shub_niggurath_feast_blessing:0 "Feast of the Black Goat"
+ eldritch_shub_niggurath_feast_blessing_desc:0 "A great feast on the hills under the full moon. For months afterwards the wombs of [ROOT.GetNameDef] will be fruitful, and wounded soldiers will heal faster than they should."
+ eldritch_shub_niggurath_avatar:0 "Call the Shepherd of the Black Goat"
+ eldritch_shub_niggurath_avatar_desc:0 "Something stands at the edge of the woods, wearing horns and a shepherd's cloak, and the Dark Young bow to it.\n\n§YCreates a unique field marshal.§!"
+ eldritch_shub_niggurath_thousand_young:0 "Rite of the Thousand Young"
+ eldritch_shub_niggurath_thousand_young_desc:0 "Ask the Mother for her children. They come out of the forest by the hundreds, looking almost human, and they are eager to serve.\n\n§YGrants a large pool of manpower.§!"
+
+ ################################################################
+ # DECISIONS - YOG-SOTHOTH
+ ################################################################
+
+ eldritch_yog_sothoth_gate_blessing:0 "Gaze Through the Gate"
+ eldritch_yog_sothoth_gate_blessing_desc:0 "Our scholars will be allowed to look through the Gate, where all time and space are one. They will come back with answers to questions nobody has asked yet."
+ eldritch_yog_sothoth_avatar:0 "Bring Forth Wilbur Whateley"
+ eldritch_yog_sothoth_avatar_desc:0 "Son of Lavinia Whateley and a father nobody names, Wilbur grew to adulthood in ten years and reads Latin as easily as English. His twin is better left unmentioned.\n\n§YCreates a unique field marshal.§!"
+ eldritch_yog_sothoth_open_gate:0 "Open the Gate"
+ eldritch_yog_sothoth_open_gate_desc:0 "Plans for machines that will not be invented for decades, written in our engineers' own handwriting, appear in our laboratories overnight.\n\n§YGrants research bonuses for industry and electronics.§!"
+
+ ################################################################
+ # DECISIONS - AZATHOTH
+ ################################################################
+
+ eldritch_azathoth_fury_blessing:0 "Dance to the Daemon Flutes"
+ eldritch_azathoth_fury_blessing_desc:0 "Play the thin, monotonous piping of the Outer Void over every radio set in the army. The men will fight like the ones who dance around the Daemon Sultan's throne: without thought, without fear, without mercy."
+ eldritch_azathoth_avatar:0 "Summon the Piper of the Void"
+ eldritch_azathoth_avatar_desc:0 "One of the mindless flute-players from the court of Azathoth has stepped into our world. It does not speak. It plays, and armies march to its tune.\n\n§YCreates a unique field marshal.§!"
+ eldritch_azathoth_nuclear_chaos:0 "Bottle the Nuclear Chaos"
+ eldritch_azathoth_nuclear_chaos_desc:0 "Azathoth is the nuclear chaos at the heart of all things. A tiny fragment of it, sealed in lead, will destroy any city on Earth.\n\n§YGrants a nuclear bomb.§!"
+
+ ################################################################
+ # NATIONAL SPIRITS
+ ################################################################
+
+ eldritch_cthulhu_pact_1:0 "Pact of the Sleeping God"
+ eldritch_cthulhu_pact_1_desc:0 "Cthulhu dreams, and his dreams have turned toward us. Our shipwrights work faster, our sailors fight harder, and the coastal towns have strange new neighbours."
+ eldritch_cthulhu_pact_2:0 "Stirrings in R'lyeh"
+ eldritch_cthulhu_pact_2_desc:0 "Earthquakes in the South Pacific. Fishermen pull up carvings that no human hand made. The Dreamer is turning in his sleep."
+ eldritch_cthulhu_pact_3:0 "Cthulhu Fhtagn"
+ eldritch_cthulhu_pact_3_desc:0 "R'lyeh has risen. Its non-Euclidean towers glisten above the waves, and every Deep One in every ocean answers our call."
+ eldritch_cthulhu_blessing:0 "Tide of R'lyeh"
+ eldritch_cthulhu_blessing_desc:0 "The sea itself has taken our side."
+ eldritch_curse_dreams_of_rlyeh:0 "Dreams of R'lyeh"
+ eldritch_curse_dreams_of_rlyeh_desc:0 "Across the nation, sensitive minds are plagued by visions of a drowned city. Asylums are full, and the government cannot think straight."
+
+ eldritch_nyarlathotep_pact_1:0 "Pact of the Crawling Chaos"
+ eldritch_nyarlathotep_pact_1_desc:0 "A dark, thin man has joined the cabinet. Nobody remembers appointing him, and nobody dares to dismiss him."
+ eldritch_nyarlathotep_pact_2:0 "The Thousand Masks"
+ eldritch_nyarlathotep_pact_2_desc:0 "Nyarlathotep speaks through our diplomats, our newspapers and our radio sets. Truth has become whatever he says it is."
+ eldritch_nyarlathotep_pact_3:0 "The Black Pharaoh Reigns"
+ eldritch_nyarlathotep_pact_3_desc:0 "Nephren-Ka's throne has been rebuilt in the capital. Our nation moves as one under the Crawling Chaos, and our enemies argue among themselves."
+ eldritch_nyarlathotep_blessing:0 "Masks of Nyarlathotep"
+ eldritch_nyarlathotep_blessing_desc:0 "Every face in parliament is smiling the same smile."
+
+ eldritch_hastur_pact_1:0 "Pact of the King in Yellow"
+ eldritch_hastur_pact_1_desc:0 "Copies of an unpublished play circulate among our officers. The Yellow Sign is chalked on barrack walls."
+ eldritch_hastur_pact_2:0 "The Yellow Sign Spreads"
+ eldritch_hastur_pact_2_desc:0 "Black stars burn in the evening sky over our airfields. Our pilots claim the Byakhee fly beside them."
+ eldritch_hastur_pact_3:0 "Carcosa Ascendant"
+ eldritch_hastur_pact_3_desc:0 "Lost Carcosa lies over our capital like a veil. Strange is the night where black stars rise, and stranger still are the soldiers who march beneath them."
+ eldritch_hastur_blessing:0 "The Yellow Sign Unveiled"
+ eldritch_hastur_blessing_desc:0 "Every soldier who has seen the Sign would sooner die than retreat."
+ eldritch_curse_yellow_madness:0 "The Yellow Madness"
+ eldritch_curse_yellow_madness_desc:0 "Soldiers who saw the forbidden play desert their posts to look for Carcosa. Officers write letters to a king who does not exist."
+
+ eldritch_shub_niggurath_pact_1:0 "Pact of the Black Goat"
+ eldritch_shub_niggurath_pact_1_desc:0 "The harvests are heavy, the cradles are full, and something in the woods bleats at night."
+ eldritch_shub_niggurath_pact_2:0 "The Woods Are Fruitful"
+ eldritch_shub_niggurath_pact_2_desc:0 "Children grow up unusually fast and unusually strong. The midwives have stopped counting the extra fingers."
+ eldritch_shub_niggurath_pact_3:0 "The Thousand Young"
+ eldritch_shub_niggurath_pact_3_desc:0 "The Black Goat's children are everywhere. Our ranks refill faster than any enemy can empty them."
+ eldritch_shub_niggurath_blessing:0 "Fecundity of the Black Goat"
+ eldritch_shub_niggurath_blessing_desc:0 "Life overflows, monstrous and abundant."
+
+ eldritch_yog_sothoth_pact_1:0 "Pact of the Gate"
+ eldritch_yog_sothoth_pact_1_desc:0 "Our scientists have started dreaming in equations. Some of the equations describe colours that do not exist."
+ eldritch_yog_sothoth_pact_2:0 "Glimpses Beyond the Gate"
+ eldritch_yog_sothoth_pact_2_desc:0 "Our general staff read reports of battles that have not happened yet. The reports are always correct."
+ eldritch_yog_sothoth_pact_3:0 "The Gate and the Key"
+ eldritch_yog_sothoth_pact_3_desc:0 "Yog-Sothoth is the gate, and the gate stands open in our capital. All knowledge, past and future, lies within reach."
+ eldritch_yog_sothoth_blessing:0 "All Is One in Yog-Sothoth"
+ eldritch_yog_sothoth_blessing_desc:0 "Past, present and future merge, and our planners can see all three at once."
+
+ eldritch_azathoth_pact_1:0 "Pact of the Daemon Sultan"
+ eldritch_azathoth_pact_1_desc:0 "Somewhere at the centre of the universe, the blind god has turned its idiot attention toward us. Our soldiers fight with a terrible, joyless fury."
+ eldritch_azathoth_pact_2:0 "The Piping Grows Louder"
+ eldritch_azathoth_pact_2_desc:0 "Factory workers hear thin flute music over the machines. They work until they collapse, and production soars."
+ eldritch_azathoth_pact_3:0 "The Nuclear Chaos Unbound"
+ eldritch_azathoth_pact_3_desc:0 "We have opened a door onto the boiling heart of creation. Nothing can stand against us, and nothing in our own nation is stable any more."
+ eldritch_azathoth_blessing:0 "Mindless Fury"
+ eldritch_azathoth_blessing_desc:0 "The army fights like the dancers around the throne of chaos."
+
+ ################################################################
+ # COUNTRY LEADER TRAITS
+ ################################################################
+
+ eldritch_cthulhu_herald:0 "Dreamer of R'lyeh"
+ eldritch_cthulhu_herald_desc:0 "Shares the dreams of the Sleeper."
+ eldritch_cthulhu_chosen:0 "Voice of the Sleeper"
+ eldritch_cthulhu_chosen_desc:0 "Speaks with the voice of Cthulhu himself."
+ eldritch_nyarlathotep_herald:0 "Mask of the Crawling Chaos"
+ eldritch_nyarlathotep_herald_desc:0 "Is this still our leader, or one of Nyarlathotep's masks?"
+ eldritch_nyarlathotep_chosen:0 "Vizier of the Black Pharaoh"
+ eldritch_nyarlathotep_chosen_desc:0 "First servant of Nephren-Ka."
+ eldritch_hastur_herald:0 "Bearer of the Yellow Sign"
+ eldritch_hastur_herald_desc:0 "Has seen the Sign and understood it."
+ eldritch_hastur_chosen:0 "Prince of Carcosa"
+ eldritch_hastur_chosen_desc:0 "Heir to the tattered throne of the King in Yellow."
+ eldritch_shub_niggurath_herald:0 "Shepherd of the Black Goat"
+ eldritch_shub_niggurath_herald_desc:0 "Tends the Mother's flock."
+ eldritch_shub_niggurath_chosen:0 "Keeper of the Thousand Young"
+ eldritch_shub_niggurath_chosen_desc:0 "The Black Goat's children call this leader kin."
+ eldritch_yog_sothoth_herald:0 "Keeper of the Gate"
+ eldritch_yog_sothoth_herald_desc:0 "Holds the knowledge of the threshold."
+ eldritch_yog_sothoth_chosen:0 "The Key and the Guardian"
+ eldritch_yog_sothoth_chosen_desc:0 "Sees all times at once."
+ eldritch_azathoth_herald:0 "Herald of the Daemon Sultan"
+ eldritch_azathoth_herald_desc:0 "Announces the coming of chaos."
+ eldritch_azathoth_chosen:0 "Piper at the Throne of Chaos"
+ eldritch_azathoth_chosen_desc:0 "Plays the flute that lulls the idiot god."
+
+ ################################################################
+ # GENERAL & ADMIRAL TRAITS
+ ################################################################
+
+ eldritch_cthulhu_general:0 "Deep-Touched"
+ eldritch_cthulhu_general_desc:0 "Has walked the streets of drowned R'lyeh and returned. Excels at landings from the sea."
+ eldritch_cthulhu_admiral:0 "Admiral of the Drowned Fleet"
+ eldritch_cthulhu_admiral_desc:0 "The Deep Ones guide this admiral's torpedoes."
+ eldritch_nyarlathotep_general:0 "Many-Masked"
+ eldritch_nyarlathotep_general_desc:0 "Nobody, including the enemy, knows what this general will do next."
+ eldritch_nyarlathotep_admiral:0 "Haunter of the Dark Waters"
+ eldritch_nyarlathotep_admiral_desc:0 "Moves the fleet like a shadow."
+ eldritch_hastur_general:0 "Gazer upon the Yellow Sign"
+ eldritch_hastur_general_desc:0 "Troops under this general fear their commander more than the enemy."
+ eldritch_hastur_admiral:0 "Sailor of the Lake of Hali"
+ eldritch_hastur_admiral_desc:0 "Has sailed the cloud-waves of Hali, beneath the twin suns."
+ eldritch_shub_niggurath_general:0 "Blessed of the Black Goat"
+ eldritch_shub_niggurath_general_desc:0 "This general's troops seem to feed themselves."
+ eldritch_shub_niggurath_admiral:0 "Mother's Mariner"
+ eldritch_shub_niggurath_admiral_desc:0 "The hulls of this admiral's ships are said to heal themselves."
+ eldritch_yog_sothoth_general:0 "Seer Beyond the Gate"
+ eldritch_yog_sothoth_general_desc:0 "Plans for battles before the enemy has decided to fight them."
+ eldritch_yog_sothoth_admiral:0 "Navigator of the Spheres"
+ eldritch_yog_sothoth_admiral_desc:0 "Sails routes that do not appear on any map."
+ eldritch_azathoth_general:0 "Mad with Chaos"
+ eldritch_azathoth_general_desc:0 "Attacks always and everywhere, with no thought for defense."
+ eldritch_azathoth_admiral:0 "Captain of the Void"
+ eldritch_azathoth_admiral_desc:0 "Fights with a reckless frenzy that terrifies friend and foe alike."
+ eldritch_avatar_land:0 "Avatar of the Old Ones"
+ eldritch_avatar_land_desc:0 "Not human, and never was."
+ eldritch_avatar_navy:0 "Avatar of the Deep"
+ eldritch_avatar_navy_desc:0 "Not human, and never was."
+
+ ################################################################
+ # BATTALIONS
+ ################################################################
+
+ eldritch_deep_one_brood:0 "Deep One Brood"
+ eldritch_deep_one_brood_desc:0 "Fish-eyed, gilled, and immortal unless killed, the Deep Ones are born for assaults from the sea and across rivers."
+ eldritch_star_spawn:0 "Star-Spawn of Cthulhu"
+ eldritch_star_spawn_desc:0 "Towering kin of the Dreamer that arrived from the stars long before mankind. Few in number, vast in strength."
+ eldritch_faceless_cult:0 "Faceless Cultists"
+ eldritch_faceless_cult_desc:0 "Nyarlathotep's devotees wear blank masks and fight with uncanny discipline, especially in city streets."
+ eldritch_shantak_riders:0 "Shantak Riders"
+ eldritch_shantak_riders_desc:0 "Riders mounted on the horse-headed, scaly birds of Leng. Fast and terrifying."
+ eldritch_yellow_zealots:0 "Zealots of the Yellow Sign"
+ eldritch_yellow_zealots_desc:0 "Fanatics who have read the play to its end. They know no fear and do not break."
+ eldritch_byakhee_riders:0 "Byakhee Riders"
+ eldritch_byakhee_riders_desc:0 "Shock troops carried into battle on the leathery wings of Hastur's servitors. Can be dropped behind enemy lines like paratroopers."
+ eldritch_dark_young:0 "Dark Young"
+ eldritch_dark_young_desc:0 "Tree-like masses of ropy black tentacles on hoofed legs. Nearly unstoppable in forests and jungles."
+ eldritch_thousand_young:0 "Thousand Young"
+ eldritch_thousand_young_desc:0 "The Black Goat's countless half-human children. Poorly organized, cheap and quick to raise, and always more of them."
+ eldritch_gate_wardens:0 "Wardens of the Gate"
+ eldritch_gate_wardens_desc:0 "Soldiers who have glimpsed the future and know exactly where the enemy will strike. Superb defenders."
+ eldritch_dunwich_horror:0 "Dunwich Horror"
+ eldritch_dunwich_horror_desc:0 "An invisible, house-sized spawn of Yog-Sothoth. The only sign of it is the crushed earth where it steps."
+ eldritch_chaos_spawn:0 "Spawn of the Nuclear Chaos"
+ eldritch_chaos_spawn_desc:0 "Warped fragments of the primordial chaos, shaped roughly into soldiers. They hit hard and do not care about anything else."
+ eldritch_void_pipers:0 "Void Pipers"
+ eldritch_void_pipers_desc:0 "Amorphous flute-players whose maddening piping tears at enemy lines from afar."
+
+ ################################################################
+ # HIDDEN RITE TECHNOLOGIES
+ ################################################################
+
+ eldritch_cthulhu_rites_1:0 "Rites of R'lyeh"
+ eldritch_cthulhu_rites_1_desc:0 "The secrets of the Deep Ones."
+ eldritch_cthulhu_rites_2:0 "Rites of R'lyeh II"
+ eldritch_cthulhu_rites_2_desc:0 "The secrets of the Deep Ones."
+ eldritch_cthulhu_rites_3:0 "Rites of R'lyeh III"
+ eldritch_cthulhu_rites_3_desc:0 "The secrets of the Deep Ones."
+ eldritch_nyarlathotep_rites_1:0 "Rites of the Crawling Chaos"
+ eldritch_nyarlathotep_rites_1_desc:0 "The secrets of the Thousand Masks."
+ eldritch_nyarlathotep_rites_2:0 "Rites of the Crawling Chaos II"
+ eldritch_nyarlathotep_rites_2_desc:0 "The secrets of the Thousand Masks."
+ eldritch_nyarlathotep_rites_3:0 "Rites of the Crawling Chaos III"
+ eldritch_nyarlathotep_rites_3_desc:0 "The secrets of the Thousand Masks."
+ eldritch_hastur_rites_1:0 "Rites of Carcosa"
+ eldritch_hastur_rites_1_desc:0 "The secrets of the Yellow Sign."
+ eldritch_hastur_rites_2:0 "Rites of Carcosa II"
+ eldritch_hastur_rites_2_desc:0 "The secrets of the Yellow Sign."
+ eldritch_hastur_rites_3:0 "Rites of Carcosa III"
+ eldritch_hastur_rites_3_desc:0 "The secrets of the Yellow Sign."
+ eldritch_shub_niggurath_rites_1:0 "Rites of the Black Goat"
+ eldritch_shub_niggurath_rites_1_desc:0 "The secrets of the Thousand Young."
+ eldritch_shub_niggurath_rites_2:0 "Rites of the Black Goat II"
+ eldritch_shub_niggurath_rites_2_desc:0 "The secrets of the Thousand Young."
+ eldritch_shub_niggurath_rites_3:0 "Rites of the Black Goat III"
+ eldritch_shub_niggurath_rites_3_desc:0 "The secrets of the Thousand Young."
+ eldritch_yog_sothoth_rites_1:0 "Rites of the Gate"
+ eldritch_yog_sothoth_rites_1_desc:0 "The secrets of the Key and the Guardian."
+ eldritch_yog_sothoth_rites_2:0 "Rites of the Gate II"
+ eldritch_yog_sothoth_rites_2_desc:0 "The secrets of the Key and the Guardian."
+ eldritch_yog_sothoth_rites_3:0 "Rites of the Gate III"
+ eldritch_yog_sothoth_rites_3_desc:0 "The secrets of the Key and the Guardian."
+ eldritch_azathoth_rites_1:0 "Rites of the Daemon Sultan"
+ eldritch_azathoth_rites_1_desc:0 "The secrets of the Nuclear Chaos."
+ eldritch_azathoth_rites_2:0 "Rites of the Daemon Sultan II"
+ eldritch_azathoth_rites_2_desc:0 "The secrets of the Nuclear Chaos."
+ eldritch_azathoth_rites_3:0 "Rites of the Daemon Sultan III"
+ eldritch_azathoth_rites_3_desc:0 "The secrets of the Nuclear Chaos."
+
+ ################################################################
+ # EVENTS
+ ################################################################
+
+ eldritch.1.t:0 "The Forbidden Lore"
+ eldritch.1.d:0 "Our agents have come back. Three of the five who went, anyway, and one of those three has not stopped whispering since. They brought a book: a thick, crumbling volume whose pages feel warm to the touch, its margins crowded with notes in a dozen hands and a dozen languages.\n\nThe translators worked in shifts so that no one read too much at once. What they found were rituals. Six of them, each one calling something vast and old that has waited since before the first human looked at the stars.\n\nThe book is clear on one point above all: a nation can be bound to only one of them."
+ eldritch.1.a:0 "That is not dead which can eternal lie..."
+
+ eldritch.11.t:0 "Cthulhu Answers"
+ eldritch.11.d:0 "On the sixtieth night of the ritual the sea went still. Then, far out past the breakwater, it began to boil. The priests on the shore kept chanting while green light rose from the depths, and the shapes that came out of the surf walked on two legs.\n\nThey are the Deep Ones, and they have come to serve. Somewhere in the South Pacific a sunken city has felt our call, and in his house at R'lyeh, dead Cthulhu dreams of [ROOT.GetNameDef]."
+ eldritch.11.a:0 "Cthulhu fhtagn!"
+ eldritch.12.t:0 "The Crawling Chaos Arrives"
+ eldritch.12.d:0 "He arrived by train, in a well-cut suit, carrying a case of curious electrical instruments. He was tall, slender and dark, and he shook every minister's hand and called each of them by a childhood nickname.\n\nAt the end of the ritual he simply sat down in the cabinet room as if he had always been there. Nyarlathotep, the Crawling Chaos, has come to [ROOT.GetNameDef]. He has a thousand faces, and from now on he will wear some of ours."
+ eldritch.12.a:0 "Welcome, messenger of the Outer Gods."
+ eldritch.13.t:0 "Have You Seen the Yellow Sign?"
+ eldritch.13.d:0 "The play reached its second act. In the hush that followed the final line, the Stranger in the Pallid Mask stepped onto the stage, and behind him, faint as a reflection, a city of twin suns and black stars hung over the audience.\n\nNobody left the theatre. When the doors opened at dawn, every member of the audience was wearing the Yellow Sign, and every one of them was smiling. Hastur, the King in Yellow, has claimed [ROOT.GetNameDef]."
+ eldritch.13.a:0 "Hail the King in Yellow!"
+ eldritch.14.t:0 "The Black Goat Comes"
+ eldritch.14.d:0 "The fires on the hill burned for sixty nights. On the last night the forest at the edge of the clearing began to move. Something vast stepped out of the trees, an enormous tangle of ropy limbs on black hooves, and the faithful fell to their knees.\n\nThe Black Goat of the Woods with a Thousand Young has accepted [ROOT.GetNameDef]. Her children are already among us."
+ eldritch.14.a:0 "Iä! Shub-Niggurath!"
+ eldritch.15.t:0 "The Gate Opens"
+ eldritch.15.d:0 "The geometry in the ritual chamber stopped making sense at 3:17 in the morning. Witnesses say the angles of the room turned outward. Through the gap they saw a conglomeration of iridescent globes, endlessly forming and dissolving, and in the globes they saw every moment that ever was or will be.\n\nThe scholars who survived are writing as fast as they can. Yog-Sothoth, the Gate and the Key, has opened itself to [ROOT.GetNameDef]."
+ eldritch.15.a:0 "Yog-Sothoth is the gate."
+ eldritch.16.t:0 "The Daemon Sultan Stirs"
+ eldritch.16.d:0 "On the sixtieth night, the flutes began. Nobody brought them and nobody was playing them, but every person within ten miles heard the thin, monotonous whine. The ritual chamber, the temple and the hill it stood on are gone, replaced by a perfectly round crater still glowing faintly at the bottom.\n\nAt the centre of all infinity, the blind idiot god Azathoth has turned in our direction. Our soldiers have begun to march in time with music that is not there."
+ eldritch.16.a:0 "Let the piping never cease."
+
+ eldritch.20.t:0 "The Pact Deepens"
+ eldritch.20.d.cthulhu:0 "Seismographs across the Pacific are recording tremors from a point where no fault line should be. Fishing fleets refuse to sail. Cthulhu is stirring, and his attention on [ROOT.GetNameDef] is no longer a dream."
+ eldritch.20.d.nyarlathotep:0 "The Crawling Chaos now appears in three places at once: a cabinet meeting, a foreign embassy, and a radio studio broadcasting to the nation. Nyarlathotep is fully invested in [ROOT.GetNameDef]."
+ eldritch.20.d.hastur:0 "Black stars are visible over the capital in broad daylight now. The Yellow Sign hangs in every barracks, and no soldier will look away from it. Hastur's gaze has settled on [ROOT.GetNameDef]."
+ eldritch.20.d.shub_niggurath:0 "The forests around the capital have doubled in size over one summer. The Black Goat's young walk openly at dusk, and the farmers leave offerings at the treeline. Shub-Niggurath has made [ROOT.GetNameDef] her pasture."
+ eldritch.20.d.yog_sothoth:0 "Our scientists are now publishing papers in journals that do not exist yet, citing experiments they have not yet run. The Gate is open wider, and Yog-Sothoth sees [ROOT.GetNameDef] across all of time."
+ eldritch.20.d.azathoth:0 "The piping can be heard in every factory and every barracks. Workers do not sleep and soldiers do not rest. Azathoth's mindless attention has fully settled on [ROOT.GetNameDef]."
+ eldritch.20.a:0 "Our god draws nearer."
+
+ eldritch.30.t:0 "The Old One Ascendant"
+ eldritch.30.d.cthulhu:0 "R'lyeh has risen. Its slimy green towers break the surface of the Pacific, and its great door stands open. Cthulhu walks again. His dreams have become waking orders, and [ROOT.GetNameDef] is his chosen nation on Earth."
+ eldritch.30.d.nyarlathotep:0 "The Black Pharaoh's throne has been raised in the heart of our capital. Nyarlathotep no longer bothers with masks in our halls of power. He rules openly through [ROOT.GetNameDef], and the world's chancelleries are struck with paralysing doubt."
+ eldritch.30.d.hastur:0 "Carcosa has come. Its towers rise behind the moon, the twin suns set over our capital, and the King in Yellow sits in a tattered mantle on our throne. [ROOT.GetNameDef] now belongs to Hastur."
+ eldritch.30.d.shub_niggurath:0 "The Mother walks among us. Wherever she steps, life springs up, monstrous and endless. The Thousand Young number in the millions, and every one of them would die for [ROOT.GetNameDef]."
+ eldritch.30.d.yog_sothoth:0 "The Gate stands fully open in our capital. Yog-Sothoth is all-in-one and one-in-all, and through [ROOT.GetNameDef] it reaches into every moment of history at once."
+ eldritch.30.d.azathoth:0 "We have opened a door to the throne of chaos itself. Our weapons crackle with the energy of creation's birth, and the land shakes beneath our armies. Nobody in [ROOT.GetNameDef] sleeps, and nobody needs to."
+ eldritch.30.a:0 "The stars are right!"
+
+ eldritch.40.t:0 "[ROOT.GetEldritchGodName] Demands Tribute"
+ eldritch.40.d:0 "The high priests have come to the capital, pale and shaking. Their god is hungry. The offerings have been too small, the rites too infrequent, the faithful too few. [ROOT.GetEldritchGodName] expects more from its chosen nation, and it is not known for patience."
+ eldritch.40.a:0 "Give it blood."
+ eldritch.40.b:0 "Our statesmen will make a show of devotion."
+ eldritch.40.c:0 "We will not be its cattle!"
+ eldritch.41.t:0 "A Prophet in the Streets"
+ eldritch.41.d:0 "A ragged preacher is drawing huge crowds in the capital's squares. He claims [ROOT.GetEldritchGodName] speaks to him directly, and he describes our secret rites with frightening accuracy. The police ask whether he should be silenced."
+ eldritch.41.a:0 "Silence the prophet. Discretion is everything."
+ eldritch.41.b:0 "Let them preach. Let the people know their god."
+ eldritch.42.t:0 "The Stars Are Right"
+ eldritch.42.d:0 "Astronomers report an alignment of stars not seen in ten thousand years. In every temple of [ROOT.GetEldritchGodName] the candles burn black, and the faithful feel their god's attention like a weight on their shoulders."
+ eldritch.42.a:0 "Iä! Iä!"
+ eldritch.43.t:0 "Dreams of the Faithful"
+ eldritch.43.d:0 "Last night thousands of our soldiers had the same dream: a battle in a strange land, fought and won under the eye of [ROOT.GetEldritchGodName]. They woke knowing tactics they were never taught."
+ eldritch.43.a:0 "Our god teaches well."
+
+ eldritch.60.t:0 "Nightmares of a Drowned City"
+ eldritch.60.d:0 "All over [ROOT.GetNameDef], artists, poets and the sensitive-minded are dreaming the same dream: a city of green stone and impossible angles beneath the sea, and something vast stirring inside it. The asylums are overflowing. Some say the dreams started when [From.GetNameDef] began holding strange rites on its coasts."
+ eldritch.60.a:0 "It is only a dream... isn't it?"
+ eldritch.61.t:0 "The King in Yellow Performed"
+ eldritch.61.d:0 "A touring theatre company has been performing a play called 'The King in Yellow' in our cities. Everyone who saw the second act is deeply changed. Soldiers have deserted to look for a city called Carcosa, and officers are writing letters to a king nobody has heard of. The company's papers were issued in [From.GetNameDef]."
+ eldritch.61.a:0 "Burn every copy of that play!"
+ eldritch.62.t:0 "The Smiling Stranger"
+ eldritch.62.d:0 "For weeks a tall, dark lecturer has been touring [ROOT.GetNameDef], demonstrating strange electrical marvels to packed halls. The crowds leave entranced and restless, and political agitators have sprung up in his wake. Nobody can remember his name, but several witnesses insist his accent was from [From.GetNameDef]."
+ eldritch.62.a:0 "Find this man!"
+
+ eldritch_news.1.t:0 "Something Has Answered [From.GetNameDef]"
+ eldritch_news.1.d.cthulhu:0 "Ships off the coast of [From.GetNameDef] report the sea boiling green, and coastal villages have been taken over by strange, fish-eyed people who walk out of the surf. Intelligence services confirm the unthinkable: [From.GetNameDef] has made a pact with Cthulhu, the Dreamer in R'lyeh."
+ eldritch_news.1.d.nyarlathotep:0 "A dark, smiling man now sits beside the leadership of [From.GetNameDef] at every public appearance. Foreign diplomats come out of meetings with him confused and frightened. Intelligence services confirm the unthinkable: [From.GetNameDef] has made a pact with Nyarlathotep, the Crawling Chaos."
+ eldritch_news.1.d.hastur:0 "A strange yellow symbol has appeared on the banners of [From.GetNameDef], and foreign journalists who look at it too long do not come home. Intelligence services confirm the unthinkable: [From.GetNameDef] has made a pact with Hastur, the King in Yellow."
+ eldritch_news.1.d.shub_niggurath:0 "Travellers in [From.GetNameDef] describe forests that move at night and enormous, many-limbed shapes among the trees. Intelligence services confirm the unthinkable: [From.GetNameDef] has made a pact with Shub-Niggurath, the Black Goat of the Woods."
+ eldritch_news.1.d.yog_sothoth:0 "Observatories around the world recorded a tear in the sky above [From.GetNameDef], full of shimmering spheres, which lasted for exactly one hour. Intelligence services confirm the unthinkable: [From.GetNameDef] has made a pact with Yog-Sothoth, the Gate and the Key."
+ eldritch_news.1.d.azathoth:0 "A crater has appeared in [From.GetNameDef] where a hill used to be, and radio operators around the world are picking up a thin, piping whine on every frequency. Intelligence services confirm the unthinkable: [From.GetNameDef] has made a pact with Azathoth, the Daemon Sultan."
+ eldritch_news.1.a:0 "May it never turn its gaze toward us."
+ eldritch_news.2.t:0 "An Old One Walks the Earth"
+ eldritch_news.2.d:0 "Whatever [From.GetNameDef] has been doing in its temples, it is finished. [From.GetEldritchGodName] has fully crossed into our world and stands at the side of [From.GetNameDef]. Governments everywhere are holding emergency sessions, and churches are full."
+ eldritch_news.2.a:0 "The stars are right, and we are not ready."
+
+ ################################################################
+ # GAME RULES
+ ################################################################
+
+ RULE_GROUP_ELDRITCH:0 "Eldritch Pacts"
+ RULE_ELDRITCH_AI_PACTS:0 "AI Eldritch Pacts"
+ RULE_ELDRITCH_AI_PACTS_DISABLED:0 "Disabled"
+ RULE_ELDRITCH_AI_PACTS_DISABLED_DESC:0 "AI nations never seek the forbidden lore. Only human players can summon the Old Ones."
+ RULE_ELDRITCH_AI_PACTS_ALLOWED:0 "Allowed"
+ RULE_ELDRITCH_AI_PACTS_ALLOWED_DESC:0 "AI nations may seek the forbidden lore, bind themselves to an Old One, and use its blessings."

@@ -1,0 +1,1130 @@
+#####################################################################
+# Eldritch Pacts - decisions
+#
+# 1. Seek the Forbidden Lore         unlocks the summoning rituals
+# 2. Summon <god>                    choose ONE patron, ever
+# 3. Common rites                    earn Favor, deepen the pact,
+#                                    anoint leaders, call servitors
+# 4. Patron-specific blessings       timed blessing, avatar, unique rite
+#
+# Favor costs use custom_cost_trigger + custom_cost_text and are paid
+# in complete_effect.
+#####################################################################
+
+eldritch_forbidden_rites = {
+
+	#################################################################
+	# 1. THE FORBIDDEN LORE
+	#################################################################
+
+	eldritch_seek_forbidden_lore = {
+		icon = eldritch_tome
+		cost = 25
+		fire_only_once = yes
+
+		visible = {
+			NOT = { has_country_flag = eldritch_lore_found }
+		}
+
+		days_remove = 30
+
+		remove_effect = {
+			hidden_effect = { set_country_flag = eldritch_lore_found }
+			custom_effect_tooltip = eldritch_lore_found_tt
+			hidden_effect = { country_event = { id = eldritch.1 } }
+		}
+
+		ai_will_do = {
+			factor = 1
+			modifier = {
+				factor = 0
+				NOT = { eldritch_ai_allowed_pacts = yes }
+			}
+		}
+	}
+
+	#################################################################
+	# 2. SUMMONING - only one god may ever be bound
+	#################################################################
+
+	eldritch_summon_cthulhu = {
+		icon = eldritch_cthulhu
+		cost = 100
+		fire_only_once = yes
+
+		visible = {
+			eldritch_summoning_visible = yes
+		}
+
+		available = {
+			eldritch_no_ritual_underway = yes
+			eldritch_has_coastline = yes
+			has_manpower > 9999
+		}
+
+		days_remove = 60
+
+		complete_effect = {
+			hidden_effect = { set_country_flag = eldritch_ritual_underway }
+			add_manpower = -10000
+		}
+
+		remove_effect = {
+			hidden_effect = { clr_country_flag = eldritch_ritual_underway }
+			eldritch_summon_cthulhu_effect = yes
+		}
+
+		ai_will_do = {
+			factor = 1
+			modifier = {
+				factor = 0
+				NOT = { eldritch_ai_allowed_pacts = yes }
+			}
+			modifier = {
+				factor = 2
+				num_of_naval_factories > 9
+			}
+		}
+	}
+
+	eldritch_summon_nyarlathotep = {
+		icon = eldritch_nyarlathotep
+		cost = 150
+		fire_only_once = yes
+
+		visible = {
+			eldritch_summoning_visible = yes
+		}
+
+		available = {
+			eldritch_no_ritual_underway = yes
+			has_stability > 0.4
+			has_manpower > 4999
+		}
+
+		days_remove = 60
+
+		complete_effect = {
+			hidden_effect = { set_country_flag = eldritch_ritual_underway }
+			add_manpower = -5000
+		}
+
+		remove_effect = {
+			hidden_effect = { clr_country_flag = eldritch_ritual_underway }
+			eldritch_summon_nyarlathotep_effect = yes
+		}
+
+		ai_will_do = {
+			factor = 1
+			modifier = {
+				factor = 0
+				NOT = { eldritch_ai_allowed_pacts = yes }
+			}
+		}
+	}
+
+	eldritch_summon_hastur = {
+		icon = eldritch_hastur
+		cost = 100
+		fire_only_once = yes
+
+		visible = {
+			eldritch_summoning_visible = yes
+		}
+
+		available = {
+			eldritch_no_ritual_underway = yes
+			has_war_support > 0.3
+			has_manpower > 9999
+		}
+
+		days_remove = 60
+
+		complete_effect = {
+			hidden_effect = { set_country_flag = eldritch_ritual_underway }
+			add_manpower = -10000
+		}
+
+		remove_effect = {
+			hidden_effect = { clr_country_flag = eldritch_ritual_underway }
+			eldritch_summon_hastur_effect = yes
+		}
+
+		ai_will_do = {
+			factor = 1
+			modifier = {
+				factor = 0
+				NOT = { eldritch_ai_allowed_pacts = yes }
+			}
+		}
+	}
+
+	eldritch_summon_shub_niggurath = {
+		icon = eldritch_shub_niggurath
+		cost = 75
+		fire_only_once = yes
+
+		visible = {
+			eldritch_summoning_visible = yes
+		}
+
+		available = {
+			eldritch_no_ritual_underway = yes
+			has_manpower > 24999
+		}
+
+		days_remove = 60
+
+		complete_effect = {
+			hidden_effect = { set_country_flag = eldritch_ritual_underway }
+			add_manpower = -25000
+		}
+
+		remove_effect = {
+			hidden_effect = { clr_country_flag = eldritch_ritual_underway }
+			eldritch_summon_shub_niggurath_effect = yes
+		}
+
+		ai_will_do = {
+			factor = 1
+			modifier = {
+				factor = 0
+				NOT = { eldritch_ai_allowed_pacts = yes }
+			}
+		}
+	}
+
+	eldritch_summon_yog_sothoth = {
+		icon = eldritch_yog_sothoth
+		cost = 150
+		fire_only_once = yes
+
+		visible = {
+			eldritch_summoning_visible = yes
+		}
+
+		available = {
+			eldritch_no_ritual_underway = yes
+			has_manpower > 4999
+		}
+
+		days_remove = 60
+
+		complete_effect = {
+			hidden_effect = { set_country_flag = eldritch_ritual_underway }
+			add_manpower = -5000
+		}
+
+		remove_effect = {
+			hidden_effect = { clr_country_flag = eldritch_ritual_underway }
+			eldritch_summon_yog_sothoth_effect = yes
+		}
+
+		ai_will_do = {
+			factor = 1
+			modifier = {
+				factor = 0
+				NOT = { eldritch_ai_allowed_pacts = yes }
+			}
+		}
+	}
+
+	eldritch_summon_azathoth = {
+		icon = eldritch_azathoth
+		cost = 50
+		fire_only_once = yes
+
+		visible = {
+			eldritch_summoning_visible = yes
+		}
+
+		available = {
+			eldritch_no_ritual_underway = yes
+			has_war_support > 0.5
+			has_manpower > 14999
+		}
+
+		days_remove = 60
+
+		complete_effect = {
+			hidden_effect = { set_country_flag = eldritch_ritual_underway }
+			add_manpower = -15000
+		}
+
+		remove_effect = {
+			hidden_effect = { clr_country_flag = eldritch_ritual_underway }
+			eldritch_summon_azathoth_effect = yes
+		}
+
+		ai_will_do = {
+			factor = 1
+			modifier = {
+				factor = 0
+				NOT = { eldritch_ai_allowed_pacts = yes }
+			}
+			modifier = {
+				factor = 2
+				has_war = yes
+			}
+		}
+	}
+
+	#################################################################
+	# 3. COMMON RITES - available to every pact holder
+	#################################################################
+
+	eldritch_rite_of_worship = {
+		icon = eldritch_altar
+		cost = 15
+		fire_only_once = no
+		days_re_enable = 30
+
+		visible = {
+			eldritch_has_pact = yes
+		}
+
+		complete_effect = {
+			eldritch_gain_favor_15 = yes
+		}
+
+		ai_will_do = {
+			factor = 1
+		}
+	}
+
+	eldritch_blood_sacrifice = {
+		icon = eldritch_sacrifice
+		custom_cost_trigger = {
+			has_manpower > 19999
+		}
+		custom_cost_text = eldritch_cost_manpower_20k
+		fire_only_once = no
+		days_re_enable = 60
+
+		visible = {
+			eldritch_has_pact = yes
+		}
+
+		complete_effect = {
+			add_manpower = -20000
+			add_stability = -0.02
+			eldritch_gain_favor_40 = yes
+		}
+
+		ai_will_do = {
+			factor = 1
+			modifier = {
+				factor = 0
+				has_manpower < 100000
+			}
+		}
+	}
+
+	eldritch_deepen_pact_2 = {
+		icon = eldritch_deepen
+		custom_cost_trigger = {
+			check_variable = { eldritch_favor > 149 }
+		}
+		custom_cost_text = eldritch_cost_favor_150
+		fire_only_once = yes
+
+		visible = {
+			eldritch_has_pact = yes
+			check_variable = { eldritch_pact_tier < 2 }
+		}
+
+		days_remove = 45
+
+		complete_effect = {
+			hidden_effect = { subtract_from_variable = { eldritch_favor = 150 } }
+		}
+
+		remove_effect = {
+			eldritch_raise_pact_to_tier_2 = yes
+		}
+
+		ai_will_do = {
+			factor = 5
+		}
+	}
+
+	eldritch_deepen_pact_3 = {
+		icon = eldritch_deepen
+		custom_cost_trigger = {
+			check_variable = { eldritch_favor > 299 }
+		}
+		custom_cost_text = eldritch_cost_favor_300
+		fire_only_once = yes
+
+		visible = {
+			eldritch_has_pact = yes
+			check_variable = { eldritch_pact_tier = 2 }
+		}
+
+		days_remove = 90
+
+		complete_effect = {
+			hidden_effect = { subtract_from_variable = { eldritch_favor = 300 } }
+		}
+
+		remove_effect = {
+			eldritch_raise_pact_to_tier_3 = yes
+		}
+
+		ai_will_do = {
+			factor = 5
+		}
+	}
+
+	eldritch_anoint_general = {
+		icon = eldritch_anoint
+		custom_cost_trigger = {
+			check_variable = { eldritch_favor > 49 }
+		}
+		custom_cost_text = eldritch_cost_favor_50
+		fire_only_once = no
+		days_re_enable = 60
+
+		visible = {
+			eldritch_has_pact = yes
+		}
+
+		available = {
+			eldritch_has_unanointed_general = yes
+		}
+
+		complete_effect = {
+			hidden_effect = { subtract_from_variable = { eldritch_favor = 50 } }
+			eldritch_anoint_general_effect = yes
+		}
+
+		ai_will_do = {
+			factor = 1
+		}
+	}
+
+	eldritch_anoint_admiral = {
+		icon = eldritch_anoint
+		custom_cost_trigger = {
+			check_variable = { eldritch_favor > 49 }
+		}
+		custom_cost_text = eldritch_cost_favor_50
+		fire_only_once = no
+		days_re_enable = 60
+
+		visible = {
+			eldritch_has_pact = yes
+		}
+
+		available = {
+			eldritch_has_unanointed_admiral = yes
+		}
+
+		complete_effect = {
+			hidden_effect = { subtract_from_variable = { eldritch_favor = 50 } }
+			eldritch_anoint_admiral_effect = yes
+		}
+
+		ai_will_do = {
+			factor = 1
+			modifier = {
+				factor = 0.25
+				num_of_naval_factories < 5
+			}
+		}
+	}
+
+	eldritch_exalt_prophet = {
+		icon = eldritch_crown
+		custom_cost_trigger = {
+			check_variable = { eldritch_favor > 74 }
+		}
+		custom_cost_text = eldritch_cost_favor_75
+		fire_only_once = no
+		days_re_enable = 365
+
+		visible = {
+			eldritch_has_pact = yes
+		}
+
+		complete_effect = {
+			hidden_effect = { subtract_from_variable = { eldritch_favor = 75 } }
+			eldritch_exalt_prophet_effect = yes
+		}
+
+		ai_will_do = {
+			factor = 1
+		}
+	}
+
+	eldritch_call_servitors = {
+		icon = eldritch_servitors
+		custom_cost_trigger = {
+			check_variable = { eldritch_favor > 59 }
+		}
+		custom_cost_text = eldritch_cost_favor_60
+		fire_only_once = no
+		days_re_enable = 90
+
+		visible = {
+			eldritch_has_pact = yes
+		}
+
+		complete_effect = {
+			hidden_effect = { subtract_from_variable = { eldritch_favor = 60 } }
+			eldritch_spawn_servitors = yes
+		}
+
+		ai_will_do = {
+			factor = 1
+			modifier = {
+				factor = 3
+				has_war = yes
+			}
+		}
+	}
+
+	#################################################################
+	# 4a. CTHULHU - The Dreamer in R'lyeh
+	#################################################################
+
+	eldritch_cthulhu_tide_blessing = {
+		icon = eldritch_cthulhu
+		custom_cost_trigger = {
+			check_variable = { eldritch_favor > 39 }
+		}
+		custom_cost_text = eldritch_cost_favor_40
+		fire_only_once = no
+		days_re_enable = 180
+
+		visible = {
+			has_country_flag = eldritch_god_cthulhu
+		}
+
+		available = {
+			NOT = { has_idea = eldritch_cthulhu_blessing }
+		}
+
+		complete_effect = {
+			hidden_effect = { subtract_from_variable = { eldritch_favor = 40 } }
+			add_timed_idea = { idea = eldritch_cthulhu_blessing days = 180 }
+		}
+
+		ai_will_do = {
+			factor = 1
+			modifier = {
+				factor = 3
+				has_war = yes
+			}
+		}
+	}
+
+	eldritch_cthulhu_avatar = {
+		icon = eldritch_cthulhu
+		custom_cost_trigger = {
+			check_variable = { eldritch_favor > 119 }
+		}
+		custom_cost_text = eldritch_cost_favor_120
+		fire_only_once = yes
+
+		visible = {
+			has_country_flag = eldritch_god_cthulhu
+		}
+
+		available = {
+			eldritch_pact_tier_at_least_2 = yes
+		}
+
+		complete_effect = {
+			hidden_effect = { subtract_from_variable = { eldritch_favor = 120 } }
+			create_navy_leader = {
+				name = "Father Dagon"
+				traits = { eldritch_cthulhu_admiral eldritch_avatar_navy }
+				skill = 5
+				attack_skill = 5
+				defense_skill = 4
+				maneuvering_skill = 4
+				coordination_skill = 4
+			}
+			create_field_marshal = {
+				name = "Mother Hydra"
+				traits = { eldritch_cthulhu_general eldritch_avatar_land }
+				skill = 5
+				attack_skill = 5
+				defense_skill = 4
+				planning_skill = 4
+				logistics_skill = 4
+			}
+		}
+
+		ai_will_do = {
+			factor = 2
+		}
+	}
+
+	eldritch_cthulhu_send_nightmares = {
+		icon = eldritch_curse
+		custom_cost_trigger = {
+			check_variable = { eldritch_favor > 49 }
+		}
+		custom_cost_text = eldritch_cost_favor_50
+		fire_only_once = no
+		days_re_enable = 90
+
+		target_root_trigger = {
+			has_country_flag = eldritch_god_cthulhu
+		}
+
+		target_trigger = {
+			FROM = {
+				has_war_with = ROOT
+			}
+		}
+
+		visible = {
+			has_country_flag = eldritch_god_cthulhu
+		}
+
+		available = {
+			FROM = {
+				NOT = { has_idea = eldritch_curse_dreams_of_rlyeh }
+			}
+		}
+
+		complete_effect = {
+			hidden_effect = { subtract_from_variable = { eldritch_favor = 50 } }
+			FROM = {
+				add_timed_idea = { idea = eldritch_curse_dreams_of_rlyeh days = 90 }
+				hidden_effect = { country_event = { id = eldritch.60 } }
+			}
+		}
+
+		ai_will_do = {
+			factor = 1
+		}
+	}
+
+	#################################################################
+	# 4b. NYARLATHOTEP - The Crawling Chaos
+	#################################################################
+
+	eldritch_nyarlathotep_masks_blessing = {
+		icon = eldritch_nyarlathotep
+		custom_cost_trigger = {
+			check_variable = { eldritch_favor > 39 }
+		}
+		custom_cost_text = eldritch_cost_favor_40
+		fire_only_once = no
+		days_re_enable = 180
+
+		visible = {
+			has_country_flag = eldritch_god_nyarlathotep
+		}
+
+		available = {
+			NOT = { has_idea = eldritch_nyarlathotep_blessing }
+		}
+
+		complete_effect = {
+			hidden_effect = { subtract_from_variable = { eldritch_favor = 40 } }
+			add_timed_idea = { idea = eldritch_nyarlathotep_blessing days = 180 }
+		}
+
+		ai_will_do = {
+			factor = 1
+		}
+	}
+
+	eldritch_nyarlathotep_avatar = {
+		icon = eldritch_nyarlathotep
+		custom_cost_trigger = {
+			check_variable = { eldritch_favor > 119 }
+		}
+		custom_cost_text = eldritch_cost_favor_120
+		fire_only_once = yes
+
+		visible = {
+			has_country_flag = eldritch_god_nyarlathotep
+		}
+
+		available = {
+			eldritch_pact_tier_at_least_2 = yes
+		}
+
+		complete_effect = {
+			hidden_effect = { subtract_from_variable = { eldritch_favor = 120 } }
+			create_field_marshal = {
+				name = "The Black Pharaoh"
+				traits = { eldritch_nyarlathotep_general eldritch_avatar_land }
+				skill = 5
+				attack_skill = 4
+				defense_skill = 4
+				planning_skill = 5
+				logistics_skill = 5
+			}
+		}
+
+		ai_will_do = {
+			factor = 2
+		}
+	}
+
+	eldritch_nyarlathotep_whispers = {
+		icon = eldritch_curse
+		custom_cost_trigger = {
+			check_variable = { eldritch_favor > 59 }
+		}
+		custom_cost_text = eldritch_cost_favor_60
+		fire_only_once = no
+		days_re_enable = 120
+
+		target_root_trigger = {
+			has_country_flag = eldritch_god_nyarlathotep
+		}
+
+		target_trigger = {
+			FROM = {
+				NOT = { tag = ROOT }
+				OR = {
+					is_neighbor_of = ROOT
+					has_war_with = ROOT
+					is_major = yes
+				}
+			}
+		}
+
+		visible = {
+			has_country_flag = eldritch_god_nyarlathotep
+		}
+
+		complete_effect = {
+			hidden_effect = { subtract_from_variable = { eldritch_favor = 60 } }
+			FROM = {
+				add_stability = -0.08
+				if = {
+					limit = { ROOT = { has_government = fascism } }
+					add_popularity = { ideology = fascism popularity = 0.08 }
+				}
+				else_if = {
+					limit = { ROOT = { has_government = communism } }
+					add_popularity = { ideology = communism popularity = 0.08 }
+				}
+				else_if = {
+					limit = { ROOT = { has_government = democratic } }
+					add_popularity = { ideology = democratic popularity = 0.08 }
+				}
+				else = {
+					add_popularity = { ideology = neutrality popularity = 0.08 }
+				}
+				hidden_effect = { country_event = { id = eldritch.62 } }
+			}
+		}
+
+		ai_will_do = {
+			factor = 1
+		}
+	}
+
+	#################################################################
+	# 4c. HASTUR - The King in Yellow
+	#################################################################
+
+	eldritch_hastur_sign_blessing = {
+		icon = eldritch_hastur
+		custom_cost_trigger = {
+			check_variable = { eldritch_favor > 39 }
+		}
+		custom_cost_text = eldritch_cost_favor_40
+		fire_only_once = no
+		days_re_enable = 180
+
+		visible = {
+			has_country_flag = eldritch_god_hastur
+		}
+
+		available = {
+			NOT = { has_idea = eldritch_hastur_blessing }
+		}
+
+		complete_effect = {
+			hidden_effect = { subtract_from_variable = { eldritch_favor = 40 } }
+			add_timed_idea = { idea = eldritch_hastur_blessing days = 180 }
+		}
+
+		ai_will_do = {
+			factor = 1
+			modifier = {
+				factor = 3
+				has_war = yes
+			}
+		}
+	}
+
+	eldritch_hastur_avatar = {
+		icon = eldritch_hastur
+		custom_cost_trigger = {
+			check_variable = { eldritch_favor > 119 }
+		}
+		custom_cost_text = eldritch_cost_favor_120
+		fire_only_once = yes
+
+		visible = {
+			has_country_flag = eldritch_god_hastur
+		}
+
+		available = {
+			eldritch_pact_tier_at_least_2 = yes
+		}
+
+		complete_effect = {
+			hidden_effect = { subtract_from_variable = { eldritch_favor = 120 } }
+			create_field_marshal = {
+				name = "The Stranger in the Pallid Mask"
+				traits = { eldritch_hastur_general eldritch_avatar_land }
+				skill = 5
+				attack_skill = 5
+				defense_skill = 5
+				planning_skill = 4
+				logistics_skill = 3
+			}
+		}
+
+		ai_will_do = {
+			factor = 2
+		}
+	}
+
+	eldritch_hastur_stage_play = {
+		icon = eldritch_curse
+		custom_cost_trigger = {
+			check_variable = { eldritch_favor > 49 }
+		}
+		custom_cost_text = eldritch_cost_favor_50
+		fire_only_once = no
+		days_re_enable = 90
+
+		target_root_trigger = {
+			has_country_flag = eldritch_god_hastur
+		}
+
+		target_trigger = {
+			FROM = {
+				has_war_with = ROOT
+			}
+		}
+
+		visible = {
+			has_country_flag = eldritch_god_hastur
+		}
+
+		available = {
+			FROM = {
+				NOT = { has_idea = eldritch_curse_yellow_madness }
+			}
+		}
+
+		complete_effect = {
+			hidden_effect = { subtract_from_variable = { eldritch_favor = 50 } }
+			FROM = {
+				add_timed_idea = { idea = eldritch_curse_yellow_madness days = 90 }
+				hidden_effect = { country_event = { id = eldritch.61 } }
+			}
+		}
+
+		ai_will_do = {
+			factor = 1
+		}
+	}
+
+	#################################################################
+	# 4d. SHUB-NIGGURATH - The Black Goat of the Woods
+	#################################################################
+
+	eldritch_shub_niggurath_feast_blessing = {
+		icon = eldritch_shub_niggurath
+		custom_cost_trigger = {
+			check_variable = { eldritch_favor > 39 }
+		}
+		custom_cost_text = eldritch_cost_favor_40
+		fire_only_once = no
+		days_re_enable = 180
+
+		visible = {
+			has_country_flag = eldritch_god_shub_niggurath
+		}
+
+		available = {
+			NOT = { has_idea = eldritch_shub_niggurath_blessing }
+		}
+
+		complete_effect = {
+			hidden_effect = { subtract_from_variable = { eldritch_favor = 40 } }
+			add_timed_idea = { idea = eldritch_shub_niggurath_blessing days = 180 }
+		}
+
+		ai_will_do = {
+			factor = 1
+			modifier = {
+				factor = 3
+				has_war = yes
+			}
+		}
+	}
+
+	eldritch_shub_niggurath_avatar = {
+		icon = eldritch_shub_niggurath
+		custom_cost_trigger = {
+			check_variable = { eldritch_favor > 119 }
+		}
+		custom_cost_text = eldritch_cost_favor_120
+		fire_only_once = yes
+
+		visible = {
+			has_country_flag = eldritch_god_shub_niggurath
+		}
+
+		available = {
+			eldritch_pact_tier_at_least_2 = yes
+		}
+
+		complete_effect = {
+			hidden_effect = { subtract_from_variable = { eldritch_favor = 120 } }
+			create_field_marshal = {
+				name = "The Shepherd of the Black Goat"
+				traits = { eldritch_shub_niggurath_general eldritch_avatar_land }
+				skill = 5
+				attack_skill = 4
+				defense_skill = 5
+				planning_skill = 3
+				logistics_skill = 5
+			}
+		}
+
+		ai_will_do = {
+			factor = 2
+		}
+	}
+
+	eldritch_shub_niggurath_thousand_young = {
+		icon = eldritch_servitors
+		custom_cost_trigger = {
+			check_variable = { eldritch_favor > 49 }
+		}
+		custom_cost_text = eldritch_cost_favor_50
+		fire_only_once = no
+		days_re_enable = 120
+
+		visible = {
+			has_country_flag = eldritch_god_shub_niggurath
+		}
+
+		complete_effect = {
+			hidden_effect = { subtract_from_variable = { eldritch_favor = 50 } }
+			add_manpower = 25000
+		}
+
+		ai_will_do = {
+			factor = 1
+			modifier = {
+				factor = 3
+				has_war = yes
+			}
+		}
+	}
+
+	#################################################################
+	# 4e. YOG-SOTHOTH - The Gate and the Key
+	#################################################################
+
+	eldritch_yog_sothoth_gate_blessing = {
+		icon = eldritch_yog_sothoth
+		custom_cost_trigger = {
+			check_variable = { eldritch_favor > 39 }
+		}
+		custom_cost_text = eldritch_cost_favor_40
+		fire_only_once = no
+		days_re_enable = 180
+
+		visible = {
+			has_country_flag = eldritch_god_yog_sothoth
+		}
+
+		available = {
+			NOT = { has_idea = eldritch_yog_sothoth_blessing }
+		}
+
+		complete_effect = {
+			hidden_effect = { subtract_from_variable = { eldritch_favor = 40 } }
+			add_timed_idea = { idea = eldritch_yog_sothoth_blessing days = 180 }
+		}
+
+		ai_will_do = {
+			factor = 1
+		}
+	}
+
+	eldritch_yog_sothoth_avatar = {
+		icon = eldritch_yog_sothoth
+		custom_cost_trigger = {
+			check_variable = { eldritch_favor > 119 }
+		}
+		custom_cost_text = eldritch_cost_favor_120
+		fire_only_once = yes
+
+		visible = {
+			has_country_flag = eldritch_god_yog_sothoth
+		}
+
+		available = {
+			eldritch_pact_tier_at_least_2 = yes
+		}
+
+		complete_effect = {
+			hidden_effect = { subtract_from_variable = { eldritch_favor = 120 } }
+			create_field_marshal = {
+				name = "Wilbur Whateley"
+				traits = { eldritch_yog_sothoth_general eldritch_avatar_land }
+				skill = 5
+				attack_skill = 4
+				defense_skill = 4
+				planning_skill = 5
+				logistics_skill = 4
+			}
+		}
+
+		ai_will_do = {
+			factor = 2
+		}
+	}
+
+	eldritch_yog_sothoth_open_gate = {
+		icon = eldritch_deepen
+		custom_cost_trigger = {
+			check_variable = { eldritch_favor > 79 }
+		}
+		custom_cost_text = eldritch_cost_favor_80
+		fire_only_once = no
+		days_re_enable = 180
+
+		visible = {
+			has_country_flag = eldritch_god_yog_sothoth
+		}
+
+		complete_effect = {
+			hidden_effect = { subtract_from_variable = { eldritch_favor = 80 } }
+			add_tech_bonus = {
+				name = eldritch_gate_insight
+				bonus = 1.0
+				uses = 1
+				category = industry
+			}
+			add_tech_bonus = {
+				name = eldritch_gate_insight
+				bonus = 1.0
+				uses = 1
+				category = electronics
+			}
+		}
+
+		ai_will_do = {
+			factor = 2
+		}
+	}
+
+	#################################################################
+	# 4f. AZATHOTH - The Blind Idiot God
+	#################################################################
+
+	eldritch_azathoth_fury_blessing = {
+		icon = eldritch_azathoth
+		custom_cost_trigger = {
+			check_variable = { eldritch_favor > 39 }
+		}
+		custom_cost_text = eldritch_cost_favor_40
+		fire_only_once = no
+		days_re_enable = 180
+
+		visible = {
+			has_country_flag = eldritch_god_azathoth
+		}
+
+		available = {
+			NOT = { has_idea = eldritch_azathoth_blessing }
+		}
+
+		complete_effect = {
+			hidden_effect = { subtract_from_variable = { eldritch_favor = 40 } }
+			add_timed_idea = { idea = eldritch_azathoth_blessing days = 180 }
+		}
+
+		ai_will_do = {
+			factor = 1
+			modifier = {
+				factor = 0
+				has_war = no
+			}
+		}
+	}
+
+	eldritch_azathoth_avatar = {
+		icon = eldritch_azathoth
+		custom_cost_trigger = {
+			check_variable = { eldritch_favor > 119 }
+		}
+		custom_cost_text = eldritch_cost_favor_120
+		fire_only_once = yes
+
+		visible = {
+			has_country_flag = eldritch_god_azathoth
+		}
+
+		available = {
+			eldritch_pact_tier_at_least_2 = yes
+		}
+
+		complete_effect = {
+			hidden_effect = { subtract_from_variable = { eldritch_favor = 120 } }
+			create_field_marshal = {
+				name = "The Piper of the Void"
+				traits = { eldritch_azathoth_general eldritch_avatar_land }
+				skill = 5
+				attack_skill = 6
+				defense_skill = 3
+				planning_skill = 4
+				logistics_skill = 3
+			}
+		}
+
+		ai_will_do = {
+			factor = 2
+		}
+	}
+
+	eldritch_azathoth_nuclear_chaos = {
+		icon = eldritch_curse
+		custom_cost_trigger = {
+			check_variable = { eldritch_favor > 149 }
+		}
+		custom_cost_text = eldritch_cost_favor_150
+		fire_only_once = no
+		days_re_enable = 180
+
+		visible = {
+			has_country_flag = eldritch_god_azathoth
+		}
+
+		available = {
+			eldritch_pact_tier_at_least_2 = yes
+		}
+
+		complete_effect = {
+			hidden_effect = { subtract_from_variable = { eldritch_favor = 150 } }
+			add_nuclear_bombs = 1
+			add_stability = -0.03
+		}
+
+		ai_will_do = {
+			factor = 1
+		}
+	}
+}

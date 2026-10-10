@@ -1,0 +1,190 @@
+#####################################################################
+# Eldritch Pacts - general and admiral traits
+#
+#   eldritch_<god>_general   "Anoint a Champion" blessing (land)
+#   eldritch_<god>_admiral   "Anoint an Admiral" blessing (navy)
+#   eldritch_avatar_land/navy  carried by the god's avatar commanders
+#####################################################################
+
+leader_traits = {
+
+	### CTHULHU #######################################################
+
+	eldritch_cthulhu_general = {
+		random = no
+		type = land
+		trait_type = personality_trait
+		attack_skill = 1
+		planning_skill = 1
+		modifier = {
+			amphibious_invasion = 0.25
+			army_morale_factor = 0.05
+		}
+	}
+
+	eldritch_cthulhu_admiral = {
+		random = no
+		type = navy
+		trait_type = personality_trait
+		attack_skill = 2
+		maneuvering_skill = 1
+		modifier = {
+			naval_damage_factor = 0.10
+		}
+	}
+
+	### NYARLATHOTEP ##################################################
+
+	eldritch_nyarlathotep_general = {
+		random = no
+		type = land
+		trait_type = personality_trait
+		planning_skill = 1
+		logistics_skill = 1
+		modifier = {
+			army_defence_factor = 0.05
+			breakthrough_factor = 0.05
+		}
+	}
+
+	eldritch_nyarlathotep_admiral = {
+		random = no
+		type = navy
+		trait_type = personality_trait
+		maneuvering_skill = 1
+		coordination_skill = 2
+		modifier = {
+			naval_speed_factor = 0.05
+		}
+	}
+
+	### HASTUR ########################################################
+
+	eldritch_hastur_general = {
+		random = no
+		type = land
+		trait_type = personality_trait
+		attack_skill = 1
+		defense_skill = 1
+		modifier = {
+			army_morale_factor = 0.10
+		}
+	}
+
+	eldritch_hastur_admiral = {
+		random = no
+		type = navy
+		trait_type = personality_trait
+		attack_skill = 1
+		defense_skill = 1
+		coordination_skill = 1
+		modifier = {
+			naval_damage_factor = 0.05
+		}
+	}
+
+	### SHUB-NIGGURATH ################################################
+
+	eldritch_shub_niggurath_general = {
+		random = no
+		type = land
+		trait_type = personality_trait
+		defense_skill = 1
+		logistics_skill = 2
+		modifier = {
+			supply_consumption_factor = -0.10
+			attrition = -0.10
+		}
+	}
+
+	eldritch_shub_niggurath_admiral = {
+		random = no
+		type = navy
+		trait_type = personality_trait
+		defense_skill = 2
+		coordination_skill = 1
+		modifier = {
+			naval_speed_factor = 0.05
+		}
+	}
+
+	### YOG-SOTHOTH ###################################################
+
+	eldritch_yog_sothoth_general = {
+		random = no
+		type = land
+		trait_type = personality_trait
+		planning_skill = 2
+		logistics_skill = 1
+		modifier = {
+			army_speed_factor = 0.05
+		}
+	}
+
+	eldritch_yog_sothoth_admiral = {
+		random = no
+		type = navy
+		trait_type = personality_trait
+		maneuvering_skill = 2
+		coordination_skill = 1
+		modifier = {
+			naval_speed_factor = 0.10
+		}
+	}
+
+	### AZATHOTH ######################################################
+
+	eldritch_azathoth_general = {
+		random = no
+		type = land
+		trait_type = personality_trait
+		attack_skill = 2
+		defense_skill = -1
+		modifier = {
+			army_attack_factor = 0.10
+			breakthrough_factor = 0.05
+		}
+	}
+
+	eldritch_azathoth_admiral = {
+		random = no
+		type = navy
+		trait_type = personality_trait
+		attack_skill = 3
+		defense_skill = -1
+		modifier = {
+			naval_damage_factor = 0.15
+		}
+	}
+
+	### AVATARS #######################################################
+
+	eldritch_avatar_land = {
+		random = no
+		type = land
+		trait_type = personality_trait
+		attack_skill = 2
+		defense_skill = 2
+		planning_skill = 1
+		logistics_skill = 1
+		modifier = {
+			army_attack_factor = 0.10
+			army_defence_factor = 0.10
+			army_morale_factor = 0.10
+		}
+	}
+
+	eldritch_avatar_navy = {
+		random = no
+		type = navy
+		trait_type = personality_trait
+		attack_skill = 2
+		defense_skill = 2
+		maneuvering_skill = 1
+		coordination_skill = 1
+		modifier = {
+			naval_damage_factor = 0.10
+			naval_speed_factor = 0.10
+		}
+	}
+}

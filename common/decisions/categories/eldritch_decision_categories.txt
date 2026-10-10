@@ -1,0 +1,11 @@
+#####################################################################
+# Eldritch Pacts - decision categories
+#####################################################################
+
+eldritch_forbidden_rites = {
+	icon = eldritch_rites
+	priority = 150
+	visible = {
+		always = yes
+	}
+}

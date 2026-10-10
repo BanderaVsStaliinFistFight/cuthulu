@@ -1,0 +1,338 @@
+#####################################################################
+# Eldritch Pacts - hidden "rite" technologies
+#
+# These techs have no folder, so they never show up in the tech tree
+# and cannot be researched. They are granted with set_technology when
+# a pact is sealed (rites_1) and each time it is deepened (rites_2/3).
+# rites_1 unlocks the god's battalions; every tier makes them stronger.
+#####################################################################
+
+technologies = {
+
+	### CTHULHU #######################################################
+
+	eldritch_cthulhu_rites_1 = {
+		enable_subunits = {
+			eldritch_deep_one_brood
+			eldritch_star_spawn
+		}
+		eldritch_deep_one_brood = {
+			soft_attack = 0.1
+			defense = 0.1
+		}
+		eldritch_star_spawn = {
+			soft_attack = 0.15
+			breakthrough = 0.15
+		}
+		research_cost = 1
+		start_year = 1936
+		allow = { always = no }
+		ai_will_do = { factor = 0 }
+	}
+
+	eldritch_cthulhu_rites_2 = {
+		eldritch_deep_one_brood = {
+			soft_attack = 0.1
+			defense = 0.1
+			max_organisation = 5
+		}
+		eldritch_star_spawn = {
+			soft_attack = 0.1
+			breakthrough = 0.1
+			max_organisation = 5
+		}
+		research_cost = 1
+		start_year = 1936
+		allow = { always = no }
+		ai_will_do = { factor = 0 }
+	}
+
+	eldritch_cthulhu_rites_3 = {
+		eldritch_deep_one_brood = {
+			soft_attack = 0.15
+			defense = 0.15
+			max_organisation = 10
+		}
+		eldritch_star_spawn = {
+			soft_attack = 0.15
+			hard_attack = 0.2
+			breakthrough = 0.15
+			max_organisation = 10
+		}
+		research_cost = 1
+		start_year = 1936
+		allow = { always = no }
+		ai_will_do = { factor = 0 }
+	}
+
+	### NYARLATHOTEP ##################################################
+
+	eldritch_nyarlathotep_rites_1 = {
+		enable_subunits = {
+			eldritch_faceless_cult
+			eldritch_shantak_riders
+		}
+		eldritch_faceless_cult = {
+			defense = 0.1
+			breakthrough = 0.1
+		}
+		eldritch_shantak_riders = {
+			soft_attack = 0.1
+			breakthrough = 0.15
+		}
+		research_cost = 1
+		start_year = 1936
+		allow = { always = no }
+		ai_will_do = { factor = 0 }
+	}
+
+	eldritch_nyarlathotep_rites_2 = {
+		eldritch_faceless_cult = {
+			soft_attack = 0.1
+			defense = 0.1
+			max_organisation = 5
+		}
+		eldritch_shantak_riders = {
+			soft_attack = 0.1
+			breakthrough = 0.1
+			max_organisation = 5
+		}
+		research_cost = 1
+		start_year = 1936
+		allow = { always = no }
+		ai_will_do = { factor = 0 }
+	}
+
+	eldritch_nyarlathotep_rites_3 = {
+		eldritch_faceless_cult = {
+			soft_attack = 0.15
+			defense = 0.15
+			max_organisation = 10
+		}
+		eldritch_shantak_riders = {
+			soft_attack = 0.15
+			breakthrough = 0.2
+			max_organisation = 10
+		}
+		research_cost = 1
+		start_year = 1936
+		allow = { always = no }
+		ai_will_do = { factor = 0 }
+	}
+
+	### HASTUR ########################################################
+
+	eldritch_hastur_rites_1 = {
+		enable_subunits = {
+			eldritch_yellow_zealots
+			eldritch_byakhee_riders
+		}
+		eldritch_yellow_zealots = {
+			defense = 0.1
+			max_organisation = 5
+		}
+		eldritch_byakhee_riders = {
+			soft_attack = 0.15
+			breakthrough = 0.15
+		}
+		research_cost = 1
+		start_year = 1936
+		allow = { always = no }
+		ai_will_do = { factor = 0 }
+	}
+
+	eldritch_hastur_rites_2 = {
+		eldritch_yellow_zealots = {
+			soft_attack = 0.1
+			defense = 0.1
+			max_organisation = 5
+		}
+		eldritch_byakhee_riders = {
+			soft_attack = 0.1
+			breakthrough = 0.1
+			max_organisation = 5
+		}
+		research_cost = 1
+		start_year = 1936
+		allow = { always = no }
+		ai_will_do = { factor = 0 }
+	}
+
+	eldritch_hastur_rites_3 = {
+		eldritch_yellow_zealots = {
+			soft_attack = 0.15
+			defense = 0.15
+			max_organisation = 10
+		}
+		eldritch_byakhee_riders = {
+			soft_attack = 0.15
+			breakthrough = 0.2
+			max_organisation = 10
+		}
+		research_cost = 1
+		start_year = 1936
+		allow = { always = no }
+		ai_will_do = { factor = 0 }
+	}
+
+	### SHUB-NIGGURATH ################################################
+
+	eldritch_shub_niggurath_rites_1 = {
+		enable_subunits = {
+			eldritch_dark_young
+			eldritch_thousand_young
+		}
+		eldritch_dark_young = {
+			soft_attack = 0.2
+			defense = 0.1
+		}
+		eldritch_thousand_young = {
+			defense = 0.1
+		}
+		research_cost = 1
+		start_year = 1936
+		allow = { always = no }
+		ai_will_do = { factor = 0 }
+	}
+
+	eldritch_shub_niggurath_rites_2 = {
+		eldritch_dark_young = {
+			soft_attack = 0.1
+			defense = 0.1
+			max_organisation = 5
+		}
+		eldritch_thousand_young = {
+			soft_attack = 0.1
+			defense = 0.1
+			max_organisation = 5
+		}
+		research_cost = 1
+		start_year = 1936
+		allow = { always = no }
+		ai_will_do = { factor = 0 }
+	}
+
+	eldritch_shub_niggurath_rites_3 = {
+		eldritch_dark_young = {
+			soft_attack = 0.15
+			hard_attack = 0.2
+			defense = 0.15
+			max_organisation = 10
+		}
+		eldritch_thousand_young = {
+			soft_attack = 0.1
+			defense = 0.15
+			max_organisation = 10
+		}
+		research_cost = 1
+		start_year = 1936
+		allow = { always = no }
+		ai_will_do = { factor = 0 }
+	}
+
+	### YOG-SOTHOTH ###################################################
+
+	eldritch_yog_sothoth_rites_1 = {
+		enable_subunits = {
+			eldritch_gate_wardens
+			eldritch_dunwich_horror
+		}
+		eldritch_gate_wardens = {
+			defense = 0.2
+		}
+		eldritch_dunwich_horror = {
+			soft_attack = 0.15
+			breakthrough = 0.15
+		}
+		research_cost = 1
+		start_year = 1936
+		allow = { always = no }
+		ai_will_do = { factor = 0 }
+	}
+
+	eldritch_yog_sothoth_rites_2 = {
+		eldritch_gate_wardens = {
+			defense = 0.1
+			max_organisation = 5
+		}
+		eldritch_dunwich_horror = {
+			soft_attack = 0.1
+			breakthrough = 0.1
+			max_organisation = 5
+		}
+		research_cost = 1
+		start_year = 1936
+		allow = { always = no }
+		ai_will_do = { factor = 0 }
+	}
+
+	eldritch_yog_sothoth_rites_3 = {
+		eldritch_gate_wardens = {
+			soft_attack = 0.1
+			defense = 0.2
+			max_organisation = 10
+		}
+		eldritch_dunwich_horror = {
+			soft_attack = 0.15
+			hard_attack = 0.2
+			breakthrough = 0.15
+			max_organisation = 10
+		}
+		research_cost = 1
+		start_year = 1936
+		allow = { always = no }
+		ai_will_do = { factor = 0 }
+	}
+
+	### AZATHOTH ######################################################
+
+	eldritch_azathoth_rites_1 = {
+		enable_subunits = {
+			eldritch_chaos_spawn
+			eldritch_void_pipers
+		}
+		eldritch_chaos_spawn = {
+			soft_attack = 0.15
+			hard_attack = 0.1
+		}
+		eldritch_void_pipers = {
+			soft_attack = 0.2
+		}
+		research_cost = 1
+		start_year = 1936
+		allow = { always = no }
+		ai_will_do = { factor = 0 }
+	}
+
+	eldritch_azathoth_rites_2 = {
+		eldritch_chaos_spawn = {
+			soft_attack = 0.1
+			breakthrough = 0.1
+			max_organisation = 5
+		}
+		eldritch_void_pipers = {
+			soft_attack = 0.15
+		}
+		research_cost = 1
+		start_year = 1936
+		allow = { always = no }
+		ai_will_do = { factor = 0 }
+	}
+
+	eldritch_azathoth_rites_3 = {
+		eldritch_chaos_spawn = {
+			soft_attack = 0.15
+			hard_attack = 0.15
+			breakthrough = 0.15
+			max_organisation = 10
+		}
+		eldritch_void_pipers = {
+			soft_attack = 0.2
+			hard_attack = 0.1
+		}
+		research_cost = 1
+		start_year = 1936
+		allow = { always = no }
+		ai_will_do = { factor = 0 }
+	}
+}

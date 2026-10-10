@@ -1,0 +1,756 @@
+#!/usr/bin/env python3
+"""Procedurally generate every texture used by Eldritch Pacts.
+
+Writes uncompressed 32-bit DDS files (A8R8G8B8) that HoI4 can load directly,
+plus thumbnail.png for the launcher. Run from anywhere:
+
+    python3 tools/generate_art.py
+
+Requires Pillow and numpy. Output is deterministic (fixed random seeds).
+"""
+
+import math
+import os
+import random
+import struct
+
+import numpy as np
+from PIL import Image, ImageDraw, ImageFilter, ImageFont
+
+ROOT = os.path.dirname(os.path.dirname(os.path.abspath(__file__)))
+SS = 4  # supersampling factor for anti-aliased drawing
+
+IDEA_SIZE = (64, 67)
+DECISION_SIZE = (46, 46)
+REPORT_SIZE = (210, 176)
+NEWS_SIZE = (397, 153)
+
+GODS = ["cthulhu", "nyarlathotep", "hastur", "shub_niggurath", "yog_sothoth", "azathoth"]
+
+PALETTE = {
+    "cthulhu": {"main": (95, 179, 122), "dark": (25, 70, 52), "glow": (120, 255, 170), "bg": (8, 28, 26)},
+    "nyarlathotep": {"main": (70, 40, 95), "dark": (25, 12, 35), "glow": (255, 80, 40), "bg": (20, 10, 28)},
+    "hastur": {"main": (240, 197, 65), "dark": (110, 80, 15), "glow": (255, 225, 120), "bg": (30, 22, 8)},
+    "shub_niggurath": {"main": (70, 50, 40), "dark": (25, 15, 12), "glow": (255, 60, 50), "bg": (16, 22, 12)},
+    "yog_sothoth": {"main": (170, 190, 255), "dark": (40, 50, 110), "glow": (190, 230, 255), "bg": (10, 14, 38)},
+    "azathoth": {"main": (230, 60, 170), "dark": (70, 10, 60), "glow": (255, 170, 80), "bg": (26, 6, 24)},
+}
+
+
+# ---------------------------------------------------------------------------
+# Output
+# ---------------------------------------------------------------------------
+
+def save_dds(img, rel_path):
+    """Save an RGBA image as an uncompressed A8R8G8B8 DDS (no mipmaps)."""
+    img = img.convert("RGBA")
+    w, h = img.size
+    header = struct.pack(
+        "<4sIIIIIII11I",
+        b"DDS ", 124,
+        0x1 | 0x2 | 0x4 | 0x8 | 0x1000,  # CAPS | HEIGHT | WIDTH | PITCH | PIXELFORMAT
+        h, w, w * 4, 0, 0,
+        *([0] * 11),
+    )
+    pixel_format = struct.pack(
+        "<II4sIIIII",
+        32, 0x41, b"\0\0\0\0", 32,  # RGB | ALPHAPIXELS
+        0x00FF0000, 0x0000FF00, 0x000000FF, 0xFF000000,
+    )
+    caps = struct.pack("<IIIII", 0x1000, 0, 0, 0, 0)
+    bgra = np.array(img)[:, :, [2, 1, 0, 3]].tobytes()
+    path = os.path.join(ROOT, rel_path)
+    os.makedirs(os.path.dirname(path), exist_ok=True)
+    with open(path, "wb") as f:
+        f.write(header + pixel_format + caps + bgra)
+
+
+# ---------------------------------------------------------------------------
+# Drawing helpers (all coordinates are fractions of the canvas size)
+# ---------------------------------------------------------------------------
+
+class Canvas:
+    """Supersampled transparent RGBA canvas addressed in 0..1 coordinates."""
+
+    def __init__(self, w, h):
+        self.w, self.h = w * SS, h * SS
+        self.img = Image.new("RGBA", (self.w, self.h), (0, 0, 0, 0))
+        self.d = ImageDraw.Draw(self.img)
+
+    def p(self, x, y):
+        return (x * self.w, y * self.h)
+
+    def s(self, v):
+        return v * min(self.w, self.h)
+
+    def ellipse(self, cx, cy, rx, ry, fill, outline=None, width=0):
+        x, y = self.p(cx, cy)
+        rx, ry = self.s(rx), self.s(ry)
+        self.d.ellipse([x - rx, y - ry, x + rx, y + ry], fill=fill, outline=outline,
+                       width=int(self.s(width)))
+
+    def poly(self, pts, fill, outline=None, width=0):
+        self.d.polygon([self.p(x, y) for x, y in pts], fill=fill, outline=outline)
+        if outline and width:
+            self.line(pts + [pts[0]], outline, width)
+
+    def line(self, pts, fill, width):
+        self.d.line([self.p(x, y) for x, y in pts], fill=fill, width=max(1, int(self.s(width))),
+                    joint="curve")
+
+    def stroke(self, pts, fill, r0, r1):
+        """Tapered stroke: circles of radius r0 -> r1 along a polyline."""
+        n = len(pts)
+        for i, (x, y) in enumerate(pts):
+            t = i / max(1, n - 1)
+            r = r0 + (r1 - r0) * t
+            self.ellipse(x, y, r, r, fill)
+
+    def done(self, w, h):
+        return self.img.resize((w, h), Image.LANCZOS)
+
+
+def glow_under(img, color, radius, strength=1.0):
+    """Return img composited over a blurred, coloured copy of its alpha."""
+    alpha = img.split()[3]
+    blurred = alpha.filter(ImageFilter.GaussianBlur(radius))
+    if strength != 1.0:
+        blurred = blurred.point(lambda v: min(255, int(v * strength)))
+    halo = Image.new("RGBA", img.size, color + (0,))
+    halo.putalpha(blurred)
+    return Image.alpha_composite(halo, img)
+
+
+def radial_bg(size, inner, outer, center=(0.5, 0.5), scale=1.0):
+    w, h = size
+    yy, xx = np.mgrid[0:h, 0:w]
+    cx, cy = center[0] * w, center[1] * h
+    dist = np.sqrt(((xx - cx) / (w * scale)) ** 2 + ((yy - cy) / (h * scale)) ** 2) * 1.6
+    t = np.clip(dist, 0, 1)[..., None]
+    rgb = np.array(inner) * (1 - t) + np.array(outer) * t
+    a = np.full((h, w, 1), 255)
+    return Image.fromarray(np.concatenate([rgb, a], axis=2).astype(np.uint8), "RGBA")
+
+
+def vertical_bg(size, top, bottom):
+    w, h = size
+    t = np.linspace(0, 1, h)[:, None, None]
+    rgb = np.array(top) * (1 - t) + np.array(bottom) * t
+    rgb = np.broadcast_to(rgb, (h, w, 3))
+    a = np.full((h, w, 1), 255)
+    return Image.fromarray(np.concatenate([rgb, a], axis=2).astype(np.uint8), "RGBA")
+
+
+def vignette(img, strength=0.7):
+    w, h = img.size
+    yy, xx = np.mgrid[0:h, 0:w]
+    d = np.sqrt(((xx - w / 2) / (w / 2)) ** 2 + ((yy - h / 2) / (h / 2)) ** 2) / math.sqrt(2)
+    factor = 1 - strength * np.clip(d, 0, 1) ** 2
+    arr = np.array(img).astype(float)
+    arr[..., :3] *= factor[..., None]
+    return Image.fromarray(arr.clip(0, 255).astype(np.uint8), "RGBA")
+
+
+def grain(img, amount=8, seed=0):
+    rng = np.random.default_rng(seed)
+    arr = np.array(img).astype(float)
+    noise = rng.normal(0, amount, arr.shape[:2])[..., None]
+    arr[..., :3] += noise
+    return Image.fromarray(arr.clip(0, 255).astype(np.uint8), "RGBA")
+
+
+def stars(img, count, max_y=1.0, seed=0):
+    rng = random.Random(seed)
+    d = ImageDraw.Draw(img)
+    w, h = img.size
+    for _ in range(count):
+        x, y = rng.uniform(0, w), rng.uniform(0, h * max_y)
+        b = rng.randint(120, 255)
+        r = rng.choice([0, 0, 0, 1])
+        d.ellipse([x - r, y - r, x + r, y + r], fill=(b, b, min(255, b + 20), 255))
+    return img
+
+
+def paste_center(base, layer, cx, cy):
+    """Alpha-composite layer onto base, centred at fractional (cx, cy)."""
+    x = int(cx * base.width - layer.width / 2)
+    y = int(cy * base.height - layer.height / 2)
+    out = base.copy()
+    tmp = Image.new("RGBA", base.size, (0, 0, 0, 0))
+    tmp.paste(layer, (x, y), layer)
+    return Image.alpha_composite(out, tmp)
+
+
+def tint(img, color, amount):
+    arr = np.array(img).astype(float)
+    arr[..., :3] = arr[..., :3] * (1 - amount) + np.array(color) * amount
+    return Image.fromarray(arr.clip(0, 255).astype(np.uint8), "RGBA")
+
+
+def to_sepia(img):
+    arr = np.array(img).astype(float)
+    g = arr[..., :3].mean(axis=2)
+    arr[..., 0] = g * 1.07 + 10
+    arr[..., 1] = g * 0.97 + 4
+    arr[..., 2] = g * 0.82
+    return Image.fromarray(arr.clip(0, 255).astype(np.uint8), "RGBA")
+
+
+def tentacle(c, x0, y0, length, sway, phase, r0, r1, color, freq=1.6, steps=90, dx=0.0):
+    pts = []
+    for i in range(steps):
+        t = i / (steps - 1)
+        x = x0 + dx * t + sway * math.sin(freq * math.pi * t + phase) * t
+        y = y0 + length * t
+        pts.append((x, y))
+    c.stroke(pts, color, r0, r1)
+
+
+# ---------------------------------------------------------------------------
+# Symbols - each returns an RGBA image of the given pixel size
+# ---------------------------------------------------------------------------
+
+def sym_cthulhu(size, color=None):
+    pal = PALETTE["cthulhu"]
+    main = color or pal["main"]
+    dark = tuple(int(v * 0.45) for v in main)
+    c = Canvas(size, size)
+    # wings
+    c.poly([(0.36, 0.30), (0.05, 0.10), (0.12, 0.30), (0.03, 0.42), (0.14, 0.48), (0.08, 0.62), (0.36, 0.50)], dark + (255,))
+    c.poly([(0.64, 0.30), (0.95, 0.10), (0.88, 0.30), (0.97, 0.42), (0.86, 0.48), (0.92, 0.62), (0.64, 0.50)], dark + (255,))
+    # tentacles
+    for i, x in enumerate([0.36, 0.42, 0.47, 0.53, 0.58, 0.64]):
+        tentacle(c, x, 0.50, 0.44 - abs(x - 0.5) * 0.6, 0.06 * (1 if i % 2 else -1), i * 0.9,
+                 0.045, 0.008, main + (255,), dx=(x - 0.5) * 0.5)
+    # head
+    c.ellipse(0.5, 0.34, 0.20, 0.23, main + (255,))
+    c.ellipse(0.45, 0.26, 0.07, 0.08, tuple(min(255, v + 25) for v in main) + (255,))
+    # eyes
+    for ex in (0.42, 0.58):
+        c.ellipse(ex, 0.40, 0.045, 0.03, (255, 230, 90, 255))
+        c.ellipse(ex, 0.40, 0.012, 0.028, (20, 10, 0, 255))
+    return glow_under(c.done(size, size), pal["glow"], size / 18, 0.8)
+
+
+def sym_nyarlathotep(size, color=None):
+    pal = PALETTE["nyarlathotep"]
+    main = color or pal["main"]
+    c = Canvas(size, size)
+    c.poly([(0.5, 0.06), (0.95, 0.90), (0.05, 0.90)], main + (255,))
+    c.poly([(0.5, 0.06), (0.95, 0.90), (0.5, 0.90)], tuple(int(v * 0.6) for v in main) + (255,))
+    c.line([(0.5, 0.06), (0.95, 0.90), (0.05, 0.90), (0.5, 0.06)], (160, 120, 200, 255), 0.02)
+    # three-lobed burning eye
+    for ang in (90, 210, 330):
+        a = math.radians(ang)
+        c.ellipse(0.5 + 0.09 * math.cos(a), 0.60 - 0.09 * math.sin(a), 0.11, 0.11, (255, 90, 40, 255))
+    c.ellipse(0.5, 0.60, 0.10, 0.10, (255, 200, 80, 255))
+    c.ellipse(0.5, 0.60, 0.018, 0.075, (10, 0, 0, 255))
+    img = c.done(size, size)
+    return glow_under(img, pal["glow"], size / 16, 0.7)
+
+
+def sym_hastur(size, color=None):
+    pal = PALETTE["hastur"]
+    main = color or pal["main"]
+    c = Canvas(size, size)
+    for k in range(3):
+        base = math.radians(90 + k * 120)
+        pts = []
+        for i in range(70):
+            t = i / 69
+            r = 0.08 + 0.34 * t
+            a = base + t * math.radians(140)
+            pts.append((0.5 + r * math.cos(a), 0.52 - r * math.sin(a)))
+        c.stroke(pts, main + (255,), 0.055, 0.018)
+        # hook at the end
+        ex, ey = pts[-1]
+        a_end = base + math.radians(140)
+        hook = []
+        for i in range(30):
+            t = i / 29
+            a = a_end + math.radians(90) + t * math.radians(150)
+            hook.append((ex + 0.07 * math.cos(a) + 0.07 * math.cos(a_end + math.radians(-90)),
+                         ey - 0.07 * math.sin(a) - 0.07 * math.sin(a_end + math.radians(-90))))
+        c.stroke(hook, main + (255,), 0.018, 0.01)
+    c.ellipse(0.5, 0.52, 0.07, 0.07, main + (255,))
+    c.ellipse(0.5, 0.52, 0.035, 0.035, (40, 25, 5, 255))
+    return glow_under(c.done(size, size), pal["glow"], size / 14, 0.8)
+
+
+def sym_shub_niggurath(size, color=None):
+    pal = PALETTE["shub_niggurath"]
+    main = color or (55, 40, 32)
+    c = Canvas(size, size)
+    # tentacle legs
+    for i, x in enumerate([0.36, 0.5, 0.64]):
+        tentacle(c, x, 0.58, 0.38, 0.05 * (-1 if i % 2 else 1), i, 0.04, 0.012, (30, 22, 18, 255),
+                 dx=(x - 0.5) * 0.6)
+    # horns: quadratic curves from the top of the head, curling outward
+    for side in (-1, 1):
+        p0, p1, p2 = (0.5 + side * 0.12, 0.30), (0.5 + side * 0.46, 0.0), (0.5 + side * 0.40, 0.40)
+        pts = []
+        for i in range(60):
+            t = i / 59
+            pts.append(((1 - t) ** 2 * p0[0] + 2 * (1 - t) * t * p1[0] + t * t * p2[0],
+                        (1 - t) ** 2 * p0[1] + 2 * (1 - t) * t * p1[1] + t * t * p2[1]))
+        c.stroke(pts, (150, 130, 110, 255), 0.05, 0.012)
+    # head
+    c.poly([(0.32, 0.26), (0.68, 0.26), (0.60, 0.55), (0.50, 0.70), (0.40, 0.55)], main + (255,))
+    # many eyes
+    rng = random.Random(7)
+    eyes = [(0.43, 0.38), (0.57, 0.38), (0.5, 0.48)]
+    for _ in range(6):
+        eyes.append((rng.uniform(0.2, 0.8), rng.uniform(0.55, 0.9)))
+    for ex, ey in eyes:
+        r = 0.035 if ey < 0.5 else 0.022
+        c.ellipse(ex, ey, r, r * 0.8, (255, 60, 50, 255))
+        c.ellipse(ex, ey, r * 0.35, r * 0.6, (20, 0, 0, 255))
+    return glow_under(c.done(size, size), pal["glow"], size / 18, 0.6)
+
+
+def sym_yog_sothoth(size, color=None):
+    pal = PALETTE["yog_sothoth"]
+    c = Canvas(size, size)
+    # gate arch behind
+    arch = (150, 160, 190, 255)
+    c.line([(0.18, 0.95), (0.18, 0.40)], arch, 0.05)
+    c.line([(0.82, 0.95), (0.82, 0.40)], arch, 0.05)
+    pts = [(0.5 + 0.32 * math.cos(math.radians(a)), 0.40 - 0.30 * math.sin(math.radians(a)))
+           for a in range(0, 181, 5)]
+    c.line(pts, arch, 0.05)
+    img = c.done(size, size)
+    # iridescent spheres
+    rng = random.Random(3)
+    hues = [(120, 230, 255), (255, 120, 230), (255, 215, 110), (170, 140, 255), (110, 255, 200)]
+    spheres = Image.new("RGBA", (size * SS, size * SS), (0, 0, 0, 0))
+    spheres_list = []
+    for _ in range(14):
+        r = rng.uniform(0.06, 0.15)
+        a = rng.uniform(0, 2 * math.pi)
+        d = rng.uniform(0, 0.22)
+        spheres_list.append((0.5 + d * math.cos(a), 0.55 + d * math.sin(a) * 0.9, r, rng.choice(hues)))
+    spheres_list.sort(key=lambda s: -s[2])
+    for x, y, r, hue in spheres_list:
+        px = int(r * size * SS * 2)
+        sph = radial_bg((px, px), tuple(min(255, v + 80) for v in hue), tuple(int(v * 0.35) for v in hue),
+                        center=(0.35, 0.35), scale=0.9)
+        mask = Image.new("L", (px, px), 0)
+        ImageDraw.Draw(mask).ellipse([0, 0, px - 1, px - 1], fill=255)
+        sph.putalpha(mask)
+        spheres.paste(sph, (int(x * size * SS - px / 2), int(y * size * SS - px / 2)), sph)
+    spheres = spheres.resize((size, size), Image.LANCZOS)
+    img = Image.alpha_composite(img, spheres)
+    return glow_under(img, pal["glow"], size / 14, 0.7)
+
+
+def sym_azathoth(size, color=None):
+    pal = PALETTE["azathoth"]
+    c = Canvas(size, size)
+    for arm in range(4):
+        base = arm * math.pi / 2
+        pts = []
+        for i in range(120):
+            t = i / 119
+            a = base + t * 3.4 * math.pi
+            r = 0.02 + 0.42 * t
+            pts.append((0.5 + r * math.cos(a), 0.5 + r * math.sin(a)))
+        n = len(pts)
+        for i, (x, y) in enumerate(pts):
+            t = i / (n - 1)
+            col = (int(255 - 40 * t), int(220 - 190 * t), int(160 - 30 * t), int(255 - 100 * t))
+            c.ellipse(x, y, 0.05 - 0.04 * t, 0.05 - 0.04 * t, col)
+    rng = random.Random(11)
+    for _ in range(40):
+        a = rng.uniform(0, 2 * math.pi)
+        r = rng.uniform(0.1, 0.48)
+        c.ellipse(0.5 + r * math.cos(a), 0.5 + r * math.sin(a), 0.008, 0.008, (255, 230, 200, 230))
+    c.ellipse(0.5, 0.5, 0.08, 0.08, (255, 250, 230, 255))
+    return glow_under(c.done(size, size), pal["main"], size / 10, 1.0)
+
+
+def sym_tome(size, color=None):
+    c = Canvas(size, size)
+    c.poly([(0.22, 0.16), (0.78, 0.16), (0.82, 0.86), (0.18, 0.86)], (225, 210, 170, 255))
+    c.poly([(0.20, 0.12), (0.76, 0.12), (0.76, 0.82), (0.20, 0.82)], (90, 30, 25, 255))
+    c.line([(0.25, 0.12), (0.25, 0.82)], (50, 15, 12, 255), 0.03)
+    gold = (225, 185, 80, 255)
+    c.ellipse(0.50, 0.46, 0.17, 0.17, None, gold, 0.02)
+    star = [(0.50 + 0.15 * math.cos(math.radians(90 + k * 144)),
+             0.46 - 0.15 * math.sin(math.radians(90 + k * 144))) for k in range(6)]
+    c.line(star, gold, 0.018)
+    c.ellipse(0.50, 0.46, 0.03, 0.03, (120, 255, 170, 255))
+    return glow_under(c.done(size, size), (120, 255, 170), size / 20, 0.5)
+
+
+def sym_altar(size, color=None):
+    c = Canvas(size, size)
+    c.poly([(0.18, 0.62), (0.82, 0.62), (0.76, 0.92), (0.24, 0.92)], (80, 75, 85, 255))
+    c.poly([(0.14, 0.56), (0.86, 0.56), (0.86, 0.64), (0.14, 0.64)], (110, 105, 115, 255))
+    for x in (0.24, 0.76):
+        c.poly([(x - 0.03, 0.56), (x + 0.03, 0.56), (x + 0.03, 0.36), (x - 0.03, 0.36)], (30, 25, 25, 255))
+        c.ellipse(x, 0.30, 0.03, 0.06, (255, 200, 90, 255))
+    c.poly([(0.5, 0.06), (0.62, 0.30), (0.58, 0.50), (0.42, 0.50), (0.38, 0.30)], (140, 255, 170, 255))
+    c.poly([(0.5, 0.20), (0.56, 0.36), (0.54, 0.48), (0.46, 0.48), (0.44, 0.36)], (230, 255, 230, 255))
+    return glow_under(c.done(size, size), (120, 255, 160), size / 12, 0.8)
+
+
+def sym_sacrifice(size, color=None):
+    c = Canvas(size, size)
+    c.poly([(0.20, 0.80), (0.70, 0.18), (0.80, 0.12), (0.76, 0.24), (0.26, 0.86)], (210, 210, 220, 255))
+    c.poly([(0.20, 0.80), (0.70, 0.18), (0.80, 0.12), (0.23, 0.83)], (240, 240, 250, 255))
+    c.line([(0.12, 0.70), (0.34, 0.92)], (120, 90, 40, 255), 0.05)
+    c.line([(0.06, 0.96), (0.20, 0.82)], (60, 30, 20, 255), 0.07)
+    for x, y, r in [(0.62, 0.55, 0.05), (0.72, 0.70, 0.04), (0.58, 0.78, 0.035)]:
+        c.ellipse(x, y, r, r, (190, 15, 20, 255))
+        c.poly([(x - r * 0.9, y - r * 0.3), (x, y - r * 2.4), (x + r * 0.9, y - r * 0.3)], (190, 15, 20, 255))
+    return glow_under(c.done(size, size), (255, 40, 40), size / 18, 0.6)
+
+
+def sym_eye(size, color=(120, 255, 170), rays=(200, 255, 220)):
+    c = Canvas(size, size)
+    for k in range(12):
+        a = math.radians(k * 30)
+        c.line([(0.5 + 0.30 * math.cos(a), 0.5 + 0.30 * math.sin(a)),
+                (0.5 + 0.46 * math.cos(a), 0.5 + 0.46 * math.sin(a))], rays + (200,), 0.025)
+    upper = [(0.12 + 0.76 * t, 0.5 - 0.22 * math.sin(math.pi * t)) for t in np.linspace(0, 1, 40)]
+    lower = [(0.88 - 0.76 * t, 0.5 + 0.22 * math.sin(math.pi * t)) for t in np.linspace(0, 1, 40)]
+    c.poly(upper + lower, (235, 230, 215, 255))
+    c.ellipse(0.5, 0.5, 0.16, 0.16, color + (255,))
+    c.ellipse(0.5, 0.5, 0.035, 0.14, (5, 5, 5, 255))
+    return glow_under(c.done(size, size), color, size / 14, 0.8)
+
+
+def sym_deepen(size, color=None):
+    return sym_eye(size, (120, 255, 170), (200, 255, 220))
+
+
+def sym_curse(size, color=None):
+    return sym_eye(size, (255, 50, 40), (255, 120, 90))
+
+
+def sym_chalice(size, color=None):
+    c = Canvas(size, size)
+    gold = (220, 180, 80, 255)
+    c.poly([(0.22, 0.14), (0.78, 0.14), (0.68, 0.40), (0.50, 0.50), (0.32, 0.40)], gold)
+    c.poly([(0.25, 0.14), (0.75, 0.14), (0.72, 0.20), (0.28, 0.20)], (60, 10, 70, 255))
+    c.poly([(0.46, 0.48), (0.54, 0.48), (0.55, 0.78), (0.45, 0.78)], gold)
+    c.poly([(0.28, 0.86), (0.72, 0.86), (0.62, 0.76), (0.38, 0.76)], gold)
+    for x, y in [(0.30, 0.30), (0.70, 0.27)]:
+        c.ellipse(x, y, 0.02, 0.05, (120, 30, 140, 255))
+    c.ellipse(0.5, 0.30, 0.05, 0.05, (160, 255, 200, 255))
+    return glow_under(c.done(size, size), (180, 120, 255), size / 14, 0.8)
+
+
+def sym_crown(size, color=None):
+    c = Canvas(size, size)
+    gold = (230, 190, 80, 255)
+    c.poly([(0.14, 0.78), (0.14, 0.34), (0.32, 0.52), (0.50, 0.18), (0.68, 0.52), (0.86, 0.34), (0.86, 0.78)], gold)
+    c.poly([(0.14, 0.70), (0.86, 0.70), (0.86, 0.80), (0.14, 0.80)], (170, 130, 50, 255))
+    for x, y in [(0.14, 0.32), (0.50, 0.16), (0.86, 0.32)]:
+        c.ellipse(x, y, 0.04, 0.04, (255, 90, 60, 255))
+    c.ellipse(0.5, 0.56, 0.09, 0.06, (240, 235, 220, 255))
+    c.ellipse(0.5, 0.56, 0.05, 0.05, (120, 255, 170, 255))
+    c.ellipse(0.5, 0.56, 0.012, 0.045, (0, 0, 0, 255))
+    return glow_under(c.done(size, size), (255, 210, 120), size / 16, 0.6)
+
+
+def sym_servitors(size, color=None):
+    c = Canvas(size, size)
+    col = (70, 160, 130, 255)
+    for i, (x, h) in enumerate([(0.28, 0.62), (0.5, 0.82), (0.72, 0.58)]):
+        pts = []
+        for k in range(80):
+            t = k / 79
+            pts.append((x + 0.08 * math.sin(2.2 * math.pi * t + i), 0.95 - h * t))
+        c.stroke(pts, col, 0.07, 0.012)
+    c.poly([(0.0, 0.92), (1.0, 0.92), (1.0, 1.0), (0.0, 1.0)], (40, 35, 30, 255))
+    return glow_under(c.done(size, size), (120, 255, 200), size / 16, 0.6)
+
+
+def sym_elder_sign(size, color=None):
+    c = Canvas(size, size)
+    gold = (220, 180, 90, 255)
+    c.ellipse(0.5, 0.5, 0.42, 0.42, None, gold, 0.035)
+    star = [(0.5 + 0.40 * math.cos(math.radians(90 + k * 144)),
+             0.5 - 0.40 * math.sin(math.radians(90 + k * 144))) for k in range(6)]
+    c.line(star, gold, 0.03)
+    c.ellipse(0.5, 0.52, 0.10, 0.07, (240, 235, 220, 255))
+    c.ellipse(0.5, 0.52, 0.055, 0.055, (120, 255, 170, 255))
+    c.ellipse(0.5, 0.52, 0.014, 0.05, (0, 0, 0, 255))
+    return glow_under(c.done(size, size), (150, 255, 190), size / 14, 0.8)
+
+
+SYMBOLS = {
+    "cthulhu": sym_cthulhu,
+    "nyarlathotep": sym_nyarlathotep,
+    "hastur": sym_hastur,
+    "shub_niggurath": sym_shub_niggurath,
+    "yog_sothoth": sym_yog_sothoth,
+    "azathoth": sym_azathoth,
+    "tome": sym_tome,
+    "altar": sym_altar,
+    "sacrifice": sym_sacrifice,
+    "deepen": sym_deepen,
+    "anoint": sym_chalice,
+    "crown": sym_crown,
+    "servitors": sym_servitors,
+    "curse": sym_curse,
+    "rites": sym_elder_sign,
+}
+
+
+# ---------------------------------------------------------------------------
+# Icon compositions
+# ---------------------------------------------------------------------------
+
+def framed(size, bg_inner, bg_outer, symbol, border, border_width=2, sym_scale=0.82, aura=None):
+    w, h = size
+    img = radial_bg(size, bg_inner, bg_outer, center=(0.5, 0.45))
+    s = int(min(w, h) * sym_scale)
+    if aura:
+        halo = Image.new("RGBA", (s, s), (0, 0, 0, 0))
+        ImageDraw.Draw(halo).ellipse([s * 0.1, s * 0.1, s * 0.9, s * 0.9], fill=aura + (170,))
+        halo = halo.filter(ImageFilter.GaussianBlur(s / 7))
+        img = paste_center(img, halo, 0.5, 0.5)
+    img = paste_center(img, symbol(s), 0.5, 0.5)
+    img = vignette(img, 0.45)
+    d = ImageDraw.Draw(img)
+    for i in range(border_width):
+        d.rectangle([i, i, w - 1 - i, h - 1 - i], outline=border + (255,))
+    d.rectangle([border_width, border_width, w - 1 - border_width, h - 1 - border_width],
+                outline=(0, 0, 0, 160))
+    return img
+
+
+TIER_BORDERS = {1: (120, 105, 80), 2: (165, 150, 215), 3: (235, 195, 90)}
+
+
+def make_ideas():
+    for god in GODS:
+        pal = PALETTE[god]
+        inner = tuple(min(255, int(v * 2.2 + 10)) for v in pal["bg"])
+        for tier in (1, 2, 3):
+            aura = pal["glow"] if tier == 3 else None
+            img = framed(IDEA_SIZE, inner, pal["bg"], SYMBOLS[god], TIER_BORDERS[tier],
+                         border_width=tier, aura=aura)
+            save_dds(img, f"gfx/interface/ideas/eldritch_{god}_{tier}.dds")
+        img = framed(IDEA_SIZE, inner, pal["bg"], SYMBOLS[god], pal["glow"], border_width=2, aura=pal["glow"])
+        save_dds(img, f"gfx/interface/ideas/eldritch_{god}_blessing.dds")
+
+    def dreams(s):
+        return tint(sym_cthulhu(s), (150, 60, 160), 0.45)
+
+    def yellow(s):
+        return sym_hastur(s)
+
+    save_dds(framed(IDEA_SIZE, (70, 15, 30), (20, 4, 10), dreams, (200, 40, 40)),
+             "gfx/interface/ideas/eldritch_curse_dreams.dds")
+    save_dds(framed(IDEA_SIZE, (80, 20, 10), (25, 5, 5), yellow, (200, 40, 40)),
+             "gfx/interface/ideas/eldritch_curse_yellow.dds")
+
+
+def make_decisions():
+    for name in ["tome", "altar", "sacrifice", "deepen", "anoint", "crown", "servitors", "curse"] + GODS:
+        pal = PALETTE.get(name, {"bg": (16, 14, 24)})
+        inner = tuple(min(255, int(v * 2.4 + 12)) for v in pal["bg"])
+        img = framed(DECISION_SIZE, inner, pal["bg"], SYMBOLS[name], (150, 130, 95), border_width=1,
+                     sym_scale=0.86)
+        save_dds(img, f"gfx/interface/decisions/eldritch_{name}.dds")
+    img = framed(DECISION_SIZE, (40, 30, 60), (12, 8, 20), SYMBOLS["rites"], (190, 160, 90), border_width=1,
+                 sym_scale=0.9)
+    save_dds(img, "gfx/interface/decisions/eldritch_category_rites.dds")
+
+
+# ---------------------------------------------------------------------------
+# Event pictures
+# ---------------------------------------------------------------------------
+
+def silhouette_city(img, color, base_y, seed, towers=False):
+    rng = random.Random(seed)
+    d = ImageDraw.Draw(img)
+    w, h = img.size
+    x = 0
+    while x < w:
+        bw = rng.randint(8, 22)
+        bh = rng.randint(10, 40) + (rng.randint(10, 40) if towers and rng.random() < 0.35 else 0)
+        d.rectangle([x, base_y - bh, x + bw, h], fill=color)
+        if towers and rng.random() < 0.5:
+            d.polygon([(x, base_y - bh), (x + bw / 2, base_y - bh - rng.randint(8, 25)), (x + bw, base_y - bh)],
+                      fill=color)
+        x += bw + rng.randint(0, 4)
+
+
+def sea(img, top_y, color, line_color, seed):
+    d = ImageDraw.Draw(img)
+    w, h = img.size
+    d.rectangle([0, top_y, w, h], fill=color)
+    rng = random.Random(seed)
+    for _ in range(60):
+        y = rng.uniform(top_y + 3, h)
+        x = rng.uniform(0, w)
+        ln = rng.uniform(6, 22)
+        d.line([(x, y), (x + ln, y)], fill=line_color, width=1)
+
+
+def forest(img, base_y, color, seed):
+    rng = random.Random(seed)
+    d = ImageDraw.Draw(img)
+    w, h = img.size
+    x = -10
+    while x < w + 10:
+        th = rng.randint(25, 55)
+        tw = rng.randint(10, 18)
+        d.polygon([(x, base_y), (x + tw / 2, base_y - th), (x + tw, base_y)], fill=color)
+        x += rng.randint(5, 11)
+    d.rectangle([0, base_y, w, h], fill=color)
+
+
+def finish(img, seed):
+    return grain(vignette(img, 0.65), 6, seed)
+
+
+def make_report_events():
+    w, h = REPORT_SIZE
+
+    # Cthulhu rising from the sea
+    img = vertical_bg(REPORT_SIZE, (5, 10, 20), (20, 60, 55))
+    img = stars(img, 70, 0.5, 1)
+    img = paste_center(img, sym_cthulhu(150), 0.5, 0.50)
+    sea(img, int(h * 0.68), (8, 30, 32, 255), (40, 110, 100, 255), 2)
+    save_dds(finish(img, 1), "gfx/event_pictures/eldritch_cthulhu.dds")
+
+    # Nyarlathotep: the black pyramid in the desert
+    img = vertical_bg(REPORT_SIZE, (8, 4, 16), (70, 30, 40))
+    img = stars(img, 80, 0.6, 3)
+    img = paste_center(img, sym_nyarlathotep(130), 0.5, 0.48)
+    d = ImageDraw.Draw(img)
+    d.polygon([(0, h), (0, h * 0.82), (w * 0.3, h * 0.76), (w * 0.7, h * 0.8), (w, h * 0.74), (w, h)],
+              fill=(40, 22, 20, 255))
+    save_dds(finish(img, 2), "gfx/event_pictures/eldritch_nyarlathotep.dds")
+
+    # Hastur: Carcosa beneath twin suns
+    img = vertical_bg(REPORT_SIZE, (20, 12, 5), (120, 80, 20))
+    img = stars(img, 40, 0.4, 5)
+    d = ImageDraw.Draw(img)
+    for sx in (0.32, 0.68):
+        sun = Image.new("RGBA", (40, 40), (0, 0, 0, 0))
+        ImageDraw.Draw(sun).ellipse([4, 4, 36, 36], fill=(255, 210, 110, 255))
+        img = paste_center(img, glow_under(sun, (255, 180, 60), 6), sx, 0.58)
+    img = paste_center(img, sym_hastur(70), 0.5, 0.22)
+    silhouette_city(img, (25, 15, 5, 255), int(h * 0.90), 6, towers=True)
+    sea(img, int(h * 0.86), (60, 40, 10, 255), (140, 100, 30, 255), 7)
+    save_dds(finish(img, 3), "gfx/event_pictures/eldritch_hastur.dds")
+
+    # Shub-Niggurath in the burning woods
+    img = vertical_bg(REPORT_SIZE, (5, 8, 6), (60, 25, 15))
+    img = stars(img, 50, 0.45, 8)
+    img = paste_center(img, sym_shub_niggurath(140), 0.5, 0.46)
+    fire = Image.new("RGBA", (120, 60), (0, 0, 0, 0))
+    ImageDraw.Draw(fire).ellipse([20, 20, 100, 60], fill=(255, 120, 40, 200))
+    img = paste_center(img, fire.filter(ImageFilter.GaussianBlur(10)), 0.5, 0.92)
+    forest(img, int(h * 0.90), (8, 12, 8, 255), 9)
+    save_dds(finish(img, 4), "gfx/event_pictures/eldritch_shub_niggurath.dds")
+
+    # Yog-Sothoth: spheres above the standing gate
+    img = vertical_bg(REPORT_SIZE, (4, 6, 20), (30, 40, 90))
+    img = stars(img, 120, 0.8, 10)
+    img = paste_center(img, sym_yog_sothoth(150), 0.5, 0.45)
+    d = ImageDraw.Draw(img)
+    d.polygon([(0, h), (0, h * 0.86), (w * 0.5, h * 0.78), (w, h * 0.86), (w, h)], fill=(12, 14, 24, 255))
+    save_dds(finish(img, 5), "gfx/event_pictures/eldritch_yog_sothoth.dds")
+
+    # Azathoth: the vortex above the crater
+    img = vertical_bg(REPORT_SIZE, (10, 2, 12), (60, 10, 50))
+    img = stars(img, 90, 0.9, 12)
+    img = paste_center(img, sym_azathoth(160), 0.5, 0.42)
+    crater = Image.new("RGBA", (170, 40), (0, 0, 0, 0))
+    ImageDraw.Draw(crater).ellipse([10, 10, 160, 40], fill=(255, 140, 60, 220))
+    img = paste_center(img, crater.filter(ImageFilter.GaussianBlur(6)), 0.5, 0.93)
+    d = ImageDraw.Draw(img)
+    d.polygon([(0, h), (0, h * 0.84), (w * 0.25, h * 0.88), (w * 0.75, h * 0.88), (w, h * 0.84), (w, h)],
+              fill=(20, 8, 15, 255))
+    save_dds(finish(img, 6), "gfx/event_pictures/eldritch_azathoth.dds")
+
+    # The tome on a candle-lit desk
+    img = radial_bg(REPORT_SIZE, (90, 60, 30), (10, 6, 4), center=(0.5, 0.55), scale=0.9)
+    d = ImageDraw.Draw(img)
+    d.rectangle([0, h * 0.72, w, h], fill=(35, 20, 10, 255))
+    img = paste_center(img, sym_tome(120), 0.5, 0.55)
+    for cx in (0.15, 0.85):
+        candle = Image.new("RGBA", (30, 70), (0, 0, 0, 0))
+        cd = ImageDraw.Draw(candle)
+        cd.rectangle([11, 25, 19, 70], fill=(220, 210, 180, 255))
+        cd.ellipse([10, 5, 20, 25], fill=(255, 200, 90, 255))
+        img = paste_center(img, glow_under(candle, (255, 170, 60), 8), cx, 0.62)
+    save_dds(finish(img, 7), "gfx/event_pictures/eldritch_tome.dds")
+
+    # Omen: eclipse with a watching eye
+    img = vertical_bg(REPORT_SIZE, (3, 3, 10), (30, 15, 40))
+    img = stars(img, 150, 1.0, 13)
+    corona = Image.new("RGBA", (120, 120), (0, 0, 0, 0))
+    ImageDraw.Draw(corona).ellipse([15, 15, 105, 105], fill=(200, 255, 220, 255))
+    corona = corona.filter(ImageFilter.GaussianBlur(9))
+    img = paste_center(img, corona, 0.5, 0.42)
+    disc = Image.new("RGBA", (84, 84), (0, 0, 0, 0))
+    ImageDraw.Draw(disc).ellipse([2, 2, 82, 82], fill=(4, 4, 8, 255))
+    img = paste_center(img, disc, 0.5, 0.42)
+    img = paste_center(img, sym_eye(46, (120, 255, 170)), 0.5, 0.42)
+    silhouette_city(img, (6, 6, 10, 255), int(h * 0.92), 14)
+    save_dds(finish(img, 8), "gfx/event_pictures/eldritch_omen.dds")
+
+
+def make_news_event():
+    w, h = NEWS_SIZE
+    img = vertical_bg(NEWS_SIZE, (15, 15, 20), (150, 150, 155))
+    img = stars(img, 120, 0.45, 20)
+    beams = Image.new("RGBA", NEWS_SIZE, (0, 0, 0, 0))
+    bd = ImageDraw.Draw(beams)
+    for bx, tx in [(0.12, 0.30), (0.55, 0.40), (0.86, 0.70)]:
+        bd.polygon([(bx * w - 2, h * 0.8), (tx * w - 14, 0), (tx * w + 14, 0), (bx * w + 2, h * 0.8)],
+                   fill=(230, 230, 210, 70))
+    img = Image.alpha_composite(img, beams.filter(ImageFilter.GaussianBlur(3)))
+    c = Canvas(w, h)
+    for i, (x, height, sway) in enumerate([(0.20, 0.95, 0.04), (0.33, 0.75, -0.03), (0.62, 1.05, 0.05),
+                                           (0.75, 0.80, -0.04), (0.90, 0.70, 0.03)]):
+        pts = []
+        for k in range(120):
+            t = k / 119
+            pts.append((x + sway * math.sin(2.4 * math.pi * t + i), 1.05 - height * t))
+        c.stroke(pts, (22, 22, 26, 255), 0.11, 0.012)
+    img = Image.alpha_composite(img, c.done(w, h))
+    silhouette_city(img, (12, 12, 16, 255), int(h * 0.82), 21, towers=True)
+    img = to_sepia(finish(img, 9))
+    save_dds(img, "gfx/event_pictures/eldritch_news_stars.dds")
+
+
+def make_thumbnail():
+    size = (512, 512)
+    img = vertical_bg(size, (4, 8, 18), (16, 50, 48))
+    img = stars(img, 300, 0.7, 30)
+    img = paste_center(img, sym_cthulhu(360), 0.5, 0.48)
+    sea(img, 360, (6, 26, 28, 255), (40, 110, 100, 255), 31)
+    d = ImageDraw.Draw(img)
+    try:
+        font = ImageFont.truetype("/usr/share/fonts/truetype/dejavu/DejaVuSerif-Bold.ttf", 46)
+        small = ImageFont.truetype("/usr/share/fonts/truetype/dejavu/DejaVuSerif-Bold.ttf", 26)
+    except OSError:
+        font = small = ImageFont.load_default()
+    for text, f, y, col in [("ELDRITCH PACTS", font, 398, (230, 220, 170)),
+                            ("Call of the Old Ones", small, 458, (150, 230, 190))]:
+        tw = d.textlength(text, font=f)
+        d.text(((size[0] - tw) / 2 + 2, y + 2), text, font=f, fill=(0, 0, 0, 255))
+        d.text(((size[0] - tw) / 2, y), text, font=f, fill=col + (255,))
+    vignette(img, 0.5).convert("RGB").save(os.path.join(ROOT, "thumbnail.png"))
+
+
+def main():
+    make_ideas()
+    make_decisions()
+    make_report_events()
+    make_news_event()
+    make_thumbnail()
+    print("Art generated.")
+
+
+if __name__ == "__main__":
+    main()

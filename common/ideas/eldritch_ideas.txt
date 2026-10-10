@@ -1,0 +1,339 @@
+#####################################################################
+# Eldritch Pacts - national spirits
+#
+#   eldritch_<god>_pact_1..3   permanent pact spirit, upgraded through
+#                              the "Deepen the Pact" decisions
+#   eldritch_<god>_blessing    timed blessing bought with Eldritch Favor
+#   eldritch_curse_*           timed curses placed on enemy nations
+#####################################################################
+
+ideas = {
+	country = {
+
+		### CTHULHU ###################################################
+
+		eldritch_cthulhu_pact_1 = {
+			picture = eldritch_cthulhu_1
+			removal_cost = -1
+			allowed_civil_war = { always = yes }
+			modifier = {
+				naval_damage_factor = 0.05
+				naval_speed_factor = 0.05
+				industrial_capacity_dockyard = 0.05
+				stability_factor = -0.05
+			}
+		}
+
+		eldritch_cthulhu_pact_2 = {
+			picture = eldritch_cthulhu_2
+			removal_cost = -1
+			allowed_civil_war = { always = yes }
+			modifier = {
+				naval_damage_factor = 0.10
+				naval_speed_factor = 0.05
+				industrial_capacity_dockyard = 0.10
+				amphibious_invasion = 0.15
+				stability_factor = -0.05
+			}
+		}
+
+		eldritch_cthulhu_pact_3 = {
+			picture = eldritch_cthulhu_3
+			removal_cost = -1
+			allowed_civil_war = { always = yes }
+			modifier = {
+				naval_damage_factor = 0.20
+				naval_speed_factor = 0.10
+				industrial_capacity_dockyard = 0.15
+				amphibious_invasion = 0.30
+				naval_invasion_capacity = 30
+				war_support_factor = 0.10
+				stability_factor = -0.10
+			}
+		}
+
+		eldritch_cthulhu_blessing = {
+			picture = eldritch_cthulhu_blessing
+			removal_cost = -1
+			allowed_civil_war = { always = yes }
+			modifier = {
+				naval_damage_factor = 0.15
+				naval_speed_factor = 0.10
+				amphibious_invasion = 0.25
+				naval_invasion_capacity = 20
+			}
+		}
+
+		eldritch_curse_dreams_of_rlyeh = {
+			picture = eldritch_curse_dreams
+			removal_cost = -1
+			allowed_civil_war = { always = yes }
+			modifier = {
+				stability_factor = -0.10
+				political_power_factor = -0.15
+				war_support_factor = -0.05
+			}
+		}
+
+		### NYARLATHOTEP ##############################################
+
+		eldritch_nyarlathotep_pact_1 = {
+			picture = eldritch_nyarlathotep_1
+			removal_cost = -1
+			allowed_civil_war = { always = yes }
+			modifier = {
+				political_power_gain = 0.15
+				justify_war_goal_time = -0.10
+				war_support_factor = -0.05
+			}
+		}
+
+		eldritch_nyarlathotep_pact_2 = {
+			picture = eldritch_nyarlathotep_2
+			removal_cost = -1
+			allowed_civil_war = { always = yes }
+			modifier = {
+				political_power_gain = 0.30
+				justify_war_goal_time = -0.25
+				stability_factor = 0.05
+				research_speed_factor = 0.03
+			}
+		}
+
+		eldritch_nyarlathotep_pact_3 = {
+			picture = eldritch_nyarlathotep_3
+			removal_cost = -1
+			allowed_civil_war = { always = yes }
+			modifier = {
+				political_power_gain = 0.50
+				justify_war_goal_time = -0.50
+				stability_factor = 0.10
+				research_speed_factor = 0.05
+				war_support_factor = 0.05
+			}
+		}
+
+		eldritch_nyarlathotep_blessing = {
+			picture = eldritch_nyarlathotep_blessing
+			removal_cost = -1
+			allowed_civil_war = { always = yes }
+			modifier = {
+				political_power_gain = 0.50
+				stability_factor = 0.10
+				consumer_goods_factor = -0.05
+			}
+		}
+
+		### HASTUR ####################################################
+
+		eldritch_hastur_pact_1 = {
+			picture = eldritch_hastur_1
+			removal_cost = -1
+			allowed_civil_war = { always = yes }
+			modifier = {
+				army_morale_factor = 0.05
+				air_attack_factor = 0.05
+				stability_factor = -0.05
+			}
+		}
+
+		eldritch_hastur_pact_2 = {
+			picture = eldritch_hastur_2
+			removal_cost = -1
+			allowed_civil_war = { always = yes }
+			modifier = {
+				army_morale_factor = 0.10
+				air_attack_factor = 0.10
+				air_agility_factor = 0.05
+				war_support_factor = 0.05
+				stability_factor = -0.05
+			}
+		}
+
+		eldritch_hastur_pact_3 = {
+			picture = eldritch_hastur_3
+			removal_cost = -1
+			allowed_civil_war = { always = yes }
+			modifier = {
+				army_morale_factor = 0.15
+				air_attack_factor = 0.15
+				air_agility_factor = 0.10
+				air_ace_generation_chance_factor = 0.50
+				war_support_factor = 0.10
+				stability_factor = -0.10
+			}
+		}
+
+		eldritch_hastur_blessing = {
+			picture = eldritch_hastur_blessing
+			removal_cost = -1
+			allowed_civil_war = { always = yes }
+			modifier = {
+				army_morale_factor = 0.15
+				army_org_factor = 0.10
+				war_support_factor = 0.10
+				air_defence_factor = 0.10
+			}
+		}
+
+		eldritch_curse_yellow_madness = {
+			picture = eldritch_curse_yellow
+			removal_cost = -1
+			allowed_civil_war = { always = yes }
+			modifier = {
+				army_morale_factor = -0.10
+				army_org_factor = -0.05
+				stability_factor = -0.05
+				war_support_factor = -0.05
+			}
+		}
+
+		### SHUB-NIGGURATH ############################################
+
+		eldritch_shub_niggurath_pact_1 = {
+			picture = eldritch_shub_niggurath_1
+			removal_cost = -1
+			allowed_civil_war = { always = yes }
+			modifier = {
+				monthly_population = 0.10
+				conscription = 0.005
+				consumer_goods_factor = 0.02
+			}
+		}
+
+		eldritch_shub_niggurath_pact_2 = {
+			picture = eldritch_shub_niggurath_2
+			removal_cost = -1
+			allowed_civil_war = { always = yes }
+			modifier = {
+				monthly_population = 0.25
+				conscription = 0.01
+				army_org_factor = 0.05
+				consumer_goods_factor = 0.02
+			}
+		}
+
+		eldritch_shub_niggurath_pact_3 = {
+			picture = eldritch_shub_niggurath_3
+			removal_cost = -1
+			allowed_civil_war = { always = yes }
+			modifier = {
+				monthly_population = 0.50
+				conscription = 0.02
+				land_reinforce_rate = 0.02
+				army_org_factor = 0.10
+				stability_factor = -0.05
+			}
+		}
+
+		eldritch_shub_niggurath_blessing = {
+			picture = eldritch_shub_niggurath_blessing
+			removal_cost = -1
+			allowed_civil_war = { always = yes }
+			modifier = {
+				monthly_population = 0.50
+				conscription_factor = 0.10
+				land_reinforce_rate = 0.03
+				attrition = -0.10
+			}
+		}
+
+		### YOG-SOTHOTH ###############################################
+
+		eldritch_yog_sothoth_pact_1 = {
+			picture = eldritch_yog_sothoth_1
+			removal_cost = -1
+			allowed_civil_war = { always = yes }
+			modifier = {
+				research_speed_factor = 0.05
+				stability_factor = -0.05
+			}
+		}
+
+		eldritch_yog_sothoth_pact_2 = {
+			picture = eldritch_yog_sothoth_2
+			removal_cost = -1
+			allowed_civil_war = { always = yes }
+			modifier = {
+				research_speed_factor = 0.08
+				planning_speed = 0.10
+				production_factory_efficiency_gain_factor = 0.05
+				stability_factor = -0.05
+			}
+		}
+
+		eldritch_yog_sothoth_pact_3 = {
+			picture = eldritch_yog_sothoth_3
+			removal_cost = -1
+			allowed_civil_war = { always = yes }
+			modifier = {
+				research_speed_factor = 0.12
+				planning_speed = 0.20
+				max_planning = 0.10
+				production_factory_efficiency_gain_factor = 0.10
+				stability_factor = -0.05
+			}
+		}
+
+		eldritch_yog_sothoth_blessing = {
+			picture = eldritch_yog_sothoth_blessing
+			removal_cost = -1
+			allowed_civil_war = { always = yes }
+			modifier = {
+				research_speed_factor = 0.15
+				planning_speed = 0.25
+				production_factory_max_efficiency_factor = 0.05
+			}
+		}
+
+		### AZATHOTH ##################################################
+
+		eldritch_azathoth_pact_1 = {
+			picture = eldritch_azathoth_1
+			removal_cost = -1
+			allowed_civil_war = { always = yes }
+			modifier = {
+				army_attack_factor = 0.05
+				breakthrough_factor = 0.05
+				stability_factor = -0.10
+			}
+		}
+
+		eldritch_azathoth_pact_2 = {
+			picture = eldritch_azathoth_2
+			removal_cost = -1
+			allowed_civil_war = { always = yes }
+			modifier = {
+				army_attack_factor = 0.10
+				breakthrough_factor = 0.10
+				industrial_capacity_factory = 0.05
+				stability_factor = -0.10
+			}
+		}
+
+		eldritch_azathoth_pact_3 = {
+			picture = eldritch_azathoth_3
+			removal_cost = -1
+			allowed_civil_war = { always = yes }
+			modifier = {
+				army_attack_factor = 0.15
+				breakthrough_factor = 0.15
+				industrial_capacity_factory = 0.10
+				war_support_factor = 0.15
+				stability_factor = -0.15
+			}
+		}
+
+		eldritch_azathoth_blessing = {
+			picture = eldritch_azathoth_blessing
+			removal_cost = -1
+			allowed_civil_war = { always = yes }
+			modifier = {
+				army_attack_factor = 0.20
+				breakthrough_factor = 0.15
+				army_speed_factor = 0.05
+				stability_factor = -0.10
+			}
+		}
+	}
+}

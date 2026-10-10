@@ -1,0 +1,665 @@
+#####################################################################
+# Eldritch Pacts - scripted effects
+#
+# Country variables:
+#   eldritch_favor      Eldritch Favor, the currency for blessings (0-999)
+#   eldritch_pact_tier  1 = Bound, 2 = Stirring, 3 = Ascendant
+#
+# Country flags:
+#   eldritch_lore_found, eldritch_ritual_underway, eldritch_pact_made,
+#   eldritch_god_<cthulhu|nyarlathotep|hastur|shub_niggurath|
+#                yog_sothoth|azathoth>
+#####################################################################
+
+#####################################################################
+# FAVOR
+#####################################################################
+
+eldritch_clamp_favor = {
+	clamp_variable = {
+		var = eldritch_favor
+		min = 0
+		max = 999
+	}
+}
+
+eldritch_gain_favor_10 = {
+	custom_effect_tooltip = eldritch_gain_favor_10_tt
+	hidden_effect = {
+		add_to_variable = { eldritch_favor = 10 }
+		eldritch_clamp_favor = yes
+	}
+}
+
+eldritch_gain_favor_15 = {
+	custom_effect_tooltip = eldritch_gain_favor_15_tt
+	hidden_effect = {
+		add_to_variable = { eldritch_favor = 15 }
+		eldritch_clamp_favor = yes
+	}
+}
+
+eldritch_gain_favor_20 = {
+	custom_effect_tooltip = eldritch_gain_favor_20_tt
+	hidden_effect = {
+		add_to_variable = { eldritch_favor = 20 }
+		eldritch_clamp_favor = yes
+	}
+}
+
+eldritch_gain_favor_25 = {
+	custom_effect_tooltip = eldritch_gain_favor_25_tt
+	hidden_effect = {
+		add_to_variable = { eldritch_favor = 25 }
+		eldritch_clamp_favor = yes
+	}
+}
+
+eldritch_gain_favor_30 = {
+	custom_effect_tooltip = eldritch_gain_favor_30_tt
+	hidden_effect = {
+		add_to_variable = { eldritch_favor = 30 }
+		eldritch_clamp_favor = yes
+	}
+}
+
+eldritch_gain_favor_40 = {
+	custom_effect_tooltip = eldritch_gain_favor_40_tt
+	hidden_effect = {
+		add_to_variable = { eldritch_favor = 40 }
+		eldritch_clamp_favor = yes
+	}
+}
+
+eldritch_lose_favor_10 = {
+	custom_effect_tooltip = eldritch_lose_favor_10_tt
+	hidden_effect = {
+		subtract_from_variable = { eldritch_favor = 10 }
+		eldritch_clamp_favor = yes
+	}
+}
+
+eldritch_lose_favor_40 = {
+	custom_effect_tooltip = eldritch_lose_favor_40_tt
+	hidden_effect = {
+		subtract_from_variable = { eldritch_favor = 40 }
+		eldritch_clamp_favor = yes
+	}
+}
+
+# Runs every 30 days for pact holders (hidden event eldritch.100).
+eldritch_monthly_pulse = {
+	if = {
+		limit = { check_variable = { eldritch_pact_tier > 2 } }
+		add_to_variable = { eldritch_favor = 12 }
+	}
+	else_if = {
+		limit = { check_variable = { eldritch_pact_tier > 1 } }
+		add_to_variable = { eldritch_favor = 8 }
+	}
+	else = {
+		add_to_variable = { eldritch_favor = 5 }
+	}
+	eldritch_clamp_favor = yes
+
+	# The gods are not silent partners.
+	random_list = {
+		88 = { }
+		3 = { country_event = { id = eldritch.40 days = 2 } }
+		3 = { country_event = { id = eldritch.41 days = 2 } }
+		3 = { country_event = { id = eldritch.42 days = 2 } }
+		3 = { country_event = { id = eldritch.43 days = 2 } }
+	}
+}
+
+#####################################################################
+# DIVISION TEMPLATES & SERVITOR SPAWNING
+#
+# Templates are locked so the "Call Forth Servitors" decision can always
+# find them by name. The battalions themselves are unlocked for use in
+# your own templates as well.
+#####################################################################
+
+eldritch_create_template_cthulhu = {
+	division_template = {
+		name = "Deep One Swarm"
+		is_locked = yes
+		regiments = {
+			eldritch_deep_one_brood = { x = 0 y = 0 }
+			eldritch_deep_one_brood = { x = 0 y = 1 }
+			eldritch_deep_one_brood = { x = 0 y = 2 }
+			eldritch_deep_one_brood = { x = 1 y = 0 }
+			eldritch_deep_one_brood = { x = 1 y = 1 }
+			eldritch_deep_one_brood = { x = 1 y = 2 }
+			eldritch_star_spawn = { x = 2 y = 0 }
+			eldritch_star_spawn = { x = 2 y = 1 }
+		}
+	}
+}
+
+eldritch_create_template_nyarlathotep = {
+	division_template = {
+		name = "Faceless Legion"
+		is_locked = yes
+		regiments = {
+			eldritch_faceless_cult = { x = 0 y = 0 }
+			eldritch_faceless_cult = { x = 0 y = 1 }
+			eldritch_faceless_cult = { x = 0 y = 2 }
+			eldritch_faceless_cult = { x = 1 y = 0 }
+			eldritch_faceless_cult = { x = 1 y = 1 }
+			eldritch_faceless_cult = { x = 1 y = 2 }
+			eldritch_shantak_riders = { x = 2 y = 0 }
+			eldritch_shantak_riders = { x = 2 y = 1 }
+		}
+	}
+}
+
+eldritch_create_template_hastur = {
+	division_template = {
+		name = "Host of the Yellow Sign"
+		is_locked = yes
+		regiments = {
+			eldritch_yellow_zealots = { x = 0 y = 0 }
+			eldritch_yellow_zealots = { x = 0 y = 1 }
+			eldritch_yellow_zealots = { x = 0 y = 2 }
+			eldritch_yellow_zealots = { x = 1 y = 0 }
+			eldritch_yellow_zealots = { x = 1 y = 1 }
+			eldritch_yellow_zealots = { x = 1 y = 2 }
+			eldritch_byakhee_riders = { x = 2 y = 0 }
+			eldritch_byakhee_riders = { x = 2 y = 1 }
+			eldritch_byakhee_riders = { x = 2 y = 2 }
+		}
+	}
+}
+
+eldritch_create_template_shub_niggurath = {
+	division_template = {
+		name = "Brood of the Black Goat"
+		is_locked = yes
+		regiments = {
+			eldritch_thousand_young = { x = 0 y = 0 }
+			eldritch_thousand_young = { x = 0 y = 1 }
+			eldritch_thousand_young = { x = 0 y = 2 }
+			eldritch_thousand_young = { x = 1 y = 0 }
+			eldritch_thousand_young = { x = 1 y = 1 }
+			eldritch_thousand_young = { x = 1 y = 2 }
+			eldritch_dark_young = { x = 2 y = 0 }
+			eldritch_dark_young = { x = 2 y = 1 }
+		}
+	}
+}
+
+eldritch_create_template_yog_sothoth = {
+	division_template = {
+		name = "Wardens of the Gate"
+		is_locked = yes
+		regiments = {
+			eldritch_gate_wardens = { x = 0 y = 0 }
+			eldritch_gate_wardens = { x = 0 y = 1 }
+			eldritch_gate_wardens = { x = 0 y = 2 }
+			eldritch_gate_wardens = { x = 1 y = 0 }
+			eldritch_gate_wardens = { x = 1 y = 1 }
+			eldritch_gate_wardens = { x = 1 y = 2 }
+			eldritch_dunwich_horror = { x = 2 y = 0 }
+			eldritch_dunwich_horror = { x = 2 y = 1 }
+		}
+	}
+}
+
+eldritch_create_template_azathoth = {
+	division_template = {
+		name = "Chaos Horde"
+		is_locked = yes
+		regiments = {
+			eldritch_chaos_spawn = { x = 0 y = 0 }
+			eldritch_chaos_spawn = { x = 0 y = 1 }
+			eldritch_chaos_spawn = { x = 0 y = 2 }
+			eldritch_chaos_spawn = { x = 1 y = 0 }
+			eldritch_chaos_spawn = { x = 1 y = 1 }
+			eldritch_chaos_spawn = { x = 1 y = 2 }
+			eldritch_void_pipers = { x = 2 y = 0 }
+			eldritch_void_pipers = { x = 2 y = 1 }
+		}
+	}
+}
+
+# Spawns two veteran divisions of a god's template in the capital.
+# The template must already exist (eldritch_create_template_<god>).
+eldritch_spawn_servitors_cthulhu = {
+	custom_effect_tooltip = eldritch_spawn_cthulhu_tt
+	hidden_effect = {
+		capital_scope = {
+			create_unit = {
+				division = "name = \"Deep One Swarm\" division_template = \"Deep One Swarm\" start_experience_factor = 0.5 start_equipment_factor = 1.0"
+				owner = ROOT
+				count = 2
+			}
+		}
+	}
+}
+
+eldritch_spawn_servitors_nyarlathotep = {
+	custom_effect_tooltip = eldritch_spawn_nyarlathotep_tt
+	hidden_effect = {
+		capital_scope = {
+			create_unit = {
+				division = "name = \"Faceless Legion\" division_template = \"Faceless Legion\" start_experience_factor = 0.5 start_equipment_factor = 1.0"
+				owner = ROOT
+				count = 2
+			}
+		}
+	}
+}
+
+eldritch_spawn_servitors_hastur = {
+	custom_effect_tooltip = eldritch_spawn_hastur_tt
+	hidden_effect = {
+		capital_scope = {
+			create_unit = {
+				division = "name = \"Host of the Yellow Sign\" division_template = \"Host of the Yellow Sign\" start_experience_factor = 0.5 start_equipment_factor = 1.0"
+				owner = ROOT
+				count = 2
+			}
+		}
+	}
+}
+
+eldritch_spawn_servitors_shub_niggurath = {
+	custom_effect_tooltip = eldritch_spawn_shub_niggurath_tt
+	hidden_effect = {
+		capital_scope = {
+			create_unit = {
+				division = "name = \"Brood of the Black Goat\" division_template = \"Brood of the Black Goat\" start_experience_factor = 0.5 start_equipment_factor = 1.0"
+				owner = ROOT
+				count = 2
+			}
+		}
+	}
+}
+
+eldritch_spawn_servitors_yog_sothoth = {
+	custom_effect_tooltip = eldritch_spawn_yog_sothoth_tt
+	hidden_effect = {
+		capital_scope = {
+			create_unit = {
+				division = "name = \"Wardens of the Gate\" division_template = \"Wardens of the Gate\" start_experience_factor = 0.5 start_equipment_factor = 1.0"
+				owner = ROOT
+				count = 2
+			}
+		}
+	}
+}
+
+eldritch_spawn_servitors_azathoth = {
+	custom_effect_tooltip = eldritch_spawn_azathoth_tt
+	hidden_effect = {
+		capital_scope = {
+			create_unit = {
+				division = "name = \"Chaos Horde\" division_template = \"Chaos Horde\" start_experience_factor = 0.5 start_equipment_factor = 1.0"
+				owner = ROOT
+				count = 2
+			}
+		}
+	}
+}
+
+# Dispatches to the patron's spawn effect.
+eldritch_spawn_servitors = {
+	if = {
+		limit = { has_country_flag = eldritch_god_cthulhu }
+		eldritch_spawn_servitors_cthulhu = yes
+	}
+	else_if = {
+		limit = { has_country_flag = eldritch_god_nyarlathotep }
+		eldritch_spawn_servitors_nyarlathotep = yes
+	}
+	else_if = {
+		limit = { has_country_flag = eldritch_god_hastur }
+		eldritch_spawn_servitors_hastur = yes
+	}
+	else_if = {
+		limit = { has_country_flag = eldritch_god_shub_niggurath }
+		eldritch_spawn_servitors_shub_niggurath = yes
+	}
+	else_if = {
+		limit = { has_country_flag = eldritch_god_yog_sothoth }
+		eldritch_spawn_servitors_yog_sothoth = yes
+	}
+	else_if = {
+		limit = { has_country_flag = eldritch_god_azathoth }
+		eldritch_spawn_servitors_azathoth = yes
+	}
+}
+
+#####################################################################
+# SEALING A PACT
+#####################################################################
+
+# Shared part of every summoning. Runs after the eldritch_god_<x> flag is
+# set so that the news event can name the right god.
+eldritch_seal_pact_common = {
+	hidden_effect = {
+		set_country_flag = eldritch_pact_made
+		set_variable = { eldritch_favor = 50 }
+		set_variable = { eldritch_pact_tier = 1 }
+	}
+	custom_effect_tooltip = eldritch_pact_sealed_tt
+	custom_effect_tooltip = eldritch_start_favor_tt
+	hidden_effect = {
+		country_event = { id = eldritch.100 days = 30 }
+		every_other_country = {
+			news_event = { id = eldritch_news.1 hours = 6 }
+		}
+	}
+}
+
+eldritch_summon_cthulhu_effect = {
+	hidden_effect = {
+		set_country_flag = eldritch_god_cthulhu
+		set_technology = { eldritch_cthulhu_rites_1 = 1 popup = no }
+		eldritch_create_template_cthulhu = yes
+	}
+	add_ideas = eldritch_cthulhu_pact_1
+	add_country_leader_trait = eldritch_cthulhu_herald
+	custom_effect_tooltip = eldritch_units_cthulhu_tt
+	eldritch_spawn_servitors_cthulhu = yes
+	eldritch_seal_pact_common = yes
+	hidden_effect = { country_event = { id = eldritch.11 } }
+}
+
+eldritch_summon_nyarlathotep_effect = {
+	hidden_effect = {
+		set_country_flag = eldritch_god_nyarlathotep
+		set_technology = { eldritch_nyarlathotep_rites_1 = 1 popup = no }
+		eldritch_create_template_nyarlathotep = yes
+	}
+	add_ideas = eldritch_nyarlathotep_pact_1
+	add_country_leader_trait = eldritch_nyarlathotep_herald
+	custom_effect_tooltip = eldritch_units_nyarlathotep_tt
+	eldritch_spawn_servitors_nyarlathotep = yes
+	eldritch_seal_pact_common = yes
+	hidden_effect = { country_event = { id = eldritch.12 } }
+}
+
+eldritch_summon_hastur_effect = {
+	hidden_effect = {
+		set_country_flag = eldritch_god_hastur
+		set_technology = { eldritch_hastur_rites_1 = 1 popup = no }
+		eldritch_create_template_hastur = yes
+	}
+	add_ideas = eldritch_hastur_pact_1
+	add_country_leader_trait = eldritch_hastur_herald
+	custom_effect_tooltip = eldritch_units_hastur_tt
+	eldritch_spawn_servitors_hastur = yes
+	eldritch_seal_pact_common = yes
+	hidden_effect = { country_event = { id = eldritch.13 } }
+}
+
+eldritch_summon_shub_niggurath_effect = {
+	hidden_effect = {
+		set_country_flag = eldritch_god_shub_niggurath
+		set_technology = { eldritch_shub_niggurath_rites_1 = 1 popup = no }
+		eldritch_create_template_shub_niggurath = yes
+	}
+	add_ideas = eldritch_shub_niggurath_pact_1
+	add_country_leader_trait = eldritch_shub_niggurath_herald
+	custom_effect_tooltip = eldritch_units_shub_niggurath_tt
+	eldritch_spawn_servitors_shub_niggurath = yes
+	eldritch_seal_pact_common = yes
+	hidden_effect = { country_event = { id = eldritch.14 } }
+}
+
+eldritch_summon_yog_sothoth_effect = {
+	hidden_effect = {
+		set_country_flag = eldritch_god_yog_sothoth
+		set_technology = { eldritch_yog_sothoth_rites_1 = 1 popup = no }
+		eldritch_create_template_yog_sothoth = yes
+	}
+	add_ideas = eldritch_yog_sothoth_pact_1
+	add_country_leader_trait = eldritch_yog_sothoth_herald
+	custom_effect_tooltip = eldritch_units_yog_sothoth_tt
+	eldritch_spawn_servitors_yog_sothoth = yes
+	eldritch_seal_pact_common = yes
+	hidden_effect = { country_event = { id = eldritch.15 } }
+}
+
+eldritch_summon_azathoth_effect = {
+	hidden_effect = {
+		set_country_flag = eldritch_god_azathoth
+		set_technology = { eldritch_azathoth_rites_1 = 1 popup = no }
+		eldritch_create_template_azathoth = yes
+	}
+	add_ideas = eldritch_azathoth_pact_1
+	add_country_leader_trait = eldritch_azathoth_herald
+	add_stability = -0.10
+	custom_effect_tooltip = eldritch_units_azathoth_tt
+	eldritch_spawn_servitors_azathoth = yes
+	eldritch_seal_pact_common = yes
+	hidden_effect = { country_event = { id = eldritch.16 } }
+}
+
+#####################################################################
+# BLESSINGS FOR LEADERS
+#####################################################################
+
+# Unit leader scope. ROOT is the country.
+eldritch_bless_army_leader = {
+	hidden_effect = { set_unit_leader_flag = eldritch_anointed }
+	if = {
+		limit = { ROOT = { has_country_flag = eldritch_god_cthulhu } }
+		add_unit_leader_trait = eldritch_cthulhu_general
+	}
+	else_if = {
+		limit = { ROOT = { has_country_flag = eldritch_god_nyarlathotep } }
+		add_unit_leader_trait = eldritch_nyarlathotep_general
+	}
+	else_if = {
+		limit = { ROOT = { has_country_flag = eldritch_god_hastur } }
+		add_unit_leader_trait = eldritch_hastur_general
+	}
+	else_if = {
+		limit = { ROOT = { has_country_flag = eldritch_god_shub_niggurath } }
+		add_unit_leader_trait = eldritch_shub_niggurath_general
+	}
+	else_if = {
+		limit = { ROOT = { has_country_flag = eldritch_god_yog_sothoth } }
+		add_unit_leader_trait = eldritch_yog_sothoth_general
+	}
+	else_if = {
+		limit = { ROOT = { has_country_flag = eldritch_god_azathoth } }
+		add_unit_leader_trait = eldritch_azathoth_general
+	}
+}
+
+# Unit leader scope. ROOT is the country.
+eldritch_bless_navy_leader = {
+	hidden_effect = { set_unit_leader_flag = eldritch_anointed }
+	if = {
+		limit = { ROOT = { has_country_flag = eldritch_god_cthulhu } }
+		add_unit_leader_trait = eldritch_cthulhu_admiral
+	}
+	else_if = {
+		limit = { ROOT = { has_country_flag = eldritch_god_nyarlathotep } }
+		add_unit_leader_trait = eldritch_nyarlathotep_admiral
+	}
+	else_if = {
+		limit = { ROOT = { has_country_flag = eldritch_god_hastur } }
+		add_unit_leader_trait = eldritch_hastur_admiral
+	}
+	else_if = {
+		limit = { ROOT = { has_country_flag = eldritch_god_shub_niggurath } }
+		add_unit_leader_trait = eldritch_shub_niggurath_admiral
+	}
+	else_if = {
+		limit = { ROOT = { has_country_flag = eldritch_god_yog_sothoth } }
+		add_unit_leader_trait = eldritch_yog_sothoth_admiral
+	}
+	else_if = {
+		limit = { ROOT = { has_country_flag = eldritch_god_azathoth } }
+		add_unit_leader_trait = eldritch_azathoth_admiral
+	}
+}
+
+# Field marshals are chosen before ordinary generals.
+eldritch_anoint_general_effect = {
+	if = {
+		limit = {
+			any_army_leader = {
+				is_field_marshal = yes
+				NOT = { has_unit_leader_flag = eldritch_anointed }
+				NOT = { has_trait = eldritch_avatar_land }
+			}
+		}
+		random_army_leader = {
+			limit = {
+				is_field_marshal = yes
+				NOT = { has_unit_leader_flag = eldritch_anointed }
+				NOT = { has_trait = eldritch_avatar_land }
+			}
+			eldritch_bless_army_leader = yes
+		}
+	}
+	else = {
+		random_army_leader = {
+			limit = {
+				NOT = { has_unit_leader_flag = eldritch_anointed }
+				NOT = { has_trait = eldritch_avatar_land }
+			}
+			eldritch_bless_army_leader = yes
+		}
+	}
+}
+
+eldritch_anoint_admiral_effect = {
+	random_navy_leader = {
+		limit = {
+			NOT = { has_unit_leader_flag = eldritch_anointed }
+			NOT = { has_trait = eldritch_avatar_navy }
+		}
+		eldritch_bless_navy_leader = yes
+	}
+}
+
+# Gives the current country leader the patron's traits. Also re-grants the
+# Herald trait, so a leader who came to power after the pact is covered.
+eldritch_exalt_prophet_effect = {
+	if = {
+		limit = { has_country_flag = eldritch_god_cthulhu }
+		add_country_leader_trait = eldritch_cthulhu_herald
+		add_country_leader_trait = eldritch_cthulhu_chosen
+	}
+	else_if = {
+		limit = { has_country_flag = eldritch_god_nyarlathotep }
+		add_country_leader_trait = eldritch_nyarlathotep_herald
+		add_country_leader_trait = eldritch_nyarlathotep_chosen
+	}
+	else_if = {
+		limit = { has_country_flag = eldritch_god_hastur }
+		add_country_leader_trait = eldritch_hastur_herald
+		add_country_leader_trait = eldritch_hastur_chosen
+	}
+	else_if = {
+		limit = { has_country_flag = eldritch_god_shub_niggurath }
+		add_country_leader_trait = eldritch_shub_niggurath_herald
+		add_country_leader_trait = eldritch_shub_niggurath_chosen
+	}
+	else_if = {
+		limit = { has_country_flag = eldritch_god_yog_sothoth }
+		add_country_leader_trait = eldritch_yog_sothoth_herald
+		add_country_leader_trait = eldritch_yog_sothoth_chosen
+	}
+	else_if = {
+		limit = { has_country_flag = eldritch_god_azathoth }
+		add_country_leader_trait = eldritch_azathoth_herald
+		add_country_leader_trait = eldritch_azathoth_chosen
+	}
+}
+
+#####################################################################
+# DEEPENING THE PACT
+#####################################################################
+
+eldritch_raise_pact_to_tier_2 = {
+	hidden_effect = { set_variable = { eldritch_pact_tier = 2 } }
+	if = {
+		limit = { has_country_flag = eldritch_god_cthulhu }
+		swap_ideas = { remove_idea = eldritch_cthulhu_pact_1 add_idea = eldritch_cthulhu_pact_2 }
+		hidden_effect = { set_technology = { eldritch_cthulhu_rites_2 = 1 popup = no } }
+	}
+	else_if = {
+		limit = { has_country_flag = eldritch_god_nyarlathotep }
+		swap_ideas = { remove_idea = eldritch_nyarlathotep_pact_1 add_idea = eldritch_nyarlathotep_pact_2 }
+		hidden_effect = { set_technology = { eldritch_nyarlathotep_rites_2 = 1 popup = no } }
+	}
+	else_if = {
+		limit = { has_country_flag = eldritch_god_hastur }
+		swap_ideas = { remove_idea = eldritch_hastur_pact_1 add_idea = eldritch_hastur_pact_2 }
+		hidden_effect = { set_technology = { eldritch_hastur_rites_2 = 1 popup = no } }
+	}
+	else_if = {
+		limit = { has_country_flag = eldritch_god_shub_niggurath }
+		swap_ideas = { remove_idea = eldritch_shub_niggurath_pact_1 add_idea = eldritch_shub_niggurath_pact_2 }
+		hidden_effect = { set_technology = { eldritch_shub_niggurath_rites_2 = 1 popup = no } }
+	}
+	else_if = {
+		limit = { has_country_flag = eldritch_god_yog_sothoth }
+		swap_ideas = { remove_idea = eldritch_yog_sothoth_pact_1 add_idea = eldritch_yog_sothoth_pact_2 }
+		hidden_effect = { set_technology = { eldritch_yog_sothoth_rites_2 = 1 popup = no } }
+	}
+	else_if = {
+		limit = { has_country_flag = eldritch_god_azathoth }
+		swap_ideas = { remove_idea = eldritch_azathoth_pact_1 add_idea = eldritch_azathoth_pact_2 }
+		hidden_effect = { set_technology = { eldritch_azathoth_rites_2 = 1 popup = no } }
+	}
+	custom_effect_tooltip = eldritch_units_empowered_tt
+	custom_effect_tooltip = eldritch_monthly_favor_tier_2_tt
+	hidden_effect = { country_event = { id = eldritch.20 } }
+}
+
+eldritch_raise_pact_to_tier_3 = {
+	hidden_effect = { set_variable = { eldritch_pact_tier = 3 } }
+	if = {
+		limit = { has_country_flag = eldritch_god_cthulhu }
+		swap_ideas = { remove_idea = eldritch_cthulhu_pact_2 add_idea = eldritch_cthulhu_pact_3 }
+		hidden_effect = { set_technology = { eldritch_cthulhu_rites_3 = 1 popup = no } }
+		eldritch_spawn_servitors = yes
+	}
+	else_if = {
+		limit = { has_country_flag = eldritch_god_nyarlathotep }
+		swap_ideas = { remove_idea = eldritch_nyarlathotep_pact_2 add_idea = eldritch_nyarlathotep_pact_3 }
+		hidden_effect = { set_technology = { eldritch_nyarlathotep_rites_3 = 1 popup = no } }
+		add_political_power = 200
+	}
+	else_if = {
+		limit = { has_country_flag = eldritch_god_hastur }
+		swap_ideas = { remove_idea = eldritch_hastur_pact_2 add_idea = eldritch_hastur_pact_3 }
+		hidden_effect = { set_technology = { eldritch_hastur_rites_3 = 1 popup = no } }
+		add_war_support = 0.10
+	}
+	else_if = {
+		limit = { has_country_flag = eldritch_god_shub_niggurath }
+		swap_ideas = { remove_idea = eldritch_shub_niggurath_pact_2 add_idea = eldritch_shub_niggurath_pact_3 }
+		hidden_effect = { set_technology = { eldritch_shub_niggurath_rites_3 = 1 popup = no } }
+		add_manpower = 100000
+	}
+	else_if = {
+		limit = { has_country_flag = eldritch_god_yog_sothoth }
+		swap_ideas = { remove_idea = eldritch_yog_sothoth_pact_2 add_idea = eldritch_yog_sothoth_pact_3 }
+		hidden_effect = { set_technology = { eldritch_yog_sothoth_rites_3 = 1 popup = no } }
+		add_research_slot = 1
+	}
+	else_if = {
+		limit = { has_country_flag = eldritch_god_azathoth }
+		swap_ideas = { remove_idea = eldritch_azathoth_pact_2 add_idea = eldritch_azathoth_pact_3 }
+		hidden_effect = { set_technology = { eldritch_azathoth_rites_3 = 1 popup = no } }
+		add_nuclear_bombs = 2
+	}
+	custom_effect_tooltip = eldritch_units_empowered_tt
+	custom_effect_tooltip = eldritch_monthly_favor_tier_3_tt
+	hidden_effect = {
+		country_event = { id = eldritch.30 }
+		every_other_country = {
+			news_event = { id = eldritch_news.2 hours = 6 }
+		}
+	}
+}

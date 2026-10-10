@@ -1,0 +1,99 @@
+#####################################################################
+# Eldritch Pacts - country leader traits
+#
+#   eldritch_<god>_herald   given to the leader when the pact is sealed
+#   eldritch_<god>_chosen   given by the "Exalt the Prophet" blessing
+#####################################################################
+
+leader_traits = {
+
+	### CTHULHU #######################################################
+
+	eldritch_cthulhu_herald = {
+		random = no
+		industrial_capacity_dockyard = 0.05
+		war_support_factor = 0.05
+		stability_factor = -0.03
+	}
+
+	eldritch_cthulhu_chosen = {
+		random = no
+		naval_invasion_capacity = 10
+		amphibious_invasion = 0.10
+		political_power_gain = 0.10
+	}
+
+	### NYARLATHOTEP ##################################################
+
+	eldritch_nyarlathotep_herald = {
+		random = no
+		political_power_gain = 0.25
+		stability_factor = -0.03
+	}
+
+	eldritch_nyarlathotep_chosen = {
+		random = no
+		stability_factor = 0.10
+		justify_war_goal_time = -0.25
+	}
+
+	### HASTUR ########################################################
+
+	eldritch_hastur_herald = {
+		random = no
+		war_support_factor = 0.10
+		stability_factor = -0.03
+	}
+
+	eldritch_hastur_chosen = {
+		random = no
+		army_morale_factor = 0.10
+		air_attack_factor = 0.05
+		political_power_gain = 0.10
+	}
+
+	### SHUB-NIGGURATH ################################################
+
+	eldritch_shub_niggurath_herald = {
+		random = no
+		monthly_population = 0.10
+		stability_factor = -0.03
+	}
+
+	eldritch_shub_niggurath_chosen = {
+		random = no
+		conscription = 0.01
+		land_reinforce_rate = 0.02
+		political_power_gain = 0.10
+	}
+
+	### YOG-SOTHOTH ###################################################
+
+	eldritch_yog_sothoth_herald = {
+		random = no
+		research_speed_factor = 0.03
+		stability_factor = -0.03
+	}
+
+	eldritch_yog_sothoth_chosen = {
+		random = no
+		research_speed_factor = 0.05
+		planning_speed = 0.10
+		political_power_gain = 0.10
+	}
+
+	### AZATHOTH ######################################################
+
+	eldritch_azathoth_herald = {
+		random = no
+		army_attack_factor = 0.05
+		stability_factor = -0.05
+	}
+
+	eldritch_azathoth_chosen = {
+		random = no
+		army_attack_factor = 0.05
+		breakthrough_factor = 0.10
+		war_support_factor = 0.10
+	}
+}

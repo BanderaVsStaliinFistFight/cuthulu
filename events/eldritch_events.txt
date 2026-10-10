@@ -1,0 +1,398 @@
+#####################################################################
+# Eldritch Pacts - events
+#
+#   eldritch.1        the forbidden lore is found
+#   eldritch.11-16    a summoning succeeds (one per god)
+#   eldritch.20/30    the pact deepens (tier II / tier III)
+#   eldritch.40-43    the patron's whims (random, monthly)
+#   eldritch.60-62    received by the target of a curse
+#   eldritch.100      hidden monthly pulse (Favor income, random whims)
+#   eldritch_news.1/2 world news when a god is summoned / ascends
+#####################################################################
+
+add_namespace = eldritch
+add_namespace = eldritch_news
+
+#####################################################################
+# THE FORBIDDEN LORE
+#####################################################################
+
+country_event = {
+	id = eldritch.1
+	title = eldritch.1.t
+	desc = eldritch.1.d
+	picture = GFX_report_event_eldritch_tome
+
+	is_triggered_only = yes
+
+	option = {
+		name = eldritch.1.a
+		custom_effect_tooltip = eldritch_summonings_unlocked_tt
+	}
+}
+
+#####################################################################
+# SUMMONINGS
+#####################################################################
+
+country_event = {
+	id = eldritch.11
+	title = eldritch.11.t
+	desc = eldritch.11.d
+	picture = GFX_report_event_eldritch_cthulhu
+
+	is_triggered_only = yes
+
+	option = {
+		name = eldritch.11.a
+	}
+}
+
+country_event = {
+	id = eldritch.12
+	title = eldritch.12.t
+	desc = eldritch.12.d
+	picture = GFX_report_event_eldritch_nyarlathotep
+
+	is_triggered_only = yes
+
+	option = {
+		name = eldritch.12.a
+	}
+}
+
+country_event = {
+	id = eldritch.13
+	title = eldritch.13.t
+	desc = eldritch.13.d
+	picture = GFX_report_event_eldritch_hastur
+
+	is_triggered_only = yes
+
+	option = {
+		name = eldritch.13.a
+	}
+}
+
+country_event = {
+	id = eldritch.14
+	title = eldritch.14.t
+	desc = eldritch.14.d
+	picture = GFX_report_event_eldritch_shub_niggurath
+
+	is_triggered_only = yes
+
+	option = {
+		name = eldritch.14.a
+	}
+}
+
+country_event = {
+	id = eldritch.15
+	title = eldritch.15.t
+	desc = eldritch.15.d
+	picture = GFX_report_event_eldritch_yog_sothoth
+
+	is_triggered_only = yes
+
+	option = {
+		name = eldritch.15.a
+	}
+}
+
+country_event = {
+	id = eldritch.16
+	title = eldritch.16.t
+	desc = eldritch.16.d
+	picture = GFX_report_event_eldritch_azathoth
+
+	is_triggered_only = yes
+
+	option = {
+		name = eldritch.16.a
+	}
+}
+
+#####################################################################
+# THE PACT DEEPENS
+#####################################################################
+
+country_event = {
+	id = eldritch.20
+	title = eldritch.20.t
+	desc = {
+		text = eldritch.20.d.cthulhu
+		trigger = { has_country_flag = eldritch_god_cthulhu }
+	}
+	desc = {
+		text = eldritch.20.d.nyarlathotep
+		trigger = { has_country_flag = eldritch_god_nyarlathotep }
+	}
+	desc = {
+		text = eldritch.20.d.hastur
+		trigger = { has_country_flag = eldritch_god_hastur }
+	}
+	desc = {
+		text = eldritch.20.d.shub_niggurath
+		trigger = { has_country_flag = eldritch_god_shub_niggurath }
+	}
+	desc = {
+		text = eldritch.20.d.yog_sothoth
+		trigger = { has_country_flag = eldritch_god_yog_sothoth }
+	}
+	desc = {
+		text = eldritch.20.d.azathoth
+		trigger = { has_country_flag = eldritch_god_azathoth }
+	}
+	picture = GFX_report_event_eldritch_omen
+
+	is_triggered_only = yes
+
+	option = {
+		name = eldritch.20.a
+	}
+}
+
+country_event = {
+	id = eldritch.30
+	title = eldritch.30.t
+	desc = {
+		text = eldritch.30.d.cthulhu
+		trigger = { has_country_flag = eldritch_god_cthulhu }
+	}
+	desc = {
+		text = eldritch.30.d.nyarlathotep
+		trigger = { has_country_flag = eldritch_god_nyarlathotep }
+	}
+	desc = {
+		text = eldritch.30.d.hastur
+		trigger = { has_country_flag = eldritch_god_hastur }
+	}
+	desc = {
+		text = eldritch.30.d.shub_niggurath
+		trigger = { has_country_flag = eldritch_god_shub_niggurath }
+	}
+	desc = {
+		text = eldritch.30.d.yog_sothoth
+		trigger = { has_country_flag = eldritch_god_yog_sothoth }
+	}
+	desc = {
+		text = eldritch.30.d.azathoth
+		trigger = { has_country_flag = eldritch_god_azathoth }
+	}
+	picture = GFX_report_event_eldritch_omen
+
+	is_triggered_only = yes
+
+	option = {
+		name = eldritch.30.a
+	}
+}
+
+#####################################################################
+# THE WHIMS OF THE PATRON (fired at random by eldritch_monthly_pulse)
+#####################################################################
+
+# Tribute demanded
+country_event = {
+	id = eldritch.40
+	title = eldritch.40.t
+	desc = eldritch.40.d
+	picture = GFX_report_event_eldritch_omen
+
+	is_triggered_only = yes
+
+	option = {
+		name = eldritch.40.a
+		trigger = { has_manpower > 9999 }
+		add_manpower = -10000
+		eldritch_gain_favor_25 = yes
+		ai_chance = { factor = 50 }
+	}
+
+	option = {
+		name = eldritch.40.b
+		add_political_power = -50
+		eldritch_gain_favor_15 = yes
+		ai_chance = { factor = 40 }
+	}
+
+	option = {
+		name = eldritch.40.c
+		eldritch_lose_favor_40 = yes
+		add_stability = -0.05
+		ai_chance = { factor = 10 }
+	}
+}
+
+# A prophet in the streets
+country_event = {
+	id = eldritch.41
+	title = eldritch.41.t
+	desc = eldritch.41.d
+	picture = GFX_report_event_eldritch_omen
+
+	is_triggered_only = yes
+
+	option = {
+		name = eldritch.41.a
+		add_stability = 0.02
+		eldritch_lose_favor_10 = yes
+		ai_chance = { factor = 30 }
+	}
+
+	option = {
+		name = eldritch.41.b
+		eldritch_gain_favor_20 = yes
+		add_stability = -0.03
+		add_war_support = 0.02
+		ai_chance = { factor = 70 }
+	}
+}
+
+# The stars are right
+country_event = {
+	id = eldritch.42
+	title = eldritch.42.t
+	desc = eldritch.42.d
+	picture = GFX_report_event_eldritch_omen
+
+	is_triggered_only = yes
+
+	option = {
+		name = eldritch.42.a
+		eldritch_gain_favor_30 = yes
+	}
+}
+
+# Dreams of the faithful
+country_event = {
+	id = eldritch.43
+	title = eldritch.43.t
+	desc = eldritch.43.d
+	picture = GFX_report_event_eldritch_omen
+
+	is_triggered_only = yes
+
+	option = {
+		name = eldritch.43.a
+		eldritch_gain_favor_10 = yes
+		army_experience = 10
+	}
+}
+
+#####################################################################
+# CURSES - received by the target. FROM is the cultist nation.
+#####################################################################
+
+country_event = {
+	id = eldritch.60
+	title = eldritch.60.t
+	desc = eldritch.60.d
+	picture = GFX_report_event_eldritch_cthulhu
+
+	is_triggered_only = yes
+
+	option = {
+		name = eldritch.60.a
+	}
+}
+
+country_event = {
+	id = eldritch.61
+	title = eldritch.61.t
+	desc = eldritch.61.d
+	picture = GFX_report_event_eldritch_hastur
+
+	is_triggered_only = yes
+
+	option = {
+		name = eldritch.61.a
+	}
+}
+
+country_event = {
+	id = eldritch.62
+	title = eldritch.62.t
+	desc = eldritch.62.d
+	picture = GFX_report_event_eldritch_nyarlathotep
+
+	is_triggered_only = yes
+
+	option = {
+		name = eldritch.62.a
+	}
+}
+
+#####################################################################
+# MONTHLY PULSE - hidden, re-schedules itself every 30 days.
+# Started when a pact is sealed (eldritch_seal_pact_common).
+#####################################################################
+
+country_event = {
+	id = eldritch.100
+	hidden = yes
+
+	is_triggered_only = yes
+
+	immediate = {
+		if = {
+			limit = { has_country_flag = eldritch_pact_made }
+			eldritch_monthly_pulse = yes
+			country_event = { id = eldritch.100 days = 30 }
+		}
+	}
+}
+
+#####################################################################
+# WORLD NEWS - FROM is the cultist nation.
+#####################################################################
+
+news_event = {
+	id = eldritch_news.1
+	title = eldritch_news.1.t
+	desc = {
+		text = eldritch_news.1.d.cthulhu
+		trigger = { FROM = { has_country_flag = eldritch_god_cthulhu } }
+	}
+	desc = {
+		text = eldritch_news.1.d.nyarlathotep
+		trigger = { FROM = { has_country_flag = eldritch_god_nyarlathotep } }
+	}
+	desc = {
+		text = eldritch_news.1.d.hastur
+		trigger = { FROM = { has_country_flag = eldritch_god_hastur } }
+	}
+	desc = {
+		text = eldritch_news.1.d.shub_niggurath
+		trigger = { FROM = { has_country_flag = eldritch_god_shub_niggurath } }
+	}
+	desc = {
+		text = eldritch_news.1.d.yog_sothoth
+		trigger = { FROM = { has_country_flag = eldritch_god_yog_sothoth } }
+	}
+	desc = {
+		text = eldritch_news.1.d.azathoth
+		trigger = { FROM = { has_country_flag = eldritch_god_azathoth } }
+	}
+	picture = GFX_news_event_eldritch_stars
+
+	is_triggered_only = yes
+
+	option = {
+		name = eldritch_news.1.a
+	}
+}
+
+news_event = {
+	id = eldritch_news.2
+	title = eldritch_news.2.t
+	desc = eldritch_news.2.d
+	picture = GFX_news_event_eldritch_stars
+
+	is_triggered_only = yes
+
+	option = {
+		name = eldritch_news.2.a
+	}
+}

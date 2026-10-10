@@ -1,0 +1,85 @@
+#####################################################################
+# Eldritch Pacts - scripted localisation
+#
+#   [ROOT.GetEldritchGodName]    name of the country's patron god
+#   [ROOT.GetEldritchPactStage]  current state of the pact
+#   [ROOT.GetEldritchFavorLine]  favor read-out (empty before a pact)
+#####################################################################
+
+defined_text = {
+	name = GetEldritchGodName
+
+	text = {
+		trigger = { has_country_flag = eldritch_god_cthulhu }
+		localization_key = eldritch_god_name_cthulhu
+	}
+	text = {
+		trigger = { has_country_flag = eldritch_god_nyarlathotep }
+		localization_key = eldritch_god_name_nyarlathotep
+	}
+	text = {
+		trigger = { has_country_flag = eldritch_god_hastur }
+		localization_key = eldritch_god_name_hastur
+	}
+	text = {
+		trigger = { has_country_flag = eldritch_god_shub_niggurath }
+		localization_key = eldritch_god_name_shub_niggurath
+	}
+	text = {
+		trigger = { has_country_flag = eldritch_god_yog_sothoth }
+		localization_key = eldritch_god_name_yog_sothoth
+	}
+	text = {
+		trigger = { has_country_flag = eldritch_god_azathoth }
+		localization_key = eldritch_god_name_azathoth
+	}
+	text = {
+		localization_key = eldritch_god_name_none
+	}
+}
+
+defined_text = {
+	name = GetEldritchPactStage
+
+	text = {
+		trigger = {
+			has_country_flag = eldritch_pact_made
+			check_variable = { eldritch_pact_tier > 2 }
+		}
+		localization_key = eldritch_stage_3
+	}
+	text = {
+		trigger = {
+			has_country_flag = eldritch_pact_made
+			check_variable = { eldritch_pact_tier > 1 }
+		}
+		localization_key = eldritch_stage_2
+	}
+	text = {
+		trigger = { has_country_flag = eldritch_pact_made }
+		localization_key = eldritch_stage_1
+	}
+	text = {
+		trigger = { has_country_flag = eldritch_ritual_underway }
+		localization_key = eldritch_stage_ritual
+	}
+	text = {
+		trigger = { has_country_flag = eldritch_lore_found }
+		localization_key = eldritch_stage_lore
+	}
+	text = {
+		localization_key = eldritch_stage_none
+	}
+}
+
+defined_text = {
+	name = GetEldritchFavorLine
+
+	text = {
+		trigger = { has_country_flag = eldritch_pact_made }
+		localization_key = eldritch_favor_line
+	}
+	text = {
+		localization_key = eldritch_favor_line_none
+	}
+}

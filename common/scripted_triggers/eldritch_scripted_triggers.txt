@@ -1,0 +1,65 @@
+#####################################################################
+# Eldritch Pacts - scripted triggers
+#####################################################################
+
+# Country has sealed a pact with one of the Old Ones.
+eldritch_has_pact = {
+	has_country_flag = eldritch_pact_made
+}
+
+# The summoning rituals are shown once the lore is found and stay
+# visible until a pact is sealed. Only ONE god can ever be chosen.
+eldritch_summoning_visible = {
+	has_country_flag = eldritch_lore_found
+	NOT = { has_country_flag = eldritch_pact_made }
+}
+
+eldritch_no_ritual_underway = {
+	custom_trigger_tooltip = {
+		tooltip = eldritch_no_ritual_underway_tt
+		NOT = { has_country_flag = eldritch_ritual_underway }
+	}
+}
+
+eldritch_has_coastline = {
+	custom_trigger_tooltip = {
+		tooltip = eldritch_has_coastline_tt
+		any_owned_state = { is_coastal = yes }
+	}
+}
+
+eldritch_pact_tier_at_least_2 = {
+	custom_trigger_tooltip = {
+		tooltip = eldritch_pact_tier_at_least_2_tt
+		check_variable = { eldritch_pact_tier > 1 }
+	}
+}
+
+# A general who has not yet been touched by the god (avatars excluded).
+eldritch_has_unanointed_general = {
+	custom_trigger_tooltip = {
+		tooltip = eldritch_has_unanointed_general_tt
+		any_army_leader = {
+			NOT = { has_unit_leader_flag = eldritch_anointed }
+			NOT = { has_trait = eldritch_avatar_land }
+		}
+	}
+}
+
+eldritch_has_unanointed_admiral = {
+	custom_trigger_tooltip = {
+		tooltip = eldritch_has_unanointed_admiral_tt
+		any_navy_leader = {
+			NOT = { has_unit_leader_flag = eldritch_anointed }
+			NOT = { has_trait = eldritch_avatar_navy }
+		}
+	}
+}
+
+# AI countries only dabble in the forbidden arts if the game rule allows it.
+eldritch_ai_allowed_pacts = {
+	has_game_rule = {
+		rule = eldritch_ai_pacts
+		option = ALLOWED
+	}
+}
