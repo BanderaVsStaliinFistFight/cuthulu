@@ -592,6 +592,264 @@ def king_in_yellow_painted():
     img = R.film(img, seed, grain=0.03, dust=0.2, scratches=0, blotches=0.05)
     return R.to_image(img)
 
+# ---------------------------------------------------------------------------
+# The King in Yellow, realistic: a gaunt pallid face in a long yellow hood, a
+# jagged iron crown bearing the spiral sign, antlers, hanging leather straps
+# and a tentacle curling out from under the robe
+# ---------------------------------------------------------------------------
+
+def blade(p, base, top, width, angle, thin=3.5):
+    """A tapering blade rising from base to top, flat across the radial
+    direction given by angle (radians round the Y axis)."""
+    r = np.array([math.sin(angle), 0.0, math.cos(angle)])
+    q = p - base
+    pr = q @ r
+    q2 = q + np.outer(pr * (thin - 1), r)
+    return R.sd_round_cone(q2 + base, base, top, width, 0.0008) / thin
+
+
+def king_real_setup():
+    seed = 51
+    rng = np.random.default_rng(seed)
+    robe_col = np.array([0.40, 0.24, 0.045])
+
+    def robe_tex(p, n):
+        wv = 0.92 + 0.08 * np.sin(p[:, 0] * 320 + 2 * R.noise3(p * 40, seed)) * np.sin(p[:, 1] * 320)
+        mott = 1 + 0.18 * R.fbm3(p * 9, 4, seed)
+        st = 1 - 0.45 * np.clip(R.fbm3(p * 3.5 + 3, 5, seed + 3) * 1.8, 0, 1)
+        dusk = 1 - 0.35 * smoothstep(1.35, 0.95, p[:, 1])
+        grime = np.clip(R.fbm3(p * 14 + 5, 4, seed + 11) * 1.5, 0, 1)[:, None]
+        col = robe_col * (wv * mott * st * dusk)[:, None]
+        return col * (1 - 0.4 * grime) + np.array([0.07, 0.055, 0.03]) * 0.4 * grime
+
+    def skin_tex(p, n):
+        base = np.array([0.33, 0.33, 0.27])
+        mott = 1 + 0.15 * R.fbm3(p * 40, 4, seed + 1)
+        green = np.clip(R.fbm3(p * 12, 3, seed + 2), 0, 1)[:, None] * np.array([-0.04, 0.0, -0.03])
+        crack = smoothstep(0.90, 0.975, R.ridged3(p * 26, 4, seed + 3))
+        veins = smoothstep(0.88, 0.96, R.ridged3(p * 55, 3, seed + 4)) * 0.25
+        col = base * mott[:, None] + green
+        return col * (1 - 0.65 * crack - veins)[:, None]
+
+    def iron_tex(p, n):
+        rust = np.clip(R.fbm3(p * 30, 4, seed + 5) * 1.8 + 0.1, 0, 1)
+        col = np.array([0.085, 0.080, 0.075]) * (1 + 0.3 * R.fbm3(p * 90, 2, seed))[:, None]
+        return col * (1 - rust[:, None] * 0.3) + np.array([0.10, 0.045, 0.02]) * (rust * 0.5)[:, None]
+
+    def antler_tex(p, n):
+        grooves = 0.85 + 0.15 * np.sin(R.fbm3(p * np.array([60, 8, 60]), 3, seed + 6) * 12)
+        tip = smoothstep(1.86, 2.08, p[:, 1])
+        col = np.array([0.24, 0.19, 0.13]) * (1 - tip)[:, None] + np.array([0.45, 0.40, 0.31]) * tip[:, None]
+        return col * grooves[:, None]
+
+    def tentacle_tex(p, n):
+        under = smoothstep(0.2, 0.8, n @ np.array([0.6, 0.0, 0.8]))
+        stripes = 0.9 + 0.1 * np.sin(p[:, 1] * 160 + p[:, 0] * 40)
+        col = np.array([0.19, 0.11, 0.065]) * (1 - under)[:, None] + np.array([0.42, 0.30, 0.20]) * under[:, None]
+        return col * (stripes * (1 + 0.2 * R.fbm3(p * 25, 3, seed + 7)))[:, None]
+
+    mats = [
+        Material(robe_col, tex=robe_tex, tex_mode="replace", wrap=0.35, spec=0.03, gloss=6, sheen=0.25),  # 0 robe
+        Material((0.07, 0.04, 0.022), spec=0.18, gloss=22, wrap=0.2),                                     # 1 straps
+        Material((0.50, 0.49, 0.40), tex=skin_tex, tex_mode="replace", wrap=0.30, spec=0.16, gloss=22,
+                 sss=(0.12, 0.10, 0.04)),                                                                  # 2 skin
+        Material((0.006, 0.005, 0.004), spec=0.5, gloss=160),                                             # 3 eyes
+        Material((0.085, 0.08, 0.075), tex=iron_tex, tex_mode="replace", spec=0.55, gloss=32),          # 4 iron crown
+        Material((0.80, 0.55, 0.10), spec=0.9, gloss=55),                                               # 5 gold sign
+        Material((0.30, 0.24, 0.17), tex=antler_tex, tex_mode="replace", wrap=0.1, spec=0.10, gloss=15),  # 6 antler
+        Material((0.018, 0.015, 0.013), spec=0.35, gloss=40),                                           # 7 hair
+        Material((0.19, 0.11, 0.065), tex=tentacle_tex, tex_mode="replace", wrap=0.35, spec=0.45, gloss=45,
+                 sss=(0.18, 0.05, 0.03)),                                                                  # 8 tentacle
+    ]
+
+    # ----- the gaunt face ------------------------------------------------------
+    def face(p):
+        f = Field(len(p))
+        q = R.mirror_x(p)
+        d = R.sd_ellipsoid(p, (0, 1.705, -0.012), (0.071, 0.094, 0.090))
+        d = R.smin(d, R.sd_ellipsoid(p, (0, 1.712, 0.050), (0.060, 0.040, 0.034)), 0.02)       # forehead
+        d = R.smin(d, R.sd_ellipsoid(q, (0.046, 1.650, 0.052), (0.022, 0.013, 0.026)), 0.015)  # cheekbones
+        d = R.smin(d, R.sd_ellipsoid(p, (0, 1.603, 0.058), (0.037, 0.026, 0.034)), 0.02)       # mouth
+        d = R.smin(d, R.sd_ellipsoid(p, (0, 1.588, 0.026), (0.051, 0.034, 0.058)), 0.02)       # jaw
+        d = R.smin(d, R.sd_sphere(p, (0, 1.566, 0.066), 0.017), 0.015)                          # chin
+        d = R.smin(d, R.sd_ellipsoid(p, (0, 1.688, 0.072), (0.056, 0.011, 0.017)), 0.008)      # brow ridge
+        nose = R.sd_round_cone(p, (0, 1.678, 0.086), (0, 1.633, 0.102), 0.0062, 0.0092)
+        nose = R.smin(nose, R.sd_ellipsoid(q, (0.0105, 1.628, 0.091), (0.0075, 0.006, 0.007)), 0.005)
+        d = R.smin(d, nose, 0.006)
+        d = R.smax(d, -R.sd_ellipsoid(q, (0.030, 1.676, 0.084), (0.019, 0.015, 0.022)), 0.007)  # sunken sockets
+        d = R.smax(d, -R.sd_ellipsoid(q, (0.055, 1.612, 0.058), (0.016, 0.024, 0.014)), 0.02)   # hollow cheeks
+        d = R.smax(d, -R.sd_ellipsoid(q, (0.066, 1.700, 0.030), (0.012, 0.025, 0.02)), 0.02)    # hollow temples
+        d = R.smax(d, -R.sd_ellipsoid(p, (0, 1.600, 0.090), (0.021, 0.0022, 0.012)), 0.002)    # thin mouth
+        d = R.smax(d, -R.sd_ellipsoid(q, (0.0065, 1.625, 0.097), (0.003, 0.0022, 0.004)), 0.002)
+        d = R.smin(d, R.sd_round_cone(p, (0, 1.585, -0.015), (0, 1.45, -0.02), 0.045, 0.055), 0.03)  # neck
+        near = np.abs(d) < 0.005
+        if near.any():  # cracks in the pallid skin, fine wrinkles
+            pn = p[near]
+            d[near] += 0.0008 * smoothstep(0.90, 0.975, R.ridged3(pn * 26, 4, seed + 3)) \
+                - 0.0003 * R.fbm3(pn * 300, 2, seed + 8)
+        f.add(d, 2)
+        f.add(R.sd_sphere(q, (0.030, 1.675, 0.066), 0.0118), 3)
+        # lank dark hair falling inside the hood
+        hair = np.full(len(p), 1e9)
+        for sx in (1, -1):
+            for k in range(6):
+                x0 = sx * (0.050 + 0.007 * k)
+                z0 = 0.030 - 0.012 * k
+                pts = [(x0, 1.76, z0), (x0 + sx * 0.012, 1.68, z0 + 0.01), (x0 + sx * 0.010, 1.60, z0 + 0.006),
+                       (x0 + sx * 0.016, 1.50, z0 - 0.004)]
+                hair = np.minimum(hair, R.sd_tube(p, pts, [0.0045, 0.0042, 0.0035, 0.0015]))
+        f.add(hair, 7)
+        return f
+
+    # ----- the hood ------------------------------------------------------------
+    def hood(p):
+        f = Field(len(p))
+        shell = np.abs(R.sd_ellipsoid(p, (0, 1.70, -0.025), (0.104, 0.130, 0.122))) - 0.009
+        flare = np.abs(R.sd_round_cone(p, (0, 1.62, -0.03), (0, 1.50, -0.035), 0.095, 0.135)) - 0.009
+        cloth = R.smin(shell, flare, 0.04)
+        opening = R.sd_ellipsoid(p, (0, 1.655, 0.10), (0.074, 0.118, 0.088))
+        cloth = R.smax(cloth, -opening, 0.012)
+        cloth = R.smax(cloth, 1.50 - p[:, 1], 0.02)
+        near = np.abs(cloth) < 0.02
+        if near.any():
+            cq = p[near]
+            cloth[near] -= 0.006 * np.abs(np.sin(np.arctan2(cq[:, 0], cq[:, 2] + 0.06) * 7
+                                                 + 2.5 * R.fbm3(cq * 8, 3, seed))) ** 0.8 \
+                + 0.0015 * R.fbm3(cq * 40, 3, seed + 2)
+        f.add(cloth, 0)
+        return f
+
+    # ----- crown and antlers ------------------------------------------------
+    spikes = []
+    for k, ang in enumerate([0, 24, -26, 52, -50, 80, -82, 110, -112]):
+        h = (0.23 if k == 0 else rng.uniform(0.09, 0.17) * (1 - 0.25 * abs(ang) / 110)) + rng.normal(0, 0.008)
+        spikes.append((math.radians(ang + rng.normal(0, 3)), h, rng.uniform(0.011, 0.016) if k else 0.022,
+                       rng.normal(0, 0.012, 2)))
+
+    def crown(p):
+        f = Field(len(p))
+        cz = -0.02
+        ring = np.sqrt((p[:, 0] / 0.087) ** 2 + ((p[:, 2] - cz) / 0.103) ** 2)
+        band = np.maximum(np.abs(ring - 1.0) * 0.095 - 0.0045 - 0.0012 * R.noise3(p * 70, seed),
+                          np.abs(p[:, 1] - 1.782) - 0.019)
+        d = band
+        for a, h, w, lean in spikes:
+            base = np.array([0.088 * math.sin(a), 1.795, 0.104 * math.cos(a) + cz])
+            top = base + np.array([0.012 * math.sin(a) + lean[0], h, 0.012 * math.cos(a) + lean[1]])
+            d = R.smin(d, blade(p, base, top, w, a), 0.006)
+        near = np.abs(d) < 0.005
+        if near.any():  # pitted, hammered iron
+            d[near] += 0.0012 * np.abs(R.noise3(p[near] * 140, seed + 9))
+        f.add(d, 4)
+        # the spiral sign on the front blade
+        front = np.array([0.0, 1.835, 0.104 + cz + 0.005])
+        th = np.linspace(0.0, 4.4 * math.pi, 50)
+        rr = 0.0025 + 0.0060 * th / (4.4 * math.pi)
+        pts = [front + np.array([r * math.cos(t), r * math.sin(t) * 1.15, 0.0]) for r, t in zip(rr, th)]
+        f.add(R.sd_tube(p, pts, [0.0018] * len(pts)), 5)
+        # antlers growing out through the crown
+        ant = np.full(len(p), 1e9)
+        for sx in (1, -1):
+            beam = [(sx * 0.080, 1.79, -0.025), (sx * 0.135, 1.855, -0.040), (sx * 0.185, 1.945, -0.055),
+                    (sx * 0.210, 2.035, -0.050), (sx * 0.220, 2.100, -0.035)]
+            a = R.sd_tube(p, beam, [0.0120, 0.0100, 0.0085, 0.0062, 0.0028])
+            tines = [((sx * 0.100, 1.815, -0.028), (sx * 0.112, 1.870, 0.030), 0.0070),
+                     ((sx * 0.138, 1.860, -0.040), (sx * 0.122, 1.950, -0.020), 0.0065),
+                     ((sx * 0.186, 1.945, -0.055), (sx * 0.255, 2.000, -0.070), 0.0060),
+                     ((sx * 0.210, 2.035, -0.050), (sx * 0.185, 2.105, -0.060), 0.0045)]
+            for b0, b1, r0 in tines:
+                mid = (np.array(b0) * 0.5 + np.array(b1) * 0.5) + np.array([0, 0.012, 0])
+                a = R.smin(a, R.sd_tube(p, [b0, mid, b1], [r0, r0 * 0.7, 0.0015]), 0.008)
+            ant = np.minimum(ant, a)
+        near = np.abs(ant) < 0.004
+        if near.any():
+            ant[near] += 0.0008 * np.sin(R.fbm3(p[near] * np.array([90, 12, 90]), 3, seed + 6) * 14)
+        f.add(ant, 6)
+        return f
+
+    # ----- the body under the robe ----------------------------------------------
+    def body(p):
+        f = Field(len(p))
+        chest = R.sd_ellipsoid(p, (0, 1.31, -0.03), (0.17, 0.19, 0.115))
+        belly = R.sd_ellipsoid(p, (0, 1.08, -0.02), (0.16, 0.20, 0.11))
+        sh = [np.array([sx * 0.195, 1.445, -0.04]) for sx in (1, -1)]
+        traps = np.minimum(R.sd_round_cone(p, (0, 1.53, -0.045), sh[0], 0.06, 0.055),
+                           R.sd_round_cone(p, (0, 1.53, -0.045), sh[1], 0.06, 0.055))
+        arms = np.minimum(R.sd_round_cone(p, sh[0], (0.235, 1.10, -0.02), 0.058, 0.05),
+                          R.sd_round_cone(p, sh[1], (-0.235, 1.10, -0.02), 0.058, 0.05))
+        torso = R.smin(R.smin(R.smin(chest, belly, 0.08), traps, 0.06), arms, 0.05)
+        skirt = R.sd_round_cone(p, (0, 1.20, -0.03), (0, 0.40, -0.035), 0.20, 0.30)
+        robe = R.smin(torso + 0.016, skirt, 0.12)
+        cowl = R.sd_torus(p, (0, 1.505, -0.035), 0.105, 0.036, R.rot_x(-6))
+        robe = R.smin(robe, cowl, 0.05)
+        near = np.abs(robe) < 0.03
+        if near.any():
+            robe[near] -= drapery(p[near], 0.016, 13, seed, (0.0, -0.035), top=1.50)
+        f.add(robe, 0)
+        # dark leather straps hanging down the front
+        straps = np.full(len(p), 1e9)
+        for x0, y0, y1 in ((0.075, 1.39, 1.07), (0.155, 1.40, 1.15), (-0.075, 1.39, 1.10), (-0.160, 1.41, 1.04)):
+            zc = 0.088 + 0.26 * np.clip(1.39 - p[:, 1], 0, None) + 0.03 * (abs(x0) > 0.1)
+            xc = x0 + 0.004 * np.sin(p[:, 1] * 20 + x0 * 50)
+            sd = np.maximum.reduce([np.abs(p[:, 0] - xc) - 0.0075, np.abs(p[:, 2] - zc) - 0.0025,
+                                    np.abs(p[:, 1] - (y0 + y1) / 2) - (y0 - y1) / 2]) * 0.7
+            straps = np.minimum(straps, sd)
+        f.add(straps, 1)
+        return f
+
+    # ----- a tentacle curling out from under the robe ---------------------------
+    tent_pts = [(-0.30, 1.20, -0.20), (-0.33, 1.42, -0.16), (-0.33, 1.58, -0.10), (-0.29, 1.70, -0.05),
+                (-0.23, 1.74, -0.01), (-0.205, 1.715, 0.02), (-0.215, 1.69, 0.035)]
+    tent_r = [0.045, 0.038, 0.030, 0.021, 0.012, 0.006, 0.0025]
+
+    def tentacle(p):
+        f = Field(len(p))
+        d = R.sd_tube(p, tent_pts, tent_r)
+        near = np.abs(d) < 0.006
+        if near.any():
+            d[near] -= 0.0012 * R.fbm3(p[near] * 70, 3, seed + 10)
+        f.add(d, 8)
+        return f
+
+    def scene(p):
+        f = Field(len(p))
+        f.add_group(p, (0, 1.65, 0.03), 0.17, face)
+        f.add_group(p, (0, 1.64, -0.02), 0.20, hood)
+        f.add_group(p, (0, 1.93, -0.03), 0.30, crown)
+        f.add_group(p, (0, 1.10, -0.03), 0.55, body)
+        f.add_group(p, (-0.28, 1.47, -0.09), 0.33, tentacle)
+        return f
+
+    return scene, mats, seed
+
+
+def king_in_yellow_real(scale=1, ss=2):
+    """Render at scale x the portrait size (for a large master), supersampled."""
+    scene, mats, seed = king_real_setup()
+    size = (PORTRAIT_SIZE[0] * scale, PORTRAIT_SIZE[1] * scale)
+    cam = Camera((0.55, 1.70, 2.9), (0.0, 1.715, 0.0), fov=15.0)
+    lights = [Light((1.0, 0.86, 0.66), 2.4, direction=(-0.45, 0.80, 0.45), softness=10),   # high key: eyes in shadow
+              Light((0.50, 0.58, 0.74), 0.28, direction=(0.90, 0.10, 0.40), shadow=False),
+              Light((1.0, 0.82, 0.50), 2.2, direction=(0.55, 0.35, -0.80), softness=12)]  # hard rim
+
+    def bg(rd):
+        y = np.clip(rd[:, 1] * 3.0 + 0.5, 0, 1)[:, None]
+        glow = np.exp(-((rd[:, 0] + 0.01) ** 2 + (rd[:, 1] - 0.06) ** 2) * 30)[:, None]
+        tex = (1 + 0.25 * R.fbm3(rd * 5 + 2, 5, seed))[:, None]
+        col = np.array([0.012, 0.010, 0.008]) * (1 - y) + np.array([0.035, 0.028, 0.018]) * y
+        return (col + np.array([0.09, 0.065, 0.022]) * glow) * tex
+
+    out = R.render(scene, mats, cam, lights, size, ss=ss, background=bg, ambient=(0.03, 0.03, 0.03),
+                   rim=((0.03, 0.022, 0.012), 3.0), ao_scale=0.10, max_dist=8.0, shadow_dist=3.0)
+    img = R.tonemap(out["rgb"], 1.1)
+    img = R.depth_of_field(img, out["depth"], 2.95, 0.35, 1.0 * scale)
+    img = R.grade(img, saturation=0.72, shadows=(0.0, 0.006, 0.010), highlights=(0.02, 0.01, -0.015),
+                  contrast=1.12, black=0.02)
+    img = R.halation(img, 0.8, 1.5 * scale, 0.18)
+    img = R.vignette(img, 0.45, 2.0)
+    return R.to_image(img)
+
+
 PORTRAITS = {
     "eldritch_avatar_pallid_mask": king_in_yellow,
 }
