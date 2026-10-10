@@ -171,6 +171,8 @@ install/eldritch_pacts.mod         launcher file to copy into your mod/ folder
 gfx/entities/                      King in Yellow mesh definitions (.gfx) and unit entities with their animation states (.asset)
 gfx/models/units/eldritch/         King in Yellow .mesh models, .anim animations, their definitions and the texture atlas
 tools/generate_art.py              regenerates every texture and the thumbnail
+tools/art_portraits.py             the King in Yellow's painted portrait: forms sculpted and lit by
+                                   art_render.py, then repainted stroke by stroke by art_paint.py
 tools/generate_models.py           regenerates the 3D models and animations (add --preview DIR to render PNG
                                    previews, an animated GIF per animation and a contact sheet per model)
 tools/validate_mod.py              static checks: braces, localisation, sprites, entities, animations, references

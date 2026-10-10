@@ -8,6 +8,9 @@ every texture. Run from anywhere:
     python3 tools/generate_art.py
 
 Requires Pillow and numpy. Output is deterministic (fixed random seeds).
+The King in Yellow's portrait is sculpted, lit and painted by
+tools/art_portraits.py, which takes about a minute; everything else is drawn
+here.
 """
 
 import math
@@ -17,6 +20,8 @@ import struct
 
 import numpy as np
 from PIL import Image, ImageDraw, ImageFilter, ImageFont
+
+import art_portraits
 
 ROOT = os.path.dirname(os.path.dirname(os.path.abspath(__file__)))
 SS = 4  # supersampling factor for anti-aliased drawing
@@ -877,31 +882,6 @@ def portrait_black_pharaoh():
     return finish_portrait(bg, c.done(*PORTRAIT_SIZE), (255, 120, 60), 43)
 
 
-def portrait_pallid_mask():
-    bg = portrait_frame((150, 115, 30), (24, 16, 4))
-    c = Canvas(*PORTRAIT_SIZE)
-    robe = (200, 160, 40, 255)
-    shoulders(c, robe)
-    # tattered hem of the hood falling over the shoulders
-    rng = random.Random(5)
-    rag = [(0.08, 1.0)]
-    for k in range(13):
-        x = 0.1 + k * 0.065
-        rag.append((x, 0.86 + rng.uniform(-0.05, 0.05)))
-    rag.append((0.92, 1.0))
-    c.poly(rag, (170, 130, 30, 255))
-    c.poly([(0.5, 0.04), (0.82, 0.40), (0.86, 0.80), (0.14, 0.80), (0.18, 0.40)], robe)
-    c.ellipse(0.5, 0.42, 0.24, 0.30, (35, 25, 10, 255))
-    c.ellipse(0.5, 0.42, 0.17, 0.23, (232, 228, 214, 255))
-    for side in (-1, 1):
-        c.ellipse(0.5 + side * 0.07, 0.38, 0.022, 0.012, (20, 15, 10, 255))
-    # the Yellow Sign brooch
-    brooch = sym_hastur(28)
-    img = c.done(*PORTRAIT_SIZE)
-    img = paste_center(img, brooch, 0.5, 0.86)
-    return finish_portrait(bg, img, (255, 220, 120), 44)
-
-
 def portrait_shepherd():
     bg = portrait_frame((60, 25, 15), (6, 10, 6), glow_center=(0.5, 0.6))
     c = Canvas(*PORTRAIT_SIZE)
@@ -974,7 +954,7 @@ PORTRAITS = {
     "eldritch_avatar_dagon": portrait_dagon,
     "eldritch_avatar_hydra": portrait_hydra,
     "eldritch_avatar_black_pharaoh": portrait_black_pharaoh,
-    "eldritch_avatar_pallid_mask": portrait_pallid_mask,
+    "eldritch_avatar_pallid_mask": art_portraits.king_in_yellow,  # painted; see tools/art_portraits.py
     "eldritch_avatar_shepherd": portrait_shepherd,
     "eldritch_avatar_wilbur": portrait_wilbur,
     "eldritch_avatar_piper": portrait_piper,

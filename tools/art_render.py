@@ -1,13 +1,12 @@
-"""Signed-distance-field renderer and photographic finishing for Eldritch Pacts.
+"""Signed-distance-field renderer used to sculpt and light painted art.
 
-The avatar portraits are sculpted rather than drawn: every subject is a
-signed distance field - a function giving the distance from any point to the
-nearest surface - built from ellipsoids, capsules, boxes and the like, blended
-smoothly and roughened with 3D noise. It is ray-marched with numpy, lit with
-soft shadows, ambient occlusion, wrapped (subsurface) diffuse, specular and
-rim light, then finished like a worn interwar print: filmic tone mapping,
-desaturation and split toning, halation, depth of field, film grain, dust,
-scratches and vignetting.
+A subject is a signed distance field - a function giving the distance from
+any point to the nearest surface - built from ellipsoids, capsules, tapered
+tubes and the like, blended smoothly and roughened with 3D noise. It is
+ray-marched with numpy and lit with soft shadows, ambient occlusion, wrapped
+(subsurface) diffuse, specular, rim light and spotlights; the result is the
+reference a painter (art_paint) works from. Finishing helpers add smoke,
+halation, grading and vignetting.
 
 Coordinates: Y is up and the camera usually looks down -Z, so subjects face
 +Z. Everything works on (N, 3) arrays of points so whole images march at once.
@@ -16,15 +15,11 @@ Coordinates: Y is up and the camera usually looks down -Z, so subjects face
 import math
 
 import numpy as np
-from PIL import Image, ImageDraw, ImageFilter
+from PIL import Image, ImageFilter
 
 # ---------------------------------------------------------------------------
 # Vector helpers
 # ---------------------------------------------------------------------------
-
-
-def vec(x, y, z):
-    return np.array([x, y, z], float)
 
 
 def normalize(v):
@@ -42,12 +37,6 @@ def rot_x(deg):
     return np.array([[1, 0, 0], [0, c, -s], [0, s, c]])
 
 
-def rot_y(deg):
-    a = math.radians(deg)
-    c, s = math.cos(a), math.sin(a)
-    return np.array([[c, 0, s], [0, 1, 0], [-s, 0, c]])
-
-
 def rot_z(deg):
     a = math.radians(deg)
     c, s = math.cos(a), math.sin(a)
@@ -59,13 +48,6 @@ def to_local(p, center, rot=None):
     primitive is rotated by rot about its center)."""
     q = p - np.asarray(center, float)
     return q if rot is None else q @ rot
-
-
-def mirror_x(p):
-    """Fold space about x = 0 so one primitive draws a symmetric pair."""
-    q = p.copy()
-    q[:, 0] = np.abs(q[:, 0])
-    return q
 
 
 def smoothstep(a, b, x):
@@ -127,24 +109,6 @@ def ridged3(p, octaves=4, seed=0):
     return total / norm
 
 
-def cells3(p, seed=0):
-    """Distances to the nearest and second nearest of one jittered point per
-    unit cell (Worley noise) - for scales, plates and pocked surfaces."""
-    pi = np.floor(p).astype(np.int64)
-    f1 = np.full(len(p), 9.0)
-    f2 = np.full(len(p), 9.0)
-    for dx in (-1, 0, 1):
-        for dy in (-1, 0, 1):
-            for dz in (-1, 0, 1):
-                cx, cy, cz = pi[:, 0] + dx, pi[:, 1] + dy, pi[:, 2] + dz
-                d = (cx + _hash(cx, cy, cz, seed) - p[:, 0]) ** 2 + \
-                    (cy + _hash(cx, cy, cz, seed + 1) - p[:, 1]) ** 2 + \
-                    (cz + _hash(cx, cy, cz, seed + 2) - p[:, 2]) ** 2
-                f2 = np.where(d < f1, f1, np.minimum(f2, d))
-                f1 = np.minimum(f1, d)
-    return np.sqrt(f1), np.sqrt(f2)
-
-
 def fbm2(x, y, octaves=4, seed=0):
     """2D fbm over image-space coordinate arrays."""
     p = np.stack([x.ravel(), y.ravel(), np.full(x.size, 0.37)], axis=1)
@@ -196,25 +160,6 @@ def sd_round_cone(p, a, b, r1, r2):
     return out
 
 
-def sd_box(p, c, half, rot=None, round_=0.0):
-    q = np.abs(to_local(p, c, rot)) - (np.asarray(half, float) - round_)
-    return length(np.maximum(q, 0)) + np.minimum(np.max(q, axis=1), 0) - round_
-
-
-def sd_torus(p, c, R, r, rot=None):
-    q = to_local(p, c, rot)
-    xz = np.sqrt(q[:, 0] ** 2 + q[:, 2] ** 2) - R
-    return np.sqrt(xz ** 2 + q[:, 1] ** 2) - r
-
-
-def sd_cylinder(p, c, r, h, rot=None):
-    """Capped cylinder along local Y with radius r and half-height h."""
-    q = to_local(p, c, rot)
-    dx = np.sqrt(q[:, 0] ** 2 + q[:, 2] ** 2) - r
-    dy = np.abs(q[:, 1]) - h
-    return np.minimum(np.maximum(dx, dy), 0) + np.sqrt(np.maximum(dx, 0) ** 2 + np.maximum(dy, 0) ** 2)
-
-
 def sd_tube(p, pts, radii):
     """Union of tapered segments through a polyline of points and radii."""
     d = None
@@ -233,17 +178,6 @@ def smax(a, b, k):
     return -smin(-a, -b, k)
 
 
-def bounded(p, center, radius, fn, margin=0.02):
-    """Evaluate fn (subset of p -> distances) only near a bounding sphere;
-    elsewhere return the distance to the sphere, a safe underestimate."""
-    db = length(p - np.asarray(center, float)) - radius
-    out = db.copy()
-    inside = db < margin
-    if inside.any():
-        out[inside] = fn(p[inside])
-    return out
-
-
 class Field:
     """Accumulates a scene: distance plus the material of the closest part."""
 
@@ -256,11 +190,6 @@ class Field:
         closer = d < self.d
         self.d = smin(self.d, d, k) if k > 0 else np.minimum(self.d, d)
         self.m = np.where(closer, mat, self.m)
-        return self
-
-    def cut(self, d, k=0.0):
-        """Subtract a shape."""
-        self.d = smax(self.d, -d, k) if k > 0 else np.maximum(self.d, -d)
         return self
 
     def add_group(self, p, center, radius, fn, margin=0.02):
@@ -408,16 +337,13 @@ def ambient_occlusion(sdf, p, n, scale):
 
 def render(scene, materials, camera, lights, size, ss=2, background=None, ambient=(0.05, 0.05, 0.06),
            ground_ambient=None, rim=None, fog=None, max_dist=40.0, steps=160, eps=4e-4, ao_scale=0.25,
-           shadow_dist=12.0, full=False):
+           shadow_dist=12.0):
     """Ray-march scene (a function p -> Field) and shade it.
 
     background(rd) -> (N, 3) linear RGB for rays that miss; rim = (rgb, power)
     adds edge light; fog = (rgb, density, start). Returns linear 'rgb'
     (h, w, 3), 'alpha' coverage and 'depth', supersampled ss x ss.
 
-    full=True instead returns the unreduced (h*ss, w*ss) buffers an
-    illustrator needs: 'mat' (-1 where nothing was hit), 'normal', 'depth',
-    'albedo', 'light' (how brightly lit, ignoring colour), 'spec' and 'ao'.
     """
     w, h = size
     W, H = w * ss, h * ss
@@ -456,9 +382,6 @@ def render(scene, materials, camera, lights, size, ss=2, background=None, ambien
         gnd = amb * 0.35 if ground_ambient is None else np.asarray(ground_ambient, float)[None, :]
         hemi = amb * (0.5 + 0.5 * n[:, 1:2]) + gnd * (0.5 - 0.5 * n[:, 1:2])
         col = albedo * hemi * ao[:, None]
-        lum3 = np.array([0.3, 0.55, 0.15])
-        light_amt = (hemi * ao[:, None]) @ lum3
-        spec_amt = np.zeros(idx.size)
         for light in lights:
             if light.pos is None:
                 ldir = np.broadcast_to(light.direction, p.shape)
@@ -489,8 +412,6 @@ def render(scene, materials, camera, lights, size, ss=2, background=None, ambien
             band = np.clip(1 - np.abs(ndl) * 3, 0, 1) * (ndl > -0.3)
             lcol = light.color[None, :] * (atten * sh)[:, None]
             col += (albedo * diff[:, None] + sp[:, None] + sss * band[:, None] * 0.6) * lcol
-            light_amt += diff * (lcol @ lum3)
-            spec_amt += sp * (lcol @ lum3)
         if rim is not None:
             rc, rp = rim
             ndv = np.clip(np.einsum("ij,ij->i", n, v), 0, 1)
@@ -505,275 +426,10 @@ def render(scene, materials, camera, lights, size, ss=2, background=None, ambien
             col = col * (1 - f[:, None]) + np.asarray(fc, float)[None, :] * f[:, None]
         rgb[idx] = col
     depth = np.where(hit, t, max_dist)
-    if full:
-        mat_full = np.full(W * H, -1, np.int32)
-        normal_full = np.zeros((W * H, 3))
-        albedo_full = np.zeros((W * H, 3))
-        light_full = np.zeros(W * H)
-        spec_full = np.zeros(W * H)
-        ao_full = np.ones(W * H)
-        if idx.size:
-            mat_full[idx], normal_full[idx], albedo_full[idx] = mat, n, albedo
-            light_full[idx], spec_full[idx], ao_full[idx] = light_amt, spec_amt, ao
-        return {"rgb": rgb.reshape(H, W, 3), "depth": depth.reshape(H, W), "mat": mat_full.reshape(H, W),
-                "normal": normal_full.reshape(H, W, 3), "albedo": albedo_full.reshape(H, W, 3),
-                "light": light_full.reshape(H, W), "spec": spec_full.reshape(H, W), "ao": ao_full.reshape(H, W),
-                "ss": ss}
     rgb = rgb.reshape(H, W, 3).reshape(h, ss, w, ss, 3).mean(axis=(1, 3))
     alpha = hit.reshape(H, W).astype(float).reshape(h, ss, w, ss).mean(axis=(1, 3))
     depth = depth.reshape(H, W).reshape(h, ss, w, ss).min(axis=(1, 3))
     return {"rgb": rgb, "alpha": alpha, "depth": depth}
-
-
-# ---------------------------------------------------------------------------
-# 2D illustration: ink lines, flat colour in a few tones, hatching, paper
-# ---------------------------------------------------------------------------
-
-def _shift(a, dy, dx):
-    """a shifted by (dy, dx) with edge values repeated."""
-    out = np.roll(np.roll(a, dy, 0), dx, 1)
-    if dy > 0:
-        out[:dy] = a[:dy]
-    elif dy < 0:
-        out[dy:] = a[dy:]
-    if dx > 0:
-        out[:, :dx] = a[:, :dx]
-    elif dx < 0:
-        out[:, dx:] = a[:, dx:]
-    return out
-
-
-def _dilate(mask, r=1):
-    out = mask.copy()
-    for dy in range(-r, r + 1):
-        for dx in range(-r, r + 1):
-            if dy * dy + dx * dx <= r * r:
-                out |= _shift(mask, dy, dx)
-    return out
-
-
-def ink_lines(gb, depth_rel=0.012, crease=0.55, outline=2, inner=1, ignore_crease=(), same=None):
-    """Outline mask (silhouettes, overlaps, material borders) and a finer
-    crease mask (folds and ridges) from G-buffers. same maps materials that
-    should not be outlined against each other onto one group."""
-    d, m, n = gb["depth"], gb["mat"], gb["normal"]
-    if same:
-        m = m.copy()
-        for a, b in same.items():
-            m[m == a] = b
-    out = np.zeros(d.shape, bool)
-    cr = np.zeros(d.shape, bool)
-    for dy, dx in ((0, 1), (1, 0), (1, 1), (1, -1)):
-        d2, m2, n2 = _shift(d, dy, dx), _shift(m, dy, dx), _shift(n, dy, dx)
-        out |= (m != m2)
-        out |= np.abs(d - d2) > depth_rel * np.minimum(d, d2)
-        both = (m >= 0) & (m2 >= 0) & (m == m2)
-        cr |= both & (np.einsum("ijk,ijk->ij", n, n2) < crease)
-    for mi in ignore_crease:
-        cr &= m != mi
-    return _dilate(out, outline - 1) if outline > 1 else out, _dilate(cr, inner - 1) if inner > 1 else cr
-
-
-def hatching(shape, spacing, angle, width=0.32, wobble=0.8, seed=0):
-    """Parallel hand-drawn ink strokes: 1 on a stroke, 0 between."""
-    h, w = shape
-    yy, xx = np.mgrid[0:h, 0:w].astype(float)
-    a = math.radians(angle)
-    u = xx * math.cos(a) + yy * math.sin(a)
-    u = u + wobble * fbm2(xx / 40.0 + seed, yy / 40.0, 3, seed) * spacing
-    f = (u / spacing) % 1.0
-    # strokes break up and taper a little
-    breaks = fbm2(xx / 9.0, yy / 9.0 + seed, 2, seed + 3) > -0.45
-    return ((f < width) & breaks).astype(float)
-
-
-def ink_illustration(gb, colors, out_size, light_dir_tones=(0.62, 0.30), tone_mul=(1.0, 0.78, 0.56),
-                     paper=None, ink=(0.07, 0.05, 0.04), hatch_spacing=6.0, texture_mix=0.25, seed=0,
-                     highlight=0.6, ignore_crease=(), same=None, depth_rel=0.005, crease=0.4, hatch_width=0.28):
-    """Turn full-resolution G-buffers into an inked, flat-coloured drawing.
-
-    colors: material index -> flat RGB (display 0..1). Light is split into
-    light / mid / shadow tones; shadows get diagonal hatching and the deepest
-    ones cross-hatching; specular glints become paper-white highlights.
-    paper: (H, W, 3) background image at the same resolution."""
-    m, light = gb["mat"], gb["light"]
-    H, W = m.shape
-    hit = m >= 0
-    base = np.zeros((H, W, 3))
-    for mi, c in colors.items():
-        base[m == mi] = c
-    if texture_mix:
-        alb = gb["albedo"]
-        mean = np.zeros_like(base)
-        for mi in colors:
-            sel = m == mi
-            if sel.any():
-                mean[sel] = alb[sel].mean(axis=0)
-        rel = np.clip(alb / np.maximum(mean, 1e-4), 0.3, 1.8)
-        base = base * (1 - texture_mix + texture_mix * rel)
-    # normalise light so the brightest lit areas sit at 1
-    lv = light[hit]
-    ref = np.percentile(lv, 97) if lv.size else 1.0
-    L = np.clip(light / max(ref, 1e-6), 0, 1.2)
-    hi_t, lo_t = light_dir_tones
-    t_hi = smoothstep(hi_t - 0.04, hi_t + 0.04, L)
-    t_lo = smoothstep(lo_t - 0.04, lo_t + 0.04, L)
-    tone = tone_mul[2] + (tone_mul[1] - tone_mul[2]) * t_lo + (tone_mul[0] - tone_mul[1]) * t_hi
-    col = base * tone[..., None]
-    # hatching in the shadow tone, cross-hatching in the deepest
-    h1 = hatching((H, W), hatch_spacing, 52, hatch_width, seed=seed) * (1 - t_lo)
-    h2 = hatching((H, W), hatch_spacing * 1.15, -38, hatch_width, seed=seed + 1) * smoothstep(0.16, 0.08, L)
-    hatch = np.clip(h1 + h2, 0, 1) * hit
-    col = col * (1 - 0.55 * hatch[..., None]) + np.asarray(ink) * 0.55 * hatch[..., None]
-    # crisp highlights
-    if highlight:
-        sp = gb["spec"]
-        ref_s = np.percentile(sp[hit], 99.5) if hit.any() else 1.0
-        glint = smoothstep(0.35, 0.5, sp / max(ref_s, 1e-6)) * hit
-        col = col * (1 - highlight * glint[..., None]) + np.array([1.0, 0.97, 0.88]) * highlight * glint[..., None]
-    outline, crease_m = ink_lines(gb, depth_rel, crease, outline=max(2, H // 300 + 1), inner=1,
-                                  ignore_crease=ignore_crease, same=same)
-    if paper is None:
-        paper = np.ones((H, W, 3)) * np.array([0.92, 0.88, 0.78])
-    img = np.where(hit[..., None], col, paper)
-    img = img * (1 - 0.65 * crease_m[..., None]) + np.asarray(ink) * 0.65 * crease_m[..., None]
-    img = np.where(outline[..., None], np.asarray(ink), img)
-    pil = Image.fromarray((np.clip(img, 0, 1) * 255).astype(np.uint8))
-    return np.asarray(pil.resize(out_size, Image.LANCZOS)).astype(float) / 255
-
-
-def painted_illustration(gb, palettes, out_size, paper, seed=0, tone_edges=(0.62, 0.36, 0.14), soft=0.05,
-                         ink=(0.06, 0.045, 0.035), depth_rel=0.006, crease=0.62, streak_dir=None,
-                         hatch=0.5, same=None, ignore_crease=(), master=False):
-    """A hand-painted look from G-buffers: each material is painted with its
-    own colour ramp (light, mid, shadow, deep) in soft-edged bands, brushed
-    with streaks, then inked with loose sketchy outlines that vary in weight,
-    skip, and double up, plus sparse scratchy hatching in the deep shadows.
-
-    palettes: material -> (light, mid, shadow, deep) display colours.
-    Returns the picture at the G-buffer size when master=True, otherwise
-    reduced to out_size."""
-    m, light = gb["mat"], gb["light"]
-    H, W = m.shape
-    hit = m >= 0
-    lv = light[hit]
-    ref = np.percentile(lv, 96) if lv.size else 1.0
-    L = np.clip(light / max(ref, 1e-6), 0, 1.2)
-    # paint texture: brush streaks along each material's grain
-    yy, xx = np.mgrid[0:H, 0:W].astype(float)
-    streak = fbm2(xx / (W * 0.012), yy / (H * 0.09), 4, seed)
-    fine = fbm2(xx / 4.0, yy / 4.0, 2, seed + 1)
-    L = L + 0.06 * streak + 0.03 * fine
-    t1, t2, t3 = tone_edges
-    k1 = smoothstep(t1 - soft, t1 + soft, L)
-    k2 = smoothstep(t2 - soft, t2 + soft, L)
-    k3 = smoothstep(t3 - soft, t3 + soft, L)
-    col = np.zeros((H, W, 3))
-    for mi, (c_light, c_mid, c_shadow, c_deep) in palettes.items():
-        sel = m == mi
-        if not sel.any():
-            continue
-        cl, cm, cs, cd = (np.asarray(c, float) for c in (c_light, c_mid, c_shadow, c_deep))
-        a1, a2, a3 = k1[sel][:, None], k2[sel][:, None], k3[sel][:, None]
-        # a gentle gradient inside each band keeps it painterly rather than flat
-        g = np.clip(L[sel], 0, 1)[:, None]
-        band = cd * (1 - a3) + cs * a3
-        band = band * (1 - a2) + (cm * (0.92 + 0.12 * g)) * a2
-        band = band * (1 - a1) + (cl * (0.94 + 0.08 * g)) * a1
-        col[sel] = band
-    # sparse, scratchy hatching in the deepest shadows
-    if hatch:
-        h1 = hatching((H, W), max(6.0, W / 70), 58, 0.16, wobble=1.2, seed=seed)
-        gate = (fbm2(xx / 25.0, yy / 25.0, 3, seed + 4) > -0.1) & hit
-        hmask = h1 * (1 - k3 * 0.7) * (1 - k2) * gate
-        col = col * (1 - hatch * hmask[..., None]) + np.asarray(ink) * hatch * hmask[..., None]
-    img = np.where(hit[..., None], col, paper)
-    # loose ink outlines
-    outline, crease_m = ink_lines(gb, depth_rel, crease, outline=1, inner=1, ignore_crease=ignore_crease, same=same)
-    weight = fbm2(xx / 28.0, yy / 28.0, 3, seed + 5)
-    heavy = _dilate(outline, max(1, W // 300)) & (weight > -0.05)
-    light_line = outline
-    gaps = fbm2(xx / 10.0, yy / 10.0, 2, seed + 6) < -0.5
-    lines = (heavy | light_line) & ~gaps
-    # a second, slightly offset pass where the hand went over the line again
-    dy, dx = max(1, H // 400), max(1, W // 300)
-    redo = _shift(outline, dy, -dx) & (fbm2(xx / 18.0, yy / 18.0, 2, seed + 7) > 0.25)
-    cm_ = crease_m & (fbm2(xx / 14.0, yy / 14.0, 2, seed + 8) > -0.15)
-    img = img * (1 - 0.55 * cm_[..., None]) + np.asarray(ink) * 0.55 * cm_[..., None]
-    img = img * (1 - 0.6 * redo[..., None]) + np.asarray(ink) * 0.6 * redo[..., None]
-    img = np.where(lines[..., None], np.asarray(ink) * (0.9 + 0.1 * fine[..., None]), img)
-    if master:
-        return np.clip(img, 0, 1)
-    pil = Image.fromarray((np.clip(img, 0, 1) * 255).astype(np.uint8))
-    return np.asarray(pil.resize(out_size, Image.LANCZOS)).astype(float) / 255
-
-
-def kuwahara(img, radius):
-    """Kuwahara filter: each pixel takes the mean colour of whichever of its
-    four surrounding quadrants is most uniform. Smooth gradients break into
-    flat, edge-respecting patches, the look of oil paint laid with a brush."""
-    r = int(radius)
-    H, W, _ = img.shape
-    pad = np.pad(img, ((r, r), (r, r), (0, 0)), mode="edge")
-    lum = pad @ np.array([0.299, 0.587, 0.114])
-
-    def integral(a):
-        s = a.cumsum(0).cumsum(1)
-        pw = ((1, 0), (1, 0)) + ((0, 0),) * (a.ndim - 2)
-        return np.pad(s, pw)
-
-    S, SL, S2 = integral(pad), integral(lum), integral(lum * lum)
-    yy, xx = np.mgrid[0:H, 0:W]
-    cy, cx = yy + r, xx + r
-    n = float((r + 1) ** 2)
-    best = np.full((H, W), np.inf)
-    out = np.zeros_like(img)
-    for y0, x0 in ((cy - r, cx - r), (cy - r, cx), (cy, cx - r), (cy, cx)):
-        y1, x1 = y0 + r + 1, x0 + r + 1
-        m = (S[y1, x1] - S[y0, x1] - S[y1, x0] + S[y0, x0]) / n
-        ml = (SL[y1, x1] - SL[y0, x1] - SL[y1, x0] + SL[y0, x0]) / n
-        var = (S2[y1, x1] - S2[y0, x1] - S2[y1, x0] + S2[y0, x0]) / n - ml * ml
-        take = var < best
-        best = np.where(take, var, best)
-        out[take] = m[take]
-    return out
-
-
-def oil_paint(img, radius, seed=0, strokes=0.05):
-    """Kuwahara patches plus a little directional brush texture following
-    the image's own edges, and a fine canvas tooth."""
-    out = kuwahara(img, radius)
-    H, W, _ = out.shape
-    lum = out @ np.array([0.299, 0.587, 0.114])
-    gy, gx = np.gradient(blur(np.repeat(lum[..., None], 3, 2), 2.0)[..., 0])
-    ang = np.arctan2(gy, gx) + math.pi / 2  # strokes run along edges, across gradients
-    yy, xx = np.mgrid[0:H, 0:W].astype(float)
-    u = xx * np.cos(ang) + yy * np.sin(ang)
-    v = -xx * np.sin(ang) + yy * np.cos(ang)
-    tex = fbm2(u / 14.0 + seed, v / 2.2, 3, seed)
-    tooth = fbm2(xx / 1.6, yy / 1.6, 2, seed + 1)
-    return np.clip(out * (1 + strokes * tex[..., None] + 0.02 * tooth[..., None]), 0, 1)
-
-
-def aged_paper(size, seed=0, base=(0.90, 0.85, 0.72), stains=0.25, edge=0.35, foxing=60):
-    """Old, stained, foxed paper."""
-    w, h = size
-    yy, xx = np.mgrid[0:h, 0:w] / max(w, h)
-    col = np.ones((h, w, 3)) * np.asarray(base)
-    col *= (1 + 0.06 * fbm2(xx * 40, yy * 40, 3, seed))[..., None]           # fibres
-    st = np.clip(fbm2(xx * 4 + seed, yy * 4, 5, seed + 1) * 1.6, 0, 1)
-    col = col * (1 - stains * st[..., None] * np.array([0.6, 0.75, 1.0]))      # tea-coloured stains
-    d = np.minimum.reduce([xx, yy, w / max(w, h) - xx, h / max(w, h) - yy])
-    col *= (1 - edge * np.exp(-d * 18))[..., None] * np.array([1.0, 0.97, 0.9])
-    rng = np.random.default_rng(seed)
-    pil = Image.fromarray((np.clip(col, 0, 1) * 255).astype(np.uint8))
-    dr = ImageDraw.Draw(pil)
-    for _ in range(foxing):
-        x, y = rng.uniform(0, w), rng.uniform(0, h)
-        r = rng.uniform(0.5, 2.5) * w / 300
-        c = tuple(int(v) for v in (np.array([150, 110, 70]) + rng.normal(0, 15, 3)))
-        dr.ellipse([x - r, y - r, x + r, y + r], fill=c)
-    return np.asarray(pil.filter(ImageFilter.GaussianBlur(0.6))).astype(float) / 255
 
 
 # ---------------------------------------------------------------------------
@@ -796,24 +452,11 @@ def grade(img, saturation=0.6, shadows=(0.0, 0.0, 0.0), highlights=(0.0, 0.0, 0.
     return np.clip((out - black) / (1 - black), 0, 1)
 
 
-def sepia(img, amount=1.0, warmth=(1.07, 0.98, 0.80)):
-    lum = img @ np.array([0.299, 0.587, 0.114])
-    tone = np.clip(lum[..., None] * np.asarray(warmth) + np.array([0.02, 0.01, 0.0]), 0, 1)
-    return img * (1 - amount) + tone * amount
-
-
 def blur(img, radius):
     if radius <= 0:
         return img
     pil = Image.fromarray((np.clip(img, 0, 1) * 255).astype(np.uint8))
     return np.asarray(pil.filter(ImageFilter.GaussianBlur(radius))).astype(float) / 255
-
-
-def depth_of_field(img, depth, focus, depth_range, radius):
-    """Blend toward a blurred copy as the depth leaves the focal range."""
-    soft = blur(img, radius)
-    k = np.clip(np.abs(depth - focus) / depth_range, 0, 1)[..., None]
-    return img * (1 - k) + soft * k
 
 
 def smoke(img, depth, seed, strength=0.3, color=(0.5, 0.45, 0.38), source=(0.3, 0.1), scale=3.0, far=None):
@@ -841,42 +484,6 @@ def vignette(img, strength=0.5, power=2.2, center=(0.5, 0.5)):
     yy, xx = np.mgrid[0:h, 0:w]
     d = np.sqrt(((xx + 0.5) / w - center[0]) ** 2 * (w / h) + ((yy + 0.5) / h - center[1]) ** 2) / 0.75
     return img * (1 - strength * np.clip(d, 0, 1.4) ** power)[..., None]
-
-
-def film(img, seed=0, grain=0.05, dust=0.0, scratches=0, scratch_strength=0.2, blotches=0.0):
-    """Mid-tone grain, dust specks, hairline scratches and uneven density."""
-    rng = np.random.default_rng(seed)
-    h, w = img.shape[:2]
-    out = img.copy()
-    lum = out.mean(axis=2, keepdims=True)
-    g = rng.normal(0, 1, (h, w))
-    g = 0.55 * g + 0.45 * (np.roll(g, 1, 0) + np.roll(g, 1, 1) + np.roll(np.roll(g, 1, 0), 1, 1)) / 1.7
-    out += g[..., None] * grain * (0.35 + 1.3 * lum * (1 - lum))
-    if blotches:
-        yy, xx = np.mgrid[0:h, 0:w] / max(h, w)
-        out *= (1 + blotches * fbm2(xx * 5 + seed, yy * 5, 4, seed))[..., None]
-    if dust:
-        pil = Image.fromarray((np.clip(out, 0, 1) * 255).astype(np.uint8))
-        d = ImageDraw.Draw(pil)
-        for _ in range(int(dust * w * h / 1500)):
-            x, y = rng.uniform(0, w), rng.uniform(0, h)
-            r = rng.choice([0.3, 0.45, 0.6, 0.9])
-            v = int(rng.choice([25, 40, 200, 215]))
-            d.ellipse([x - r, y - r, x + r, y + r], fill=(v, v, v))
-        out = np.asarray(pil).astype(float) / 255
-    for _ in range(scratches):
-        layer = Image.new("L", (w, h), 0)
-        d = ImageDraw.Draw(layer)
-        x = rng.uniform(0, w)
-        y0, y1 = sorted(rng.uniform(-0.2, 1.2, 2) * h)
-        pts = []
-        for k in range(12):
-            x += rng.normal(0, 0.6)
-            pts.append((x, y0 + (y1 - y0) * k / 11))
-        d.line(pts, fill=int(255 * scratch_strength), width=1)
-        m = np.asarray(layer).astype(float)[..., None] / 255
-        out = out + m * (1 - out) if rng.random() < 0.6 else out * (1 - m)
-    return np.clip(out, 0, 1)
 
 
 def to_image(img, alpha=None):
