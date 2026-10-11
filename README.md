@@ -90,6 +90,8 @@ Favor is the currency of the pact. You gain it monthly (5 / 8 / 12 by tier), fro
 ### 5. The gods incarnate
 From Tier II, **Incarnate [God] in the Flesh** brings the god onto the battlefield as a veteran division at your capital, with the world told what has happened. Only one incarnation can be on the map at a time: the decision stays locked while the god's division exists and reopens once it is destroyed (still at most once a year, for 200 Favor). Each incarnate division is a single colossal **god battalion**: the god fights alone, and is the whole division.
 
+**The King in Yellow is different.** He walks only for Carcosa: Hastur's followers can incarnate him only after proclaiming Carcosa (13). In return he is **twice as mighty as any other god**: 4,000 strength, 600 organization (+200 from the incarnation, +60 at Tier III), 95% hardness, +1,700% soft and hard attack, +2,100% defense and breakthrough, +600% piercing (rising to +1,900% / +2,300% at Tier III), recon 6, +100% initiative, 90% of casualties returned, and +120% attack in hills, mountains and cities.
+
 | God | Division | Terrain where the god is strongest |
 |---|---|---|
 | Cthulhu | **Great Cthulhu** | sea landings, rivers, marsh |
@@ -99,7 +101,7 @@ From Tier II, **Incarnate [God] in the Flesh** brings the god onto the battlefie
 | Yog-Sothoth | **The All-in-One** | plains, hills, cities |
 | Azathoth | **Fragment of Azathoth** | plains, desert, cities |
 
-What a god battalion has:
+What every other god battalion has:
 
 * **2,000 strength** (eighty infantry battalions' worth) and **300 organization**, plus 100 more from the incarnation and 30 more at Tier III, recovering at 100%.
 * **90% hardness**, so soft attacks (rifles, machine guns, artillery) barely scratch it; only anti-tank weapons hurt it properly.
@@ -249,8 +251,8 @@ Hastur's cults get their own category, **The Road to Carcosa**: six chapters, ea
 | **II. Cassilda's Song** | 75 Favor, 30 days | Commune with Hastur and a Rite of Worship, within 150 days | 40% | Road II (adds +3% research), +30 Favor, **Cassilda's Choir** |
 | **III. The Stranger in the Pallid Mask** | 100 Favor, 30 days, Tier II | Convene the Dark Council (with the Stranger or an anointed commander), within 180 days | 35% | Road III (adds +3% organization), +50 command power, the **Pallid Masks** |
 | **IV. Black Stars Rise** | 100 Favor, 30 days | Raise the pact to Tier III, within 365 days | 35% | Road IV (adds political power), +5% war support |
-| **V. The King Walks** | 150 Favor, 30 days, Tier III | Have the King in Yellow walking the earth and March Beside him, within 180 days | 30% | Road V (adds +5% stability), +50 army experience, the **King's Tatters** |
-| **VI. The Throne of Carcosa** | 200 Favor, 60 days | The Prophet is Hastur's Vessel, or is Chosen while the King walks the earth, within 365 days | 30% | unlocks **Proclaim Carcosa**, **Hali's Drowned** |
+| **V. The King Walks** | 150 Favor, 30 days, Tier III | Call Forth the Servitors (they march in the King's procession) and Preach to the Faithful, within 180 days | 30% | Road V (adds +5% stability), +50 army experience, the **King's Tatters** |
+| **VI. The Throne of Carcosa** | 200 Favor, 60 days | The Prophet is Hastur's Vessel, or is Chosen and leads at least 8 Pallid Masks battalions, within 365 days | 30% | unlocks **Proclaim Carcosa**, **Hali's Drowned** |
 
 #### Battalions earned on the road
 Hastur's quests also unlock six new battalions, one per quest, for the division designer. Each arrives with an editable template and a first veteran division of it at the capital. Like Hastur's other battalions, they grow stronger with the Rites of Carcosa II and III and the Fervent Host perk. Their in-game descriptions say what they are; none of it is pleasant.
@@ -268,6 +270,7 @@ Hastur's quests also unlock six new battalions, one per quest, for the division 
 
 * **Name:** the nation is renamed by ideology: the **Kingdom of Carcosa** (non-aligned), the **Yellow Dominion of Carcosa** (fascist), the **Carcosan Commune** (communist) or the **Commonwealth of Carcosa** (democratic). Its adjective becomes *Carcosan*.
 * **Flag:** the King in Yellow, crowned and antlered with the Yellow Sign on its robe, between two sigils, in gold on a black field between two gold bands.
+* **The King walks:** only now can a follower of Hastur incarnate the King in Yellow (see 5).
 * **Spirit:** The Road to Carcosa becomes **The Yellow Throne**: +15% war support and morale, +8% organization and research speed, +5% attack, +10% stability, +0.3 PP a day.
 * **News:** the rest of the world hears of it.
 

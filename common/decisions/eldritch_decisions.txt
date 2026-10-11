@@ -515,6 +515,14 @@ eldritch_forbidden_rites = {
 		available = {
 			eldritch_pact_tier_at_least_2 = yes
 			eldritch_no_god_incarnate_deployed = yes
+			# The King in Yellow walks only once Carcosa is proclaimed.
+			if = {
+				limit = { has_country_flag = eldritch_god_hastur }
+				custom_trigger_tooltip = {
+					tooltip = eldritch_incarnate_needs_carcosa_tt
+					has_country_flag = eldritch_carcosa_proclaimed
+				}
+			}
 		}
 
 		days_remove = 30
@@ -1522,7 +1530,6 @@ eldritch_forbidden_rites = {
 				limit = { has_country_flag = eldritch_perk_zeal_2 }
 				modify_timed_idea = { idea = eldritch_prophet_marches days = 90 }
 			}
-			hidden_effect = { eldritch_quest_note_march = yes }
 			eldritch_prophet_gain_xp_25 = yes
 		}
 
@@ -3266,7 +3273,8 @@ eldritch_road_to_carcosa = {
 			hidden_effect = {
 				subtract_from_variable = { eldritch_favor = 150 }
 				set_country_flag = eldritch_carcosa_5_active
-				clr_country_flag = eldritch_carcosa_5_march
+				clr_country_flag = eldritch_carcosa_5_servitors
+				clr_country_flag = eldritch_carcosa_5_preach
 			}
 		}
 
@@ -3296,8 +3304,8 @@ eldritch_road_to_carcosa = {
 		available = {
 			custom_trigger_tooltip = {
 				tooltip = eldritch_carcosa_5_task_tt
-				eldritch_god_incarnate_deployed = yes
-				has_country_flag = eldritch_carcosa_5_march
+				has_country_flag = eldritch_carcosa_5_servitors
+				has_country_flag = eldritch_carcosa_5_preach
 			}
 		}
 
@@ -3395,8 +3403,8 @@ eldritch_road_to_carcosa = {
 				OR = {
 					has_country_leader_with_trait = eldritch_hastur_vessel
 					AND = {
-						eldritch_god_incarnate_deployed = yes
 						eldritch_leader_is_chosen = yes
+						check_variable = { num_battalions_with_type@eldritch_pallid_masks > 7 }
 					}
 				}
 			}

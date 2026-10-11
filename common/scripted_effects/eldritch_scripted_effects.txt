@@ -1358,6 +1358,10 @@ eldritch_quest_note_preach = {
 		limit = { has_country_flag = eldritch_carcosa_1_active }
 		add_to_variable = { eldritch_carcosa_1_preach = 1 }
 	}
+	if = {
+		limit = { has_country_flag = eldritch_carcosa_5_active }
+		set_country_flag = eldritch_carcosa_5_preach
+	}
 }
 
 eldritch_quest_note_council = {
@@ -1371,17 +1375,14 @@ eldritch_quest_note_council = {
 	}
 }
 
-eldritch_quest_note_march = {
-	if = {
-		limit = { has_country_flag = eldritch_carcosa_5_active }
-		set_country_flag = eldritch_carcosa_5_march
-	}
-}
-
 eldritch_quest_note_servitors = {
 	if = {
 		limit = { has_country_flag = eldritch_quest_cthulhu_active }
 		set_country_flag = eldritch_quest_cthulhu_servitors
+	}
+	if = {
+		limit = { has_country_flag = eldritch_carcosa_5_active }
+		set_country_flag = eldritch_carcosa_5_servitors
 	}
 }
 

@@ -961,6 +961,8 @@ sub_units = {
 		}
 	}
 
+	# The King in Yellow is twice as strong as any other god (here and in
+	# eldritch_hastur_incarnation), and walks only once Carcosa is proclaimed.
 	eldritch_hastur_incarnate = {
 		abbreviation = "HAS"
 		sprite = eldritch_hastur_incarnate
@@ -981,19 +983,19 @@ sub_units = {
 
 		combat_width = 8
 
-		max_strength = 2000
-		max_organisation = 300
+		max_strength = 4000
+		max_organisation = 600
 		default_morale = 1.0
 		manpower = 100
 
-		recon = 3
-		initiative = 0.5
-		casualty_trickleback = 0.75
-		hardness = 0.9
+		recon = 6
+		initiative = 1.0
+		casualty_trickleback = 0.9
+		hardness = 0.95
 		experience_loss_factor = -0.5
 
 		training_time = 3650
-		suppression = 10
+		suppression = 20
 		weight = 3
 		supply_consumption = 0.5
 
@@ -1005,15 +1007,15 @@ sub_units = {
 		}
 
 		urban = {
-			attack = 0.6
+			attack = 1.2
 		}
 		hills = {
-			attack = 0.6
-			movement = 0.6
+			attack = 1.2
+			movement = 1.2
 		}
 		mountain = {
-			attack = 0.6
-			movement = 0.6
+			attack = 1.2
+			movement = 1.2
 		}
 	}
 
