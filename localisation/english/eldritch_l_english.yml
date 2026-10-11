@@ -717,7 +717,7 @@
  eldritch_carcosa_goal_masque_tt:0 "£eldritch_building_masque_hall_text£ The §RHall of the Pallid Masque§! stands in one of our states"
  eldritch_carcosa_goal_observatories_tt:0 "£eldritch_building_black_star_observatory_text£ §RBlack Star Observatories§! stand in at least §R2§! of our states"
  eldritch_carcosa_goal_states_5_tt:0 "We control at least §R[?eldritch_carcosa_5_states|0]§! states (10 more than when this chapter opened)"
- eldritch_carcosa_goal_capital_tt:0 "We hold the §Rcapital§! of another nation"
+ eldritch_carcosa_goal_capital_tt:0 "We control a state that was another nation's §Rcapital§! when the game began"
  eldritch_carcosa_goal_palace_tt:0 "£eldritch_building_yellow_palace_text£ The §RPalace of the Yellow King§! stands in our capital"
  eldritch_carcosa_goal_capitulated_tt:0 "A nation at war with us has §Rcapitulated§!"
  eldritch_carcosa_goal_prophet_tt:0 "[ROOT.GetLeader] is Hastur's §RVessel§! or §RChosen§!"
@@ -782,7 +782,7 @@
  eldritch_carcosa_road_4_desc:0 "Black stars rise over the capital every night. The people have stopped looking up, but they can feel them there."
 
  eldritch_carcosa_5:0 "Chapter V: The King Walks"
- eldritch_carcosa_5_desc:0 "Now the King himself must come, in tattered robes of yellow, and walk in triumph through a city that has fallen to [ROOT.GetNameDef]. He will not stay to fight, not until Carcosa is proclaimed, but he will walk once, behind his Host, through the streets of a conquered capital.\n\nGoals: conquer §R10§! more states than we controlled when this chapter opened, and hold the capital of another nation.\n\n§RReward: The Road to Carcosa V (adds stability), 50 army experience, the King's Tatters battalion and a first division of it, experience and Insight. Opens Chapter VI.§!"
+ eldritch_carcosa_5_desc:0 "Now the King himself must come, in tattered robes of yellow, and walk in triumph through a city that has fallen to [ROOT.GetNameDef]. He will not stay to fight, not until Carcosa is proclaimed, but he will walk once, behind his Host, through the streets of a conquered capital.\n\nGoals: conquer §R10§! more states than we controlled when this chapter opened, and hold a state that was another nation's capital when the game began (a nation moves its capital when it falls, so it is the old capital that counts).\n\n§RReward: The Road to Carcosa V (adds stability), 50 army experience, the King's Tatters battalion and a first division of it, experience and Insight. Opens Chapter VI.§!"
  eldritch.352.t:0 "The King in Yellow"
  eldritch.352.d:0 "[ROOT.GetLeader] walked beside the King from the edge of the capital to the palace steps. The crowds did not cheer. They knelt, and those who looked under the King's hood are still kneeling. Then he was gone, as if he had never been there. The priests say he will not walk among us again until Carcosa is proclaimed."
  eldritch.352.a:0 "Hail the King in Yellow!"

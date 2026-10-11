@@ -15,6 +15,16 @@ on_actions = {
 					country_event = { id = eldritch.2 days = 1 }
 				}
 			}
+			# Every nation's capital at the start of the game, for Chapter V of
+			# the Road to Carcosa: a nation moves its capital when it falls, so
+			# the goal asks for an old capital rather than the current one.
+			if = {
+				limit = { NOT = { has_global_flag = eldritch_capitals_recorded } }
+				set_global_flag = eldritch_capitals_recorded
+				every_country = {
+					capital_scope = { set_state_flag = eldritch_original_capital }
+				}
+			}
 		}
 	}
 }

@@ -239,7 +239,7 @@ Hastur's cults get their own category, **The Road to Carcosa**: six chapters. Ch
 | **II. Cassilda's Song** | 75 Favor | **Theatres of the Yellow Sign** in at least 3 of your states; at least 9 Zealot battalions in the field | Road II (adds +3% research), +30 Favor, **Cassilda's Choir** |
 | **III. The Stranger in the Pallid Mask** | 100 Favor | Tier II pact; **conquer 5 more states** than you controlled when the chapter opened; build the **Hall of the Pallid Masque** | Road III (adds +3% organization), +50 command power, the **Pallid Masks** |
 | **IV. Black Stars Rise** | 100 Favor | Tier III pact; **Black Star Observatories** in at least 2 of your states | Road IV (adds political power), +5% war support |
-| **V. The King Walks** | 150 Favor | **Conquer 10 more states** than you controlled when the chapter opened; **hold another nation's capital** | Road V (adds +5% stability), +50 army experience, the **King's Tatters** |
+| **V. The King Walks** | 150 Favor | **Conquer 10 more states** than you controlled when the chapter opened; **hold a state that was another nation's capital** when the game began (a nation moves its capital when it falls, so the old capital counts) | Road V (adds +5% stability), +50 army experience, the **King's Tatters** |
 | **VI. The Throne of Carcosa** | 200 Favor | The **Palace of the Yellow King** in your capital; **an enemy has capitulated** to you; the Prophet is Hastur's Vessel or Chosen | unlocks **Proclaim Carcosa**, **Hali's Drowned** |
 
 #### The cult's buildings
@@ -270,7 +270,7 @@ Hastur's quests also unlock six new battalions, one per quest, for the division 
 
 * **Name:** the nation is renamed by ideology: the **Kingdom of Carcosa** (non-aligned), the **Yellow Dominion of Carcosa** (fascist), the **Carcosan Commune** (communist) or the **Commonwealth of Carcosa** (democratic). Its adjective becomes *Carcosan*.
 * **Flag:** the King in Yellow, crowned and antlered with the Yellow Sign on its robe, between two sigils, in gold on a black field between two gold bands.
-* **Map colour:** dark yellow.
+* **Map colour:** deep yellow.
 * **The King walks:** only now can a follower of Hastur incarnate the King in Yellow (see 5).
 * **Spirit:** The Road to Carcosa becomes **The Yellow Throne**: +15% war support and morale, +8% organization and research speed, +5% attack, +10% stability, +0.3 PP a day.
 * **News:** the rest of the world hears of it.
@@ -302,7 +302,8 @@ The grand doctrine costs 100 army experience, and each sub-doctrine 50. Each gra
 
 ## Compatibility
 
-* No vanilla files are overwritten. Every key, flag, variable and file uses the `eldritch_` prefix, so the mod should work alongside most other mods, including total conversions that keep the standard decision system.
+* One vanilla file is replaced: `common/countries/cosmetic.txt`, the only file the game reads cosmetic tags' map colours from, so Carcosa can be yellow. The mod's copy holds only Carcosa, so while the mod is on, the game's other cosmetic tags (focus-tree renames) show their nation's normal colour, and a mod that also replaces that file will clash (whichever loads last wins; Carcosa's entry can be copied into the other mod's file). Nothing else of the game's is overwritten.
+* Every other key, flag, variable and file uses the `eldritch_` prefix, so the mod should work alongside most other mods, including total conversions that keep the standard decision system.
 * No DLC is required.
 * Achievements are disabled, as with any mod.
 
@@ -321,10 +322,10 @@ common/scripted_effects|triggers/  shared logic (summoning, blessings, tiers, fa
 common/scripted_localisation/      [ROOT.GetEldritchGodName] etc.
 common/dynamic_modifiers/          the Prophet's mantle (character sheet stats as modifiers)
 common/doctrines/                  the Eldritch doctrine folder: its tracks, the gods' grand doctrines and sub-doctrines
-common/countries/                  map colours of the formables (cosmetic tags), in a file of their own
+common/countries/cosmetic.txt      Carcosa's map colour (replaces the game's file of cosmetic tag colours)
 common/buildings/                  the four buildings of the Road to Carcosa, hidden until a chapter unlocks them
 common/game_rules/                 the AI rule
-common/on_actions/                 welcome pop-up at game start
+common/on_actions/                 welcome pop-up at game start; records each nation's starting capital (Road to Carcosa, Chapter V)
 events/                            summoning, tier, whim, curse, news and monthly-pulse events
 interface/eldritch.gfx             sprite definitions
 gfx/                               generated art (DDS): spirit, decision, battalion and trait icons, Carcosa's flags (gfx/flags),

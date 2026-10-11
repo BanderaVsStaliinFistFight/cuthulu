@@ -15,7 +15,8 @@ catches the mistakes that are easy to make by hand:
     portrait files, dynamic modifiers without text or icon
   * scripted effects / triggers / events that are used but never defined
   * formables (set_cosmetic_tag): names for every ideology, flags in all
-    three sizes as uncompressed TGA, and a map colour in common/countries
+    three sizes as uncompressed TGA, and a map colour in
+    common/countries/cosmetic.txt (the only file the game reads them from)
   * buildings: names, descriptions, special icons (two 36x36 frames, on a
     provincial building), hidden until a technology unlocks them, and only
     unlocked by technologies that exist
@@ -177,8 +178,9 @@ def main():
                 need_sprite(f"GFX_{icon}", f"text icon in {key}")
 
     # ------------------------------------------------------------- cosmetic tag colours
+    # The game reads them from common/countries/cosmetic.txt and nowhere else.
     cosmetic_colours = set()
-    for path, items in load_script("common/countries/*.txt", problems).items():
+    for path, items in load_script("common/countries/cosmetic.txt", problems).items():
         for tag, _, body in items:
             if isinstance(body, list) and any(k == "color" for k, _, _ in body):
                 cosmetic_colours.add(tag)
@@ -427,7 +429,7 @@ def main():
             if key == "set_cosmetic_tag" and isinstance(value, str):
                 # a formable: its name in every form and ideology, a map colour, and a flag in all three sizes
                 if value not in cosmetic_colours:
-                    problems.append(f"{path}: cosmetic tag {value} has no map colour in common/countries")
+                    problems.append(f"{path}: cosmetic tag {value} has no map colour in common/countries/cosmetic.txt")
                 for ideology in ("", "_fascism", "_communism", "_democratic", "_neutrality"):
                     for form in ("", "_DEF", "_ADJ"):
                         need_loc(value + ideology + form, path)

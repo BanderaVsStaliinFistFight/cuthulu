@@ -2322,9 +2322,9 @@ eldritch_road_to_carcosa = {
 			}
 			custom_trigger_tooltip = {
 				tooltip = eldritch_carcosa_goal_capital_tt
-				any_country = {
-					NOT = { tag = ROOT }
-					capital_scope = { is_controlled_by = ROOT }
+				any_controlled_state = {
+					has_state_flag = eldritch_original_capital
+					NOT = { is_core_of = ROOT }
 				}
 			}
 		}
