@@ -1,0 +1,72 @@
+#####################################################################
+# Eldritch Pacts - doctrine tracks of the Eldritch folder
+#
+# Shared by every god's grand doctrine. Each god's sub-doctrine for the
+# Servitors track narrows its mastery to that god's own battalions.
+#####################################################################
+
+eldritch_servitors = {
+	name = eldritch_track_servitors
+	background = "GFX_eldritch_track_servitors_bg"
+	icon = "GFX_doctrine_milestone_armored_land"
+	icon_frame = "GFX_doctrine_decor_land"
+	mastery = {
+		multiplier = 6.0
+		sub_units = {
+			eldritch_deep_one_brood
+			eldritch_star_spawn
+			eldritch_faceless_cult
+			eldritch_shantak_riders
+			eldritch_yellow_zealots
+			eldritch_byakhee_riders
+			eldritch_lidless
+			eldritch_audience
+			eldritch_cassildas_choir
+			eldritch_pallid_masks
+			eldritch_kings_tatters
+			eldritch_halis_drowned
+			eldritch_dark_young
+			eldritch_thousand_young
+			eldritch_gate_wardens
+			eldritch_dunwich_horror
+			eldritch_chaos_spawn
+			eldritch_void_pipers
+			eldritch_cthulhu_incarnate
+			eldritch_nyarlathotep_incarnate
+			eldritch_hastur_incarnate
+			eldritch_shub_niggurath_incarnate
+			eldritch_yog_sothoth_incarnate
+			eldritch_azathoth_incarnate
+		}
+	}
+}
+
+eldritch_faithful = {
+	name = eldritch_track_faithful
+	background = "GFX_eldritch_track_faithful_bg"
+	icon = "GFX_doctrine_milestone_infantry_land"
+	icon_frame = "GFX_doctrine_decor_land"
+	mastery = {
+		multiplier = 1.0
+		categories = {
+			category_all_infantry
+		}
+	}
+}
+
+eldritch_rites = {
+	name = eldritch_track_rites
+	background = "GFX_eldritch_track_rites_bg"
+	icon = "GFX_doctrine_milestone_operations_land"
+	icon_frame = "GFX_doctrine_decor_land"
+	mastery = {
+		multiplier = 0.7
+		categories = {
+			category_all_infantry
+			category_line_artillery
+			category_artillery
+			category_tanks
+			category_all_armor
+		}
+	}
+}

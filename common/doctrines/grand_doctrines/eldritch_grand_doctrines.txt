@@ -1,0 +1,306 @@
+#####################################################################
+# Eldritch Pacts - the gods' grand doctrines (Eldritch folder)
+#
+# One per god, visible and available only to a country whose patron it
+# is. Tracks: Servitors, the Faithful, Rites of War; the milestones are in
+# the same order.
+#####################################################################
+
+eldritch_rising_tide = {
+	folder = eldritch
+	name = eldritch_rising_tide
+	description = eldritch_rising_tide_desc
+	icon = GFX_eldritch_doctrine_cthulhu_medium
+	visible = {
+		has_country_flag = eldritch_god_cthulhu
+	}
+	available = {
+		has_country_flag = eldritch_god_cthulhu
+	}
+	xp_cost = 100
+	xp_type = army
+	ai_will_do = {
+		base = 1
+	}
+	tracks = {
+		eldritch_servitors
+		eldritch_faithful
+		eldritch_rites
+	}
+
+	# EFFECTS
+	amphibious_invasion = 0.25
+	naval_invasion_capacity = 10
+	eldritch_deep_one_brood = {
+		max_organisation = 10
+	}
+	eldritch_star_spawn = {
+		max_organisation = 10
+	}
+	milestones = {
+		{
+			naval_invasion_prep_speed = 0.25
+			enable_tactic = tactic_relentless_assault
+		}
+		{
+			land_reinforce_rate = 0.02
+			enable_tactic = tactic_infantry_assault
+		}
+		{
+			amphibious_invasion = 0.25
+			naval_invasion_penalty = -0.15
+		}
+	}
+}
+
+eldritch_thousand_masks = {
+	folder = eldritch
+	name = eldritch_thousand_masks
+	description = eldritch_thousand_masks_desc
+	icon = GFX_eldritch_doctrine_nyarlathotep_medium
+	visible = {
+		has_country_flag = eldritch_god_nyarlathotep
+	}
+	available = {
+		has_country_flag = eldritch_god_nyarlathotep
+	}
+	xp_cost = 100
+	xp_type = army
+	ai_will_do = {
+		base = 1
+	}
+	tracks = {
+		eldritch_servitors
+		eldritch_faithful
+		eldritch_rites
+	}
+
+	# EFFECTS
+	planning_speed = 0.15
+	army_intel_factor = 0.15
+	eldritch_faceless_cult = {
+		max_organisation = 10
+	}
+	eldritch_shantak_riders = {
+		max_organisation = 10
+	}
+	milestones = {
+		{
+			breakthrough_factor = 0.03
+			enable_tactic = tactic_unexpected_thrust
+		}
+		{
+			coordination_bonus = 0.05
+			enable_tactic = tactic_guerrilla_tactics
+		}
+		{
+			initiative_factor = 0.1
+			planning_speed = 0.1
+		}
+	}
+}
+
+eldritch_yellow_sign = {
+	folder = eldritch
+	name = eldritch_yellow_sign
+	description = eldritch_yellow_sign_desc
+	icon = GFX_eldritch_doctrine_hastur_medium
+	visible = {
+		has_country_flag = eldritch_god_hastur
+	}
+	available = {
+		has_country_flag = eldritch_god_hastur
+	}
+	xp_cost = 100
+	xp_type = army
+	ai_will_do = {
+		base = 1
+	}
+	tracks = {
+		eldritch_servitors
+		eldritch_faithful
+		eldritch_rites
+	}
+
+	# EFFECTS
+	army_morale_factor = 0.1
+	eldritch_yellow_zealots = {
+		max_organisation = 10
+	}
+	eldritch_byakhee_riders = {
+		max_organisation = 10
+	}
+	eldritch_lidless = {
+		max_organisation = 10
+	}
+	eldritch_audience = {
+		max_organisation = 10
+	}
+	eldritch_cassildas_choir = {
+		max_organisation = 10
+	}
+	eldritch_pallid_masks = {
+		max_organisation = 10
+	}
+	eldritch_kings_tatters = {
+		max_organisation = 10
+	}
+	eldritch_halis_drowned = {
+		max_organisation = 10
+	}
+	milestones = {
+		{
+			paradrop_organization_factor = 0.2
+			enable_tactic = tactic_infantry_charge
+		}
+		{
+			war_support_factor = 0.05
+			enable_tactic = tactic_relentless_assault
+		}
+		{
+			air_weather_penalty = -0.25
+			enemy_army_bonus_air_superiority_factor = -0.15
+		}
+	}
+}
+
+eldritch_thousand_young_doctrine = {
+	folder = eldritch
+	name = eldritch_thousand_young_doctrine
+	description = eldritch_thousand_young_doctrine_desc
+	icon = GFX_eldritch_doctrine_shub_niggurath_medium
+	visible = {
+		has_country_flag = eldritch_god_shub_niggurath
+	}
+	available = {
+		has_country_flag = eldritch_god_shub_niggurath
+	}
+	xp_cost = 100
+	xp_type = army
+	ai_will_do = {
+		base = 1
+	}
+	tracks = {
+		eldritch_servitors
+		eldritch_faithful
+		eldritch_rites
+	}
+
+	# EFFECTS
+	land_reinforce_rate = 0.03
+	weekly_manpower = 250
+	eldritch_dark_young = {
+		max_organisation = 10
+	}
+	eldritch_thousand_young = {
+		max_organisation = 10
+	}
+	milestones = {
+		{
+			conscription_factor = 0.05
+			enable_tactic = tactic_human_wave_tactics
+		}
+		{
+			land_reinforce_rate = 0.02
+			enable_tactic = tactic_infantry_assault
+		}
+		{
+			attrition = -0.1
+			terrain_penalty_reduction = 0.1
+		}
+	}
+}
+
+eldritch_key_and_gate = {
+	folder = eldritch
+	name = eldritch_key_and_gate
+	description = eldritch_key_and_gate_desc
+	icon = GFX_eldritch_doctrine_yog_sothoth_medium
+	visible = {
+		has_country_flag = eldritch_god_yog_sothoth
+	}
+	available = {
+		has_country_flag = eldritch_god_yog_sothoth
+	}
+	xp_cost = 100
+	xp_type = army
+	ai_will_do = {
+		base = 1
+	}
+	tracks = {
+		eldritch_servitors
+		eldritch_faithful
+		eldritch_rites
+	}
+
+	# EFFECTS
+	planning_speed = 0.2
+	max_planning = 0.1
+	eldritch_gate_wardens = {
+		max_organisation = 10
+	}
+	eldritch_dunwich_horror = {
+		max_organisation = 10
+	}
+	milestones = {
+		{
+			dig_in_speed_factor = 0.15
+			enable_tactic = tactic_elastic_defense
+		}
+		{
+			initiative_factor = 0.05
+			enable_tactic = tactic_backhand_blow
+		}
+		{
+			planning_decay_rate_factor = -0.15
+			enable_tactic = tactic_planned_attack
+		}
+	}
+}
+
+eldritch_nuclear_chaos = {
+	folder = eldritch
+	name = eldritch_nuclear_chaos
+	description = eldritch_nuclear_chaos_desc
+	icon = GFX_eldritch_doctrine_azathoth_medium
+	visible = {
+		has_country_flag = eldritch_god_azathoth
+	}
+	available = {
+		has_country_flag = eldritch_god_azathoth
+	}
+	xp_cost = 100
+	xp_type = army
+	ai_will_do = {
+		base = 1
+	}
+	tracks = {
+		eldritch_servitors
+		eldritch_faithful
+		eldritch_rites
+	}
+
+	# EFFECTS
+	army_attack_factor = 0.05
+	army_org_factor = -0.05
+	eldritch_chaos_spawn = {
+		max_organisation = 10
+	}
+	eldritch_void_pipers = {
+		max_organisation = 10
+	}
+	milestones = {
+		{
+			breakthrough_factor = 0.05
+			enable_tactic = tactic_blitz
+		}
+		{
+			army_morale_factor = 0.05
+			enable_tactic = tactic_relentless_assault
+		}
+		{
+			army_artillery_attack_factor = 0.1
+			enable_tactic = tactic_barrage
+		}
+	}
+}

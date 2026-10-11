@@ -1230,6 +1230,94 @@ def make_trait_icons():
 
 
 # ---------------------------------------------------------------------------
+# The Eldritch doctrine folder (common/doctrines): its tab, the gods' grand
+# doctrine and sub-doctrine icons, and the backgrounds of its three tracks
+# ---------------------------------------------------------------------------
+
+DOCTRINE_ICON_SIZE = (54, 58)      # fits the doctrine list row and the grand doctrine header
+DOCTRINE_TAB_SIZE = (512, 61)      # two 256 x 61 frames: normal, selected (like the land tab)
+TRACK_BG_SIZE = (400, 700)         # behind a track's column; the UI clips what does not fit
+DOCTRINE_TRACKS = {"servitors": "servitors", "faithful": "preach", "rites": "rites"}
+
+
+def doctrine_tab():
+    """The Eldritch folder tab: a dark riveted plate with the Elder Sign at its
+    left (the folder name is drawn by the game to its right)."""
+    fw, fh = DOCTRINE_TAB_SIZE[0] // 2, DOCTRINE_TAB_SIZE[1]
+    tab = Image.new("RGBA", DOCTRINE_TAB_SIZE, (0, 0, 0, 0))
+    for frame, (top, bottom, rim, glow) in enumerate((((34, 36, 34), (14, 15, 15), (92, 96, 88), 0.0),
+                                                       ((44, 50, 42), (18, 22, 18), (150, 170, 120), 0.9))):
+        plate = grain(vertical_bg((fw - 8, fh - 8), top, bottom), 6, frame)
+        img = Image.new("RGBA", (fw, fh), (0, 0, 0, 0))
+        img.paste(plate, (4, 4))
+        d = ImageDraw.Draw(img)
+        d.rectangle([3, 3, fw - 4, fh - 4], outline=rim + (255,))
+        d.rectangle([1, 1, fw - 2, fh - 2], outline=(8, 8, 8, 255))
+        d.line([(5, 5), (fw - 6, 5)], fill=tuple(min(255, c + 40) for c in rim) + (160,))
+        for x, y in ((9, 9), (fw - 10, 9), (9, fh - 10), (fw - 10, fh - 10)):
+            d.ellipse([x - 2, y - 2, x + 2, y + 2], fill=(120, 118, 110, 255), outline=(20, 20, 20, 255))
+        sign = sym_elder_sign(40)
+        if glow:
+            sign = glow_under(sign, (150, 255, 190), 5, glow)
+        img = paste_center(img, sign, 34 / fw, 0.5)
+        tab.alpha_composite(img, (frame * fw, 0))
+    return tab
+
+
+def doctrine_icon(god, track=None):
+    """A grand doctrine icon (the god's sigil, gold rim) or a sub-doctrine icon
+    (the track's symbol in the god's colours, the god's sigil in a corner)."""
+    pal = PALETTE[god]
+    inner = tuple(min(255, int(v * 2.2 + 10)) for v in pal["bg"])
+    if track is None:
+        return framed(DOCTRINE_ICON_SIZE, inner, pal["bg"], SYMBOLS[god], (235, 195, 90), border_width=2,
+                      aura=pal["glow"])
+
+    def symbol(size):
+        return tint(SYMBOLS[DOCTRINE_TRACKS[track]](size), pal["glow"], 0.3)
+    rim = tuple(min(255, int(v * 0.6 + 70)) for v in pal["main"])
+    img = framed(DOCTRINE_ICON_SIZE, inner, pal["bg"], symbol, rim, border_width=1, sym_scale=0.8)
+    badge = Image.new("RGBA", (22, 22), (0, 0, 0, 0))
+    ImageDraw.Draw(badge).ellipse([0, 0, 21, 21], fill=pal["bg"] + (235,), outline=rim + (255,))
+    badge = paste_center(badge, SYMBOLS[god](18), 0.5, 0.5)
+    return paste_center(img, badge, 0.76, 0.79)
+
+
+def track_background(track, seed):
+    """A dark, stained backdrop with the track's symbol faded into it."""
+    w, h = TRACK_BG_SIZE
+    rng = np.random.default_rng(seed)
+    base = np.zeros((h, w))
+    for scale, amp in ((8, 0.5), (24, 0.3), (80, 0.2)):
+        small = rng.random((h // scale + 2, w // scale + 2))
+        base += amp * np.asarray(Image.fromarray((small * 255).astype(np.uint8)).resize(
+            (w, h), Image.BICUBIC, box=(0, 0, w / scale, h / scale))) / 255
+    t = np.linspace(0, 1, h)[:, None]
+    rgb = np.stack([22 + 16 * base - 8 * t, 25 + 18 * base - 8 * t, 23 + 14 * base - 9 * t], axis=2)
+    img = Image.fromarray(np.clip(rgb, 0, 255).astype(np.uint8)).convert("RGBA")
+    sym = SYMBOLS[DOCTRINE_TRACKS[track]](360)
+    a = np.array(sym).astype(float)
+    grey = a[..., :3].mean(axis=2, keepdims=True)
+    a[..., :3] = grey * 0.7 + np.array([110, 135, 115]) * 0.3
+    a[..., 3] *= 0.6
+    img = paste_center(img, Image.fromarray(a.astype(np.uint8), "RGBA"), 0.5, 0.45)
+    return grain(vignette(img, 0.6), 5, seed)
+
+
+def make_doctrine_art():
+    save_dds(doctrine_tab(), "gfx/interface/doctrines/eldritch_doctrine_tab.dds")
+    for god in GODS:
+        save_dds(doctrine_icon(god), f"gfx/interface/doctrines/eldritch_doctrine_{god}.dds")
+        for track in DOCTRINE_TRACKS:
+            save_dds(doctrine_icon(god, track), f"gfx/interface/doctrines/eldritch_doctrine_{god}_{track}.dds")
+    for k, track in enumerate(DOCTRINE_TRACKS):
+        path = os.path.join(ROOT, f"gfx/interface/doctrines/eldritch_track_{track}_bg.dds")
+        os.makedirs(os.path.dirname(path), exist_ok=True)
+        # large and opaque: DXT1-compressed rather than raw, to keep the mod small
+        track_background(track, 900 + k).convert("RGB").save(path, pixel_format="DXT1")
+
+
+# ---------------------------------------------------------------------------
 # Flags of the formable nation (gfx/flags/<cosmetic tag>[_ideology].tga)
 # ---------------------------------------------------------------------------
 
@@ -1271,10 +1359,12 @@ def write_gfx():
     def section(title):
         lines.extend(["", f"\t### {title} ###"])
 
-    def sprite(name, tex, frames=1):
+    def sprite(name, tex, frames=1, transparent=False):
         lines.extend(["\tspriteType = {", f'\t\tname = "{name}"', f'\t\ttexturefile = "{tex}"'])
         if frames > 1:
             lines.append(f"\t\tnoOfFrames = {frames}")
+        if transparent:
+            lines.append("\t\talwaystransparent = yes")
         lines.append("\t}")
 
     section("National spirits")
@@ -1318,6 +1408,18 @@ def write_gfx():
     for kind in ("land", "navy"):
         sprite(f"GFX_trait_eldritch_avatar_{kind}", f"gfx/interface/traits/eldritch_avatar_{kind}.dds")
 
+    section("The Eldritch doctrine folder: tab, grand doctrines, sub-doctrines (per track), track backgrounds")
+    sprite("GFX_eldritch_doctrine_tab", "gfx/interface/doctrines/eldritch_doctrine_tab.dds", 2)
+    sprite("GFX_eldritch_doctrine_folder_icon", "gfx/interface/doctrines/eldritch_doctrine_tab.dds", 2)
+    for god in GODS:
+        sprite(f"GFX_eldritch_doctrine_{god}_medium", f"gfx/interface/doctrines/eldritch_doctrine_{god}.dds",
+               transparent=True)
+        for track in DOCTRINE_TRACKS:
+            sprite(f"GFX_eldritch_doctrine_{god}_{track}_medium",
+                   f"gfx/interface/doctrines/eldritch_doctrine_{god}_{track}.dds", transparent=True)
+    for track in DOCTRINE_TRACKS:
+        sprite(f"GFX_eldritch_track_{track}_bg", f"gfx/interface/doctrines/eldritch_track_{track}_bg.dds")
+
     lines.append("}")
     with open(os.path.join(ROOT, "interface", "eldritch.gfx"), "w") as f:
         f.write("\n".join(lines) + "\n")
@@ -1328,6 +1430,11 @@ def main():
         make_unit_icons()
         print("Battalion icons generated.")
         return
+    if sys.argv[1:] == ["doctrines"]:
+        make_doctrine_art()
+        write_gfx()
+        print("Doctrine art generated.")
+        return
     make_ideas()
     make_decisions()
     make_report_events()
@@ -1336,6 +1443,7 @@ def main():
     make_unit_icons()
     make_trait_icons()
     make_flags()
+    make_doctrine_art()
     make_thumbnail()
     write_gfx()
     print("Art generated.")

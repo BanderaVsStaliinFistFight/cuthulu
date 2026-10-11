@@ -1,0 +1,19 @@
+#####################################################################
+# Eldritch Pacts - the Eldritch doctrine folder
+#
+# A fourth doctrine tab, next to land, naval and air, that appears once
+# a pact is sealed. It holds one grand doctrine per god; a country only
+# ever sees its own patron's (see eldritch_grand_doctrines.txt).
+#####################################################################
+
+eldritch = {
+	allowed = {
+		has_country_flag = eldritch_pact_made
+	}
+	name = eldritch_doctrine_folder
+	ledger = army
+	ledger_gfx = GFX_eldritch_doctrine_folder_icon
+	tab_gfx = GFX_eldritch_doctrine_tab
+	color_frame = 1
+	sound = ui_doctrine_tab_land
+}

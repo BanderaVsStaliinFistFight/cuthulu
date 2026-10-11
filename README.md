@@ -270,6 +270,24 @@ Hastur's quests also unlock six new battalions, one per quest, for the division 
 * **Spirit:** The Road to Carcosa becomes **The Yellow Throne**: +15% war support and morale, +8% organization and research speed, +5% attack, +10% stability, +0.3 PP a day.
 * **News:** the rest of the world hears of it.
 
+### 14. The gods' doctrines
+Sealing a pact opens a fourth doctrine tab, **Eldritch**, next to land, naval and air. It holds one grand doctrine for each god, and a country only ever sees its own patron's: the doctrine, its sub-doctrines and their rewards are visible and available only to the god's followers. It works alongside your land doctrine rather than replacing it.
+
+The grand doctrine costs 100 army experience, and each sub-doctrine 50. Each grand doctrine has three tracks. Mastery comes from the units in that track, and each track ends in a milestone:
+
+* **The Servitors**: mastery from your god's own battalions (six times as fast as from ordinary troops, because there are few of them).
+* **The Faithful**: mastery from your infantry.
+* **Rites of War**: mastery from your whole army.
+
+| God | Grand doctrine | The Servitors | The Faithful | Rites of War |
+|---|---|---|---|---|
+| Cthulhu | **The Rising Tide**: +25% invasion speed, +10 invasion capacity; milestones add invasion prep, reinforcement and smaller invasion penalties | **The Brood of Dagon**: Deep Ones fight in rivers and marshes, Star-Spawn hit harder, more organization, morale and recovered casualties | **The Esoteric Order of Dagon**: infantry organization, defense and morale, marsh and river attacks, faster invasion prep | **Dreams of the Sleeper**: morale, planning, organization, invasion capacity, breakthrough |
+| Nyarlathotep | **The Thousand Masks**: +15% planning speed, +15% army intel; milestones add Unexpected Thrust, Guerrilla Tactics and initiative | **The Faceless Host**: Faceless Cultists defend better, Shantak Riders break through and move faster | **The Church of Starry Wisdom**: city fighting, intel, coordination, night attacks | **The Mask of Fear**: initiative, planning, breakthrough, attack speed, morale |
+| Hastur | **The Yellow Sign**: +10% army morale; milestones add Infantry Charge, Relentless Assault, paradrop organization and weather-proof aircraft | **The Host of Carcosa**: all eight of Hastur's battalions, including those from the Road to Carcosa | **The Second Act**: infantry morale and organization, war support, less organization loss when broken | **The Winds of Hali**: aircraft fly in any weather, by night and faster; enemy air superiority counts for less |
+| Shub-Niggurath | **The Thousand Young**: +3% reinforcement, +250 manpower a week; milestones add Human Wave Tactics and less attrition | **The Black Goat's Brood**: Dark Young in forests and jungles, sturdier Thousand Young | **The Fertile Earth**: manpower, reinforcement, forest and jungle fighting | **The Wood Grows Thick**: less attrition and winter attrition, more enemy attrition, terrain penalties reduced |
+| Yog-Sothoth | **The Key and the Gate**: +20% planning speed, +10% max planning; milestones add Elastic Defense, Backhand Blow and Planned Attack | **The Guardians of the Threshold**: Gate Wardens dig in and hold, the Dunwich Horror breaks through | **The Seers**: digging in, entrenchment, initiative, organization | **The Opened Way**: army speed, slower planning decay, coordination, max planning |
+| Azathoth | **The Nuclear Chaos**: +5% army attack but −5% organization; milestones add Blitz, Relentless Assault and Barrage | **The Court of the Daemon Sultan**: Chaos Spawn tear through armour, Void Pipers hit harder | **The Mindless Dancers**: infantry soft attack and morale, breakthrough | **The Blind Idiot God**: artillery attack, army attack, morale |
+
 ---
 
 ## Game rule
@@ -300,6 +318,7 @@ common/technologies/               hidden "rite" techs that unlock and buff the 
 common/scripted_effects|triggers/  shared logic (summoning, blessings, tiers, favor)
 common/scripted_localisation/      [ROOT.GetEldritchGodName] etc.
 common/dynamic_modifiers/          the Prophet's mantle (character sheet stats as modifiers)
+common/doctrines/                  the Eldritch doctrine folder: its tracks, the gods' grand doctrines and sub-doctrines
 common/game_rules/                 the AI rule
 common/on_actions/                 welcome pop-up at game start
 events/                            summoning, tier, whim, curse, news and monthly-pulse events
@@ -310,7 +329,8 @@ localisation/english/              all text (UTF-8 with BOM)
 install/eldritch_pacts.mod         launcher file to copy into your mod/ folder
 gfx/entities/                      King in Yellow mesh definitions (.gfx) and unit entities with their animation states (.asset)
 gfx/models/units/eldritch/         King in Yellow .mesh models, .anim animations, their definitions and the texture atlas
-tools/generate_art.py              regenerates every texture and the thumbnail (`units` for the battalion icons only)
+tools/generate_art.py              regenerates every texture and the thumbnail (`units` for the battalion icons only,
+                                   `doctrines` for the doctrine tab, icons and track backgrounds only)
 tools/art_sources/                 hand-made source art the generator reads (carcosa_flag.png: Carcosa's flag)
 tools/art_portraits.py             the King in Yellow's painted portrait: forms sculpted and lit by
                                    art_render.py, then repainted stroke by stroke by art_paint.py
@@ -337,4 +357,5 @@ The script is written against the standard HoI4 modding syntax. It passes the bu
 * The god battalions are deliberately never unlocked for the designer. If the game refuses to spawn a template that contains them, the god division will not appear. `error.log` will say so.
 * The god battalions carry `recon`, `initiative`, `casualty_trickleback` and `experience_loss_factor`, which vanilla normally gives only to support companies. If a future version stops reading them on a line battalion, the god loses just those extras.
 * The hidden rite technologies, which have no tech-tree folder and are granted with `set_technology`.
+* **The Eldritch doctrines.** They follow the format of the game's own doctrine files and use only modifiers, battalion stats and tactics that exist. The tab is a custom folder like the game's own special forces folder. Untested parts: the icon size (54×58, matched to the doctrine list's layout), the tab texture (512×61 in two frames, like the land tab), and the track backgrounds (400×700; the UI clips the edges). The tracks reuse the game's own milestone icons. Reward names are localised as `<sub-doctrine>_<reward>`; if a reward shows its raw key in game, the game expects a different pattern.
 * Icon sizes. The textures are 64×67 (spirits), 46×46 (decisions), 152×42 and 60×12 (battalions: two frames each, picture then NATO symbol; the validator enforces these), 40×40 (traits), 156×210 (portraits) and 210×176 / 397×153 (events). If the UI expects different sizes, change the constants at the top of `tools/generate_art.py` (battalions: `ICON_SIZE`, `DESIGNER_FRAME` and `MAP_FRAME` in `tools/art_units.py`) and regenerate.

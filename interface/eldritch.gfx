@@ -640,4 +640,148 @@ spriteTypes = {
 		name = "GFX_trait_eldritch_avatar_navy"
 		texturefile = "gfx/interface/traits/eldritch_avatar_navy.dds"
 	}
+
+	### The Eldritch doctrine folder: tab, grand doctrines, sub-doctrines (per track), track backgrounds ###
+	spriteType = {
+		name = "GFX_eldritch_doctrine_tab"
+		texturefile = "gfx/interface/doctrines/eldritch_doctrine_tab.dds"
+		noOfFrames = 2
+	}
+	spriteType = {
+		name = "GFX_eldritch_doctrine_folder_icon"
+		texturefile = "gfx/interface/doctrines/eldritch_doctrine_tab.dds"
+		noOfFrames = 2
+	}
+	spriteType = {
+		name = "GFX_eldritch_doctrine_cthulhu_medium"
+		texturefile = "gfx/interface/doctrines/eldritch_doctrine_cthulhu.dds"
+		alwaystransparent = yes
+	}
+	spriteType = {
+		name = "GFX_eldritch_doctrine_cthulhu_servitors_medium"
+		texturefile = "gfx/interface/doctrines/eldritch_doctrine_cthulhu_servitors.dds"
+		alwaystransparent = yes
+	}
+	spriteType = {
+		name = "GFX_eldritch_doctrine_cthulhu_faithful_medium"
+		texturefile = "gfx/interface/doctrines/eldritch_doctrine_cthulhu_faithful.dds"
+		alwaystransparent = yes
+	}
+	spriteType = {
+		name = "GFX_eldritch_doctrine_cthulhu_rites_medium"
+		texturefile = "gfx/interface/doctrines/eldritch_doctrine_cthulhu_rites.dds"
+		alwaystransparent = yes
+	}
+	spriteType = {
+		name = "GFX_eldritch_doctrine_nyarlathotep_medium"
+		texturefile = "gfx/interface/doctrines/eldritch_doctrine_nyarlathotep.dds"
+		alwaystransparent = yes
+	}
+	spriteType = {
+		name = "GFX_eldritch_doctrine_nyarlathotep_servitors_medium"
+		texturefile = "gfx/interface/doctrines/eldritch_doctrine_nyarlathotep_servitors.dds"
+		alwaystransparent = yes
+	}
+	spriteType = {
+		name = "GFX_eldritch_doctrine_nyarlathotep_faithful_medium"
+		texturefile = "gfx/interface/doctrines/eldritch_doctrine_nyarlathotep_faithful.dds"
+		alwaystransparent = yes
+	}
+	spriteType = {
+		name = "GFX_eldritch_doctrine_nyarlathotep_rites_medium"
+		texturefile = "gfx/interface/doctrines/eldritch_doctrine_nyarlathotep_rites.dds"
+		alwaystransparent = yes
+	}
+	spriteType = {
+		name = "GFX_eldritch_doctrine_hastur_medium"
+		texturefile = "gfx/interface/doctrines/eldritch_doctrine_hastur.dds"
+		alwaystransparent = yes
+	}
+	spriteType = {
+		name = "GFX_eldritch_doctrine_hastur_servitors_medium"
+		texturefile = "gfx/interface/doctrines/eldritch_doctrine_hastur_servitors.dds"
+		alwaystransparent = yes
+	}
+	spriteType = {
+		name = "GFX_eldritch_doctrine_hastur_faithful_medium"
+		texturefile = "gfx/interface/doctrines/eldritch_doctrine_hastur_faithful.dds"
+		alwaystransparent = yes
+	}
+	spriteType = {
+		name = "GFX_eldritch_doctrine_hastur_rites_medium"
+		texturefile = "gfx/interface/doctrines/eldritch_doctrine_hastur_rites.dds"
+		alwaystransparent = yes
+	}
+	spriteType = {
+		name = "GFX_eldritch_doctrine_shub_niggurath_medium"
+		texturefile = "gfx/interface/doctrines/eldritch_doctrine_shub_niggurath.dds"
+		alwaystransparent = yes
+	}
+	spriteType = {
+		name = "GFX_eldritch_doctrine_shub_niggurath_servitors_medium"
+		texturefile = "gfx/interface/doctrines/eldritch_doctrine_shub_niggurath_servitors.dds"
+		alwaystransparent = yes
+	}
+	spriteType = {
+		name = "GFX_eldritch_doctrine_shub_niggurath_faithful_medium"
+		texturefile = "gfx/interface/doctrines/eldritch_doctrine_shub_niggurath_faithful.dds"
+		alwaystransparent = yes
+	}
+	spriteType = {
+		name = "GFX_eldritch_doctrine_shub_niggurath_rites_medium"
+		texturefile = "gfx/interface/doctrines/eldritch_doctrine_shub_niggurath_rites.dds"
+		alwaystransparent = yes
+	}
+	spriteType = {
+		name = "GFX_eldritch_doctrine_yog_sothoth_medium"
+		texturefile = "gfx/interface/doctrines/eldritch_doctrine_yog_sothoth.dds"
+		alwaystransparent = yes
+	}
+	spriteType = {
+		name = "GFX_eldritch_doctrine_yog_sothoth_servitors_medium"
+		texturefile = "gfx/interface/doctrines/eldritch_doctrine_yog_sothoth_servitors.dds"
+		alwaystransparent = yes
+	}
+	spriteType = {
+		name = "GFX_eldritch_doctrine_yog_sothoth_faithful_medium"
+		texturefile = "gfx/interface/doctrines/eldritch_doctrine_yog_sothoth_faithful.dds"
+		alwaystransparent = yes
+	}
+	spriteType = {
+		name = "GFX_eldritch_doctrine_yog_sothoth_rites_medium"
+		texturefile = "gfx/interface/doctrines/eldritch_doctrine_yog_sothoth_rites.dds"
+		alwaystransparent = yes
+	}
+	spriteType = {
+		name = "GFX_eldritch_doctrine_azathoth_medium"
+		texturefile = "gfx/interface/doctrines/eldritch_doctrine_azathoth.dds"
+		alwaystransparent = yes
+	}
+	spriteType = {
+		name = "GFX_eldritch_doctrine_azathoth_servitors_medium"
+		texturefile = "gfx/interface/doctrines/eldritch_doctrine_azathoth_servitors.dds"
+		alwaystransparent = yes
+	}
+	spriteType = {
+		name = "GFX_eldritch_doctrine_azathoth_faithful_medium"
+		texturefile = "gfx/interface/doctrines/eldritch_doctrine_azathoth_faithful.dds"
+		alwaystransparent = yes
+	}
+	spriteType = {
+		name = "GFX_eldritch_doctrine_azathoth_rites_medium"
+		texturefile = "gfx/interface/doctrines/eldritch_doctrine_azathoth_rites.dds"
+		alwaystransparent = yes
+	}
+	spriteType = {
+		name = "GFX_eldritch_track_servitors_bg"
+		texturefile = "gfx/interface/doctrines/eldritch_track_servitors_bg.dds"
+	}
+	spriteType = {
+		name = "GFX_eldritch_track_faithful_bg"
+		texturefile = "gfx/interface/doctrines/eldritch_track_faithful_bg.dds"
+	}
+	spriteType = {
+		name = "GFX_eldritch_track_rites_bg"
+		texturefile = "gfx/interface/doctrines/eldritch_track_rites_bg.dds"
+	}
 }

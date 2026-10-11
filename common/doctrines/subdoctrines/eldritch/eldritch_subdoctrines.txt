@@ -1,0 +1,878 @@
+#####################################################################
+# Eldritch Pacts - the gods' sub-doctrines (Eldritch folder)
+#
+# Three per god, one for each track, visible and available only to a
+# country whose patron the god is. Reward names are localised as
+# <sub-doctrine>_<reward>.
+#####################################################################
+
+eldritch_brood_of_dagon = {
+	track = eldritch_servitors
+	name = eldritch_brood_of_dagon
+	description = eldritch_brood_of_dagon_desc
+	icon = GFX_eldritch_doctrine_cthulhu_servitors_medium
+	xp_cost = 50
+	xp_type = army
+	visible = {
+		has_country_flag = eldritch_god_cthulhu
+	}
+	available = {
+		has_country_flag = eldritch_god_cthulhu
+	}
+	ai_will_do = {
+		base = 1
+	}
+
+	# EFFECTS
+	eldritch_deep_one_brood = {
+		soft_attack = 0.1
+	}
+	rewards = {
+		gills = {
+			eldritch_deep_one_brood = {
+				river = {
+					attack = 0.15
+					movement = 0.2
+				}
+				marsh = {
+					attack = 0.1
+					movement = 0.2
+				}
+			}
+		}
+		star_children = {
+			eldritch_star_spawn = {
+				soft_attack = 0.15
+				breakthrough = 0.15
+			}
+		}
+		the_spawning = {
+			eldritch_deep_one_brood = {
+				max_organisation = 10
+			}
+			eldritch_star_spawn = {
+				max_organisation = 10
+			}
+		}
+		immortal = {
+			eldritch_deep_one_brood = {
+				default_morale = 0.1
+				casualty_trickleback = 0.1
+			}
+			eldritch_star_spawn = {
+				default_morale = 0.1
+				casualty_trickleback = 0.1
+			}
+		}
+	}
+	mastery = {
+		multiplier = 6.0
+		sub_units = {
+			eldritch_deep_one_brood
+			eldritch_star_spawn
+			eldritch_cthulhu_incarnate
+		}
+	}
+}
+
+eldritch_esoteric_order = {
+	track = eldritch_faithful
+	name = eldritch_esoteric_order
+	description = eldritch_esoteric_order_desc
+	icon = GFX_eldritch_doctrine_cthulhu_faithful_medium
+	xp_cost = 50
+	xp_type = army
+	visible = {
+		has_country_flag = eldritch_god_cthulhu
+	}
+	available = {
+		has_country_flag = eldritch_god_cthulhu
+	}
+	ai_will_do = {
+		base = 1
+	}
+
+	# EFFECTS
+	category_all_infantry = {
+		max_organisation = 5
+	}
+	rewards = {
+		innsmouth_look = {
+			category_all_infantry = {
+				defense = 0.05
+			}
+		}
+		reef_tithes = {
+			naval_invasion_prep_speed = 0.2
+		}
+		marsh_walkers = {
+			infantry = {
+				marsh = {
+					attack = 0.1
+					movement = 0.15
+				}
+				river = {
+					attack = 0.1
+				}
+			}
+		}
+		oath_of_dagon = {
+			category_all_infantry = {
+				default_morale = 0.1
+			}
+		}
+	}
+}
+
+eldritch_dreams_of_the_sleeper = {
+	track = eldritch_rites
+	name = eldritch_dreams_of_the_sleeper
+	description = eldritch_dreams_of_the_sleeper_desc
+	icon = GFX_eldritch_doctrine_cthulhu_rites_medium
+	xp_cost = 50
+	xp_type = army
+	visible = {
+		has_country_flag = eldritch_god_cthulhu
+	}
+	available = {
+		has_country_flag = eldritch_god_cthulhu
+	}
+	ai_will_do = {
+		base = 1
+	}
+
+	# EFFECTS
+	army_morale_factor = 0.05
+	rewards = {
+		call_in_dreams = {
+			planning_speed = 0.1
+		}
+		wrong_angles = {
+			army_org_factor = 0.05
+		}
+		storm_over_the_sea = {
+			naval_invasion_capacity = 10
+		}
+		stars_are_right = {
+			breakthrough_factor = 0.05
+		}
+	}
+}
+
+eldritch_faceless_host = {
+	track = eldritch_servitors
+	name = eldritch_faceless_host
+	description = eldritch_faceless_host_desc
+	icon = GFX_eldritch_doctrine_nyarlathotep_servitors_medium
+	xp_cost = 50
+	xp_type = army
+	visible = {
+		has_country_flag = eldritch_god_nyarlathotep
+	}
+	available = {
+		has_country_flag = eldritch_god_nyarlathotep
+	}
+	ai_will_do = {
+		base = 1
+	}
+
+	# EFFECTS
+	eldritch_faceless_cult = {
+		soft_attack = 0.1
+	}
+	rewards = {
+		masks_within_masks = {
+			eldritch_faceless_cult = {
+				defense = 0.15
+			}
+		}
+		riders_of_leng = {
+			eldritch_shantak_riders = {
+				breakthrough = 0.15
+				maximum_speed = 0.1
+			}
+		}
+		pharaohs_guard = {
+			eldritch_faceless_cult = {
+				max_organisation = 10
+			}
+			eldritch_shantak_riders = {
+				max_organisation = 10
+			}
+		}
+		chaos_whispers = {
+			eldritch_faceless_cult = {
+				default_morale = 0.1
+			}
+			eldritch_shantak_riders = {
+				default_morale = 0.1
+			}
+		}
+	}
+	mastery = {
+		multiplier = 6.0
+		sub_units = {
+			eldritch_faceless_cult
+			eldritch_shantak_riders
+			eldritch_nyarlathotep_incarnate
+		}
+	}
+}
+
+eldritch_starry_wisdom = {
+	track = eldritch_faithful
+	name = eldritch_starry_wisdom
+	description = eldritch_starry_wisdom_desc
+	icon = GFX_eldritch_doctrine_nyarlathotep_faithful_medium
+	xp_cost = 50
+	xp_type = army
+	visible = {
+		has_country_flag = eldritch_god_nyarlathotep
+	}
+	available = {
+		has_country_flag = eldritch_god_nyarlathotep
+	}
+	ai_will_do = {
+		base = 1
+	}
+
+	# EFFECTS
+	infantry = {
+		urban = {
+			attack = 0.1
+			defence = 0.1
+		}
+	}
+	rewards = {
+		agents_everywhere = {
+			army_intel_factor = 0.15
+		}
+		trapezohedron = {
+			category_all_infantry = {
+				max_organisation = 5
+			}
+		}
+		street_preachers = {
+			coordination_bonus = 0.05
+		}
+		haunter_of_the_dark = {
+			land_night_attack = 0.1
+		}
+	}
+}
+
+eldritch_mask_of_fear = {
+	track = eldritch_rites
+	name = eldritch_mask_of_fear
+	description = eldritch_mask_of_fear_desc
+	icon = GFX_eldritch_doctrine_nyarlathotep_rites_medium
+	xp_cost = 50
+	xp_type = army
+	visible = {
+		has_country_flag = eldritch_god_nyarlathotep
+	}
+	available = {
+		has_country_flag = eldritch_god_nyarlathotep
+	}
+	ai_will_do = {
+		base = 1
+	}
+
+	# EFFECTS
+	initiative_factor = 0.05
+	rewards = {
+		wrong_orders = {
+			planning_speed = 0.1
+		}
+		sudden_terror = {
+			breakthrough_factor = 0.05
+		}
+		black_wind = {
+			army_attack_speed_factor = 0.1
+		}
+		every_face = {
+			army_morale_factor = 0.05
+		}
+	}
+}
+
+eldritch_host_of_carcosa = {
+	track = eldritch_servitors
+	name = eldritch_host_of_carcosa
+	description = eldritch_host_of_carcosa_desc
+	icon = GFX_eldritch_doctrine_hastur_servitors_medium
+	xp_cost = 50
+	xp_type = army
+	visible = {
+		has_country_flag = eldritch_god_hastur
+	}
+	available = {
+		has_country_flag = eldritch_god_hastur
+	}
+	ai_will_do = {
+		base = 1
+	}
+
+	# EFFECTS
+	eldritch_yellow_zealots = {
+		defense = 0.1
+	}
+	rewards = {
+		robes_of_ochre = {
+			eldritch_yellow_zealots = {
+				defense = 0.15
+			}
+			eldritch_lidless = {
+				defense = 0.1
+			}
+		}
+		byakhee_wings = {
+			eldritch_byakhee_riders = {
+				breakthrough = 0.15
+				soft_attack = 0.1
+			}
+		}
+		pallid_court = {
+			eldritch_pallid_masks = {
+				breakthrough = 0.15
+			}
+			eldritch_kings_tatters = {
+				breakthrough = 0.1
+				soft_attack = 0.1
+			}
+		}
+		read_the_play = {
+			eldritch_yellow_zealots = {
+				default_morale = 0.1
+			}
+			eldritch_byakhee_riders = {
+				default_morale = 0.1
+			}
+			eldritch_lidless = {
+				default_morale = 0.1
+			}
+			eldritch_audience = {
+				default_morale = 0.1
+			}
+			eldritch_cassildas_choir = {
+				default_morale = 0.1
+			}
+			eldritch_pallid_masks = {
+				default_morale = 0.1
+			}
+			eldritch_kings_tatters = {
+				default_morale = 0.1
+			}
+			eldritch_halis_drowned = {
+				default_morale = 0.1
+			}
+		}
+	}
+	mastery = {
+		multiplier = 6.0
+		sub_units = {
+			eldritch_yellow_zealots
+			eldritch_byakhee_riders
+			eldritch_lidless
+			eldritch_audience
+			eldritch_cassildas_choir
+			eldritch_pallid_masks
+			eldritch_kings_tatters
+			eldritch_halis_drowned
+			eldritch_hastur_incarnate
+		}
+	}
+}
+
+eldritch_second_act = {
+	track = eldritch_faithful
+	name = eldritch_second_act
+	description = eldritch_second_act_desc
+	icon = GFX_eldritch_doctrine_hastur_faithful_medium
+	xp_cost = 50
+	xp_type = army
+	visible = {
+		has_country_flag = eldritch_god_hastur
+	}
+	available = {
+		has_country_flag = eldritch_god_hastur
+	}
+	ai_will_do = {
+		base = 1
+	}
+
+	# EFFECTS
+	category_all_infantry = {
+		default_morale = 0.05
+	}
+	rewards = {
+		yellow_sign_seen = {
+			category_all_infantry = {
+				default_morale = 0.1
+			}
+		}
+		masque = {
+			category_all_infantry = {
+				max_organisation = 5
+			}
+		}
+		cassildas_song = {
+			war_support_factor = 0.05
+		}
+		no_one_leaves = {
+			org_loss_at_low_org_factor = -0.1
+		}
+	}
+}
+
+eldritch_winds_of_hali = {
+	track = eldritch_rites
+	name = eldritch_winds_of_hali
+	description = eldritch_winds_of_hali_desc
+	icon = GFX_eldritch_doctrine_hastur_rites_medium
+	xp_cost = 50
+	xp_type = army
+	visible = {
+		has_country_flag = eldritch_god_hastur
+	}
+	available = {
+		has_country_flag = eldritch_god_hastur
+	}
+	ai_will_do = {
+		base = 1
+	}
+
+	# EFFECTS
+	air_weather_penalty = -0.1
+	rewards = {
+		walks_the_winds = {
+			air_maximum_speed_factor = 0.05
+		}
+		black_stars = {
+			air_night_penalty = -0.25
+		}
+		tattered_sky = {
+			enemy_army_bonus_air_superiority_factor = -0.1
+		}
+		where_flap_the_tatters = {
+			army_morale_factor = 0.05
+		}
+	}
+}
+
+eldritch_black_goats_brood = {
+	track = eldritch_servitors
+	name = eldritch_black_goats_brood
+	description = eldritch_black_goats_brood_desc
+	icon = GFX_eldritch_doctrine_shub_niggurath_servitors_medium
+	xp_cost = 50
+	xp_type = army
+	visible = {
+		has_country_flag = eldritch_god_shub_niggurath
+	}
+	available = {
+		has_country_flag = eldritch_god_shub_niggurath
+	}
+	ai_will_do = {
+		base = 1
+	}
+
+	# EFFECTS
+	eldritch_thousand_young = {
+		defense = 0.1
+	}
+	rewards = {
+		ropy_trunks = {
+			eldritch_dark_young = {
+				forest = {
+					attack = 0.15
+				}
+				jungle = {
+					attack = 0.15
+				}
+			}
+		}
+		faster_than_they_die = {
+			eldritch_thousand_young = {
+				max_organisation = 10
+			}
+		}
+		hooves = {
+			eldritch_dark_young = {
+				breakthrough = 0.15
+			}
+		}
+		ia_shub_niggurath = {
+			eldritch_dark_young = {
+				default_morale = 0.1
+			}
+			eldritch_thousand_young = {
+				default_morale = 0.1
+			}
+		}
+	}
+	mastery = {
+		multiplier = 6.0
+		sub_units = {
+			eldritch_dark_young
+			eldritch_thousand_young
+			eldritch_shub_niggurath_incarnate
+		}
+	}
+}
+
+eldritch_fertile_earth = {
+	track = eldritch_faithful
+	name = eldritch_fertile_earth
+	description = eldritch_fertile_earth_desc
+	icon = GFX_eldritch_doctrine_shub_niggurath_faithful_medium
+	xp_cost = 50
+	xp_type = army
+	visible = {
+		has_country_flag = eldritch_god_shub_niggurath
+	}
+	available = {
+		has_country_flag = eldritch_god_shub_niggurath
+	}
+	ai_will_do = {
+		base = 1
+	}
+
+	# EFFECTS
+	category_all_infantry = {
+		max_organisation = 5
+	}
+	rewards = {
+		the_harvest = {
+			weekly_manpower = 500
+		}
+		blood_in_the_furrows = {
+			land_reinforce_rate = 0.02
+		}
+		born_in_the_woods = {
+			infantry = {
+				forest = {
+					attack = 0.1
+					movement = 0.1
+				}
+				jungle = {
+					attack = 0.1
+					movement = 0.1
+				}
+			}
+		}
+		the_goat_provides = {
+			category_all_infantry = {
+				defense = 0.05
+			}
+		}
+	}
+}
+
+eldritch_wood_grows_thick = {
+	track = eldritch_rites
+	name = eldritch_wood_grows_thick
+	description = eldritch_wood_grows_thick_desc
+	icon = GFX_eldritch_doctrine_shub_niggurath_rites_medium
+	xp_cost = 50
+	xp_type = army
+	visible = {
+		has_country_flag = eldritch_god_shub_niggurath
+	}
+	available = {
+		has_country_flag = eldritch_god_shub_niggurath
+	}
+	ai_will_do = {
+		base = 1
+	}
+
+	# EFFECTS
+	attrition = -0.05
+	rewards = {
+		wood_closes = {
+			enemy_attrition = 0.1
+		}
+		winter_womb = {
+			winter_attrition_factor = -0.2
+		}
+		every_ground = {
+			terrain_penalty_reduction = 0.1
+		}
+		rooted = {
+			max_dig_in_factor = 0.1
+		}
+	}
+}
+
+eldritch_guardians_of_the_threshold = {
+	track = eldritch_servitors
+	name = eldritch_guardians_of_the_threshold
+	description = eldritch_guardians_of_the_threshold_desc
+	icon = GFX_eldritch_doctrine_yog_sothoth_servitors_medium
+	xp_cost = 50
+	xp_type = army
+	visible = {
+		has_country_flag = eldritch_god_yog_sothoth
+	}
+	available = {
+		has_country_flag = eldritch_god_yog_sothoth
+	}
+	ai_will_do = {
+		base = 1
+	}
+
+	# EFFECTS
+	eldritch_gate_wardens = {
+		defense = 0.1
+	}
+	rewards = {
+		where_you_strike = {
+			eldritch_gate_wardens = {
+				defense = 0.15
+				max_organisation = 5
+			}
+		}
+		the_unseen = {
+			eldritch_dunwich_horror = {
+				breakthrough = 0.15
+				soft_attack = 0.1
+			}
+		}
+		lurker = {
+			eldritch_gate_wardens = {
+				entrenchment = 0.2
+			}
+			eldritch_dunwich_horror = {
+				defense = 0.1
+			}
+		}
+		all_times = {
+			eldritch_gate_wardens = {
+				default_morale = 0.1
+			}
+			eldritch_dunwich_horror = {
+				default_morale = 0.1
+			}
+		}
+	}
+	mastery = {
+		multiplier = 6.0
+		sub_units = {
+			eldritch_gate_wardens
+			eldritch_dunwich_horror
+			eldritch_yog_sothoth_incarnate
+		}
+	}
+}
+
+eldritch_the_seers = {
+	track = eldritch_faithful
+	name = eldritch_the_seers
+	description = eldritch_the_seers_desc
+	icon = GFX_eldritch_doctrine_yog_sothoth_faithful_medium
+	xp_cost = 50
+	xp_type = army
+	visible = {
+		has_country_flag = eldritch_god_yog_sothoth
+	}
+	available = {
+		has_country_flag = eldritch_god_yog_sothoth
+	}
+	ai_will_do = {
+		base = 1
+	}
+
+	# EFFECTS
+	category_all_infantry = {
+		defense = 0.05
+	}
+	rewards = {
+		prescience = {
+			dig_in_speed_factor = 0.15
+		}
+		silver_key = {
+			category_all_infantry = {
+				max_organisation = 5
+			}
+		}
+		before_they_come = {
+			max_dig_in_factor = 0.1
+		}
+		one_step_ahead = {
+			initiative_factor = 0.05
+		}
+	}
+}
+
+eldritch_opened_way = {
+	track = eldritch_rites
+	name = eldritch_opened_way
+	description = eldritch_opened_way_desc
+	icon = GFX_eldritch_doctrine_yog_sothoth_rites_medium
+	xp_cost = 50
+	xp_type = army
+	visible = {
+		has_country_flag = eldritch_god_yog_sothoth
+	}
+	available = {
+		has_country_flag = eldritch_god_yog_sothoth
+	}
+	ai_will_do = {
+		base = 1
+	}
+
+	# EFFECTS
+	army_speed_factor = 0.05
+	rewards = {
+		paths_between = {
+			army_speed_factor = 0.05
+		}
+		ritual_of_opening = {
+			planning_decay_rate_factor = -0.1
+		}
+		out_of_time = {
+			coordination_bonus = 0.05
+		}
+		the_outer_ones = {
+			max_planning = 0.1
+		}
+	}
+}
+
+eldritch_court_of_the_daemon_sultan = {
+	track = eldritch_servitors
+	name = eldritch_court_of_the_daemon_sultan
+	description = eldritch_court_of_the_daemon_sultan_desc
+	icon = GFX_eldritch_doctrine_azathoth_servitors_medium
+	xp_cost = 50
+	xp_type = army
+	visible = {
+		has_country_flag = eldritch_god_azathoth
+	}
+	available = {
+		has_country_flag = eldritch_god_azathoth
+	}
+	ai_will_do = {
+		base = 1
+	}
+
+	# EFFECTS
+	eldritch_chaos_spawn = {
+		soft_attack = 0.1
+	}
+	rewards = {
+		matter_unmade = {
+			eldritch_chaos_spawn = {
+				hard_attack = 0.15
+				breakthrough = 0.15
+			}
+		}
+		monotonous_piping = {
+			eldritch_void_pipers = {
+				soft_attack = 0.15
+			}
+		}
+		mindless_dance = {
+			eldritch_chaos_spawn = {
+				max_organisation = 10
+			}
+			eldritch_void_pipers = {
+				max_organisation = 10
+			}
+		}
+		boiling_chaos = {
+			eldritch_chaos_spawn = {
+				default_morale = 0.1
+			}
+			eldritch_void_pipers = {
+				default_morale = 0.1
+			}
+		}
+	}
+	mastery = {
+		multiplier = 6.0
+		sub_units = {
+			eldritch_chaos_spawn
+			eldritch_void_pipers
+			eldritch_azathoth_incarnate
+		}
+	}
+}
+
+eldritch_mindless_dancers = {
+	track = eldritch_faithful
+	name = eldritch_mindless_dancers
+	description = eldritch_mindless_dancers_desc
+	icon = GFX_eldritch_doctrine_azathoth_faithful_medium
+	xp_cost = 50
+	xp_type = army
+	visible = {
+		has_country_flag = eldritch_god_azathoth
+	}
+	available = {
+		has_country_flag = eldritch_god_azathoth
+	}
+	ai_will_do = {
+		base = 1
+	}
+
+	# EFFECTS
+	category_all_infantry = {
+		soft_attack = 0.05
+	}
+	rewards = {
+		frenzy = {
+			category_all_infantry = {
+				soft_attack = 0.05
+			}
+		}
+		heedless = {
+			org_loss_at_low_org_factor = -0.1
+		}
+		forgotten_fear = {
+			category_all_infantry = {
+				default_morale = 0.1
+			}
+		}
+		unthinking = {
+			breakthrough_factor = 0.05
+		}
+	}
+}
+
+eldritch_blind_idiot_god = {
+	track = eldritch_rites
+	name = eldritch_blind_idiot_god
+	description = eldritch_blind_idiot_god_desc
+	icon = GFX_eldritch_doctrine_azathoth_rites_medium
+	xp_cost = 50
+	xp_type = army
+	visible = {
+		has_country_flag = eldritch_god_azathoth
+	}
+	available = {
+		has_country_flag = eldritch_god_azathoth
+	}
+	ai_will_do = {
+		base = 1
+	}
+
+	# EFFECTS
+	army_artillery_attack_factor = 0.05
+	rewards = {
+		blasphemous_bombardment = {
+			category_line_artillery = {
+				soft_attack = 0.1
+			}
+		}
+		primordial_fire = {
+			army_artillery_attack_factor = 0.05
+		}
+		thing_at_the_centre = {
+			army_attack_factor = 0.03
+		}
+		its_whim = {
+			army_morale_factor = 0.05
+		}
+	}
+}

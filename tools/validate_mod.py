@@ -16,6 +16,9 @@ catches the mistakes that are easy to make by hand:
   * scripted effects / triggers / events that are used but never defined
   * formables (set_cosmetic_tag): names for every ideology, flags in all
     three sizes as uncompressed TGA
+  * doctrines: folders, tracks, grand doctrines and sub-doctrines refer to
+    each other correctly, have names, icons and reward names, one milestone
+    per track, and only touch battalions that exist
   * localisation file encoding (UTF-8 with BOM) and header
 
 Usage:  python3 tools/validate_mod.py      (exit code 1 on problems)
@@ -436,6 +439,76 @@ def main():
         for key, _, value in walk(items):
             if key == "division_template" and isinstance(value, list):
                 created_templates.add({k: v for k, _, v in value}.get("name", "").strip('"'))
+
+    # ------------------------------------------------------------- doctrines (the 1.16 doctrine system)
+    # Vanilla sprites our tracks reuse: the milestone icons and their frame.
+    vanilla_doctrine_sprites = {"GFX_doctrine_milestone_infantry_land", "GFX_doctrine_milestone_armored_land",
+                                "GFX_doctrine_milestone_operations_land", "GFX_doctrine_decor_land"}
+
+    def doctrine_units(effects, where):
+        for k, _, v in walk(effects):
+            if isinstance(v, list) and k and k.startswith("eldritch_") and k not in subunits:
+                problems.append(f"{where}: unknown sub-unit {k}")
+
+    def mastery_units(body, where):
+        for k, _, v in body:
+            if k == "mastery":
+                for kk, _, vv in v:
+                    if kk == "sub_units":
+                        for unit, _, _ in vv:
+                            if unit.startswith("eldritch_") and unit not in subunits:
+                                problems.append(f"{where}: mastery from unknown sub-unit {unit}")
+
+    folders = {"land", "naval", "air"}
+    for path, items in load_script("common/doctrines/folders/*.txt", problems).items():
+        for folder, _, body in items:
+            folders.add(folder)
+            fields = {k: v for k, _, v in body}
+            need_loc(fields.get("name", "").strip('"'), path)
+            for k in ("tab_gfx", "ledger_gfx"):
+                need_sprite(fields.get(k, "").strip('"'), f"{path} {folder}")
+    tracks = set()
+    for path, items in load_script("common/doctrines/tracks/*.txt", problems).items():
+        for track, _, body in items:
+            tracks.add(track)
+            fields = {k: v for k, _, v in body}
+            need_loc(fields.get("name", "").strip('"'), path)
+            for k in ("background", "icon", "icon_frame"):
+                name = fields.get(k, "").strip('"')
+                if name not in vanilla_doctrine_sprites:
+                    need_sprite(name, f"{path} {track}")
+            mastery_units(body, f"{path} {track}")
+    for path, items in load_script("common/doctrines/grand_doctrines/*.txt", problems).items():
+        for gd, _, body in items:
+            fields = {k: v for k, _, v in body}
+            if fields.get("folder") not in folders:
+                problems.append(f"{path}: {gd} is in unknown doctrine folder {fields.get('folder')}")
+            need_loc(fields.get("name", ""), path)
+            need_loc(fields.get("description", ""), path)
+            need_sprite(fields.get("icon", ""), f"{path} {gd}")
+            gd_tracks = [t for t, _, _ in fields.get("tracks", [])]
+            for t in gd_tracks:
+                if t not in tracks:
+                    problems.append(f"{path}: {gd} uses unknown track {t}")
+            milestones = [v for k, _, v in fields.get("milestones", []) if k is None]
+            if len(milestones) != len(gd_tracks):
+                problems.append(f"{path}: {gd} has {len(milestones)} milestones for {len(gd_tracks)} tracks")
+            doctrine_units(body, f"{path} {gd}")
+    for path, items in load_script("common/doctrines/subdoctrines/**/*.txt", problems).items():
+        for sd, _, body in items:
+            fields = {k: v for k, _, v in body}
+            if fields.get("track") not in tracks:
+                problems.append(f"{path}: {sd} is for unknown track {fields.get('track')}")
+            need_loc(fields.get("name", ""), path)
+            need_loc(fields.get("description", ""), path)
+            need_sprite(fields.get("icon", ""), f"{path} {sd}")
+            for reward, _, _ in fields.get("rewards", []):
+                # reward names are localised as <sub-doctrine>_<reward>
+                need_loc(f"{sd}_{reward}", path)
+                need_loc(f"{sd}_{reward}_desc", path)
+            doctrine_units(body, f"{path} {sd}")
+            mastery_units(body, f"{path} {sd}")
+
     for path, items in all_files.items():
         for key, _, value in walk(items):
             if key == "create_unit" and isinstance(value, list):
@@ -451,7 +524,8 @@ def main():
             print("  -", p)
         return 1
     print(f"OK: {len(loc)} localisation keys, {len(sprites)} sprites, {len(ideas)} ideas, "
-          f"{len(traits)} traits, {len(subunits)} battalions, {len(techs)} techs, {len(events)} events.")
+          f"{len(traits)} traits, {len(subunits)} battalions, {len(techs)} techs, {len(events)} events, "
+          f"{len(tracks)} doctrine tracks.")
     return 0
 
 
