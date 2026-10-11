@@ -134,6 +134,10 @@ spriteTypes = {
 		name = "GFX_idea_eldritch_dread"
 		texturefile = "gfx/interface/ideas/eldritch_dread.dds"
 	}
+	spriteType = {
+		name = "GFX_idea_eldritch_mantle"
+		texturefile = "gfx/interface/ideas/eldritch_mantle.dds"
+	}
 
 	### Decisions ###
 	spriteType = {

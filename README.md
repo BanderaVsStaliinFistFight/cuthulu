@@ -168,6 +168,21 @@ Your country leader can take part in the pact in person. These rites need the le
 | Yog-Sothoth | **The Key Made Flesh**: +10% research speed, +15% planning speed, +5% max factory efficiency |
 | Azathoth | **Seat of the Daemon Sultan**: +10% attack and breakthrough, +10% factory output, −10% stability |
 
+### 9. The Prophet's Mantle: a character sheet
+The Prophet levels up like a role-playing character. **The Prophet's Record** (free, any time) opens the character sheet: level, experience, unspent Insight and three stats. The Forbidden Rites header shows a one-line summary.
+
+| Stat | Each point gives | What it stands for |
+|---|---|---|
+| **Lore** | +2% research speed | knowledge of the rites and the old tongues |
+| **Zeal** | +2% army attack | the fire that sends soldiers into battle |
+| **Will** | +2% stability | what is left of the Prophet's own mind |
+
+* **Experience** comes from every rite of the pact, scaled to its weight. Most rites give 10. Exalt the Prophet, the avatars, Commune, the Dark Council and March Beside the God give 25. Tier II, incarnations and the Great Temple give 50. Tier III and Become the Vessel give 100.
+* **Levels** need 100 experience, then 50 more for each level after that. Each level brings a point of **Insight**. Spend it straight away when the level-up event appears, or keep it and spend it later on the sheet.
+* **Stats** start at 1 and go up to 10. There aren't enough levels in a game to max all three, so your choices shape the Prophet.
+* **The mantle belongs to the cult, not to one leader.** If the leader changes, the stats and levels stay, but the mantle's bonuses lapse until the new leader is marked by **Exalt the Prophet**.
+* **Older saves:** a pact sealed before this update gets a level 1 mantle at its next monthly pulse, or as soon as you open the record.
+
 ---
 
 ## Game rule
@@ -197,6 +212,7 @@ common/units/                      the 12 eldritch battalions
 common/technologies/               hidden "rite" techs that unlock and buff the battalions
 common/scripted_effects|triggers/  shared logic (summoning, blessings, tiers, favor)
 common/scripted_localisation/      [ROOT.GetEldritchGodName] etc.
+common/dynamic_modifiers/          the Prophet's mantle (character sheet stats as modifiers)
 common/game_rules/                 the AI rule
 common/on_actions/                 welcome pop-up at game start
 events/                            summoning, tier, whim, curse, news and monthly-pulse events

@@ -11,7 +11,7 @@ catches the mistakes that are easy to make by hand:
     next to the .asset that defines them (the game resolves it from there)
   * icons / pictures without a sprite, sprites without a texture file,
     battalions without a designer icon, traits without an icon, missing
-    portrait files
+    portrait files, dynamic modifiers without text or icon
   * scripted effects / triggers / events that are used but never defined
   * localisation file encoding (UTF-8 with BOM) and header
 
@@ -178,6 +178,17 @@ def main():
                     if pic:
                         need_sprite("GFX_idea_" + pic, f"{path} {idea}")
 
+    dynamic_modifiers = set()
+    for path, items in load_script("common/dynamic_modifiers/*.txt", problems).items():
+        for name, _, body in items:
+            dynamic_modifiers.add(name)
+            need_loc(name, path)
+            fields = {k: v for k, _, v in body}
+            if "icon" in fields:
+                need_sprite(fields["icon"], f"{path} {name}")
+            if "custom_modifier_tooltip" in fields:
+                need_loc(fields["custom_modifier_tooltip"], f"{path} {name}")
+
     traits = set()
     for pattern in ("common/country_leader/*.txt", "common/unit_leader/*.txt"):
         for path, items in load_script(pattern, problems).items():
@@ -335,6 +346,10 @@ def main():
             if key in ("add_ideas", "has_idea", "remove_idea", "add_idea") and isinstance(value, str):
                 if value.startswith("eldritch_") and value not in ideas:
                     problems.append(f"{path}: unknown idea {value}")
+            if key in ("add_dynamic_modifier", "remove_dynamic_modifier") and isinstance(value, list):
+                mod = {k: v for k, _, v in value}.get("modifier")
+                if mod not in dynamic_modifiers:
+                    problems.append(f"{path}: unknown dynamic modifier {mod}")
             if key in ("add_timed_idea", "modify_timed_idea") and isinstance(value, list):
                 idea = {k: v for k, _, v in value}.get("idea")
                 if idea not in ideas:

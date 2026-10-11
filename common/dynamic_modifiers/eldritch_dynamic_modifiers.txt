@@ -1,0 +1,20 @@
+#####################################################################
+# Eldritch Pacts - dynamic modifiers
+#
+#   eldritch_prophet_mantle   the Prophet's character sheet: each point of
+#                             Lore, Zeal and Will adds 2% research speed,
+#                             army attack and stability. The values are
+#                             country variables kept up to date by
+#                             eldritch_prophet_update_mantle. It only works
+#                             while the current leader bears the god's mark.
+#####################################################################
+
+eldritch_prophet_mantle = {
+	icon = GFX_idea_eldritch_mantle
+	enable = { eldritch_leader_is_herald = yes }
+	custom_modifier_tooltip = eldritch_prophet_mantle_tt
+
+	research_speed_factor = eldritch_prophet_lore_bonus
+	army_attack_factor = eldritch_prophet_zeal_bonus
+	stability_factor = eldritch_prophet_will_bonus
+}

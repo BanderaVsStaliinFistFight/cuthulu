@@ -6,6 +6,9 @@
 #   [ROOT.GetEldritchFavorLine]  favor read-out (empty before a pact)
 #   [ROOT.GetEldritchProphetLine] the leader's standing with the patron
 #                                 (empty before a pact)
+#   [ROOT.GetEldritchMantleLine]  the Prophet's level and stats, for the
+#                                 category header (empty before a pact)
+#   [ROOT.GetEldritchMantleState] whether the mantle's gifts are in force
 #####################################################################
 
 defined_text = {
@@ -116,5 +119,40 @@ defined_text = {
 	}
 	text = {
 		localization_key = eldritch_favor_line_none
+	}
+}
+
+defined_text = {
+	name = GetEldritchMantleLine
+
+	text = {
+		trigger = {
+			has_country_flag = eldritch_pact_made
+			has_variable = eldritch_prophet_level
+			check_variable = { eldritch_prophet_insight > 0 }
+		}
+		localization_key = eldritch_mantle_line_insight
+	}
+	text = {
+		trigger = {
+			has_country_flag = eldritch_pact_made
+			has_variable = eldritch_prophet_level
+		}
+		localization_key = eldritch_mantle_line
+	}
+	text = {
+		localization_key = eldritch_favor_line_none
+	}
+}
+
+defined_text = {
+	name = GetEldritchMantleState
+
+	text = {
+		trigger = { eldritch_leader_is_herald = yes }
+		localization_key = eldritch_mantle_state_worn
+	}
+	text = {
+		localization_key = eldritch_mantle_state_unclaimed
 	}
 }

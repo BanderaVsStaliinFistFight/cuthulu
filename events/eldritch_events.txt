@@ -11,6 +11,8 @@
 #   eldritch.63       received by a cursed enemy whose name the Prophet speaks
 #   eldritch.70/71    the Prophet communes with the god (asks / returns changed)
 #   eldritch.72       the Prophet becomes the god's Vessel
+#   eldritch.80       the Prophet's record: the character sheet
+#   eldritch.81       the Prophet reaches a new level
 #   eldritch.100      hidden monthly pulse (Favor income, random whims)
 #   eldritch_news.1-3 world news: a god is summoned / ascends / incarnates
 #   eldritch_news.4   world news: a leader becomes a god's Vessel
@@ -547,6 +549,85 @@ country_event = {
 
 	option = {
 		name = eldritch.72.a
+	}
+}
+
+#####################################################################
+# THE PROPHET'S MANTLE - the character sheet
+#####################################################################
+
+# The sheet. Spending a point re-opens it so several can be spent in turn.
+country_event = {
+	id = eldritch.80
+	title = eldritch.80.t
+	desc = eldritch.80.d
+	picture = GFX_report_event_eldritch_tome
+
+	is_triggered_only = yes
+
+	option = {
+		name = eldritch.80.lore
+		trigger = { eldritch_prophet_can_raise_lore = yes }
+		eldritch_prophet_raise_lore = yes
+		hidden_effect = { country_event = { id = eldritch.80 } }
+		ai_chance = { factor = 30 }
+	}
+
+	option = {
+		name = eldritch.80.zeal
+		trigger = { eldritch_prophet_can_raise_zeal = yes }
+		eldritch_prophet_raise_zeal = yes
+		hidden_effect = { country_event = { id = eldritch.80 } }
+		ai_chance = { factor = 40 }
+	}
+
+	option = {
+		name = eldritch.80.will
+		trigger = { eldritch_prophet_can_raise_will = yes }
+		eldritch_prophet_raise_will = yes
+		hidden_effect = { country_event = { id = eldritch.80 } }
+		ai_chance = { factor = 30 }
+	}
+
+	option = {
+		name = eldritch.80.close
+		ai_chance = { factor = 1 }
+	}
+}
+
+# A new level, and a point of Insight to spend now or keep for later.
+country_event = {
+	id = eldritch.81
+	title = eldritch.81.t
+	desc = eldritch.81.d
+	picture = GFX_report_event_eldritch_omen
+
+	is_triggered_only = yes
+
+	option = {
+		name = eldritch.81.lore
+		trigger = { eldritch_prophet_can_raise_lore = yes }
+		eldritch_prophet_raise_lore = yes
+		ai_chance = { factor = 30 }
+	}
+
+	option = {
+		name = eldritch.81.zeal
+		trigger = { eldritch_prophet_can_raise_zeal = yes }
+		eldritch_prophet_raise_zeal = yes
+		ai_chance = { factor = 40 }
+	}
+
+	option = {
+		name = eldritch.81.will
+		trigger = { eldritch_prophet_can_raise_will = yes }
+		eldritch_prophet_raise_will = yes
+		ai_chance = { factor = 30 }
+	}
+
+	option = {
+		name = eldritch.81.keep
+		ai_chance = { factor = 0 }
 	}
 }
 

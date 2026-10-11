@@ -191,3 +191,19 @@ eldritch_god_incarnate_deployed = {
 		}
 	}
 }
+
+# The Prophet has a point of Insight to spend and the stat is below 10.
+eldritch_prophet_can_raise_lore = {
+	check_variable = { eldritch_prophet_insight > 0 }
+	check_variable = { eldritch_prophet_lore < 10 }
+}
+
+eldritch_prophet_can_raise_zeal = {
+	check_variable = { eldritch_prophet_insight > 0 }
+	check_variable = { eldritch_prophet_zeal < 10 }
+}
+
+eldritch_prophet_can_raise_will = {
+	check_variable = { eldritch_prophet_insight > 0 }
+	check_variable = { eldritch_prophet_will < 10 }
+}

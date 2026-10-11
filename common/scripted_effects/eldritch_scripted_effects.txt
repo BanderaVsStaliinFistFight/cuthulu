@@ -4,6 +4,8 @@
 # Country variables:
 #   eldritch_favor      Eldritch Favor, the currency for blessings (0-999)
 #   eldritch_pact_tier  1 = Bound, 2 = Stirring, 3 = Ascendant
+#   eldritch_prophet_*  the Prophet's character sheet (see THE PROPHET'S
+#                       MANTLE at the end of this file)
 #
 # Country flags:
 #   eldritch_lore_found, eldritch_ritual_underway, eldritch_pact_made,
@@ -90,6 +92,9 @@ eldritch_lose_favor_40 = {
 
 # Runs every 30 days for pact holders (hidden event eldritch.100).
 eldritch_monthly_pulse = {
+	# pacts sealed before the Prophet's mantle existed get one now
+	eldritch_prophet_init = yes
+
 	if = {
 		limit = { check_variable = { eldritch_pact_tier > 2 } }
 		add_to_variable = { eldritch_favor = 12 }
@@ -605,6 +610,7 @@ eldritch_seal_pact_common = {
 		set_country_flag = eldritch_pact_made
 		set_variable = { eldritch_favor = 50 }
 		set_variable = { eldritch_pact_tier = 1 }
+		eldritch_prophet_init = yes
 	}
 	custom_effect_tooltip = eldritch_pact_sealed_tt
 	custom_effect_tooltip = eldritch_start_favor_tt
@@ -964,5 +970,141 @@ eldritch_become_vessel_effect = {
 		every_other_country = {
 			news_event = { id = eldritch_news.4 hours = 6 }
 		}
+	}
+}
+
+#####################################################################
+# THE PROPHET'S MANTLE - the character sheet
+#
+# The mantle belongs to the cult, not to one leader: whoever bears the
+# god's mark (the Herald trait) wears it, and its bonuses lapse while the
+# leader is unmarked. Country variables:
+#   eldritch_prophet_level     level, from 1
+#   eldritch_prophet_xp        experience towards the next level
+#   eldritch_prophet_xp_next   experience the next level needs (100, +50
+#                              per level)
+#   eldritch_prophet_insight   unspent points
+#   eldritch_prophet_lore / _zeal / _will
+#                              stats, 1 to 10
+#   eldritch_prophet_<stat>_bonus / _pct
+#                              the stat as a modifier (x 0.02) and as a
+#                              percentage for the sheet (x 2)
+#####################################################################
+
+eldritch_prophet_init = {
+	if = {
+		limit = { NOT = { has_variable = eldritch_prophet_level } }
+		set_variable = { eldritch_prophet_level = 1 }
+		set_variable = { eldritch_prophet_xp = 0 }
+		set_variable = { eldritch_prophet_xp_next = 100 }
+		set_variable = { eldritch_prophet_insight = 0 }
+		set_variable = { eldritch_prophet_lore = 1 }
+		set_variable = { eldritch_prophet_zeal = 1 }
+		set_variable = { eldritch_prophet_will = 1 }
+		eldritch_prophet_update_mantle = yes
+		add_dynamic_modifier = { modifier = eldritch_prophet_mantle }
+	}
+}
+
+eldritch_prophet_update_mantle = {
+	set_variable = { eldritch_prophet_lore_bonus = eldritch_prophet_lore }
+	multiply_variable = { eldritch_prophet_lore_bonus = 0.02 }
+	set_variable = { eldritch_prophet_zeal_bonus = eldritch_prophet_zeal }
+	multiply_variable = { eldritch_prophet_zeal_bonus = 0.02 }
+	set_variable = { eldritch_prophet_will_bonus = eldritch_prophet_will }
+	multiply_variable = { eldritch_prophet_will_bonus = 0.02 }
+	set_variable = { eldritch_prophet_lore_pct = eldritch_prophet_lore }
+	multiply_variable = { eldritch_prophet_lore_pct = 2 }
+	set_variable = { eldritch_prophet_zeal_pct = eldritch_prophet_zeal }
+	multiply_variable = { eldritch_prophet_zeal_pct = 2 }
+	set_variable = { eldritch_prophet_will_pct = eldritch_prophet_will }
+	multiply_variable = { eldritch_prophet_will_pct = 2 }
+}
+
+# Spends enough experience for as many levels as it covers; each level
+# brings a point of Insight. Announces the new level (eldritch.81).
+eldritch_prophet_check_level = {
+	set_temp_variable = { eldritch_levels_gained = 0 }
+	while_loop_effect = {
+		limit = {
+			check_variable = {
+				var = eldritch_prophet_xp
+				value = eldritch_prophet_xp_next
+				compare = greater_than_or_equals
+			}
+		}
+		subtract_from_variable = { eldritch_prophet_xp = eldritch_prophet_xp_next }
+		add_to_variable = { eldritch_prophet_level = 1 }
+		add_to_variable = { eldritch_prophet_insight = 1 }
+		add_to_variable = { eldritch_prophet_xp_next = 50 }
+		add_to_temp_variable = { eldritch_levels_gained = 1 }
+	}
+	if = {
+		limit = { check_variable = { eldritch_levels_gained > 0 } }
+		country_event = { id = eldritch.81 }
+	}
+}
+
+eldritch_prophet_gain_xp_10 = {
+	custom_effect_tooltip = eldritch_prophet_xp_10_tt
+	hidden_effect = {
+		eldritch_prophet_init = yes
+		add_to_variable = { eldritch_prophet_xp = 10 }
+		eldritch_prophet_check_level = yes
+	}
+}
+
+eldritch_prophet_gain_xp_25 = {
+	custom_effect_tooltip = eldritch_prophet_xp_25_tt
+	hidden_effect = {
+		eldritch_prophet_init = yes
+		add_to_variable = { eldritch_prophet_xp = 25 }
+		eldritch_prophet_check_level = yes
+	}
+}
+
+eldritch_prophet_gain_xp_50 = {
+	custom_effect_tooltip = eldritch_prophet_xp_50_tt
+	hidden_effect = {
+		eldritch_prophet_init = yes
+		add_to_variable = { eldritch_prophet_xp = 50 }
+		eldritch_prophet_check_level = yes
+	}
+}
+
+eldritch_prophet_gain_xp_100 = {
+	custom_effect_tooltip = eldritch_prophet_xp_100_tt
+	hidden_effect = {
+		eldritch_prophet_init = yes
+		add_to_variable = { eldritch_prophet_xp = 100 }
+		eldritch_prophet_check_level = yes
+	}
+}
+
+# Spend a point of Insight on a stat.
+eldritch_prophet_raise_lore = {
+	custom_effect_tooltip = eldritch_prophet_raise_lore_tt
+	hidden_effect = {
+		subtract_from_variable = { eldritch_prophet_insight = 1 }
+		add_to_variable = { eldritch_prophet_lore = 1 }
+		eldritch_prophet_update_mantle = yes
+	}
+}
+
+eldritch_prophet_raise_zeal = {
+	custom_effect_tooltip = eldritch_prophet_raise_zeal_tt
+	hidden_effect = {
+		subtract_from_variable = { eldritch_prophet_insight = 1 }
+		add_to_variable = { eldritch_prophet_zeal = 1 }
+		eldritch_prophet_update_mantle = yes
+	}
+}
+
+eldritch_prophet_raise_will = {
+	custom_effect_tooltip = eldritch_prophet_raise_will_tt
+	hidden_effect = {
+		subtract_from_variable = { eldritch_prophet_insight = 1 }
+		add_to_variable = { eldritch_prophet_will = 1 }
+		eldritch_prophet_update_mantle = yes
 	}
 }

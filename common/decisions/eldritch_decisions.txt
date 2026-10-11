@@ -288,6 +288,7 @@ eldritch_forbidden_rites = {
 
 		complete_effect = {
 			eldritch_gain_favor_15 = yes
+			eldritch_prophet_gain_xp_10 = yes
 		}
 
 		ai_will_do = {
@@ -312,6 +313,7 @@ eldritch_forbidden_rites = {
 			add_manpower = -20000
 			add_stability = -0.02
 			eldritch_gain_favor_40 = yes
+			eldritch_prophet_gain_xp_10 = yes
 		}
 
 		ai_will_do = {
@@ -344,6 +346,7 @@ eldritch_forbidden_rites = {
 
 		remove_effect = {
 			eldritch_raise_pact_to_tier_2 = yes
+			eldritch_prophet_gain_xp_50 = yes
 		}
 
 		ai_will_do = {
@@ -372,6 +375,7 @@ eldritch_forbidden_rites = {
 
 		remove_effect = {
 			eldritch_raise_pact_to_tier_3 = yes
+			eldritch_prophet_gain_xp_100 = yes
 		}
 
 		ai_will_do = {
@@ -399,6 +403,7 @@ eldritch_forbidden_rites = {
 		complete_effect = {
 			hidden_effect = { subtract_from_variable = { eldritch_favor = 50 } }
 			eldritch_anoint_general_effect = yes
+			eldritch_prophet_gain_xp_10 = yes
 		}
 
 		ai_will_do = {
@@ -426,6 +431,7 @@ eldritch_forbidden_rites = {
 		complete_effect = {
 			hidden_effect = { subtract_from_variable = { eldritch_favor = 50 } }
 			eldritch_anoint_admiral_effect = yes
+			eldritch_prophet_gain_xp_10 = yes
 		}
 
 		ai_will_do = {
@@ -453,6 +459,7 @@ eldritch_forbidden_rites = {
 		complete_effect = {
 			hidden_effect = { subtract_from_variable = { eldritch_favor = 75 } }
 			eldritch_exalt_prophet_effect = yes
+			eldritch_prophet_gain_xp_25 = yes
 		}
 
 		ai_will_do = {
@@ -476,6 +483,7 @@ eldritch_forbidden_rites = {
 		complete_effect = {
 			hidden_effect = { subtract_from_variable = { eldritch_favor = 60 } }
 			eldritch_spawn_servitors = yes
+			eldritch_prophet_gain_xp_10 = yes
 		}
 
 		ai_will_do = {
@@ -515,6 +523,7 @@ eldritch_forbidden_rites = {
 
 		remove_effect = {
 			eldritch_incarnate_god_effect = yes
+			eldritch_prophet_gain_xp_50 = yes
 		}
 
 		ai_will_do = {
@@ -550,6 +559,7 @@ eldritch_forbidden_rites = {
 		complete_effect = {
 			hidden_effect = { subtract_from_variable = { eldritch_favor = 40 } }
 			add_timed_idea = { idea = eldritch_cthulhu_blessing days = 180 }
+			eldritch_prophet_gain_xp_10 = yes
 		}
 
 		ai_will_do = {
@@ -599,6 +609,7 @@ eldritch_forbidden_rites = {
 				planning_skill = 4
 				logistics_skill = 4
 			}
+			eldritch_prophet_gain_xp_25 = yes
 		}
 
 		ai_will_do = {
@@ -641,6 +652,7 @@ eldritch_forbidden_rites = {
 				add_timed_idea = { idea = eldritch_curse_dreams_of_rlyeh days = 90 }
 				hidden_effect = { country_event = { id = eldritch.60 } }
 			}
+			eldritch_prophet_gain_xp_10 = yes
 		}
 
 		ai_will_do = {
@@ -672,6 +684,7 @@ eldritch_forbidden_rites = {
 		complete_effect = {
 			hidden_effect = { subtract_from_variable = { eldritch_favor = 40 } }
 			add_timed_idea = { idea = eldritch_nyarlathotep_blessing days = 180 }
+			eldritch_prophet_gain_xp_10 = yes
 		}
 
 		ai_will_do = {
@@ -707,6 +720,7 @@ eldritch_forbidden_rites = {
 				planning_skill = 5
 				logistics_skill = 5
 			}
+			eldritch_prophet_gain_xp_25 = yes
 		}
 
 		ai_will_do = {
@@ -763,6 +777,7 @@ eldritch_forbidden_rites = {
 				}
 				hidden_effect = { country_event = { id = eldritch.62 } }
 			}
+			eldritch_prophet_gain_xp_10 = yes
 		}
 
 		ai_will_do = {
@@ -794,6 +809,7 @@ eldritch_forbidden_rites = {
 		complete_effect = {
 			hidden_effect = { subtract_from_variable = { eldritch_favor = 40 } }
 			add_timed_idea = { idea = eldritch_hastur_blessing days = 180 }
+			eldritch_prophet_gain_xp_10 = yes
 		}
 
 		ai_will_do = {
@@ -833,6 +849,7 @@ eldritch_forbidden_rites = {
 				planning_skill = 4
 				logistics_skill = 3
 			}
+			eldritch_prophet_gain_xp_25 = yes
 		}
 
 		ai_will_do = {
@@ -875,6 +892,7 @@ eldritch_forbidden_rites = {
 				add_timed_idea = { idea = eldritch_curse_yellow_madness days = 90 }
 				hidden_effect = { country_event = { id = eldritch.61 } }
 			}
+			eldritch_prophet_gain_xp_10 = yes
 		}
 
 		ai_will_do = {
@@ -906,6 +924,7 @@ eldritch_forbidden_rites = {
 		complete_effect = {
 			hidden_effect = { subtract_from_variable = { eldritch_favor = 40 } }
 			add_timed_idea = { idea = eldritch_shub_niggurath_blessing days = 180 }
+			eldritch_prophet_gain_xp_10 = yes
 		}
 
 		ai_will_do = {
@@ -945,6 +964,7 @@ eldritch_forbidden_rites = {
 				planning_skill = 3
 				logistics_skill = 5
 			}
+			eldritch_prophet_gain_xp_25 = yes
 		}
 
 		ai_will_do = {
@@ -968,6 +988,7 @@ eldritch_forbidden_rites = {
 		complete_effect = {
 			hidden_effect = { subtract_from_variable = { eldritch_favor = 50 } }
 			add_manpower = 25000
+			eldritch_prophet_gain_xp_10 = yes
 		}
 
 		ai_will_do = {
@@ -1003,6 +1024,7 @@ eldritch_forbidden_rites = {
 		complete_effect = {
 			hidden_effect = { subtract_from_variable = { eldritch_favor = 40 } }
 			add_timed_idea = { idea = eldritch_yog_sothoth_blessing days = 180 }
+			eldritch_prophet_gain_xp_10 = yes
 		}
 
 		ai_will_do = {
@@ -1038,6 +1060,7 @@ eldritch_forbidden_rites = {
 				planning_skill = 5
 				logistics_skill = 4
 			}
+			eldritch_prophet_gain_xp_25 = yes
 		}
 
 		ai_will_do = {
@@ -1072,6 +1095,7 @@ eldritch_forbidden_rites = {
 				uses = 1
 				category = electronics
 			}
+			eldritch_prophet_gain_xp_10 = yes
 		}
 
 		ai_will_do = {
@@ -1103,6 +1127,7 @@ eldritch_forbidden_rites = {
 		complete_effect = {
 			hidden_effect = { subtract_from_variable = { eldritch_favor = 40 } }
 			add_timed_idea = { idea = eldritch_azathoth_blessing days = 180 }
+			eldritch_prophet_gain_xp_10 = yes
 		}
 
 		ai_will_do = {
@@ -1142,6 +1167,7 @@ eldritch_forbidden_rites = {
 				planning_skill = 4
 				logistics_skill = 3
 			}
+			eldritch_prophet_gain_xp_25 = yes
 		}
 
 		ai_will_do = {
@@ -1170,6 +1196,7 @@ eldritch_forbidden_rites = {
 			hidden_effect = { subtract_from_variable = { eldritch_favor = 150 } }
 			add_nuclear_bombs = 1
 			add_stability = -0.03
+			eldritch_prophet_gain_xp_10 = yes
 		}
 
 		ai_will_do = {
@@ -1183,6 +1210,27 @@ eldritch_forbidden_rites = {
 	# The leader must bear the patron's Herald trait; a leader who came
 	# to power after the pact gets it from Exalt the Prophet.
 	#################################################################
+
+	# The character sheet: opens the Prophet's record (eldritch.80), where
+	# Insight is spent on Lore, Zeal and Will. Free, and open at any time.
+	eldritch_prophet_record = {
+		icon = eldritch_tome
+		fire_only_once = no
+
+		visible = {
+			eldritch_has_pact = yes
+		}
+
+		complete_effect = {
+			eldritch_prophet_init = yes
+			custom_effect_tooltip = eldritch_prophet_record_tt
+			hidden_effect = { country_event = { id = eldritch.80 } }
+		}
+
+		ai_will_do = {
+			factor = 0
+		}
+	}
 
 	# Ten days alone with the god. The leader chooses what to ask for
 	# (eldritch.70), or, one time in four, comes back changed (eldritch.71).
@@ -1210,6 +1258,7 @@ eldritch_forbidden_rites = {
 					25 = { country_event = { id = eldritch.71 } }
 				}
 			}
+			eldritch_prophet_gain_xp_25 = yes
 		}
 
 		ai_will_do = {
@@ -1243,6 +1292,7 @@ eldritch_forbidden_rites = {
 				limit = { eldritch_leader_is_chosen = yes }
 				add_stability = 0.03
 			}
+			eldritch_prophet_gain_xp_10 = yes
 		}
 
 		ai_will_do = {
@@ -1279,6 +1329,7 @@ eldritch_forbidden_rites = {
 		complete_effect = {
 			hidden_effect = { subtract_from_variable = { eldritch_favor = 50 } }
 			add_political_power = 60
+			eldritch_prophet_gain_xp_10 = yes
 		}
 
 		ai_will_do = {
@@ -1324,6 +1375,7 @@ eldritch_forbidden_rites = {
 				custom_effect_tooltip = eldritch_council_avatar_tt
 				add_command_power = 25
 			}
+			eldritch_prophet_gain_xp_25 = yes
 		}
 
 		ai_will_do = {
@@ -1355,6 +1407,7 @@ eldritch_forbidden_rites = {
 			army_experience = 15
 			add_war_support = 0.03
 			eldritch_gain_favor_10 = yes
+			eldritch_prophet_gain_xp_10 = yes
 		}
 
 		ai_will_do = {
@@ -1386,6 +1439,7 @@ eldritch_forbidden_rites = {
 		complete_effect = {
 			hidden_effect = { subtract_from_variable = { eldritch_favor = 50 } }
 			add_timed_idea = { idea = eldritch_prophet_marches days = 90 }
+			eldritch_prophet_gain_xp_25 = yes
 		}
 
 		ai_will_do = {
@@ -1450,6 +1504,7 @@ eldritch_forbidden_rites = {
 				add_war_support = -0.03
 				hidden_effect = { country_event = { id = eldritch.63 } }
 			}
+			eldritch_prophet_gain_xp_10 = yes
 		}
 
 		ai_will_do = {
@@ -1488,6 +1543,7 @@ eldritch_forbidden_rites = {
 			add_ideas = eldritch_great_temple
 			custom_effect_tooltip = eldritch_temple_favor_tt
 			hidden_effect = { set_country_flag = eldritch_great_temple }
+			eldritch_prophet_gain_xp_50 = yes
 		}
 
 		ai_will_do = {
@@ -1522,6 +1578,7 @@ eldritch_forbidden_rites = {
 
 		remove_effect = {
 			eldritch_become_vessel_effect = yes
+			eldritch_prophet_gain_xp_100 = yes
 		}
 
 		ai_will_do = {

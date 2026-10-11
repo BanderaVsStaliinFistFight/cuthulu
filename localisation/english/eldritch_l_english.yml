@@ -5,7 +5,7 @@
  ################################################################
 
  eldritch_forbidden_rites:0 "The Forbidden Rites"
- eldritch_forbidden_rites_desc:0 "Beneath the cities of men, beneath the seas, and in the spaces between the stars, things older than humanity wait. They do not care for flags or ideologies, but they can be bargained with.\n\n§HPatron:§! §Y[ROOT.GetEldritchGodName]§!\n§HPact:§! [ROOT.GetEldritchPactStage]\n[ROOT.GetEldritchFavorLine]\n[ROOT.GetEldritchProphetLine]"
+ eldritch_forbidden_rites_desc:0 "Beneath the cities of men, beneath the seas, and in the spaces between the stars, things older than humanity wait. They do not care for flags or ideologies, but they can be bargained with.\n\n§HPatron:§! §Y[ROOT.GetEldritchGodName]§!\n§HPact:§! [ROOT.GetEldritchPactStage]\n[ROOT.GetEldritchFavorLine]\n[ROOT.GetEldritchProphetLine]\n[ROOT.GetEldritchMantleLine]"
 
  eldritch_god_name_cthulhu:0 "Cthulhu"
  eldritch_god_name_nyarlathotep:0 "Nyarlathotep"
@@ -27,6 +27,10 @@
  eldritch_prophet_line_chosen:0 "§HProphet:§! [ROOT.GetLeader], §Ythe Chosen§!"
  eldritch_prophet_line_herald:0 "§HProphet:§! [ROOT.GetLeader], §Ythe Herald§!"
  eldritch_prophet_line_unmarked:0 "§HProphet:§! [ROOT.GetLeader] §Rbears no mark of the god§! (use §YExalt the Prophet§!)"
+ eldritch_mantle_line:0 "§HMantle:§! level §Y[?eldritch_prophet_level|0]§!, Lore §Y[?eldritch_prophet_lore|0]§!, Zeal §Y[?eldritch_prophet_zeal|0]§!, Will §Y[?eldritch_prophet_will|0]§!"
+ eldritch_mantle_line_insight:0 "§HMantle:§! level §Y[?eldritch_prophet_level|0]§!, Lore §Y[?eldritch_prophet_lore|0]§!, Zeal §Y[?eldritch_prophet_zeal|0]§!, Will §Y[?eldritch_prophet_will|0]§! (§G[?eldritch_prophet_insight|0] Insight to spend§! in §YThe Prophet's Record§!)"
+ eldritch_mantle_state_worn:0 "§GThe mantle's gifts are with [ROOT.GetLeader].§!"
+ eldritch_mantle_state_unclaimed:0 "§RThe mantle lies unclaimed: its gifts lapse until a leader is marked by Exalt the Prophet.§!"
 
  ################################################################
  # COSTS & TOOLTIPS
@@ -74,7 +78,15 @@
  eldritch_prophet_commune_tt:0 "[ROOT.GetLeader] returns from the trance and asks [ROOT.GetEldritchGodName] for §Ystrength§!, §Yknowledge§! or §YFavor§!.\n§RSometimes the Prophet comes back changed.§!"
  eldritch_council_avatar_tt:0 "An §Yavatar§! sits on the council:"
  eldritch_temple_favor_tt:0 "Gain §G3§! more Eldritch Favor every month."
- eldritch_dread_tt:0 "Every nation at war with us is struck by §RDread of the Incarnate§! (−15% morale, −10% organization, −10% war support), renewed every month while the god walks the earth."
+ eldritch_dread_tt:0 "Every nation at war with us is struck by §RDread of the Incarnate§! (-15% morale, -10% organization, -10% war support), renewed every month while the god walks the earth."
+ eldritch_prophet_record_tt:0 "Opens the Prophet's record."
+ eldritch_prophet_xp_10_tt:0 "The Prophet gains §G10§! experience."
+ eldritch_prophet_xp_25_tt:0 "The Prophet gains §G25§! experience."
+ eldritch_prophet_xp_50_tt:0 "The Prophet gains §G50§! experience."
+ eldritch_prophet_xp_100_tt:0 "The Prophet gains §G100§! experience."
+ eldritch_prophet_raise_lore_tt:0 "§YLore§! rises by 1: §G+2%§! research speed while the mantle is worn."
+ eldritch_prophet_raise_zeal_tt:0 "§YZeal§! rises by 1: §G+2%§! army attack while the mantle is worn."
+ eldritch_prophet_raise_will_tt:0 "§YWill§! rises by 1: §G+2%§! stability while the mantle is worn."
 
  eldritch_gain_favor_10_tt:0 "Gain §G10§! Eldritch Favor"
  eldritch_gain_favor_15_tt:0 "Gain §G15§! Eldritch Favor"
@@ -230,6 +242,8 @@
  # DECISIONS - THE PROPHET
  ################################################################
 
+ eldritch_prophet_record:0 "The Prophet's Record"
+ eldritch_prophet_record_desc:0 "Every rite leaves its mark on the one who leads it. The cult keeps a record of what the Prophet has learned, endured and become.\n\n§YOpens the Prophet's character sheet: level, experience and the three stats, Lore, Zeal and Will. Spend Insight there.§!"
  eldritch_prophet_commune:0 "Commune with [ROOT.GetEldritchGodName]"
  eldritch_prophet_commune_desc:0 "[ROOT.GetLeader] will go down alone into the sanctum beneath the capital, and for ten days nobody will see or hear from them. Those who have done this before describe it as drowning in a voice.\n\n§YAfter 10 days the Prophet asks for strength (army and navy experience), knowledge (research bonuses) or simply listens (Favor). One time in four, the Prophet comes back changed.§!"
  eldritch_prophet_preach:0 "Preach to the Faithful"
@@ -323,6 +337,9 @@
  eldritch_god_walks_desc:0 "Our soldiers have seen what marches with them. No army of men can frighten them now.\n\n§YLasts while the incarnate god's division is on the map (checked every month).§!"
  eldritch_dread_of_the_god:0 "Dread of the Incarnate"
  eldritch_dread_of_the_god_desc:0 "Somewhere on the front, something that should not exist is walking towards our lines. The men can feel it before they see it, and many do not wait to see it."
+ eldritch_prophet_mantle:0 "The Prophet's Mantle"
+ eldritch_prophet_mantle_desc:0 "The cult's chosen voice carries everything the rites have taught it."
+ eldritch_prophet_mantle_tt:0 "Grows with the Prophet's §YLore§!, §YZeal§! and §YWill§! (2% per point). Lapses while the leader does not bear the god's mark."
 
  ################################################################
  # COUNTRY LEADER TRAITS
@@ -609,6 +626,19 @@
  eldritch.72.d.yog_sothoth:0 "[ROOT.GetLeader] stepped out of the sanctum before stepping into it. The guards saw both. The Prophet now answers questions before they are asked and signs decrees dated next year.\n\nYog-Sothoth knows the gate. Our leader has become the key."
  eldritch.72.d.azathoth:0 "The ritual ended when the sanctum's walls cracked from the inside. [ROOT.GetLeader] walked out of the rubble untouched, trailed by a thin, monotonous piping that has not stopped since. Ministers forget what they were saying in the Prophet's presence. Soldiers stop being afraid.\n\nA mote of the Daemon Sultan's chaos now rules [ROOT.GetNameDef]."
  eldritch.72.a:0 "All hail the Vessel."
+
+ eldritch.80.t:0 "The Prophet's Record"
+ eldritch.80.d:0 "§HThe Mantle of the Prophet§!\n[ROOT.GetEldritchProphetLine]\n[ROOT.GetEldritchMantleState]\n\n§HLevel§! §Y[?eldritch_prophet_level|0]§!   §HExperience§! [?eldritch_prophet_xp|0] / [?eldritch_prophet_xp_next|0]\n§HInsight to spend:§! §G[?eldritch_prophet_insight|0]§!\n\n§YLore§! [?eldritch_prophet_lore|0] / 10: §G+[?eldritch_prophet_lore_pct|0]%§! research speed\nKnowledge of the rites, the old tongues and the angles between the stars.\n\n§YZeal§! [?eldritch_prophet_zeal|0] / 10: §G+[?eldritch_prophet_zeal_pct|0]%§! army attack\nThe fire that sends soldiers into battle beside things that are not human.\n\n§YWill§! [?eldritch_prophet_will|0] / 10: §G+[?eldritch_prophet_will_pct|0]%§! stability\nWhat is left of the Prophet's own mind, and the nation's faith in it.\n\nThe Prophet gains experience from every rite of the pact, and more from the great ones. Each level brings a point of Insight."
+ eldritch.80.lore:0 "Study the forbidden texts (+1 Lore)"
+ eldritch.80.zeal:0 "Stoke the fire (+1 Zeal)"
+ eldritch.80.will:0 "Steel the mind (+1 Will)"
+ eldritch.80.close:0 "Close the record."
+ eldritch.81.t:0 "The Prophet Grows"
+ eldritch.81.d:0 "Rite by rite, [ROOT.GetLeader] has drawn deeper from the well that [ROOT.GetEldritchGodName] opened. The mantle sits heavier on the Prophet's shoulders now, and fits better.\n\n§HLevel§! §Y[?eldritch_prophet_level|0]§! reached.   §HInsight to spend:§! §G[?eldritch_prophet_insight|0]§!"
+ eldritch.81.lore:0 "Study the forbidden texts (+1 Lore)"
+ eldritch.81.zeal:0 "Stoke the fire (+1 Zeal)"
+ eldritch.81.will:0 "Steel the mind (+1 Will)"
+ eldritch.81.keep:0 "Keep the Insight for later."
 
  eldritch_news.1.t:0 "Something Has Answered [From.GetNameDef]"
  eldritch_news.1.d.cthulhu:0 "Ships off the coast of [From.GetNameDef] report the sea boiling green, and coastal villages have been taken over by strange, fish-eyed people who walk out of the surf. Intelligence services confirm the unthinkable: [From.GetNameDef] has made a pact with Cthulhu, the Dreamer in R'lyeh."
