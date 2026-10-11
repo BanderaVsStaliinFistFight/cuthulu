@@ -270,6 +270,7 @@ Hastur's quests also unlock six new battalions, one per quest, for the division 
 
 * **Name:** the nation is renamed by ideology: the **Kingdom of Carcosa** (non-aligned), the **Yellow Dominion of Carcosa** (fascist), the **Carcosan Commune** (communist) or the **Commonwealth of Carcosa** (democratic). Its adjective becomes *Carcosan*.
 * **Flag:** the King in Yellow, crowned and antlered with the Yellow Sign on its robe, between two sigils, in gold on a black field between two gold bands.
+* **Map colour:** dark yellow.
 * **The King walks:** only now can a follower of Hastur incarnate the King in Yellow (see 5).
 * **Spirit:** The Road to Carcosa becomes **The Yellow Throne**: +15% war support and morale, +8% organization and research speed, +5% attack, +10% stability, +0.3 PP a day.
 * **News:** the rest of the world hears of it.
@@ -323,6 +324,7 @@ common/scripted_effects|triggers/  shared logic (summoning, blessings, tiers, fa
 common/scripted_localisation/      [ROOT.GetEldritchGodName] etc.
 common/dynamic_modifiers/          the Prophet's mantle (character sheet stats as modifiers)
 common/doctrines/                  the Eldritch doctrine folder: its tracks, the gods' grand doctrines and sub-doctrines
+common/countries/                  map colours of the formables (cosmetic tags), in a file of their own
 common/game_rules/                 the AI rule
 common/on_actions/                 welcome pop-up at game start
 events/                            summoning, tier, whim, curse, news and monthly-pulse events
