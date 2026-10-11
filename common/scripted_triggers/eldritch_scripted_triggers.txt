@@ -172,6 +172,12 @@ eldritch_has_servitors_in_field = {
 			check_variable = { num_battalions_with_type@eldritch_dunwich_horror > 0 }
 			check_variable = { num_battalions_with_type@eldritch_chaos_spawn > 0 }
 			check_variable = { num_battalions_with_type@eldritch_void_pipers > 0 }
+			check_variable = { num_battalions_with_type@eldritch_lidless > 0 }
+			check_variable = { num_battalions_with_type@eldritch_audience > 0 }
+			check_variable = { num_battalions_with_type@eldritch_cassildas_choir > 0 }
+			check_variable = { num_battalions_with_type@eldritch_pallid_masks > 0 }
+			check_variable = { num_battalions_with_type@eldritch_kings_tatters > 0 }
+			check_variable = { num_battalions_with_type@eldritch_halis_drowned > 0 }
 		}
 	}
 }

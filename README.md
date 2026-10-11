@@ -82,7 +82,7 @@ Favor is the currency of the pact. You gain it monthly (5 / 8 / 12 by tier), fro
 |---|---|---|---|---|---|---|
 | **Cthulhu** – the Dreamer in R'lyeh *(needs a coastline)* | Navy damage and speed, dockyards, amphibious invasions | **Deep One Brood** (amphibious infantry), **Star-Spawn of Cthulhu** (heavy monsters) – *Deep One Swarm* | Tide of R'lyeh (naval and invasion bonuses) | Admiral **Father Dagon** and field marshal **Mother Hydra** | **Send Nightmares** – curse an enemy at war with you: −stability, −PP, −war support for 90 days | Two more Deep One Swarms |
 | **Nyarlathotep** – the Crawling Chaos *(needs 40% stability)* | Political power, faster war goals, stability | **Faceless Cultists** (urban infantry), **Shantak Riders** (fast mobile) – *Faceless Legion* | Masks of Nyarlathotep (PP, stability) | **The Black Pharaoh** | **Whisper Madness** – target a neighbour, enemy or major: −8% stability and a push toward your ideology | +200 PP |
-| **Hastur** – the King in Yellow *(needs 30% war support)* | Army morale, air attack and agility, aces | **Zealots of the Yellow Sign** (unbreakable infantry), **Byakhee Riders** (paradrop-capable shock troops) – *Host of the Yellow Sign* | The Yellow Sign Unveiled (morale, org, war support) | **The Stranger in the Pallid Mask** | **Stage 'The King in Yellow'** – curse an enemy: −morale, −org, −stability for 90 days | +10% war support |
+| **Hastur** – the King in Yellow *(needs 30% war support)* | Army morale, air attack and agility, aces | **Zealots of the Yellow Sign** (unbreakable infantry), **Byakhee Riders** (paradrop-capable shock troops) – *Host of the Yellow Sign*; six more are earned by quests (see 13) | The Yellow Sign Unveiled (morale, org, war support) | **The Stranger in the Pallid Mask** | **Stage 'The King in Yellow'** – curse an enemy: −morale, −org, −stability for 90 days | +10% war support |
 | **Shub-Niggurath** – the Black Goat *(25k manpower sacrifice)* | Population growth, recruitable pop, organization | **Dark Young** (forest/jungle monsters), **Thousand Young** (cheap swarm infantry) – *Brood of the Black Goat* | Fecundity of the Black Goat (growth, reinforcement, attrition) | **The Shepherd of the Black Goat** | **Rite of the Thousand Young** – +25k manpower | +100k manpower |
 | **Yog-Sothoth** – the Gate and the Key | Research speed, planning, factory efficiency | **Wardens of the Gate** (defensive infantry), **Dunwich Horror** (invisible monster) – *Wardens of the Gate* | All Is One (research, planning) | **Wilbur Whateley** | **Open the Gate** – +100% research bonus for one industry and one electronics tech | +1 research slot |
 | **Azathoth** – the Daemon Sultan *(needs 50% war support, −10% stability)* | Attack, breakthrough, factory output, at a heavy stability cost | **Spawn of the Nuclear Chaos** (shock infantry), **Void Pipers** (sorcerous artillery) – *Chaos Horde* | Mindless Fury (attack, breakthrough, speed) | **The Piper of the Void** | **Bottle the Nuclear Chaos** – a nuclear bomb (Tier II+) | Two nuclear bombs |
@@ -139,7 +139,7 @@ Each model is rigged to a skeleton and has six animations, played by the unit's 
 
 The animations are 15 fps and loop, except `death`, which plays once.
 
-A division is drawn with the model of its highest-priority battalion, so the *Host of the Yellow Sign* shows a Byakhee rider and the King's division shows the King himself.
+A division is drawn with the model of its highest-priority battalion, so the *Host of the Yellow Sign* shows a Byakhee rider and the King's division shows the King himself. Of the battalions earned on the Road to Carcosa, Cassilda's Choir, the Pallid Masks and the King's Tatters use the Zealot model; the Lidless, the Audience and Hali's Drowned use vanilla infantry.
 
 ### 7. The god's whims
 About once every eight months on average, your patron makes itself known: it demands tribute, a prophet preaches in the streets, the stars align, or your soldiers share a dream. Each event trades Favor against manpower, political power, stability or war support.
@@ -232,7 +232,7 @@ A third category, **The Prophet's Quests**, holds multi-stage quests. Every cult
 | **At the Mountains of Madness** | any pact, Tier II | 75 PP, 45 days | Dark Council and Preach, within 150 days | 35% | **The Elder Things' Archive**: +5% research, +5% factory output | −10k manpower, −3% stability |
 | **Raise R'lyeh** | Cthulhu, Tier II | 100 Favor, 60 days | Call Forth the Servitors, then have Great Cthulhu walking or 12+ Deep One Brood battalions, within 180 days | 30% | **R'lyeh Risen**: naval damage, dockyards, invasions; plus two servitor divisions | −5% stability, −40 Favor |
 | **The Thousand Masks** | Nyarlathotep | 100 Favor, 45 days | Whisper Madness twice, within 180 days | 35% | **The Thousand Masks**: +0.25 PP a day, ideology defence, faster war goals; plus 100 PP | −100 PP, −3% stability |
-| **Stage the Full Play** | Hastur, at war | 100 Favor, 30 days | Stage the play in an enemy nation with war support above 50%, within 150 days | 30% | **The Full Play Performed**: morale, organization, war support; plus the Yellow Madness on every enemy | the Yellow Madness on yourself for 60 days |
+| **Stage the Full Play** | Hastur, at war | 100 Favor, 30 days | Stage the play in an enemy nation with war support above 50%, within 150 days | 30% | **The Full Play Performed**: morale, organization, war support; plus the Yellow Madness on every enemy, and the **Audience** battalion | the Yellow Madness on yourself for 60 days |
 | **The Hunt of the Thousand Young** | Shub-Niggurath | 25k manpower, 30 days | Rite of the Thousand Young with 50k manpower in reserve, within 120 days | 35% | **The Black Goat's Brood**: population, recruitment, reinforcement; plus two servitor divisions | −30k manpower, −3% stability |
 | **Find the Silver Key** | Yog-Sothoth | 100 PP, 45 days | Open the Gate and Commune, within 180 days | 30% | **The Silver Key**: +10% research and planning; plus two 100% research bonuses | −5% stability, −40 Favor |
 | **The Daemon Sultan's Engine** | Azathoth, Tier II | 150 Favor, 60 days | Bottle the Nuclear Chaos, within 180 days | 30% | **The Daemon Engine**: +15% factory output, +5% efficiency, −5% stability; plus two nuclear bombs | −8% stability, −5% war support |
@@ -244,12 +244,24 @@ Hastur's cults get their own category, **The Road to Carcosa**: six chapters, ea
 
 | Chapter | Begin | Task | Finale base | On success |
 |---|---|---|---|---|
-| **I. Have You Seen the Yellow Sign?** | 50 Favor, 30 days | Preach to the Faithful twice, within 150 days | 45% | Road I (+5% war support, +3% morale), +3% war support |
-| **II. Cassilda's Song** | 75 Favor, 30 days | Commune with Hastur and a Rite of Worship, within 150 days | 40% | Road II (adds +3% research), +30 Favor |
-| **III. The Stranger in the Pallid Mask** | 100 Favor, 30 days, Tier II | Convene the Dark Council (with the Stranger or an anointed commander), within 180 days | 35% | Road III (adds +3% organization), +50 command power |
+| **I. Have You Seen the Yellow Sign?** | 50 Favor, 30 days | Preach to the Faithful twice, within 150 days | 45% | Road I (+5% war support, +3% morale), +3% war support, the **Lidless** |
+| **II. Cassilda's Song** | 75 Favor, 30 days | Commune with Hastur and a Rite of Worship, within 150 days | 40% | Road II (adds +3% research), +30 Favor, **Cassilda's Choir** |
+| **III. The Stranger in the Pallid Mask** | 100 Favor, 30 days, Tier II | Convene the Dark Council (with the Stranger or an anointed commander), within 180 days | 35% | Road III (adds +3% organization), +50 command power, the **Pallid Masks** |
 | **IV. Black Stars Rise** | 100 Favor, 30 days | Raise the pact to Tier III, within 365 days | 35% | Road IV (adds political power), +5% war support |
-| **V. The King Walks** | 150 Favor, 30 days, Tier III | Have the King in Yellow walking the earth and March Beside him, within 180 days | 30% | Road V (adds +5% stability), +50 army experience |
-| **VI. The Throne of Carcosa** | 200 Favor, 60 days | The Prophet is Hastur's Vessel, or is Chosen while the King walks the earth, within 365 days | 30% | unlocks **Proclaim Carcosa** |
+| **V. The King Walks** | 150 Favor, 30 days, Tier III | Have the King in Yellow walking the earth and March Beside him, within 180 days | 30% | Road V (adds +5% stability), +50 army experience, the **King's Tatters** |
+| **VI. The Throne of Carcosa** | 200 Favor, 60 days | The Prophet is Hastur's Vessel, or is Chosen while the King walks the earth, within 365 days | 30% | unlocks **Proclaim Carcosa**, **Hali's Drowned** |
+
+#### Battalions earned on the road
+Hastur's quests also unlock six new battalions, one per quest, for the division designer. Each arrives with an editable template and a first veteran division of it at the capital. Like Hastur's other battalions, they grow stronger with the Rites of Carcosa II and III and the Fervent Host perk. Their in-game descriptions say what they are; none of it is pleasant.
+
+| Battalion | Earned by | Role | First division |
+|---|---|---|---|
+| **The Lidless** | Chapter I | Defensive line infantry: 75 organization, +20% defense, and bonuses defending cities, forests and hills | *The Lidless Watch*: 6 Lidless, 3 Zealots |
+| **The Audience** | Stage the Full Play | Cheap mass infantry: 40 strength, 0.8 morale, 30 days to train and 1,400 manpower, but only 40 infantry equipment, so they hit softly | *The Second Act*: 9 Audience |
+| **Cassilda's Choir** | Chapter II | Line artillery (width 3): 14 artillery equipment, +20% soft attack | *Cassilda's Choir*: 6 Zealots, 2 Choirs |
+| **The Pallid Masks** | Chapter III | Assault infantry: 80 organization, +30% breakthrough, +15% soft attack, and bonuses attacking in cities and forests | *The Masque*: 6 Masks, 3 Byakhee Riders |
+| **The King's Tatters** | Chapter V | Heavy shock troops (width 3): 50 strength, 35% hardness, +30% breakthrough, +20% soft attack, +15% defense | *The Tatters of the King*: 4 Tatters, 3 Zealots |
+| **Hali's Drowned** | Chapter VI | Amphibious infantry: +40% attack in landings, +30% attack and +50% movement across rivers, and marsh bonuses | *Hali's Drowned*: 6 Drowned, 2 Choirs |
 
 **Proclaim Carcosa** (100 PP, needs 25% stability) is the formable. It works for any country, as a cosmetic tag:
 
@@ -283,7 +295,7 @@ common/decisions/                  decision category and all decisions
 common/ideas/                      pact spirits, timed blessings, curses
 common/country_leader/             Herald / Chosen leader traits
 common/unit_leader/                general, admiral and avatar traits
-common/units/                      the 12 eldritch battalions
+common/units/                      the 18 servitor battalions and the 6 gods incarnate
 common/technologies/               hidden "rite" techs that unlock and buff the battalions
 common/scripted_effects|triggers/  shared logic (summoning, blessings, tiers, favor)
 common/scripted_localisation/      [ROOT.GetEldritchGodName] etc.

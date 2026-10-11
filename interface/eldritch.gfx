@@ -463,6 +463,66 @@ spriteTypes = {
 		noOfFrames = 2
 	}
 	spriteType = {
+		name = "GFX_unit_eldritch_lidless_icon_medium"
+		texturefile = "gfx/interface/counters/divisions_large/eldritch_lidless.dds"
+		noOfFrames = 2
+	}
+	spriteType = {
+		name = "GFX_unit_eldritch_lidless_icon_medium_white"
+		texturefile = "gfx/interface/counters/divisions_small/eldritch_lidless.dds"
+		noOfFrames = 2
+	}
+	spriteType = {
+		name = "GFX_unit_eldritch_audience_icon_medium"
+		texturefile = "gfx/interface/counters/divisions_large/eldritch_audience.dds"
+		noOfFrames = 2
+	}
+	spriteType = {
+		name = "GFX_unit_eldritch_audience_icon_medium_white"
+		texturefile = "gfx/interface/counters/divisions_small/eldritch_audience.dds"
+		noOfFrames = 2
+	}
+	spriteType = {
+		name = "GFX_unit_eldritch_cassildas_choir_icon_medium"
+		texturefile = "gfx/interface/counters/divisions_large/eldritch_cassildas_choir.dds"
+		noOfFrames = 2
+	}
+	spriteType = {
+		name = "GFX_unit_eldritch_cassildas_choir_icon_medium_white"
+		texturefile = "gfx/interface/counters/divisions_small/eldritch_cassildas_choir.dds"
+		noOfFrames = 2
+	}
+	spriteType = {
+		name = "GFX_unit_eldritch_pallid_masks_icon_medium"
+		texturefile = "gfx/interface/counters/divisions_large/eldritch_pallid_masks.dds"
+		noOfFrames = 2
+	}
+	spriteType = {
+		name = "GFX_unit_eldritch_pallid_masks_icon_medium_white"
+		texturefile = "gfx/interface/counters/divisions_small/eldritch_pallid_masks.dds"
+		noOfFrames = 2
+	}
+	spriteType = {
+		name = "GFX_unit_eldritch_kings_tatters_icon_medium"
+		texturefile = "gfx/interface/counters/divisions_large/eldritch_kings_tatters.dds"
+		noOfFrames = 2
+	}
+	spriteType = {
+		name = "GFX_unit_eldritch_kings_tatters_icon_medium_white"
+		texturefile = "gfx/interface/counters/divisions_small/eldritch_kings_tatters.dds"
+		noOfFrames = 2
+	}
+	spriteType = {
+		name = "GFX_unit_eldritch_halis_drowned_icon_medium"
+		texturefile = "gfx/interface/counters/divisions_large/eldritch_halis_drowned.dds"
+		noOfFrames = 2
+	}
+	spriteType = {
+		name = "GFX_unit_eldritch_halis_drowned_icon_medium_white"
+		texturefile = "gfx/interface/counters/divisions_small/eldritch_halis_drowned.dds"
+		noOfFrames = 2
+	}
+	spriteType = {
 		name = "GFX_unit_eldritch_cthulhu_incarnate_icon_medium"
 		texturefile = "gfx/interface/counters/divisions_large/eldritch_cthulhu_incarnate.dds"
 		noOfFrames = 2

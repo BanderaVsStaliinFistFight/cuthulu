@@ -1450,3 +1450,184 @@ eldritch_quest_note_nuclear_chaos = {
 		set_country_flag = eldritch_quest_azathoth_chaos
 	}
 }
+
+#####################################################################
+# THE ROAD TO CARCOSA - battalions earned by Hastur's quests
+#
+# Each unlocks its battalion for the division designer (the hidden
+# technology eldritch_hastur_unlock_<unit>), creates an editable template
+# that shows it off, and sends a first division of it out of the
+# capital. Called from the quest's success event, which can only fire
+# once. Templates only use battalions the questline has already unlocked
+# (the chapters run in order; the play quest stands alone).
+#####################################################################
+
+# Chapter I: Have You Seen the Yellow Sign?
+eldritch_unlock_lidless = {
+	custom_effect_tooltip = eldritch_unlock_lidless_tt
+	hidden_effect = {
+		set_technology = { eldritch_hastur_unlock_lidless = 1 popup = no }
+		division_template = {
+			name = "The Lidless Watch"
+			regiments = {
+				eldritch_lidless = { x = 0 y = 0 }
+				eldritch_lidless = { x = 0 y = 1 }
+				eldritch_lidless = { x = 0 y = 2 }
+				eldritch_lidless = { x = 1 y = 0 }
+				eldritch_lidless = { x = 1 y = 1 }
+				eldritch_lidless = { x = 1 y = 2 }
+				eldritch_yellow_zealots = { x = 2 y = 0 }
+				eldritch_yellow_zealots = { x = 2 y = 1 }
+				eldritch_yellow_zealots = { x = 2 y = 2 }
+			}
+		}
+		capital_scope = {
+			create_unit = {
+				division = "name = \"The Lidless Watch\" division_template = \"The Lidless Watch\" start_experience_factor = 0.5 start_equipment_factor = 1.0"
+				owner = ROOT
+				count = 1
+			}
+		}
+	}
+}
+
+# Quest: Stage the Full Play
+eldritch_unlock_audience = {
+	custom_effect_tooltip = eldritch_unlock_audience_tt
+	hidden_effect = {
+		set_technology = { eldritch_hastur_unlock_audience = 1 popup = no }
+		division_template = {
+			name = "The Second Act"
+			regiments = {
+				eldritch_audience = { x = 0 y = 0 }
+				eldritch_audience = { x = 0 y = 1 }
+				eldritch_audience = { x = 0 y = 2 }
+				eldritch_audience = { x = 1 y = 0 }
+				eldritch_audience = { x = 1 y = 1 }
+				eldritch_audience = { x = 1 y = 2 }
+				eldritch_audience = { x = 2 y = 0 }
+				eldritch_audience = { x = 2 y = 1 }
+				eldritch_audience = { x = 2 y = 2 }
+			}
+		}
+		capital_scope = {
+			create_unit = {
+				division = "name = \"The Second Act\" division_template = \"The Second Act\" start_experience_factor = 0.5 start_equipment_factor = 1.0"
+				owner = ROOT
+				count = 1
+			}
+		}
+	}
+}
+
+# Chapter II: Cassilda's Song
+eldritch_unlock_cassildas_choir = {
+	custom_effect_tooltip = eldritch_unlock_cassildas_choir_tt
+	hidden_effect = {
+		set_technology = { eldritch_hastur_unlock_cassildas_choir = 1 popup = no }
+		division_template = {
+			name = "Cassilda's Choir"
+			regiments = {
+				eldritch_yellow_zealots = { x = 0 y = 0 }
+				eldritch_yellow_zealots = { x = 0 y = 1 }
+				eldritch_yellow_zealots = { x = 0 y = 2 }
+				eldritch_yellow_zealots = { x = 1 y = 0 }
+				eldritch_yellow_zealots = { x = 1 y = 1 }
+				eldritch_yellow_zealots = { x = 1 y = 2 }
+				eldritch_cassildas_choir = { x = 2 y = 0 }
+				eldritch_cassildas_choir = { x = 2 y = 1 }
+			}
+		}
+		capital_scope = {
+			create_unit = {
+				division = "name = \"Cassilda's Choir\" division_template = \"Cassilda's Choir\" start_experience_factor = 0.5 start_equipment_factor = 1.0"
+				owner = ROOT
+				count = 1
+			}
+		}
+	}
+}
+
+# Chapter III: The Stranger in the Pallid Mask
+eldritch_unlock_pallid_masks = {
+	custom_effect_tooltip = eldritch_unlock_pallid_masks_tt
+	hidden_effect = {
+		set_technology = { eldritch_hastur_unlock_pallid_masks = 1 popup = no }
+		division_template = {
+			name = "The Masque"
+			regiments = {
+				eldritch_pallid_masks = { x = 0 y = 0 }
+				eldritch_pallid_masks = { x = 0 y = 1 }
+				eldritch_pallid_masks = { x = 0 y = 2 }
+				eldritch_pallid_masks = { x = 1 y = 0 }
+				eldritch_pallid_masks = { x = 1 y = 1 }
+				eldritch_pallid_masks = { x = 1 y = 2 }
+				eldritch_byakhee_riders = { x = 2 y = 0 }
+				eldritch_byakhee_riders = { x = 2 y = 1 }
+				eldritch_byakhee_riders = { x = 2 y = 2 }
+			}
+		}
+		capital_scope = {
+			create_unit = {
+				division = "name = \"The Masque\" division_template = \"The Masque\" start_experience_factor = 0.5 start_equipment_factor = 1.0"
+				owner = ROOT
+				count = 1
+			}
+		}
+	}
+}
+
+# Chapter V: The King Walks
+eldritch_unlock_kings_tatters = {
+	custom_effect_tooltip = eldritch_unlock_kings_tatters_tt
+	hidden_effect = {
+		set_technology = { eldritch_hastur_unlock_kings_tatters = 1 popup = no }
+		division_template = {
+			name = "The Tatters of the King"
+			regiments = {
+				eldritch_kings_tatters = { x = 0 y = 0 }
+				eldritch_kings_tatters = { x = 0 y = 1 }
+				eldritch_kings_tatters = { x = 1 y = 0 }
+				eldritch_kings_tatters = { x = 1 y = 1 }
+				eldritch_yellow_zealots = { x = 2 y = 0 }
+				eldritch_yellow_zealots = { x = 2 y = 1 }
+				eldritch_yellow_zealots = { x = 2 y = 2 }
+			}
+		}
+		capital_scope = {
+			create_unit = {
+				division = "name = \"The Tatters of the King\" division_template = \"The Tatters of the King\" start_experience_factor = 0.5 start_equipment_factor = 1.0"
+				owner = ROOT
+				count = 1
+			}
+		}
+	}
+}
+
+# Chapter VI: The Throne of Carcosa
+eldritch_unlock_halis_drowned = {
+	custom_effect_tooltip = eldritch_unlock_halis_drowned_tt
+	hidden_effect = {
+		set_technology = { eldritch_hastur_unlock_halis_drowned = 1 popup = no }
+		division_template = {
+			name = "Hali's Drowned"
+			regiments = {
+				eldritch_halis_drowned = { x = 0 y = 0 }
+				eldritch_halis_drowned = { x = 0 y = 1 }
+				eldritch_halis_drowned = { x = 0 y = 2 }
+				eldritch_halis_drowned = { x = 1 y = 0 }
+				eldritch_halis_drowned = { x = 1 y = 1 }
+				eldritch_halis_drowned = { x = 1 y = 2 }
+				eldritch_cassildas_choir = { x = 2 y = 0 }
+				eldritch_cassildas_choir = { x = 2 y = 1 }
+			}
+		}
+		capital_scope = {
+			create_unit = {
+				division = "name = \"Hali's Drowned\" division_template = \"Hali's Drowned\" start_experience_factor = 0.5 start_equipment_factor = 1.0"
+				owner = ROOT
+				count = 1
+			}
+		}
+	}
+}

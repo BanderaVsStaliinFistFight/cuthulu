@@ -1162,6 +1162,7 @@ country_event = {
 	option = {
 		name = eldritch.232.a
 		add_ideas = eldritch_relic_full_play
+		eldritch_unlock_audience = yes
 		eldritch_quest_hastur_curse_all = yes
 		eldritch_prophet_gain_xp_100 = yes
 		eldritch_prophet_gain_insight = yes
@@ -1514,6 +1515,7 @@ country_event = {
 	option = {
 		name = eldritch.312.a
 		add_ideas = eldritch_carcosa_road_1
+		eldritch_unlock_lidless = yes
 		add_war_support = 0.03
 		eldritch_prophet_gain_xp_100 = yes
 		eldritch_prophet_gain_insight = yes
@@ -1594,6 +1596,7 @@ country_event = {
 	option = {
 		name = eldritch.322.a
 		swap_ideas = { remove_idea = eldritch_carcosa_road_1 add_idea = eldritch_carcosa_road_2 }
+		eldritch_unlock_cassildas_choir = yes
 		eldritch_gain_favor_30 = yes
 		eldritch_prophet_gain_xp_100 = yes
 		eldritch_prophet_gain_insight = yes
@@ -1674,6 +1677,7 @@ country_event = {
 	option = {
 		name = eldritch.332.a
 		swap_ideas = { remove_idea = eldritch_carcosa_road_2 add_idea = eldritch_carcosa_road_3 }
+		eldritch_unlock_pallid_masks = yes
 		add_command_power = 50
 		eldritch_prophet_gain_xp_100 = yes
 		eldritch_prophet_gain_insight = yes
@@ -1836,6 +1840,7 @@ country_event = {
 	option = {
 		name = eldritch.352.a
 		swap_ideas = { remove_idea = eldritch_carcosa_road_4 add_idea = eldritch_carcosa_road_5 }
+		eldritch_unlock_kings_tatters = yes
 		army_experience = 50
 		eldritch_prophet_gain_xp_100 = yes
 		eldritch_prophet_gain_insight = yes
@@ -1917,6 +1922,7 @@ country_event = {
 		name = eldritch.362.a
 		custom_effect_tooltip = eldritch_carcosa_ready_tt
 		hidden_effect = { set_country_flag = eldritch_carcosa_ready }
+		eldritch_unlock_halis_drowned = yes
 		eldritch_prophet_gain_xp_100 = yes
 		eldritch_prophet_gain_insight = yes
 	}

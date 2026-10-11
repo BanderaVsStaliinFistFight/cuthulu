@@ -5,7 +5,8 @@
 # and cannot be researched. They are granted with set_technology when
 # a pact is sealed (rites_1) and each time it is deepened (rites_2/3).
 # rites_1 unlocks the god's battalions; every tier makes them stronger.
-# eldritch_<god>_incarnation is granted when the god itself is
+# eldritch_hastur_unlock_<unit> come from Hastur's quests (the Road to
+# Carcosa). eldritch_<god>_incarnation is granted when the god itself is
 # incarnated as a division. eldritch_perk_* come from the Prophet's Path.
 #####################################################################
 
@@ -168,6 +169,35 @@ technologies = {
 			breakthrough = 0.1
 			max_organisation = 5
 		}
+		eldritch_lidless = {
+			soft_attack = 0.1
+			defense = 0.1
+			max_organisation = 5
+		}
+		eldritch_audience = {
+			soft_attack = 0.1
+			defense = 0.1
+			max_organisation = 5
+		}
+		eldritch_cassildas_choir = {
+			soft_attack = 0.1
+			max_organisation = 5
+		}
+		eldritch_pallid_masks = {
+			soft_attack = 0.1
+			defense = 0.1
+			max_organisation = 5
+		}
+		eldritch_kings_tatters = {
+			soft_attack = 0.1
+			defense = 0.1
+			max_organisation = 5
+		}
+		eldritch_halis_drowned = {
+			soft_attack = 0.1
+			defense = 0.1
+			max_organisation = 5
+		}
 		research_cost = 1
 		start_year = 1936
 		allow = { always = no }
@@ -185,12 +215,135 @@ technologies = {
 			breakthrough = 0.2
 			max_organisation = 10
 		}
+		eldritch_lidless = {
+			soft_attack = 0.15
+			defense = 0.15
+			max_organisation = 10
+		}
+		eldritch_audience = {
+			soft_attack = 0.15
+			defense = 0.15
+			max_organisation = 10
+		}
+		eldritch_cassildas_choir = {
+			soft_attack = 0.15
+			max_organisation = 10
+		}
+		eldritch_pallid_masks = {
+			soft_attack = 0.15
+			breakthrough = 0.2
+			max_organisation = 10
+		}
+		eldritch_kings_tatters = {
+			soft_attack = 0.15
+			breakthrough = 0.2
+			max_organisation = 10
+		}
+		eldritch_halis_drowned = {
+			soft_attack = 0.15
+			defense = 0.15
+			max_organisation = 10
+		}
 		eldritch_hastur_incarnate = {
 			soft_attack = 1.0
 			hard_attack = 1.0
 			defense = 1.0
 			breakthrough = 1.0
 			max_organisation = 30
+		}
+		research_cost = 1
+		start_year = 1936
+		allow = { always = no }
+		ai_will_do = { factor = 0 }
+	}
+
+	### HASTUR: THE ROAD TO CARCOSA ##################################
+	# One per battalion, granted when its Hastur quest succeeds
+	# (eldritch_unlock_<unit> in the scripted effects).
+
+	# Chapter I
+	eldritch_hastur_unlock_lidless = {
+		enable_subunits = {
+			eldritch_lidless
+		}
+		eldritch_lidless = {
+			defense = 0.2
+			max_organisation = 10
+		}
+		research_cost = 1
+		start_year = 1936
+		allow = { always = no }
+		ai_will_do = { factor = 0 }
+	}
+
+	# Quest: Stage the Full Play
+	eldritch_hastur_unlock_audience = {
+		enable_subunits = {
+			eldritch_audience
+		}
+		eldritch_audience = {
+			defense = 0.1
+			max_organisation = 10
+		}
+		research_cost = 1
+		start_year = 1936
+		allow = { always = no }
+		ai_will_do = { factor = 0 }
+	}
+
+	# Chapter II
+	eldritch_hastur_unlock_cassildas_choir = {
+		enable_subunits = {
+			eldritch_cassildas_choir
+		}
+		eldritch_cassildas_choir = {
+			soft_attack = 0.2
+		}
+		research_cost = 1
+		start_year = 1936
+		allow = { always = no }
+		ai_will_do = { factor = 0 }
+	}
+
+	# Chapter III
+	eldritch_hastur_unlock_pallid_masks = {
+		enable_subunits = {
+			eldritch_pallid_masks
+		}
+		eldritch_pallid_masks = {
+			soft_attack = 0.15
+			breakthrough = 0.3
+		}
+		research_cost = 1
+		start_year = 1936
+		allow = { always = no }
+		ai_will_do = { factor = 0 }
+	}
+
+	# Chapter V
+	eldritch_hastur_unlock_kings_tatters = {
+		enable_subunits = {
+			eldritch_kings_tatters
+		}
+		eldritch_kings_tatters = {
+			soft_attack = 0.2
+			breakthrough = 0.3
+			defense = 0.15
+		}
+		research_cost = 1
+		start_year = 1936
+		allow = { always = no }
+		ai_will_do = { factor = 0 }
+	}
+
+	# Chapter VI
+	eldritch_hastur_unlock_halis_drowned = {
+		enable_subunits = {
+			eldritch_halis_drowned
+		}
+		eldritch_halis_drowned = {
+			soft_attack = 0.15
+			max_organisation = 10
 		}
 		research_cost = 1
 		start_year = 1936
@@ -551,6 +704,42 @@ technologies = {
 			max_organisation = 10
 		}
 		eldritch_void_pipers = {
+			soft_attack = 0.15
+			defense = 0.15
+			breakthrough = 0.15
+			max_organisation = 10
+		}
+		eldritch_lidless = {
+			soft_attack = 0.15
+			defense = 0.15
+			breakthrough = 0.15
+			max_organisation = 10
+		}
+		eldritch_audience = {
+			soft_attack = 0.15
+			defense = 0.15
+			breakthrough = 0.15
+			max_organisation = 10
+		}
+		eldritch_cassildas_choir = {
+			soft_attack = 0.15
+			defense = 0.15
+			breakthrough = 0.15
+			max_organisation = 10
+		}
+		eldritch_pallid_masks = {
+			soft_attack = 0.15
+			defense = 0.15
+			breakthrough = 0.15
+			max_organisation = 10
+		}
+		eldritch_kings_tatters = {
+			soft_attack = 0.15
+			defense = 0.15
+			breakthrough = 0.15
+			max_organisation = 10
+		}
+		eldritch_halis_drowned = {
 			soft_attack = 0.15
 			defense = 0.15
 			breakthrough = 0.15

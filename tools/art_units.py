@@ -391,6 +391,44 @@ def _arms(f, p, k, arms, sy, sz, headc, build):
               0.04)
         f.add(R.sd_ellipsoid(p, (0.20, sy - 0.62, sz + 0.34), (0.06, 0.08, 0.05)), k.skin, 0.03)
 
+    elif arms == "clap":
+        # gloved hands raised together before the chin, applauding
+        hands = np.array([0.0, sy - 0.04, sz + 0.34])
+        glove = k.extra if k.extra is not None else k.skin
+        for side in (-1, 1):
+            sh = (0.19 * side * build, sy, sz)
+            el = (0.27 * side * build, sy - 0.30, sz + 0.12)
+            ha = hands + (0.028 * side, 0, 0)
+            f.add(R.sd_tube(p, [sh, el, ha], [r0, r1, r2]), arm_mat, 0.03)
+            f.add(R.sd_ellipsoid(p, ha + (0, 0.03, 0), (0.024, 0.065, 0.045)), glove, 0.01)
+    elif arms == "hymnal":
+        # a hymnal held open in both hands
+        book = np.array([0.0, sy - 0.30, sz + 0.30])
+        for side in (-1, 1):
+            sh = (0.19 * side * build, sy, sz)
+            el = (0.25 * side * build, sy - 0.33, sz + 0.06)
+            ha = book + (0.10 * side, -0.01, 0.0)
+            f.add(R.sd_tube(p, [sh, el, ha], [r0, r1, r2]), arm_mat, 0.03)
+            f.add(R.sd_sphere(p, ha, 0.04), k.skin, 0.01)
+        f.add(sd_box(p, book, (0.10, 0.012, 0.075), R.rot_x(-35)), k.extra if k.extra is not None else gear)
+    elif arms == "limp":
+        # arms hanging dead at the sides
+        for side in (-1, 1):
+            sh = (0.19 * side * build, sy, sz)
+            el = (0.22 * side * build, sy - 0.32, sz + 0.05)
+            ha = np.array([0.20 * side * build, sy - 0.66, sz + 0.12])
+            f.add(R.sd_tube(p, [sh, el, ha], [r0, r1, r2]), arm_mat, 0.03)
+            f.add(R.sd_ellipsoid(p, ha + (0, -0.04, 0), (0.035, 0.07, 0.04)), k.skin, 0.01)
+    elif arms == "reach":
+        # long arms stretched out ahead, ending in long, thin fingers
+        for side in (-1, 1):
+            sh = (0.19 * side * build, sy, sz)
+            el = (0.26 * side * build, sy - 0.10, sz + 0.34)
+            ha = (0.20 * side * build, sy - 0.04 + 0.06 * side, sz + 0.72)
+            f.add(R.sd_tube(p, [sh, el, ha], [r0, r1, r2 * 0.8]), arm_mat, 0.03)
+            for j in (-1.5, -0.5, 0.5, 1.5):
+                tip = (ha[0] + 0.035 * j, ha[1] - 0.08 - 0.03 * abs(j), ha[2] + 0.24 - 0.04 * abs(j))
+                f.add(R.sd_round_cone(p, ha, tip, 0.013, 0.004), k.skin, 0.01)
 
 def _robe(f, p, k, seed, sy, sz, h):
     top = np.array([0.0, sy + 0.02, sz * 0.8])
@@ -517,6 +555,84 @@ def _head(f, p, k, head, c, seed, s):
         for side in (-1, 1):
             f.add(R.sd_sphere(p, hc + np.array([0.09 * side, 0.03, 0.12]) * s, 0.025 * s), k.eye)
 
+    elif head == "bun":
+        # a pale face, the hair pinned up in a heavy bun
+        f.add(R.sd_ellipsoid(p, c + (0, -0.01, 0.02), np.array([0.08, 0.105, 0.09]) * s), k.skin, 0.02)
+        hair = R.sd_ellipsoid(p, c + np.array([0, 0.03, -0.01]) * s, np.array([0.095, 0.10, 0.10]) * s)
+        hair = np.maximum(hair, -R.sd_ellipsoid(p, c + np.array([0, -0.04, 0.09]) * s, np.array([0.08, 0.10, 0.07]) * s))
+        hair = R.smin(hair, R.sd_sphere(p, c + np.array([0, 0.11, -0.07]) * s, 0.06 * s), 0.03)
+        f.add(hair, k.gear, 0.01)
+        for side in (-1, 1):
+            f.add(R.sd_sphere(p, c + np.array([0.032 * side, 0.0, 0.098]) * s, 0.016 * s), k.eye)
+    elif head == "lidless":
+        # a gaunt bare face under a steel helmet, the eyes wide, bulging and lit
+        f.add(R.sd_ellipsoid(p, c + (0, -0.01, 0.01), np.array([0.085, 0.11, 0.095]) * s), k.skin, 0.02)
+        d = R.sd_ellipsoid(p, c + np.array([0, 0.05, 0]) * s, np.array([0.135, 0.11, 0.145]) * s)
+        d = np.maximum(d, -(p[:, 1] - (c[1] + 0.02 * s)))
+        d = R.smin(d, R.sd_ellipsoid(p, c + np.array([0, 0.03, 0]) * s, np.array([0.165, 0.022, 0.175]) * s), 0.02)
+        f.add(d, k.metal)
+        for side in (-1, 1):
+            f.add(R.sd_sphere(p, c + np.array([0.036 * side, -0.012, 0.094]) * s, 0.027 * s), k.eye)
+    elif head == "tophat":
+        # a pale face under a tall silk hat
+        f.add(R.sd_ellipsoid(p, c + (0, -0.01, 0.02), np.array([0.085, 0.11, 0.095]) * s), k.skin, 0.02)
+        crown = R.sd_round_cone(p, c + np.array([0, 0.06, -0.005]) * s, c + np.array([0, 0.30, -0.01]) * s,
+                                0.082 * s, 0.09 * s)
+        crown = np.maximum(crown, p[:, 1] - (c[1] + 0.31 * s))
+        brim = R.sd_ellipsoid(p, c + np.array([0, 0.075, -0.005]) * s, np.array([0.15, 0.014, 0.14]) * s)
+        f.add(np.minimum(crown, brim), k.gear)
+        for side in (-1, 1):
+            f.add(R.sd_sphere(p, c + np.array([0.033 * side, 0.0, 0.103]) * s, 0.017 * s), k.eye)
+    elif head == "singer":
+        # a deep hood, the pale face inside it tipped up and the mouth gaping wide
+        hood_c = c + (0, 0.03, -0.03)
+        d = R.sd_ellipsoid(p, hood_c, np.array([0.15, 0.18, 0.16]) * s)
+        d = R.smin(d, R.sd_round_cone(p, hood_c + (0, 0.02, -0.08), hood_c + (0, 0.16, -0.20), 0.08, 0.01), 0.05)
+        d = np.maximum(d, -R.sd_ellipsoid(p, c + (0, -0.01, 0.16), np.array([0.10, 0.13, 0.12]) * s))
+        f.add(d, k.cloth, 0.03)
+        tilt = R.rot_x(-22)
+        hc = c + np.array([0, -0.01, 0.04]) * s
+        d = R.sd_ellipsoid(p, hc, np.array([0.082, 0.112, 0.09]) * s, tilt)
+        d = np.maximum(d, -R.sd_ellipsoid(p, hc + tilt @ (np.array([0, -0.05, 0.09]) * s),
+                                          np.array([0.032, 0.052, 0.04]) * s, tilt))
+        for side in (-1, 1):
+            d = np.maximum(d, -R.sd_sphere(p, hc + tilt @ (np.array([0.033 * side, 0.025, 0.088]) * s), 0.018 * s))
+        f.add(d, k.skin, 0.02)
+    elif head == "mask":
+        # a deep hood, and a pale mask too big for the face that has grown into it
+        hood_c = c + (0, 0.03, -0.03)
+        d = R.sd_ellipsoid(p, hood_c, np.array([0.15, 0.18, 0.16]) * s)
+        d = np.maximum(d, -R.sd_ellipsoid(p, c + (0, -0.01, 0.15), np.array([0.10, 0.13, 0.12]) * s))
+        f.add(d, k.cloth, 0.03)
+        m = R.sd_ellipsoid(p, c + np.array([0, -0.01, 0.075]) * s, np.array([0.105, 0.14, 0.07]) * s)
+        for side in (-1, 1):
+            m = np.maximum(m, -R.sd_ellipsoid(p, c + np.array([0.042 * side, 0.025, 0.14]) * s,
+                                              np.array([0.026, 0.007, 0.03]) * s))
+        smile = [c + np.array([-0.055, -0.045, 0.128]) * s, c + np.array([0.0, -0.075, 0.142]) * s,
+                 c + np.array([0.055, -0.045, 0.128]) * s]
+        m = np.maximum(m, -R.sd_tube(p, smile, np.array([0.006, 0.006, 0.006]) * s))
+        f.add(m, k.metal)
+    elif head == "wrapped":
+        # no face at all: a lump of rags wound round and round, a little too tall
+        d = R.sd_ellipsoid(p, c + np.array([0, 0.05, 0.0]) * s, np.array([0.11, 0.18, 0.12]) * s)
+        i = near(d, 0.05)
+        if i.size:
+            q = p[i]
+            bands = np.sin(q[:, 1] * 40 + 3.0 * R.fbm3(q * 6, 2, seed + 7)) * 0.5 + 0.5
+            d[i] -= 0.014 * bands * fade(d[i], 0.05)
+        f.add(d, k.cloth, 0.05)
+    elif head == "drowned":
+        # a swollen, hairless head hanging forward, the jaw fallen open
+        hc = c + np.array([0, -0.03, 0.04]) * s
+        d = R.sd_ellipsoid(p, hc, np.array([0.115, 0.125, 0.12]) * s)
+        d = R.smin(d, R.sd_ellipsoid(p, hc + np.array([0, -0.11, 0.05]) * s, np.array([0.085, 0.065, 0.075]) * s),
+                   0.04)
+        d = np.maximum(d, -R.sd_ellipsoid(p, hc + np.array([0, -0.085, 0.115]) * s,
+                                          np.array([0.04, 0.04, 0.04]) * s))
+        d = displace(d, p, 0.012, 18, seed + 9, 0.04)
+        f.add(d, k.skin, 0.04)
+        for side in (-1, 1):
+            f.add(R.sd_sphere(p, hc + np.array([0.042 * side, 0.015, 0.105]) * s, 0.019 * s), k.eye)
 
 # ---------------------------------------------------------------------------
 # Finishing
@@ -1211,6 +1327,373 @@ def dunwich_horror():
         alone
 
 
+
+# ---------------------------------------------------------------------------
+# Hastur's quest battalions (the Road to Carcosa)
+# ---------------------------------------------------------------------------
+
+def sandbags(seed, z, top=1.3, x0=-7.0, x1=7.0):
+    """A parapet of lumpy sandbags in staggered rows (one bag per row,
+    repeated along X)."""
+    def fn(p):
+        d = np.full(len(p), 1e9)
+        rows = 5
+        h = top / rows
+        for r in range(rows):
+            q = p.copy()
+            q[:, 0] = np.mod(q[:, 0] + 0.25 * (r % 2), 0.5) - 0.25
+            d = np.minimum(d, R.sd_ellipsoid(q, (0, h * (r + 0.5), z), (0.27, h * 0.62, 0.22)))
+        d = np.maximum(d, np.abs(p[:, 0] - (x0 + x1) / 2) - (x1 - x0) / 2)
+        return displace(d, p, 0.025, 9, seed, 0.06)
+    return fn
+
+
+def barbed_wire(posts, z, heights=(0.45, 0.8)):
+    """Crossed stakes with sagging strands of wire strung between them."""
+    def fn(p):
+        d = np.full(len(p), 1e9)
+        for x in posts:
+            for sx in (-1, 1):
+                d = np.minimum(d, R.sd_capsule(p, (x - 0.28 * sx, -0.1, z), (x + 0.22 * sx, 1.05, z + 0.05), 0.035))
+        for a, b in zip(posts[:-1], posts[1:]):
+            for hgt in heights:
+                m = ((a + b) / 2, hgt - 0.12, z + 0.02)
+                d = np.minimum(d, R.sd_tube(p, [(a, hgt, z), m, (b, hgt, z)], [0.012, 0.012, 0.012]))
+        return d
+    return fn
+
+
+def lidless():
+    """Sentries staring over a sandbag parapet at night: the eyes never close."""
+    seed = 331
+    k = Kit(skin=1, cloth=2, gear=3, metal=4, eye=5)
+    mats = [
+        Material((0.30, 0.30, 0.26), tex=mottled((0.30, 0.30, 0.26), seed, 12, 0.2, 0.3), tex_mode="replace",
+                 wrap=0.3, spec=0.3, gloss=30, sss=(0.12, 0.10, 0.05)),                      # 1 gaunt skin
+        Material((0.10, 0.10, 0.075), tex=mottled((0.10, 0.10, 0.075), seed + 1, grime=0.6), tex_mode="replace",
+                 wrap=0.3, sheen=0.3),                                                        # 2 greatcoats
+        Material((0.06, 0.045, 0.03), spec=0.3),                                               # 3 rifle wood
+        Material((0.11, 0.12, 0.10), tex=mottled((0.11, 0.12, 0.10), seed + 2, 10, 0.3, 0.4), tex_mode="replace",
+                 spec=0.7, gloss=40),                                                         # 4 steel helmets
+        Material((0.70, 0.65, 0.35), emit=(3.2, 2.7, 0.9), spec=1.5, gloss=90),              # 5 staring eyes
+    ]
+    burlap = Material((0.13, 0.11, 0.08), tex=mottled((0.13, 0.11, 0.08), seed + 3, 7, 0.3, 0.5),
+                      tex_mode="replace", wrap=0.2)
+    wood = Material((0.05, 0.04, 0.03))
+
+    def fig(q):
+        return figure(q, k, seed, hunch=0.1, head="lidless", arms="rifle", stride=0.3)
+
+    placements = [((-0.85, 0, -0.30), 10, 1.0), ((0.20, 0, -0.85), -2, 1.03), ((1.15, 0, -0.25), -12, 0.98),
+                  ((-0.30, 0, -2.0), 4, 1.0), ((0.75, 0, -2.4), -8, 1.0)]
+    bags, wire = sandbags(seed, 0.35, top=1.15), barbed_wire([-2.6, -0.4, 1.9, 4.0], 2.2)
+    gm = Material((0.05, 0.045, 0.035), tex=mud(seed, (0.05, 0.045, 0.035)), tex_mode="replace", spec=0.3,
+                  gloss=60, spec_tex=mud_spec(seed))
+
+    def scene(p):
+        f = _squad(p, placements, fig)
+        f.add(bags(p), 6)
+        f.add(wire(p), 7)
+        f.add(ground(p, seed, 0.0), 0)
+        return f
+
+    cam = Camera((0.30, 1.50, 4.6), (0.25, 1.42, -0.4), 20.0)
+    lights = [Light((0.85, 0.95, 0.75), 1.5, direction=(0.45, 0.55, 0.9), softness=10),
+              Light((0.55, 0.75, 0.70), 2.6, direction=(-0.3, 0.35, -1.0), softness=14),
+              Light((0.30, 0.33, 0.40), 0.15, direction=(0.0, 0.3, 1.0), shadow=False)]
+    return _scene_icon(seed, [gm] + mats + [burlap, wood], [1, 2, 3, 4, 5], scene,
+                       dict(top=(0.006, 0.010, 0.010), horizon=(0.11, 0.15, 0.13), glow=(1.1, 1.15, 0.75),
+                            glow_at=(0.32, 0.30), glow_size=70.0, clouds=0.7),
+                       cam, lights, fog_density=0.04, fog_start=8.0, tint=(-0.006, 0.012, 0.004),
+                       smoke_col=(0.26, 0.30, 0.26), smoke_src=(0.6, 0.2), glow=0.6)
+
+
+
+def theatre(z=-10.0):
+    """A theatre front: a pedimented wall and a great arched doorway."""
+    def fn(p):
+        d = sd_box(p, (0.0, 2.6, z), (4.2, 2.6, 0.4))
+        arch = np.minimum(sd_box(p, (0.0, 1.4, z), (1.3, 1.4, 1.0)),
+                          R.length((p - np.array([0.0, 2.8, z])) * np.array([1, 1, 0])) - 1.3)
+        d = np.maximum(d, -arch)
+        for x in (-2.4, 2.4, -3.6, 3.6):
+            d = np.minimum(d, R.sd_capsule(p, (x, 0.0, z + 0.55), (x, 4.6, z + 0.55), 0.22))
+        d = np.minimum(d, sd_box(p, (0.0, 5.0, z + 0.3), (4.5, 0.25, 0.7)))
+        d = np.minimum(d, np.maximum(sd_triangle(p, (-4.4, 5.2, z + 0.3), (4.4, 5.2, z + 0.3), (0.0, 6.7, z + 0.3), 0.3),
+                                     -(p[:, 1] - 5.2)))
+        # a broken roofline
+        return np.maximum(d, p[:, 1] - (5.8 + 1.4 * R.fbm3(p * np.array([0.8, 0, 0.3]), 2, 7)))
+    return fn
+
+
+def audience():
+    """The Audience: theatre-goers in evening dress, applauding as they march
+    through the mud, their shirt-fronts and gloves stained, the theatre
+    burning behind them."""
+    seed = 341
+    k = Kit(skin=1, cloth=2, gear=3, eye=4, extra=5)
+    kw = Kit(skin=1, cloth=6, gear=3, eye=4, extra=5)
+    mats = [
+        Material((0.46, 0.43, 0.38), tex=mottled((0.46, 0.43, 0.38), seed, 10, 0.12, 0.2), tex_mode="replace",
+                 wrap=0.35, spec=0.35, gloss=30, sss=(0.15, 0.06, 0.04)),                   # 1 powdered faces
+        Material((0.020, 0.019, 0.022), tex=mottled((0.020, 0.019, 0.022), seed + 1, grime=0.4),
+                 tex_mode="replace", wrap=0.3, spec=0.25, gloss=20, sheen=0.5),              # 2 tailcoats
+        Material((0.015, 0.013, 0.012), spec=0.6, gloss=40, sheen=0.6),                      # 3 silk hats, hair
+        Material((0.0, 0.0, 0.0)),                                                           # 4 eye sockets
+        Material((0.62, 0.60, 0.54), tex=mottled((0.62, 0.60, 0.54), seed + 2, 9, 0.2, 0.75, (0.22, 0.015, 0.01)),
+                 tex_mode="replace", wrap=0.3, spec=0.2),                                    # 5 stained linen
+        Material((0.10, 0.015, 0.02), tex=mottled((0.10, 0.015, 0.02), seed + 3, grime=0.5), tex_mode="replace",
+                 wrap=0.35, spec=0.3, gloss=20, sheen=0.7),                                  # 6 gowns
+    ]
+    stone = Material((0.10, 0.085, 0.07), tex=mottled((0.10, 0.085, 0.07), seed + 4, 1.5, 0.4, 0.4),
+                     tex_mode="replace")
+    fire = Material((0.0, 0.0, 0.0), emit=(2.6, 1.0, 0.25))
+
+    def shirt(f, q):
+        f.add(R.sd_ellipsoid(q, (0.0, 1.30, 0.13), (0.06, 0.16, 0.035)), k.extra, 0.01)
+        return f
+
+    def man(q):
+        return shirt(figure(q, k, seed, head="tophat", arms="clap", stride=0.7), q)
+
+    def woman(q):
+        return figure(q, kw, seed + 1, robe=True, head="bun", arms="clap", stride=0.6, build=0.92)
+
+    men = [((-0.55, 0, 0.55), -8, 1.0), ((1.05, 0, -0.55), -16, 1.02), ((-1.55, 0, -1.6), 4, 0.98),
+           ((0.55, 0, -2.5), -10, 1.0)]
+    women = [((0.35, 0, 0.1), -6, 0.97), ((-0.65, 0, -2.3), 2, 0.96)]
+    crowd = _silhouettes(seed, [((x, 0, z), 0, 1.0) for x, z in ((-2.6, -4.5), (-1.3, -5.0), (0.2, -5.5), (1.6, -4.8),
+                                                             (2.8, -5.6), (-0.6, -6.5), (1.0, -7.0))],
+                         head="tophat", arms="clap", stride=0.6)
+    front = theatre(-11.0)
+    gm = Material((0.055, 0.045, 0.035), tex=mud(seed, (0.055, 0.045, 0.035)), tex_mode="replace", spec=0.3,
+                  gloss=60, spec_tex=mud_spec(seed))
+
+    def scene(p):
+        f = _squad(p, men, man)
+        f.add_group(p, (0.0, 1.0, -0.9), 3.5, lambda q: _squad(q, women, woman), pad=0.1)
+        f.add(crowd(p), 7)
+        f.add(front(p), 7)
+        f.add(sd_box(p, (0.0, 1.5, -11.6), (1.4, 1.5, 0.2)), 8)
+        f.add(ground(p, seed, 0.0), 0)
+        return f
+
+    cam = Camera((0.55, 1.05, 6.8), (0.0, 1.0, 0.0), 22.0)
+    lights = [Light((1.0, 0.80, 0.62), 1.8, direction=(0.45, 0.45, 0.9), softness=10),
+              Light((1.0, 0.55, 0.25), 3.4, direction=(-0.2, 0.3, -1.0), softness=14),
+              Light((0.30, 0.33, 0.40), 0.15, direction=(0.4, 0.5, 0.8), shadow=False)]
+    return _scene_icon(seed, [gm] + mats + [stone, fire], [1, 2, 3, 4, 5, 6], scene,
+                       dict(top=(0.012, 0.008, 0.006), horizon=(0.30, 0.13, 0.05), glow=(1.6, 0.7, 0.25),
+                            glow_at=(0.0, 0.05), glow_size=20.0, clouds=0.9),
+                       cam, lights, fog_density=0.05, fog_start=7.0, tint=(0.02, 0.0, -0.01),
+                       smoke_col=(0.40, 0.22, 0.12), smoke_src=(0.5, 0.35), glow=0.3)
+
+
+
+def twin_suns(seed, suns, **sky_kw):
+    """sky() with the twin suns of Carcosa: suns are (x, y, radius, colour),
+    each a hard disc in a wide halo."""
+    base = sky(seed, **sky_kw)
+
+    def bg(rd):
+        col = base(rd)
+        for x, y, r, c in suns:
+            d2 = (rd[:, 0] - x) ** 2 + (rd[:, 1] - y) ** 2
+            disc = smoothstep(r * r * 1.3, r * r * 0.7, d2)
+            col = col + np.asarray(c, float) * (3.0 * disc + 0.35 * np.exp(-d2 / (r * r * 6)))[:, None]
+        return col
+    return bg
+
+
+def lake_hali(seed, shore=-1.2, height=0.03):
+    """Still, dark water beyond the shore line."""
+    def fn(p):
+        return np.maximum(sea(p, seed, height), p[:, 2] - shore)
+    return fn
+
+
+def cassildas_choir():
+    """Cassilda's Choir on the shore of Lake Hali, faces turned up to the
+    sky, singing, as the twin suns sink behind the lake."""
+    seed = 351
+    k = Kit(skin=1, cloth=2, gear=3, extra=4)
+    mats = [
+        Material((0.40, 0.36, 0.31), tex=mottled((0.40, 0.36, 0.31), seed, 10, 0.15, 0.3), tex_mode="replace",
+                 wrap=0.35, spec=0.3, gloss=30, sss=(0.15, 0.07, 0.04)),                    # 1 pale skin
+        Material((0.36, 0.26, 0.07), tex=mottled((0.36, 0.26, 0.07), seed + 1, grime=0.75), tex_mode="replace",
+                 wrap=0.35, spec=0.05, gloss=8, sheen=0.4),                                 # 2 yellow robes
+        Material((0.05, 0.035, 0.025)),                                                      # 3 bindings
+        Material((0.55, 0.50, 0.40), tex=mottled((0.55, 0.50, 0.40), seed + 2, 12, 0.2, 0.4), tex_mode="replace",
+                 wrap=0.3),                                                                  # 4 hymnal pages
+    ]
+    water = Material((0.004, 0.005, 0.007), tex=mottled((0.004, 0.005, 0.007), seed + 3, 2, 0.3, 0.0),
+                     tex_mode="replace", spec=3.0, gloss=120)
+
+    def fig(q):
+        return figure(q, k, seed, hunch=-0.1, robe=True, head="singer", arms="limp", stride=0.2, head_scale=1.12)
+
+    placements = [((-1.65, 0, -0.45), 18, 0.96), ((-0.55, 0, 0.45), 6, 1.03), ((0.50, 0, -0.85), -4, 1.0),
+                  ((1.45, 0, 0.15), -16, 0.98), ((2.75, 0, -1.9), -22, 0.95)]
+    lake = lake_hali(seed)
+    gm = Material((0.07, 0.06, 0.045), tex=mud(seed, (0.07, 0.06, 0.045)), tex_mode="replace", spec=0.4,
+                  gloss=60, spec_tex=mud_spec(seed))
+
+    def scene(p):
+        f = _squad(p, placements, fig)
+        f.add(lake(p), 5)
+        f.add(ground(p, seed, 0.0), 0)
+        return f
+
+    cam = Camera((0.35, 1.55, 8.4), (0.10, 1.0, -2.0), 24.0)
+    lights = [Light((1.0, 0.75, 0.40), 2.2, direction=(-0.35, 0.10, -1.0), softness=14),
+              Light((1.0, 0.85, 0.50), 1.8, direction=(0.25, 0.14, -1.0), softness=14),
+              Light((0.65, 0.58, 0.60), 1.3, direction=(0.3, 0.8, 0.8), softness=10),
+              Light((0.30, 0.33, 0.40), 0.15, direction=(0.0, 0.3, 1.0), shadow=False)]
+    sky_kw = dict(top=(0.016, 0.010, 0.010), horizon=(0.30, 0.17, 0.06), clouds=1.0)
+    bg = twin_suns(seed, [(-0.13, 0.030, 0.020, (1.6, 1.05, 0.45)), (0.17, 0.050, 0.014, (1.5, 1.2, 0.6))], **sky_kw)
+    return render_icon(scene, [gm] + mats + [water], cam, lights, seed, bg, [1, 2, 3, 4],
+                       ambient=(0.035, 0.03, 0.03), rim=((0.40, 0.28, 0.14), 3.0),
+                       fog=(np.asarray(sky_kw["horizon"]) * 0.8, 0.012, 9.0), tint=(0.02, 0.012, -0.012),
+                       smoke_col=(0.45, 0.33, 0.16), smoke_src=(0.5, 0.25), smoke_amt=0.12, glow=0.5)
+
+
+
+def pallid_masks():
+    """The Pallid Masks leading an assault through the smoke: dark hooded
+    coats, fixed bayonets, and pale masks grown into the faces beneath."""
+    seed = 361
+    k = Kit(skin=1, cloth=2, gear=3, metal=4, eye=5)
+    mats = [
+        Material((0.30, 0.27, 0.23), wrap=0.3, spec=0.2),                                    # 1 hands
+        Material((0.045, 0.038, 0.025), tex=mottled((0.045, 0.038, 0.025), seed + 1, grime=0.5),
+                 tex_mode="replace", wrap=0.3, spec=0.08, gloss=10, sheen=0.5),             # 2 dark coats
+        Material((0.06, 0.045, 0.03), spec=0.3),                                               # 3 rifle wood
+        Material((0.80, 0.77, 0.68), tex=mottled((0.80, 0.77, 0.68), seed + 2, 16, 0.08, 0.25),
+                 tex_mode="replace", wrap=0.4, spec=0.9, gloss=60, emit=(0.06, 0.055, 0.045)),  # 4 pale masks, steel
+        Material((0.0, 0.0, 0.0)),
+    ]
+    stone = Material((0.09, 0.075, 0.065), tex=mottled((0.09, 0.075, 0.065), seed + 3, 1.5, 0.4, 0.3),
+                     tex_mode="replace")
+
+    def fig(q):
+        return figure(q, k, seed, hunch=0.3, robe=True, head="mask", arms="rifle", stride=1.2, head_scale=1.1)
+
+    placements = [((0.15, 0, 0.7), -14, 1.0), ((-1.10, 0, -0.9), -6, 1.0), ((1.35, 0, -1.9), -22, 1.0),
+                  ((-0.30, 0, -3.2), -10, 0.98)]
+    return _infantry_icon(seed, mats, fig, placements,
+                          dict(top=(0.012, 0.007, 0.006), horizon=(0.26, 0.10, 0.05), glow=(1.4, 0.55, 0.2),
+                               glow_at=(-0.28, 0.05), glow_size=40.0, clouds=0.9),
+                          (0.95, 0.90, 0.80), (0.55, 0.45, 0.85), back_col=(1.0, 0.50, 0.22),
+                          key_power=1.4, env=[(ruins(seed), stone)], tint=(0.018, 0.0, -0.008),
+                          smoke_col=(0.38, 0.20, 0.12), smoke_src=(0.35, 0.4))
+
+
+
+def tatters_fig(p, k, seed):
+    """One of the King's Tatters: a tall shape of wound yellow rags with long,
+    reaching fingers, strips of cloth streaming off it in the wind (toward
+    +X), and a human hand pushing out through the rags of its chest."""
+    f = figure(p, k, seed, hunch=0.2, robe=True, head="wrapped", arms="reach", build=0.74, stride=0.4)
+    rng = np.random.default_rng(seed)
+    d = np.full(len(p), 1e9)
+    for j in range(13):
+        side = 1 if j % 3 else -1
+        y0 = rng.uniform(0.9, 1.75)
+        r0 = 0.30 - 0.12 * y0 / 1.55
+        a0 = np.array([r0 * side * 0.8, y0, rng.uniform(-0.15, 0.12)])
+        n = rng.uniform(0.55, 1.15)
+        wav = rng.uniform(0, 6.28)
+        pts = [a0 + (n * t, -0.25 * n * t * t - 0.04 * t, 0.07 * math.sin(wav + 5 * t)) for t in (0.0, 0.35, 0.7, 1.0)]
+        d = np.minimum(d, R.sd_tube(p, pts, [0.035, 0.026, 0.016, 0.006]))
+    f.add(d, k.cloth, 0.03)
+    # the hand of someone it took
+    w = np.array([0.05, 1.12, 0.23])
+    f.add(R.sd_ellipsoid(p, w + (0, 0.02, 0.03), (0.045, 0.055, 0.02), R.rot_x(-30)), k.extra, 0.02)
+    for j, dx in enumerate((-0.035, -0.012, 0.012, 0.035)):
+        f.add(R.sd_round_cone(p, w + (dx, 0.06, 0.05), w + (dx * 1.8, 0.15 - 0.02 * abs(j - 1.5), 0.10),
+                              0.011, 0.007), k.extra, 0.01)
+    f.add(R.sd_round_cone(p, w + (-0.05, 0.0, 0.04), w + (-0.10, 0.05, 0.09), 0.012, 0.008), k.extra, 0.01)
+    return f
+
+
+def kings_tatters():
+    """The King's Tatters looming out of a yellow storm."""
+    seed = 371
+    k = Kit(skin=1, cloth=2, gear=2, extra=3)
+    mats = [
+        Material((0.16, 0.15, 0.13), wrap=0.3, spec=0.3, gloss=30),                           # 1 long grey fingers
+        Material((0.40, 0.29, 0.07), tex=mottled((0.40, 0.29, 0.07), seed + 1, 9, 0.35, 0.8),
+                 tex_mode="replace", wrap=0.4, spec=0.05, gloss=8, sheen=0.5),               # 2 yellow rags
+        Material((0.50, 0.38, 0.32), wrap=0.4, spec=0.3, gloss=30, sss=(0.25, 0.08, 0.05)),   # 3 the hand
+    ]
+    stone = Material((0.08, 0.07, 0.06), tex=mottled((0.08, 0.07, 0.06), seed + 3, 1.5, 0.4, 0.3),
+                     tex_mode="replace")
+
+    def fig(q):
+        return tatters_fig(q, k, seed)
+
+    placements = [((-0.15, 0, 0.3), -12, 1.45), ((1.75, 0, -2.4), -24, 1.40), ((-2.4, 0, -4.5), 8, 1.35)]
+    gm = Material((0.06, 0.05, 0.035), tex=mud(seed, (0.06, 0.05, 0.035)), tex_mode="replace", spec=0.3,
+                  gloss=60, spec_tex=mud_spec(seed))
+    town = ruins(seed, -11.0)
+
+    def scene(p):
+        f = _squad(p, placements, fig, radius=2.0, pad=0.15)
+        f.add(town(p), 4)
+        f.add(ground(p, seed, 0.0), 0)
+        return f
+
+    cam = Camera((0.55, 0.75, 8.2), (0.25, 1.75, 0.0), 27.0)
+    lights = [Light((1.0, 0.82, 0.55), 2.0, direction=(-0.5, 0.45, 0.8), softness=10),
+              Light((1.0, 0.70, 0.30), 2.4, direction=(0.4, 0.3, -1.0), softness=14),
+              Light((0.30, 0.33, 0.40), 0.15, direction=(0.0, 0.3, 1.0), shadow=False)]
+    return _scene_icon(seed, [gm] + mats + [stone], [1, 2, 3], scene,
+                       dict(top=(0.005, 0.004, 0.004), horizon=(0.11, 0.075, 0.03), glow=(0.7, 0.45, 0.15),
+                            glow_at=(0.28, 0.08), glow_size=45.0, clouds=1.1),
+                       cam, lights, fog_density=0.04, fog_start=8.0, tint=(0.02, 0.012, -0.014),
+                       smoke_col=(0.45, 0.35, 0.15), smoke_src=(0.3, 0.3), glow=0.2)
+
+
+
+def halis_drowned():
+    """Hali's Drowned wading out of black water in the mist, swollen and grey,
+    heads hanging, jaws fallen open."""
+    seed = 381
+    k = Kit(skin=1, cloth=2, gear=2, eye=3)
+    mats = [
+        Material((0.36, 0.39, 0.37), tex=mottled((0.36, 0.39, 0.37), seed, 9, 0.3, 0.5, (0.07, 0.08, 0.06)),
+                 tex_mode="replace", wrap=0.4, spec=1.2, gloss=50, sss=(0.08, 0.12, 0.10)),  # 1 drowned skin
+        Material((0.16, 0.12, 0.035), tex=mottled((0.16, 0.12, 0.035), seed + 1, grime=0.8), tex_mode="replace",
+                 wrap=0.3, spec=0.9, gloss=40),                                              # 2 sodden rags
+        Material((0.55, 0.60, 0.56), emit=(0.30, 0.36, 0.33), spec=1.5, gloss=90),          # 3 milky eyes
+    ]
+    water = Material((0.005, 0.007, 0.008), tex=mottled((0.005, 0.007, 0.008), seed + 3, 2, 0.3, 0.0),
+                     tex_mode="replace", spec=1.0, gloss=120)
+
+    def fig(q):
+        return figure(q, k, seed, hunch=0.3, head="drowned", arms="limp", stride=0.5, build=1.22, rough=0.015,
+                      head_scale=1.1)
+
+    placements = [((0.05, 0, 0.9), -10, 1.0), ((-1.25, 0, -0.6), 12, 1.0), ((1.30, 0, -1.4), -20, 1.0),
+                  ((-0.30, 0, -3.0), 4, 1.0), ((2.2, 0, -4.4), -16, 1.0), ((-2.4, 0, -4.0), 14, 1.0)]
+
+    def scene(p):
+        f = _squad(p, placements, fig)
+        # still, black water at thigh height, barely rippled
+        f.add(p[:, 1] - 0.58 - 0.012 * np.sin(p[:, 0] * 4.0 + p[:, 2] * 2.5) * np.sin(p[:, 2] * 3.1), 4)
+        return f
+
+    cam = Camera((0.30, 1.15, 5.6), (0.05, 1.15, 0.0), 24.0)
+    lights = [Light((0.70, 0.80, 0.80), 1.2, direction=(0.5, 0.6, 0.7), softness=10),
+              Light((0.65, 0.85, 0.85), 2.8, direction=(-0.25, 0.3, -1.0), softness=14),
+              Light((0.30, 0.33, 0.40), 0.15, direction=(0.0, 0.3, 1.0), shadow=False)]
+    return _scene_icon(seed, [water] + mats + [water], [1, 2, 3], scene,
+                       dict(top=(0.005, 0.008, 0.010), horizon=(0.10, 0.14, 0.14), glow=(0.50, 0.60, 0.55),
+                            glow_at=(-0.18, 0.14), glow_size=30.0, clouds=0.8),
+                       cam, lights, fog_density=0.07, fog_start=5.5, tint=(-0.01, 0.01, 0.012),
+                       smoke_col=(0.30, 0.36, 0.36), smoke_src=(0.4, 0.3), smoke_amt=0.4)
+
+
 # ---------------------------------------------------------------------------
 # The gods incarnate
 # ---------------------------------------------------------------------------
@@ -1586,6 +2069,12 @@ ICONS = {
     "eldritch_dunwich_horror": dunwich_horror,
     "eldritch_chaos_spawn": chaos_spawn,
     "eldritch_void_pipers": void_pipers,
+    "eldritch_lidless": lidless,
+    "eldritch_audience": audience,
+    "eldritch_cassildas_choir": cassildas_choir,
+    "eldritch_pallid_masks": pallid_masks,
+    "eldritch_kings_tatters": kings_tatters,
+    "eldritch_halis_drowned": halis_drowned,
     "eldritch_cthulhu_incarnate": great_cthulhu,
     "eldritch_nyarlathotep_incarnate": crawling_chaos,
     "eldritch_hastur_incarnate": king_in_yellow,
@@ -1624,6 +2113,12 @@ NATO = {
     "eldritch_dunwich_horror": "armour",
     "eldritch_chaos_spawn": "infantry",
     "eldritch_void_pipers": "artillery",
+    "eldritch_lidless": "infantry",
+    "eldritch_audience": "infantry",
+    "eldritch_cassildas_choir": "artillery",
+    "eldritch_pallid_masks": "infantry",
+    "eldritch_kings_tatters": "armour",
+    "eldritch_halis_drowned": "infantry",
 }
 
 
