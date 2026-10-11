@@ -16,6 +16,7 @@ minutes in all); everything else is drawn here. To redo only some of it:
     python3 tools/generate_art.py units       # battalion icons only
     python3 tools/generate_art.py doctrines   # doctrine art only
     python3 tools/generate_art.py buildings   # building icons only
+    python3 tools/generate_art.py flags       # the formables' flags only
 """
 
 import math
@@ -1436,13 +1437,35 @@ FLAG_SOURCE = os.path.join(ROOT, "tools", "art_sources", "carcosa_flag.png")
 FLAG_BOX = (0, 21.5, 2000, 1308.5)
 
 
+def empire_flag(flag):
+    """The Yellow Empire's flag, from Carcosa's: the King and the sigils in black on a gold field,
+    and the gold bands turned crimson."""
+    a = np.array(flag).astype(float)
+    rgb = a[..., :3]
+    # how gold each pixel is (0 = Carcosa's black, 1 = its gold), from its brightness
+    gold = np.clip(rgb.max(axis=2) / 255.0, 0, 1)[..., None]
+    gold_rgb = np.array([238, 196, 40], float)
+    black_rgb = np.array([14, 10, 12], float)
+    crimson_rgb = np.array([128, 16, 24], float)
+    out = gold_rgb * (1 - gold) + black_rgb * gold
+    # the bands: rows that are gold right across
+    rows = (gold[..., 0] > 0.6).mean(axis=1) > 0.98
+    out[rows] = crimson_rgb * gold[rows] + gold_rgb * (1 - gold[rows])
+    return Image.fromarray(np.concatenate([out, a[..., 3:4]], axis=2).clip(0, 255).astype(np.uint8), "RGBA")
+
+
+FLAGS = {"ELDRITCH_CARCOSA": lambda f: f, "ELDRITCH_YELLOW_EMPIRE": empire_flag}
+
+
 def make_flags():
-    flag = Image.open(FLAG_SOURCE).convert("RGBA")
-    for ideology in ("", "_fascism", "_communism", "_democratic", "_neutrality"):
-        for folder, size in FLAG_SIZES.items():
-            path = os.path.join(ROOT, "gfx", "flags", folder, f"ELDRITCH_CARCOSA{ideology}.tga")
-            os.makedirs(os.path.dirname(path), exist_ok=True)
-            flag.resize(size, Image.LANCZOS, box=FLAG_BOX).save(path)
+    source = Image.open(FLAG_SOURCE).convert("RGBA")
+    for tag, design in FLAGS.items():
+        flag = design(source)
+        for ideology in ("", "_fascism", "_communism", "_democratic", "_neutrality"):
+            for folder, size in FLAG_SIZES.items():
+                path = os.path.join(ROOT, "gfx", "flags", folder, f"{tag}{ideology}.tga")
+                os.makedirs(os.path.dirname(path), exist_ok=True)
+                flag.resize(size, Image.LANCZOS, box=FLAG_BOX).save(path)
 
 
 # ---------------------------------------------------------------------------
@@ -1542,6 +1565,10 @@ def main():
     if sys.argv[1:] == ["units"]:
         make_unit_icons()
         print("Battalion icons generated.")
+        return
+    if sys.argv[1:] == ["flags"]:
+        make_flags()
+        print("Flags generated.")
         return
     if sys.argv[1:] == ["buildings"]:
         make_building_icons()

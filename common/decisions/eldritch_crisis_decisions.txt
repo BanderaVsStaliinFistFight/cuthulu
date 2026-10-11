@@ -364,6 +364,40 @@ eldritch_kings_play = {
 			factor = 10
 		}
 	}
+
+	# The second formable: once Lost Carcosa has returned, Carcosa can
+	# become the Yellow Empire. Every state it controls becomes its core.
+	eldritch_proclaim_yellow_empire = {
+		icon = eldritch_crown
+		cost = 100
+		fire_only_once = yes
+
+		visible = {
+			has_country_flag = eldritch_carcosa_returned
+			NOT = { has_country_flag = eldritch_yellow_empire_proclaimed }
+		}
+
+		complete_effect = {
+			set_cosmetic_tag = ELDRITCH_YELLOW_EMPIRE
+			custom_effect_tooltip = eldritch_proclaim_yellow_empire_tt
+			every_controlled_state = {
+				limit = { NOT = { is_core_of = ROOT } }
+				add_core_of = ROOT
+			}
+			eldritch_prophet_gain_xp_100 = yes
+			hidden_effect = {
+				set_country_flag = eldritch_yellow_empire_proclaimed
+				country_event = { id = eldritch_crisis.30 }
+				every_other_country = {
+					news_event = { id = eldritch_news.16 hours = 6 }
+				}
+			}
+		}
+
+		ai_will_do = {
+			factor = 10
+		}
+	}
 }
 
 #####################################################################

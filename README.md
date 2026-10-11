@@ -308,6 +308,8 @@ The world sees each stage in the news and can fight back: if Carcosa loses its P
 
 **Carcosa Returns** ends the play in the King's victory: every nation at war with Carcosa becomes its puppet, every other nation that doesn't follow Hastur falls under the Yellow Madness for good, and Carcosa gains **The King Reigns** (+20% stability, war support and political power, +10% factory output). The game goes on in the world the King has won.
 
+**The Yellow Empire** is the second formable, unlocked by Carcosa Returns: **Proclaim the Yellow Empire** (100 PP, in the King's Play) renames the nation the **Yellow Empire** (whatever its ideology; adjective *Carcosan*), gives it its own flag (Carcosa's turned around: the King in black on a gold field between crimson bands) and an amber map colour, and makes **every state it controls its core**. The world hears of it.
+
 ### 14. The gods' doctrines
 Sealing a pact opens a fourth doctrine tab, **Eldritch**, next to land, naval and air. It holds one grand doctrine for each god, and a country only ever sees its own patron's: the doctrine, its sub-doctrines and their rewards are visible and available only to the god's followers. It works alongside your land doctrine rather than replacing it.
 
@@ -335,7 +337,7 @@ The grand doctrine costs 100 army experience, and each sub-doctrine 50. Each gra
 
 ## Compatibility
 
-* One vanilla file is replaced: `common/countries/cosmetic.txt`, the only file the game reads cosmetic tags' map colours from, so Carcosa can be yellow. The mod's copy holds only Carcosa, so while the mod is on, the game's other cosmetic tags (focus-tree renames) show their nation's normal colour, and a mod that also replaces that file will clash (whichever loads last wins; Carcosa's entry can be copied into the other mod's file). 
+* One vanilla file is replaced: `common/countries/cosmetic.txt`, the only file the game reads cosmetic tags' map colours from, so Carcosa can be yellow and the Yellow Empire amber. The mod's copy holds only the mod's formables (Carcosa and the Yellow Empire), so while the mod is on, the game's other cosmetic tags (focus-tree renames) show their nation's normal colour, and a mod that also replaces that file will clash (whichever loads last wins; Carcosa's entry can be copied into the other mod's file). 
 * One vanilla sprite is replaced: `GFX_buildings_strip`, the construction menu's building pictures, so the Carcosa buildings can have their own. The mod's strip keeps all 31 of the game's pictures in place and adds four after them. A mod that also replaces that strip will clash (whichever loads last wins), and if a game update adds pictures to it, the mod's copy needs updating (see the testing notes). Nothing else of the game's is overwritten.
 * Every other key, flag, variable and file uses the `eldritch_` prefix, so the mod should work alongside most other mods, including total conversions that keep the standard decision system.
 * No DLC is required.
@@ -356,7 +358,7 @@ common/scripted_effects|triggers/  shared logic (summoning, blessings, tiers, fa
 common/scripted_localisation/      [ROOT.GetEldritchGodName] etc.
 common/dynamic_modifiers/          the Prophet's mantle (character sheet stats as modifiers); the Yellow Fever and Black Stars (states)
 common/doctrines/                  the Eldritch doctrine folder: its tracks, the gods' grand doctrines and sub-doctrines
-common/countries/cosmetic.txt      Carcosa's map colour (replaces the game's file of cosmetic tag colours)
+common/countries/cosmetic.txt      the formables' map colours, Carcosa and the Yellow Empire (replaces the game's file of cosmetic tag colours)
 common/buildings/                  the four buildings of the Road to Carcosa, locked until a chapter unlocks them
 common/game_rules/                 the AI rule
 common/on_actions/                 welcome pop-up at game start; records each nation's starting capital (Road to Carcosa, Chapter V);
@@ -371,7 +373,7 @@ gfx/entities/                      King in Yellow mesh definitions (.gfx) and un
 gfx/models/units/eldritch/         King in Yellow .mesh models, .anim animations, their definitions and the texture atlas
 tools/generate_art.py              regenerates every texture and the thumbnail (`units` for the battalion icons only,
                                    `doctrines` for the doctrine tab, icons and track backgrounds only)
-tools/art_sources/                 source art the generator reads (carcosa_flag.png: Carcosa's flag;
+tools/art_sources/                 source art the generator reads (carcosa_flag.png: Carcosa's flag, and the Yellow Empire's from it;
                                    building_icon_strip.dds: the game's own building strip, which the mod's extends)
 tools/art_portraits.py             the King in Yellow's painted portrait: forms sculpted and lit by
                                    art_render.py, then repainted stroke by stroke by art_paint.py

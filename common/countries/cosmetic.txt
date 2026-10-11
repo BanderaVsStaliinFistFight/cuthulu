@@ -2,7 +2,8 @@
 # Eldritch Pacts - map colours of the formables (cosmetic tags)
 #
 # The game reads cosmetic tag colours from this file only, so the mod
-# ships its own copy, which replaces vanilla's. It holds only Carcosa:
+# ships its own copy, which replaces vanilla's. It holds only the mod's
+# formables (Carcosa, and the Yellow Empire after it):
 # the game's other cosmetic tags show their nation's normal colour
 # while the mod is on.
 #####################################################################
@@ -11,4 +12,10 @@
 ELDRITCH_CARCOSA = {
 	color = rgb { 220 180 20 }
 	color_ui = rgb { 240 200 40 }
+}
+
+# The Yellow Empire (once Lost Carcosa has returned): imperial amber.
+ELDRITCH_YELLOW_EMPIRE = {
+	color = rgb { 228 150 24 }
+	color_ui = rgb { 245 180 50 }
 }

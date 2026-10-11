@@ -12,9 +12,10 @@
 #   eldritch_crisis.25    Carcosa returns: the end of the play (to Carcosa)
 #   eldritch_crisis.26    the Palace is lost and the project falls back
 #   eldritch_crisis.28    a nation at war with Carcosa kneels as its puppet
+#   eldritch_crisis.30    the Yellow Empire is proclaimed (to it)
 #
 # The world news: Acts II-V are eldritch_news.6-9, a stage raised 10,
-# Carcosa returns 14, the project falls back 15.
+# Carcosa returns 14, the project falls back 15, the Yellow Empire 16.
 #####################################################################
 
 add_namespace = eldritch_crisis
@@ -216,5 +217,19 @@ country_event = {
 
 	option = {
 		name = eldritch_crisis.28.a
+	}
+}
+
+# The Yellow Empire is proclaimed.
+country_event = {
+	id = eldritch_crisis.30
+	title = eldritch_crisis.30.t
+	desc = eldritch_crisis.30.d
+	picture = GFX_report_event_eldritch_hastur
+
+	is_triggered_only = yes
+
+	option = {
+		name = eldritch_crisis.30.a
 	}
 }

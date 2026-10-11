@@ -28,6 +28,7 @@
 #   eldritch_news.6-9 world news: Carcosa's play reaches Acts II-V
 #   eldritch_news.10  world news: a stage of Lost Carcosa is raised
 #   eldritch_news.14/15 world news: Carcosa returns / its project falls back
+#   eldritch_news.16  world news: the Yellow Empire is proclaimed
 #####################################################################
 
 add_namespace = eldritch
@@ -1382,5 +1383,18 @@ news_event = {
 
 	option = {
 		name = eldritch_news.15.a
+	}
+}
+
+news_event = {
+	id = eldritch_news.16
+	title = eldritch_news.16.t
+	desc = eldritch_news.16.d
+	picture = GFX_news_event_eldritch_stars
+
+	is_triggered_only = yes
+
+	option = {
+		name = eldritch_news.16.a
 	}
 }
