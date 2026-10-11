@@ -5,7 +5,7 @@
  ################################################################
 
  eldritch_forbidden_rites:0 "The Forbidden Rites"
- eldritch_forbidden_rites_desc:0 "Beneath the cities of men, beneath the seas, and in the spaces between the stars, things older than humanity wait. They do not care for flags or ideologies, but they can be bargained with.\n\n§HPatron:§! §Y[ROOT.GetEldritchGodName]§!\n§HPact:§! [ROOT.GetEldritchPactStage]\n[ROOT.GetEldritchFavorLine]"
+ eldritch_forbidden_rites_desc:0 "Beneath the cities of men, beneath the seas, and in the spaces between the stars, things older than humanity wait. They do not care for flags or ideologies, but they can be bargained with.\n\n§HPatron:§! §Y[ROOT.GetEldritchGodName]§!\n§HPact:§! [ROOT.GetEldritchPactStage]\n[ROOT.GetEldritchFavorLine]\n[ROOT.GetEldritchProphetLine]"
 
  eldritch_god_name_cthulhu:0 "Cthulhu"
  eldritch_god_name_nyarlathotep:0 "Nyarlathotep"
@@ -23,6 +23,10 @@
  eldritch_stage_3:0 "§RAscendant§! (Tier III)"
  eldritch_favor_line:0 "§HEldritch Favor:§! §Y[?eldritch_favor|0]§! / 999"
  eldritch_favor_line_none:0 ""
+ eldritch_prophet_line_vessel:0 "§HProphet:§! [ROOT.GetLeader], §Rthe Vessel of [ROOT.GetEldritchGodName]§!"
+ eldritch_prophet_line_chosen:0 "§HProphet:§! [ROOT.GetLeader], §Ythe Chosen§!"
+ eldritch_prophet_line_herald:0 "§HProphet:§! [ROOT.GetLeader], §Ythe Herald§!"
+ eldritch_prophet_line_unmarked:0 "§HProphet:§! [ROOT.GetLeader] §Rbears no mark of the god§! (use §YExalt the Prophet§!)"
 
  ################################################################
  # COSTS & TOOLTIPS
@@ -38,16 +42,22 @@
  eldritch_cost_favor_75_blocked:0 "§R75§! Favor"
  eldritch_cost_favor_80:0 "§Y80§! Favor"
  eldritch_cost_favor_80_blocked:0 "§R80§! Favor"
+ eldritch_cost_favor_30:0 "§Y30§! Favor"
+ eldritch_cost_favor_30_blocked:0 "§R30§! Favor"
  eldritch_cost_favor_120:0 "§Y120§! Favor"
  eldritch_cost_favor_120_blocked:0 "§R120§! Favor"
  eldritch_cost_favor_150:0 "§Y150§! Favor"
  eldritch_cost_favor_150_blocked:0 "§R150§! Favor"
  eldritch_cost_favor_200:0 "§Y200§! Favor"
  eldritch_cost_favor_200_blocked:0 "§R200§! Favor"
+ eldritch_cost_favor_250:0 "§Y250§! Favor"
+ eldritch_cost_favor_250_blocked:0 "§R250§! Favor"
  eldritch_cost_favor_300:0 "§Y300§! Favor"
  eldritch_cost_favor_300_blocked:0 "§R300§! Favor"
  eldritch_cost_manpower_20k:0 "§Y20k§! Manpower"
  eldritch_cost_manpower_20k_blocked:0 "§R20k§! Manpower"
+ eldritch_cost_temple:0 "§Y100§! Political Power and §Y75§! Favor"
+ eldritch_cost_temple_blocked:0 "§R100§! Political Power and §R75§! Favor"
 
  eldritch_no_ritual_underway_tt:0 "No summoning ritual is currently underway"
  eldritch_has_coastline_tt:0 "Owns at least one coastal state"
@@ -55,6 +65,15 @@
  eldritch_no_god_incarnate_deployed_tt:0 "[ROOT.GetEldritchGodName] does not already walk the battlefield in the flesh"
  eldritch_has_unanointed_general_tt:0 "Has a general who has not yet been anointed"
  eldritch_has_unanointed_admiral_tt:0 "Has an admiral who has not yet been anointed"
+ eldritch_leader_is_herald_tt:0 "[ROOT.GetLeader] bears the mark of [ROOT.GetEldritchGodName] (the §YHerald§! trait; a new leader gets it from §YExalt the Prophet§!)"
+ eldritch_leader_is_chosen_tt:0 "[ROOT.GetLeader] is [ROOT.GetEldritchGodName]'s §YChosen§! (from §YExalt the Prophet§!)"
+ eldritch_pact_tier_3_tt:0 "The pact is §RAscendant§! (Tier III)"
+ eldritch_has_anointed_commander_tt:0 "Has an anointed general or admiral, or an avatar"
+ eldritch_has_servitors_in_field_tt:0 "Has eldritch servitor battalions in the field"
+ eldritch_god_incarnate_deployed_tt:0 "[ROOT.GetEldritchGodName] walks the battlefield in the flesh"
+ eldritch_prophet_commune_tt:0 "[ROOT.GetLeader] returns from the trance and asks [ROOT.GetEldritchGodName] for §Ystrength§!, §Yknowledge§! or §YFavor§!.\n§RSometimes the Prophet comes back changed.§!"
+ eldritch_council_avatar_tt:0 "An §Yavatar§! sits on the council:"
+ eldritch_temple_favor_tt:0 "Gain §G3§! more Eldritch Favor every month."
 
  eldritch_gain_favor_10_tt:0 "Gain §G10§! Eldritch Favor"
  eldritch_gain_favor_15_tt:0 "Gain §G15§! Eldritch Favor"
@@ -95,6 +114,7 @@
  eldritch_incarnate_azathoth_tt:0 "§YA fragment of Azathoth§! tears into our world near our capital as a division, escorted by Spawn of the Nuclear Chaos and Void Pipers."
 
  eldritch_gate_insight:0 "Insight from Beyond the Gate"
+ eldritch_prophet_insight:0 "The Prophet's Vision"
 
  ################################################################
  # DECISIONS - THE FORBIDDEN LORE & SUMMONINGS
@@ -206,6 +226,29 @@
  eldritch_azathoth_nuclear_chaos_desc:0 "Azathoth is the nuclear chaos at the heart of all things. A tiny fragment of it, sealed in lead, will destroy any city on Earth.\n\n§YGrants a nuclear bomb.§!"
 
  ################################################################
+ # DECISIONS - THE PROPHET
+ ################################################################
+
+ eldritch_prophet_commune:0 "Commune with [ROOT.GetEldritchGodName]"
+ eldritch_prophet_commune_desc:0 "[ROOT.GetLeader] will go down alone into the sanctum beneath the capital, and for ten days nobody will see or hear from them. Those who have done this before describe it as drowning in a voice.\n\n§YAfter 10 days the Prophet asks for strength (army and navy experience), knowledge (research bonuses) or simply listens (Favor). One time in four, the Prophet comes back changed.§!"
+ eldritch_prophet_preach:0 "Preach to the Faithful"
+ eldritch_prophet_preach_desc:0 "The pact has frightened the people. [ROOT.GetLeader] will stand on the palace balcony and tell them what [ROOT.GetEldritchGodName] has promised, and the crowd will go home calmer, and a little stranger.\n\n§YStability and war support. The god's Chosen preaches better.§!"
+ eldritch_prophet_tithe:0 "Demand a Tithe from the Cult"
+ eldritch_prophet_tithe_desc:0 "The cult has grown rich on offerings. [ROOT.GetLeader] will remind its priests who leads this nation, and the money will find its way into the treasury.\n\n§YTurns Favor into political power.§!"
+ eldritch_prophet_dark_council:0 "Convene the Dark Council"
+ eldritch_prophet_dark_council_desc:0 "[ROOT.GetLeader] will sit at the head of a long table in a windowless room. Around it will sit the generals and admirals [ROOT.GetEldritchGodName] has touched and, if one has come, an avatar of the god itself. What they plan there will not be written down.\n\n§YNeeds an anointed general or admiral, or an avatar. 120 days of faster, deeper planning and better organization, plus command power (more if an avatar attends).§!"
+ eldritch_prophet_review_servitors:0 "Review the Servitor Legions"
+ eldritch_prophet_review_servitors_desc:0 "[ROOT.GetLeader] will ride out to the front and inspect the servants of [ROOT.GetEldritchGodName] in person. The newspapers will print the photographs, though the editors will crop them carefully.\n\n§YNeeds eldritch battalions in the field. Army experience, war support and a little Favor.§!"
+ eldritch_prophet_march_with_god:0 "March Beside [ROOT.GetEldritchGodName]"
+ eldritch_prophet_march_with_god_desc:0 "The god walks among our soldiers. [ROOT.GetLeader] will walk with it, at the head of the army, where every soldier can see that their leader is not afraid.\n\n§YNeeds the incarnate god on the map. 90 days of better attack and morale.§!"
+ eldritch_prophet_name_the_cursed:0 "Speak the Name of [From.GetNameDef]"
+ eldritch_prophet_name_the_cursed_desc:0 "The curse we laid on [From.GetNameDef] is fading. In the next rite, [ROOT.GetLeader] will speak the enemy's name aloud, and the madness will come back.\n\n§YThe enemy's curse lasts 60 days longer, and it loses war support.§!"
+ eldritch_prophet_great_temple:0 "Raise the Great Temple"
+ eldritch_prophet_great_temple_desc:0 "[ROOT.GetLeader] will lay the first stone of a temple to [ROOT.GetEldritchGodName] in the heart of the capital. Its architects have stopped sleeping, and its angles do not quite meet.\n\n§YA 90-day construction. The Great Temple adds stability and political power, and §G3§! Eldritch Favor every month for the rest of the game. Once per game.§!"
+ eldritch_prophet_become_vessel:0 "Become the Vessel"
+ eldritch_prophet_become_vessel_desc:0 "[ROOT.GetEldritchGodName] has asked for the last thing [ROOT.GetLeader] has left to give. For sixty days the Prophet will lie in the sanctum while the god pours itself in. What comes out will still lead the nation. It will not be entirely human.\n\n§YNeeds an Ascendant pact and a Chosen leader. The leader gains the god's powerful §YVessel§! trait; the nation loses stability and gains war support, and the whole world will hear of it. Once per game; the trait is lost if the leader is replaced.§!"
+
+ ################################################################
  # NATIONAL SPIRITS
  ################################################################
 
@@ -267,6 +310,15 @@
  eldritch_azathoth_blessing:0 "Mindless Fury"
  eldritch_azathoth_blessing_desc:0 "The army fights like the dancers around the throne of chaos."
 
+ eldritch_prophets_fever:0 "The Prophet's Fever"
+ eldritch_prophets_fever_desc:0 "Our leader has not slept since the trance. The speeches are longer now, and some of them are not in any human language. The crowds love it."
+ eldritch_dark_council:0 "The Dark Council"
+ eldritch_dark_council_desc:0 "The anointed commanders meet in a room without windows. The plans they bring out are uncannily good."
+ eldritch_prophet_marches:0 "The Prophet Marches with the God"
+ eldritch_prophet_marches_desc:0 "Our leader walks at the head of the army beside the god itself. No soldier will retreat while they can see that."
+ eldritch_great_temple:0 "The Great Temple"
+ eldritch_great_temple_desc:0 "A temple to our patron towers over the capital. The faithful come by the thousand, and something answers from inside it."
+
  ################################################################
  # COUNTRY LEADER TRAITS
  ################################################################
@@ -295,6 +347,19 @@
  eldritch_azathoth_herald_desc:0 "Announces the coming of chaos."
  eldritch_azathoth_chosen:0 "Piper at the Throne of Chaos"
  eldritch_azathoth_chosen_desc:0 "Plays the flute that lulls the idiot god."
+
+ eldritch_cthulhu_vessel:0 "Flesh of the Sleeper"
+ eldritch_cthulhu_vessel_desc:0 "Gills have opened along the Prophet's throat. They dream Cthulhu's dreams while awake."
+ eldritch_nyarlathotep_vessel:0 "Mask of the Crawling Chaos"
+ eldritch_nyarlathotep_vessel_desc:0 "The face is the Prophet's. The thing smiling behind it is not."
+ eldritch_hastur_vessel:0 "The Pallid Mask"
+ eldritch_hastur_vessel_desc:0 "The Prophet no longer takes off the mask. Perhaps they no longer can."
+ eldritch_shub_niggurath_vessel:0 "Womb of the Thousand Young"
+ eldritch_shub_niggurath_vessel_desc:0 "The Prophet's shadow has hooves and too many limbs. The fields bloom wherever it falls."
+ eldritch_yog_sothoth_vessel:0 "The Key Made Flesh"
+ eldritch_yog_sothoth_vessel_desc:0 "The Prophet answers questions before they are asked, and sometimes before they are thought."
+ eldritch_azathoth_vessel:0 "Seat of the Daemon Sultan"
+ eldritch_azathoth_vessel_desc:0 "A thin piping follows the Prophet everywhere. Nobody near them can think clearly, and nobody needs to."
 
  ################################################################
  # GENERAL & ADMIRAL TRAITS
@@ -518,6 +583,28 @@
  eldritch.62.d:0 "For weeks a tall, dark lecturer has been touring [ROOT.GetNameDef], demonstrating strange electrical marvels to packed halls. The crowds leave entranced and restless, and political agitators have sprung up in his wake. Nobody can remember his name, but several witnesses insist his accent was from [From.GetNameDef]."
  eldritch.62.a:0 "Find this man!"
 
+ eldritch.63.t:0 "They Are Saying Our Name"
+ eldritch.63.d:0 "The madness in [ROOT.GetNameDef] was finally ebbing. Then, last night, it came back worse than ever. The afflicted all describe the same thing: a voice from [From.GetNameDef], speaking our nation's name over and over in a rite, and the leader of [From.GetNameDef] smiling all the while."
+ eldritch.63.a:0 "Make it stop."
+
+ eldritch.70.t:0 "The Prophet Communes"
+ eldritch.70.d:0 "On the tenth day the sanctum door opened and [ROOT.GetLeader] walked out, grey-faced and steady. [ROOT.GetEldritchGodName] had listened, the Prophet said, and would grant one thing.\n\nThe ministers waited to hear what that one thing should be."
+ eldritch.70.a:0 "Ask for strength for our soldiers and sailors."
+ eldritch.70.b:0 "Ask for the secrets of machines and of war."
+ eldritch.70.c:0 "Ask for nothing. Only listen."
+ eldritch.71.t:0 "The Prophet Returns Changed"
+ eldritch.71.d:0 "The sanctum door stayed shut two days longer than planned. When the guards forced it, [ROOT.GetLeader] was sitting in the dark, speaking in a language that hurt to hear. The Prophet came out laughing, and has not stopped making speeches since.\n\nThe crowds adore the new fervour. The cabinet is frightened of it."
+ eldritch.71.a:0 "Let the people see their Prophet."
+ eldritch.71.b:0 "Keep the Prophet out of sight until it passes."
+ eldritch.72.t:0 "The Vessel"
+ eldritch.72.d.cthulhu:0 "When [ROOT.GetLeader] came up from the sanctum, the guards smelled the sea first. Gills had opened along the Prophet's throat, and the eyes no longer blinked. At the first cabinet meeting the ministers found they had all dreamt the same dream, of a green city under the water, and that the Prophet had been in it.\n\nCthulhu has a voice in [ROOT.GetNameDef] now, and it is our leader's."
+ eldritch.72.d.nyarlathotep:0 "[ROOT.GetLeader] walked out of the sanctum looking exactly the same. That was what frightened the guards. The Prophet's face is perfect, unlined and always smiling, and sometimes, at the edge of a room, it is not there at all.\n\nThe Crawling Chaos wears our leader now. It wears the role well."
+ eldritch.72.d.hastur:0 "[ROOT.GetLeader] came out of the sanctum wearing a mask of pallid white. The Prophet will not take it off and gives no answer when asked to. The palace tailors have been ordered to dye every robe yellow.\n\nThe King in Yellow has a throne in [ROOT.GetNameDef] now."
+ eldritch.72.d.shub_niggurath:0 "The doctors who examined [ROOT.GetLeader] after the ritual refused to write a report. The Prophet seems well, and stronger than ever. But the Prophet's shadow falls the wrong way, with hooves and too many limbs, and the palace gardens have run wild overnight.\n\nThe Black Goat has taken our leader as one of her Thousand Young."
+ eldritch.72.d.yog_sothoth:0 "[ROOT.GetLeader] stepped out of the sanctum before stepping into it. The guards saw both. The Prophet now answers questions before they are asked and signs decrees dated next year.\n\nYog-Sothoth knows the gate. Our leader has become the key."
+ eldritch.72.d.azathoth:0 "The ritual ended when the sanctum's walls cracked from the inside. [ROOT.GetLeader] walked out of the rubble untouched, trailed by a thin, monotonous piping that has not stopped since. Ministers forget what they were saying in the Prophet's presence. Soldiers stop being afraid.\n\nA mote of the Daemon Sultan's chaos now rules [ROOT.GetNameDef]."
+ eldritch.72.a:0 "All hail the Vessel."
+
  eldritch_news.1.t:0 "Something Has Answered [From.GetNameDef]"
  eldritch_news.1.d.cthulhu:0 "Ships off the coast of [From.GetNameDef] report the sea boiling green, and coastal villages have been taken over by strange, fish-eyed people who walk out of the surf. Intelligence services confirm the unthinkable: [From.GetNameDef] has made a pact with Cthulhu, the Dreamer in R'lyeh."
  eldritch_news.1.d.nyarlathotep:0 "A dark, smiling man now sits beside the leadership of [From.GetNameDef] at every public appearance. Foreign diplomats come out of meetings with him confused and frightened. Intelligence services confirm the unthinkable: [From.GetNameDef] has made a pact with Nyarlathotep, the Crawling Chaos."
@@ -537,6 +624,9 @@
  eldritch_news.3.d.yog_sothoth:0 "Above the armies of [From.GetNameDef] hangs a cluster of shimmering globes the size of mountains. Witnesses say it was there before they looked, and will be there after they die."
  eldritch_news.3.d.azathoth:0 "The sky over [From.GetNameDef] has torn open, and something has come through. Instruments around the world are recording impossible readings. Whatever it is, it now marches with the army of [From.GetNameDef]."
  eldritch_news.3.a:0 "Gods help us. Not that one."
+ eldritch_news.4.t:0 "The Leader of [From.GetNameDef] Is No Longer Human"
+ eldritch_news.4.d:0 "Foreign diplomats in [From.GetNameDef] are refusing to attend audiences with [From.GetLeader]. Those who went describe a figure that looked like the leader they knew and spoke with the leader's voice, but was filled with something else. Intelligence services confirm the worst: [From.GetLeader] has been given over entirely to [From.GetEldritchGodName], and [From.GetNameDef] is now ruled by the god's living vessel."
+ eldritch_news.4.a:0 "What have they done?"
 
  ################################################################
  # GAME RULES

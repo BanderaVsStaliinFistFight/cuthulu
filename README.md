@@ -131,6 +131,30 @@ A division is drawn with the model of its highest-priority battalion, so the *Ho
 ### 7. The god's whims
 About once every eight months on average, your patron makes itself known: it demands tribute, a prophet preaches in the streets, the stars align, or your soldiers share a dream. Each event trades Favor against manpower, political power, stability or war support.
 
+### 8. The Prophet: your leader's own rites
+Your country leader can take part in the pact in person. These rites need the leader to bear the god's **Herald** trait. The leader gets it when the pact is sealed, and a later leader gets it from **Exalt the Prophet**. The Forbidden Rites header shows where the leader stands: *Herald*, *Chosen*, *Vessel*, or *bears no mark*.
+
+| Decision | Cost | Needs | Effect | Repeat |
+|---|---|---|---|---|
+| **Commune with [God]** | 25 PP | Herald | A 10-day trance, then the leader asks for **strength** (army and navy experience, +10 Favor), **knowledge** (50% research bonus for one industry and one land doctrine tech, +10 Favor) or just **listens** (+40 Favor). One time in four the leader **comes back changed**: you either show them to the people (+40 Favor and *The Prophet's Fever* for 60 days: −5% stability, +5% war support, +0.1 PP a day) or hide them until it passes (+20 Favor, −30 PP). | every 90 days |
+| **Preach to the Faithful** | 30 Favor | Herald | +4% stability and +2% war support, plus another +3% stability if the leader is **Chosen**. It offsets the pact's stability penalties. | every 60 days |
+| **Demand a Tithe from the Cult** | 50 Favor | Herald | +60 political power. | every 90 days |
+| **Convene the Dark Council** | 40 Favor | Herald, an anointed general or admiral, or an avatar | *The Dark Council* for 120 days (+15% planning speed, +10% max planning, +5% organization) and +25 command power, or +50 if an avatar sits on the council. | every 180 days |
+| **Review the Servitor Legions** | 20 PP | Herald, eldritch battalions in the field | +15 army experience, +3% war support, +10 Favor. | every 120 days |
+| **March Beside [God]** | 50 Favor | Herald, the incarnate god on the map (Tier II) | *The Prophet Marches with the God* for 90 days: +10% attack, +10% morale, +5% war support. | every 120 days |
+| **Speak the Name of [Enemy]** | 30 Favor | Herald; Cthulhu or Hastur; an enemy at war with you that carries your curse | The curse lasts 60 days longer and the enemy loses 3% war support. | every 60 days |
+| **Raise the Great Temple** | 100 PP + 75 Favor | Herald | Built over 90 days. Adds *The Great Temple* for good (+5% stability, +0.15 PP a day) and **+3 Favor every month**. | once |
+| **Become the Vessel** | 250 Favor | Tier III, the leader is **Chosen** | A 60-day ritual. The leader becomes a living vessel of the god and gains a powerful **Vessel** trait. You lose 10% stability, gain 10% war support, and the world hears of it. The trait goes with the leader if they are replaced. | once |
+
+| God | Vessel trait |
+|---|---|
+| Cthulhu | **Flesh of the Sleeper**: +10% naval damage, +20% invasion speed, +10% war support, +0.15 PP a day, −5% stability |
+| Nyarlathotep | **Mask of the Crawling Chaos**: +0.35 PP a day, +5% stability, −25% war goal justification time, +25% ideology drift defence |
+| Hastur | **The Pallid Mask**: +15% morale, +5% organization, +15% war support, +10% air attack |
+| Shub-Niggurath | **Womb of the Thousand Young**: +25% monthly population, +2% recruitable population, +3% reinforce rate, +0.1 PP a day |
+| Yog-Sothoth | **The Key Made Flesh**: +10% research speed, +15% planning speed, +5% max factory efficiency |
+| Azathoth | **Seat of the Daemon Sultan**: +10% attack and breakthrough, +10% factory output, −10% stability |
+
 ---
 
 ## Game rule

@@ -79,3 +79,115 @@ eldritch_ai_allowed_pacts = {
 		option = ALLOWED
 	}
 }
+
+#####################################################################
+# THE PROPHET - the country leader's standing with the patron
+#####################################################################
+
+# The current leader bears the patron's Herald trait (given when the pact
+# is sealed, or to a later leader by Exalt the Prophet).
+eldritch_leader_is_herald = {
+	custom_trigger_tooltip = {
+		tooltip = eldritch_leader_is_herald_tt
+		OR = {
+			has_country_leader_with_trait = eldritch_cthulhu_herald
+			has_country_leader_with_trait = eldritch_nyarlathotep_herald
+			has_country_leader_with_trait = eldritch_hastur_herald
+			has_country_leader_with_trait = eldritch_shub_niggurath_herald
+			has_country_leader_with_trait = eldritch_yog_sothoth_herald
+			has_country_leader_with_trait = eldritch_azathoth_herald
+		}
+	}
+}
+
+# The current leader bears the patron's Chosen trait (Exalt the Prophet).
+eldritch_leader_is_chosen = {
+	custom_trigger_tooltip = {
+		tooltip = eldritch_leader_is_chosen_tt
+		OR = {
+			has_country_leader_with_trait = eldritch_cthulhu_chosen
+			has_country_leader_with_trait = eldritch_nyarlathotep_chosen
+			has_country_leader_with_trait = eldritch_hastur_chosen
+			has_country_leader_with_trait = eldritch_shub_niggurath_chosen
+			has_country_leader_with_trait = eldritch_yog_sothoth_chosen
+			has_country_leader_with_trait = eldritch_azathoth_chosen
+		}
+	}
+}
+
+# The current leader has become the patron's Vessel.
+eldritch_leader_is_vessel = {
+	OR = {
+		has_country_leader_with_trait = eldritch_cthulhu_vessel
+		has_country_leader_with_trait = eldritch_nyarlathotep_vessel
+		has_country_leader_with_trait = eldritch_hastur_vessel
+		has_country_leader_with_trait = eldritch_shub_niggurath_vessel
+		has_country_leader_with_trait = eldritch_yog_sothoth_vessel
+		has_country_leader_with_trait = eldritch_azathoth_vessel
+	}
+}
+
+eldritch_pact_tier_3 = {
+	custom_trigger_tooltip = {
+		tooltip = eldritch_pact_tier_3_tt
+		check_variable = { eldritch_pact_tier > 2 }
+	}
+}
+
+# An anointed general or admiral, or an avatar, to sit on the Dark Council.
+eldritch_has_anointed_commander = {
+	custom_trigger_tooltip = {
+		tooltip = eldritch_has_anointed_commander_tt
+		OR = {
+			any_army_leader = {
+				OR = {
+					has_unit_leader_flag = eldritch_anointed
+					has_trait = eldritch_avatar_land
+				}
+			}
+			any_navy_leader = {
+				OR = {
+					has_unit_leader_flag = eldritch_anointed
+					has_trait = eldritch_avatar_navy
+				}
+			}
+		}
+	}
+}
+
+# At least one eldritch servitor battalion is fielded.
+eldritch_has_servitors_in_field = {
+	custom_trigger_tooltip = {
+		tooltip = eldritch_has_servitors_in_field_tt
+		OR = {
+			check_variable = { num_battalions_with_type@eldritch_deep_one_brood > 0 }
+			check_variable = { num_battalions_with_type@eldritch_star_spawn > 0 }
+			check_variable = { num_battalions_with_type@eldritch_faceless_cult > 0 }
+			check_variable = { num_battalions_with_type@eldritch_shantak_riders > 0 }
+			check_variable = { num_battalions_with_type@eldritch_yellow_zealots > 0 }
+			check_variable = { num_battalions_with_type@eldritch_byakhee_riders > 0 }
+			check_variable = { num_battalions_with_type@eldritch_dark_young > 0 }
+			check_variable = { num_battalions_with_type@eldritch_thousand_young > 0 }
+			check_variable = { num_battalions_with_type@eldritch_gate_wardens > 0 }
+			check_variable = { num_battalions_with_type@eldritch_dunwich_horror > 0 }
+			check_variable = { num_battalions_with_type@eldritch_chaos_spawn > 0 }
+			check_variable = { num_battalions_with_type@eldritch_void_pipers > 0 }
+		}
+	}
+}
+
+# The god itself is on the map as a division (the opposite of
+# eldritch_no_god_incarnate_deployed).
+eldritch_god_incarnate_deployed = {
+	custom_trigger_tooltip = {
+		tooltip = eldritch_god_incarnate_deployed_tt
+		OR = {
+			check_variable = { num_battalions_with_type@eldritch_cthulhu_incarnate > 0 }
+			check_variable = { num_battalions_with_type@eldritch_nyarlathotep_incarnate > 0 }
+			check_variable = { num_battalions_with_type@eldritch_hastur_incarnate > 0 }
+			check_variable = { num_battalions_with_type@eldritch_shub_niggurath_incarnate > 0 }
+			check_variable = { num_battalions_with_type@eldritch_yog_sothoth_incarnate > 0 }
+			check_variable = { num_battalions_with_type@eldritch_azathoth_incarnate > 0 }
+		}
+	}
+}

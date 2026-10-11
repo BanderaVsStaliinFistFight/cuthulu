@@ -4,6 +4,8 @@
 #   [ROOT.GetEldritchGodName]    name of the country's patron god
 #   [ROOT.GetEldritchPactStage]  current state of the pact
 #   [ROOT.GetEldritchFavorLine]  favor read-out (empty before a pact)
+#   [ROOT.GetEldritchProphetLine] the leader's standing with the patron
+#                                 (empty before a pact)
 #####################################################################
 
 defined_text = {
@@ -78,6 +80,39 @@ defined_text = {
 	text = {
 		trigger = { has_country_flag = eldritch_pact_made }
 		localization_key = eldritch_favor_line
+	}
+	text = {
+		localization_key = eldritch_favor_line_none
+	}
+}
+
+defined_text = {
+	name = GetEldritchProphetLine
+
+	text = {
+		trigger = {
+			has_country_flag = eldritch_pact_made
+			eldritch_leader_is_vessel = yes
+		}
+		localization_key = eldritch_prophet_line_vessel
+	}
+	text = {
+		trigger = {
+			has_country_flag = eldritch_pact_made
+			eldritch_leader_is_chosen = yes
+		}
+		localization_key = eldritch_prophet_line_chosen
+	}
+	text = {
+		trigger = {
+			has_country_flag = eldritch_pact_made
+			eldritch_leader_is_herald = yes
+		}
+		localization_key = eldritch_prophet_line_herald
+	}
+	text = {
+		trigger = { has_country_flag = eldritch_pact_made }
+		localization_key = eldritch_prophet_line_unmarked
 	}
 	text = {
 		localization_key = eldritch_favor_line_none

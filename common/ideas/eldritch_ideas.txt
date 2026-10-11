@@ -5,6 +5,9 @@
 #                              the "Deepen the Pact" decisions
 #   eldritch_<god>_blessing    timed blessing bought with Eldritch Favor
 #   eldritch_curse_*           timed curses placed on enemy nations
+#   eldritch_prophets_fever, eldritch_dark_council,
+#   eldritch_prophet_marches   timed spirits from the Prophet's rites
+#   eldritch_great_temple      permanent, from Raise the Great Temple
 #####################################################################
 
 ideas = {
@@ -333,6 +336,52 @@ ideas = {
 				breakthrough_factor = 0.15
 				army_speed_factor = 0.05
 				stability_factor = -0.10
+			}
+		}
+
+		### THE PROPHET ##############################################
+
+		# The leader came back from communing with the god... changed.
+		eldritch_prophets_fever = {
+			picture = eldritch_fever
+			removal_cost = -1
+			allowed_civil_war = { always = yes }
+			modifier = {
+				stability_factor = -0.05
+				war_support_factor = 0.05
+				political_power_gain = 0.10
+			}
+		}
+
+		eldritch_dark_council = {
+			picture = eldritch_council
+			removal_cost = -1
+			allowed_civil_war = { always = yes }
+			modifier = {
+				planning_speed = 0.15
+				max_planning = 0.10
+				army_org_factor = 0.05
+			}
+		}
+
+		eldritch_prophet_marches = {
+			picture = eldritch_march
+			removal_cost = -1
+			allowed_civil_war = { always = yes }
+			modifier = {
+				army_attack_factor = 0.10
+				army_morale_factor = 0.10
+				war_support_factor = 0.05
+			}
+		}
+
+		eldritch_great_temple = {
+			picture = eldritch_temple
+			removal_cost = -1
+			allowed_civil_war = { always = yes }
+			modifier = {
+				stability_factor = 0.05
+				political_power_gain = 0.15
 			}
 		}
 	}

@@ -335,11 +335,12 @@ def main():
             if key in ("add_ideas", "has_idea", "remove_idea", "add_idea") and isinstance(value, str):
                 if value.startswith("eldritch_") and value not in ideas:
                     problems.append(f"{path}: unknown idea {value}")
-            if key in ("add_timed_idea",) and isinstance(value, list):
+            if key in ("add_timed_idea", "modify_timed_idea") and isinstance(value, list):
                 idea = {k: v for k, _, v in value}.get("idea")
                 if idea not in ideas:
                     problems.append(f"{path}: unknown timed idea {idea}")
-            if key in ("add_country_leader_trait", "add_unit_leader_trait", "has_trait") and isinstance(value, str):
+            if key in ("add_country_leader_trait", "add_unit_leader_trait", "has_trait",
+                       "has_country_leader_with_trait") and isinstance(value, str):
                 if value not in traits:
                     problems.append(f"{path}: unknown trait {value}")
             if key == "traits" and isinstance(value, list):

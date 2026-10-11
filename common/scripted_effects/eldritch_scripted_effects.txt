@@ -8,7 +8,8 @@
 # Country flags:
 #   eldritch_lore_found, eldritch_ritual_underway, eldritch_pact_made,
 #   eldritch_god_<cthulhu|nyarlathotep|hastur|shub_niggurath|
-#                yog_sothoth|azathoth>
+#                yog_sothoth|azathoth>,
+#   eldritch_great_temple (the Great Temple stands: +3 Favor a month)
 #####################################################################
 
 #####################################################################
@@ -99,6 +100,10 @@ eldritch_monthly_pulse = {
 	}
 	else = {
 		add_to_variable = { eldritch_favor = 5 }
+	}
+	if = {
+		limit = { has_country_flag = eldritch_great_temple }
+		add_to_variable = { eldritch_favor = 3 }
 	}
 	eldritch_clamp_favor = yes
 
@@ -883,6 +888,46 @@ eldritch_raise_pact_to_tier_3 = {
 		country_event = { id = eldritch.30 }
 		every_other_country = {
 			news_event = { id = eldritch_news.2 hours = 6 }
+		}
+	}
+}
+
+#####################################################################
+# THE PROPHET
+#####################################################################
+
+# The leader is remade as a living vessel of the patron (Become the Vessel).
+eldritch_become_vessel_effect = {
+	if = {
+		limit = { has_country_flag = eldritch_god_cthulhu }
+		add_country_leader_trait = eldritch_cthulhu_vessel
+	}
+	else_if = {
+		limit = { has_country_flag = eldritch_god_nyarlathotep }
+		add_country_leader_trait = eldritch_nyarlathotep_vessel
+	}
+	else_if = {
+		limit = { has_country_flag = eldritch_god_hastur }
+		add_country_leader_trait = eldritch_hastur_vessel
+	}
+	else_if = {
+		limit = { has_country_flag = eldritch_god_shub_niggurath }
+		add_country_leader_trait = eldritch_shub_niggurath_vessel
+	}
+	else_if = {
+		limit = { has_country_flag = eldritch_god_yog_sothoth }
+		add_country_leader_trait = eldritch_yog_sothoth_vessel
+	}
+	else_if = {
+		limit = { has_country_flag = eldritch_god_azathoth }
+		add_country_leader_trait = eldritch_azathoth_vessel
+	}
+	add_stability = -0.10
+	add_war_support = 0.10
+	hidden_effect = {
+		country_event = { id = eldritch.72 }
+		every_other_country = {
+			news_event = { id = eldritch_news.4 hours = 6 }
 		}
 	}
 }

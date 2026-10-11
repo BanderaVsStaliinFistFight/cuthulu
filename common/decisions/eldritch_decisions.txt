@@ -6,6 +6,9 @@
 # 3. Common rites                    earn Favor, deepen the pact,
 #                                    anoint leaders, call servitors
 # 4. Patron-specific blessings       timed blessing, avatar, unique rite
+# 5. The Prophet                     rites the country leader performs in
+#                                    person; most need the leader to bear
+#                                    the patron's Herald trait
 #
 # Favor costs use custom_cost_trigger + custom_cost_text and are paid
 # in complete_effect.
@@ -1171,6 +1174,358 @@ eldritch_forbidden_rites = {
 
 		ai_will_do = {
 			factor = 1
+		}
+	}
+
+	#################################################################
+	# 5. THE PROPHET - rites the country leader performs in person
+	#
+	# The leader must bear the patron's Herald trait; a leader who came
+	# to power after the pact gets it from Exalt the Prophet.
+	#################################################################
+
+	# Ten days alone with the god. The leader chooses what to ask for
+	# (eldritch.70), or, one time in four, comes back changed (eldritch.71).
+	eldritch_prophet_commune = {
+		icon = eldritch_commune
+		cost = 25
+		fire_only_once = no
+		days_re_enable = 90
+
+		visible = {
+			eldritch_has_pact = yes
+		}
+
+		available = {
+			eldritch_leader_is_herald = yes
+		}
+
+		days_remove = 10
+
+		remove_effect = {
+			custom_effect_tooltip = eldritch_prophet_commune_tt
+			hidden_effect = {
+				random_list = {
+					75 = { country_event = { id = eldritch.70 } }
+					25 = { country_event = { id = eldritch.71 } }
+				}
+			}
+		}
+
+		ai_will_do = {
+			factor = 1
+		}
+	}
+
+	# Spend Favor to steady a nation shaken by its own pact.
+	eldritch_prophet_preach = {
+		icon = eldritch_preach
+		custom_cost_trigger = {
+			check_variable = { eldritch_favor > 29 }
+		}
+		custom_cost_text = eldritch_cost_favor_30
+		fire_only_once = no
+		days_re_enable = 60
+
+		visible = {
+			eldritch_has_pact = yes
+		}
+
+		available = {
+			eldritch_leader_is_herald = yes
+		}
+
+		complete_effect = {
+			hidden_effect = { subtract_from_variable = { eldritch_favor = 30 } }
+			add_stability = 0.04
+			add_war_support = 0.02
+			if = {
+				limit = { eldritch_leader_is_chosen = yes }
+				add_stability = 0.03
+			}
+		}
+
+		ai_will_do = {
+			factor = 1
+			modifier = {
+				factor = 3
+				has_stability < 0.5
+			}
+			modifier = {
+				factor = 0
+				has_stability > 0.8
+			}
+		}
+	}
+
+	# Turn Favor into political power: the faithful pay for their prophet.
+	eldritch_prophet_tithe = {
+		icon = eldritch_tithe
+		custom_cost_trigger = {
+			check_variable = { eldritch_favor > 49 }
+		}
+		custom_cost_text = eldritch_cost_favor_50
+		fire_only_once = no
+		days_re_enable = 90
+
+		visible = {
+			eldritch_has_pact = yes
+		}
+
+		available = {
+			eldritch_leader_is_herald = yes
+		}
+
+		complete_effect = {
+			hidden_effect = { subtract_from_variable = { eldritch_favor = 50 } }
+			add_political_power = 60
+		}
+
+		ai_will_do = {
+			factor = 1
+			modifier = {
+				factor = 0
+				check_variable = { eldritch_favor < 150 }
+			}
+		}
+	}
+
+	# The leader sits in council with the anointed and the avatars.
+	eldritch_prophet_dark_council = {
+		icon = eldritch_council
+		custom_cost_trigger = {
+			check_variable = { eldritch_favor > 39 }
+		}
+		custom_cost_text = eldritch_cost_favor_40
+		fire_only_once = no
+		days_re_enable = 180
+
+		visible = {
+			eldritch_has_pact = yes
+		}
+
+		available = {
+			eldritch_leader_is_herald = yes
+			eldritch_has_anointed_commander = yes
+			NOT = { has_idea = eldritch_dark_council }
+		}
+
+		complete_effect = {
+			hidden_effect = { subtract_from_variable = { eldritch_favor = 40 } }
+			add_timed_idea = { idea = eldritch_dark_council days = 120 }
+			add_command_power = 25
+			if = {
+				limit = {
+					OR = {
+						any_army_leader = { has_trait = eldritch_avatar_land }
+						any_navy_leader = { has_trait = eldritch_avatar_navy }
+					}
+				}
+				custom_effect_tooltip = eldritch_council_avatar_tt
+				add_command_power = 25
+			}
+		}
+
+		ai_will_do = {
+			factor = 1
+			modifier = {
+				factor = 3
+				has_war = yes
+			}
+		}
+	}
+
+	# The leader inspects the servitor divisions in the field.
+	eldritch_prophet_review_servitors = {
+		icon = eldritch_servitors
+		cost = 20
+		fire_only_once = no
+		days_re_enable = 120
+
+		visible = {
+			eldritch_has_pact = yes
+		}
+
+		available = {
+			eldritch_leader_is_herald = yes
+			eldritch_has_servitors_in_field = yes
+		}
+
+		complete_effect = {
+			army_experience = 15
+			add_war_support = 0.03
+			eldritch_gain_favor_10 = yes
+		}
+
+		ai_will_do = {
+			factor = 1
+		}
+	}
+
+	# While the god walks the earth, the leader walks beside it.
+	eldritch_prophet_march_with_god = {
+		icon = eldritch_incarnate
+		custom_cost_trigger = {
+			check_variable = { eldritch_favor > 49 }
+		}
+		custom_cost_text = eldritch_cost_favor_50
+		fire_only_once = no
+		days_re_enable = 120
+
+		visible = {
+			eldritch_has_pact = yes
+			check_variable = { eldritch_pact_tier > 1 }
+		}
+
+		available = {
+			eldritch_leader_is_herald = yes
+			eldritch_god_incarnate_deployed = yes
+			NOT = { has_idea = eldritch_prophet_marches }
+		}
+
+		complete_effect = {
+			hidden_effect = { subtract_from_variable = { eldritch_favor = 50 } }
+			add_timed_idea = { idea = eldritch_prophet_marches days = 90 }
+		}
+
+		ai_will_do = {
+			factor = 3
+			modifier = {
+				factor = 0
+				has_war = no
+			}
+		}
+	}
+
+	# The leader speaks a cursed enemy's name in the rite, so the curse
+	# holds on longer. Only Cthulhu and Hastur lay lasting curses.
+	eldritch_prophet_name_the_cursed = {
+		icon = eldritch_curse
+		custom_cost_trigger = {
+			check_variable = { eldritch_favor > 29 }
+		}
+		custom_cost_text = eldritch_cost_favor_30
+		fire_only_once = no
+		days_re_enable = 60
+
+		target_root_trigger = {
+			OR = {
+				has_country_flag = eldritch_god_cthulhu
+				has_country_flag = eldritch_god_hastur
+			}
+		}
+
+		target_trigger = {
+			FROM = {
+				has_war_with = ROOT
+				OR = {
+					has_idea = eldritch_curse_dreams_of_rlyeh
+					has_idea = eldritch_curse_yellow_madness
+				}
+			}
+		}
+
+		visible = {
+			OR = {
+				has_country_flag = eldritch_god_cthulhu
+				has_country_flag = eldritch_god_hastur
+			}
+		}
+
+		available = {
+			eldritch_leader_is_herald = yes
+		}
+
+		complete_effect = {
+			hidden_effect = { subtract_from_variable = { eldritch_favor = 30 } }
+			FROM = {
+				if = {
+					limit = { has_idea = eldritch_curse_dreams_of_rlyeh }
+					modify_timed_idea = { idea = eldritch_curse_dreams_of_rlyeh days = 60 }
+				}
+				if = {
+					limit = { has_idea = eldritch_curse_yellow_madness }
+					modify_timed_idea = { idea = eldritch_curse_yellow_madness days = 60 }
+				}
+				add_war_support = -0.03
+				hidden_effect = { country_event = { id = eldritch.63 } }
+			}
+		}
+
+		ai_will_do = {
+			factor = 1
+		}
+	}
+
+	# A permanent temple: +3 Favor a month for the rest of the game.
+	eldritch_prophet_great_temple = {
+		icon = eldritch_temple
+		custom_cost_trigger = {
+			has_political_power > 99
+			check_variable = { eldritch_favor > 74 }
+		}
+		custom_cost_text = eldritch_cost_temple
+		fire_only_once = yes
+
+		visible = {
+			eldritch_has_pact = yes
+		}
+
+		available = {
+			eldritch_leader_is_herald = yes
+		}
+
+		days_remove = 90
+
+		complete_effect = {
+			hidden_effect = {
+				add_political_power = -100
+				subtract_from_variable = { eldritch_favor = 75 }
+			}
+		}
+
+		remove_effect = {
+			add_ideas = eldritch_great_temple
+			custom_effect_tooltip = eldritch_temple_favor_tt
+			hidden_effect = { set_country_flag = eldritch_great_temple }
+		}
+
+		ai_will_do = {
+			factor = 2
+		}
+	}
+
+	# The last step: the leader becomes a living vessel of the god.
+	eldritch_prophet_become_vessel = {
+		icon = eldritch_vessel
+		custom_cost_trigger = {
+			check_variable = { eldritch_favor > 249 }
+		}
+		custom_cost_text = eldritch_cost_favor_250
+		fire_only_once = yes
+
+		visible = {
+			eldritch_has_pact = yes
+			check_variable = { eldritch_pact_tier > 1 }
+		}
+
+		available = {
+			eldritch_pact_tier_3 = yes
+			eldritch_leader_is_chosen = yes
+		}
+
+		days_remove = 60
+
+		complete_effect = {
+			hidden_effect = { subtract_from_variable = { eldritch_favor = 250 } }
+		}
+
+		remove_effect = {
+			eldritch_become_vessel_effect = yes
+		}
+
+		ai_will_do = {
+			factor = 3
 		}
 	}
 }

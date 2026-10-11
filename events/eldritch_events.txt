@@ -8,8 +8,12 @@
 #   eldritch.31-36    the god is incarnated as a division (one per god)
 #   eldritch.40-43    the patron's whims (random, monthly)
 #   eldritch.60-62    received by the target of a curse
+#   eldritch.63       received by a cursed enemy whose name the Prophet speaks
+#   eldritch.70/71    the Prophet communes with the god (asks / returns changed)
+#   eldritch.72       the Prophet becomes the god's Vessel
 #   eldritch.100      hidden monthly pulse (Favor income, random whims)
 #   eldritch_news.1-3 world news: a god is summoned / ascends / incarnates
+#   eldritch_news.4   world news: a leader becomes a god's Vessel
 #####################################################################
 
 add_namespace = eldritch
@@ -426,6 +430,126 @@ country_event = {
 	}
 }
 
+country_event = {
+	id = eldritch.63
+	title = eldritch.63.t
+	desc = eldritch.63.d
+	picture = GFX_report_event_eldritch_omen
+
+	is_triggered_only = yes
+
+	option = {
+		name = eldritch.63.a
+	}
+}
+
+#####################################################################
+# THE PROPHET
+#####################################################################
+
+# The leader asks the god for something.
+country_event = {
+	id = eldritch.70
+	title = eldritch.70.t
+	desc = eldritch.70.d
+	picture = GFX_report_event_eldritch_tome
+
+	is_triggered_only = yes
+
+	option = {
+		name = eldritch.70.a
+		army_experience = 20
+		navy_experience = 10
+		eldritch_gain_favor_10 = yes
+		ai_chance = { factor = 40 }
+	}
+
+	option = {
+		name = eldritch.70.b
+		add_tech_bonus = {
+			name = eldritch_prophet_insight
+			bonus = 0.5
+			uses = 1
+			category = industry
+		}
+		add_tech_bonus = {
+			name = eldritch_prophet_insight
+			bonus = 0.5
+			uses = 1
+			category = land_doctrine
+		}
+		eldritch_gain_favor_10 = yes
+		ai_chance = { factor = 30 }
+	}
+
+	option = {
+		name = eldritch.70.c
+		eldritch_gain_favor_40 = yes
+		ai_chance = { factor = 30 }
+	}
+}
+
+# The leader comes back changed.
+country_event = {
+	id = eldritch.71
+	title = eldritch.71.t
+	desc = eldritch.71.d
+	picture = GFX_report_event_eldritch_omen
+
+	is_triggered_only = yes
+
+	option = {
+		name = eldritch.71.a
+		eldritch_gain_favor_40 = yes
+		add_timed_idea = { idea = eldritch_prophets_fever days = 60 }
+		ai_chance = { factor = 60 }
+	}
+
+	option = {
+		name = eldritch.71.b
+		eldritch_gain_favor_20 = yes
+		add_political_power = -30
+		ai_chance = { factor = 40 }
+	}
+}
+
+# The leader becomes the god's Vessel.
+country_event = {
+	id = eldritch.72
+	title = eldritch.72.t
+	desc = {
+		text = eldritch.72.d.cthulhu
+		trigger = { has_country_flag = eldritch_god_cthulhu }
+	}
+	desc = {
+		text = eldritch.72.d.nyarlathotep
+		trigger = { has_country_flag = eldritch_god_nyarlathotep }
+	}
+	desc = {
+		text = eldritch.72.d.hastur
+		trigger = { has_country_flag = eldritch_god_hastur }
+	}
+	desc = {
+		text = eldritch.72.d.shub_niggurath
+		trigger = { has_country_flag = eldritch_god_shub_niggurath }
+	}
+	desc = {
+		text = eldritch.72.d.yog_sothoth
+		trigger = { has_country_flag = eldritch_god_yog_sothoth }
+	}
+	desc = {
+		text = eldritch.72.d.azathoth
+		trigger = { has_country_flag = eldritch_god_azathoth }
+	}
+	picture = GFX_report_event_eldritch_omen
+
+	is_triggered_only = yes
+
+	option = {
+		name = eldritch.72.a
+	}
+}
+
 #####################################################################
 # MONTHLY PULSE - hidden, re-schedules itself every 30 days.
 # Started when a pact is sealed (eldritch_seal_pact_common).
@@ -532,5 +656,18 @@ news_event = {
 
 	option = {
 		name = eldritch_news.3.a
+	}
+}
+
+news_event = {
+	id = eldritch_news.4
+	title = eldritch_news.4.t
+	desc = eldritch_news.4.d
+	picture = GFX_news_event_eldritch_stars
+
+	is_triggered_only = yes
+
+	option = {
+		name = eldritch_news.4.a
 	}
 }

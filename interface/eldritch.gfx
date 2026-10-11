@@ -110,6 +110,22 @@ spriteTypes = {
 		name = "GFX_idea_eldritch_curse_yellow"
 		texturefile = "gfx/interface/ideas/eldritch_curse_yellow.dds"
 	}
+	spriteType = {
+		name = "GFX_idea_eldritch_fever"
+		texturefile = "gfx/interface/ideas/eldritch_fever.dds"
+	}
+	spriteType = {
+		name = "GFX_idea_eldritch_council"
+		texturefile = "gfx/interface/ideas/eldritch_council.dds"
+	}
+	spriteType = {
+		name = "GFX_idea_eldritch_march"
+		texturefile = "gfx/interface/ideas/eldritch_march.dds"
+	}
+	spriteType = {
+		name = "GFX_idea_eldritch_temple"
+		texturefile = "gfx/interface/ideas/eldritch_temple.dds"
+	}
 
 	### Decisions ###
 	spriteType = {
@@ -147,6 +163,30 @@ spriteTypes = {
 	spriteType = {
 		name = "GFX_decision_eldritch_incarnate"
 		texturefile = "gfx/interface/decisions/eldritch_incarnate.dds"
+	}
+	spriteType = {
+		name = "GFX_decision_eldritch_commune"
+		texturefile = "gfx/interface/decisions/eldritch_commune.dds"
+	}
+	spriteType = {
+		name = "GFX_decision_eldritch_preach"
+		texturefile = "gfx/interface/decisions/eldritch_preach.dds"
+	}
+	spriteType = {
+		name = "GFX_decision_eldritch_tithe"
+		texturefile = "gfx/interface/decisions/eldritch_tithe.dds"
+	}
+	spriteType = {
+		name = "GFX_decision_eldritch_council"
+		texturefile = "gfx/interface/decisions/eldritch_council.dds"
+	}
+	spriteType = {
+		name = "GFX_decision_eldritch_temple"
+		texturefile = "gfx/interface/decisions/eldritch_temple.dds"
+	}
+	spriteType = {
+		name = "GFX_decision_eldritch_vessel"
+		texturefile = "gfx/interface/decisions/eldritch_vessel.dds"
 	}
 	spriteType = {
 		name = "GFX_decision_eldritch_cthulhu"

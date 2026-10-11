@@ -509,6 +509,101 @@ def sym_incarnate(size, color=None):
     return glow_under(c.done(size, size), (190, 120, 255), size / 10, 1.2)
 
 
+def sym_commune(size, color=None):
+    return sym_eye(size, (190, 120, 255), (220, 190, 255))
+
+
+def sym_fever(size, color=None):
+    return sym_eye(size, (255, 140, 40), (255, 200, 120))
+
+
+def _prophet(c, robe, face, arms_up=True):
+    """A robed, hooded figure; arms raised to the crowd or folded."""
+    c.poly([(0.41, 0.40), (0.59, 0.40), (0.70, 0.90), (0.30, 0.90)], robe)
+    c.ellipse(0.5, 0.33, 0.075, 0.085, robe)
+    c.ellipse(0.5, 0.345, 0.032, 0.04, face)
+    if arms_up:
+        c.line([(0.43, 0.45), (0.31, 0.32), (0.25, 0.17)], robe, 0.05)
+        c.line([(0.57, 0.45), (0.69, 0.32), (0.75, 0.17)], robe, 0.05)
+    else:
+        c.line([(0.43, 0.45), (0.40, 0.60), (0.56, 0.62)], robe, 0.05)
+
+
+def sym_preach(size, color=None):
+    c = Canvas(size, size)
+    for k in range(9):
+        a = math.radians(200 + k * 17.5)
+        c.line([(0.5 + 0.22 * math.cos(a), 0.42 + 0.22 * math.sin(a)),
+                (0.5 + 0.48 * math.cos(a), 0.42 + 0.48 * math.sin(a))], (240, 200, 110, 210), 0.025)
+    _prophet(c, (78, 58, 96, 255), (245, 235, 205, 255))
+    c.poly([(0.20, 0.76), (0.80, 0.76), (0.80, 0.96), (0.20, 0.96)], (95, 72, 45, 255))
+    c.poly([(0.20, 0.76), (0.80, 0.76), (0.80, 0.80), (0.20, 0.80)], (150, 118, 70, 255))
+    return glow_under(c.done(size, size), (255, 210, 120), size / 14, 0.8)
+
+
+def sym_vessel(size, color=None):
+    c = Canvas(size, size)
+    c.ellipse(0.5, 0.33, 0.20, 0.20, None, (150, 255, 190, 230), 0.03)
+    for i, x in enumerate([0.34, 0.42, 0.58, 0.66]):
+        tentacle(c, x, 0.52, 0.40, 0.07 * (1 if i % 2 else -1), i * 1.3, 0.035, 0.008, (40, 70, 55, 255),
+                 dx=(x - 0.5) * 1.6)
+    _prophet(c, (70, 52, 88, 255), (150, 255, 190, 255), arms_up=False)
+    return glow_under(c.done(size, size), (120, 255, 170), size / 12, 0.9)
+
+
+def sym_tithe(size, color=None):
+    c = Canvas(size, size)
+    gold, rim = (225, 185, 85, 255), (150, 110, 40, 255)
+    for x, y in [(0.36, 0.78), (0.36, 0.70), (0.36, 0.62), (0.64, 0.78), (0.64, 0.70)]:
+        c.ellipse(x, y, 0.20, 0.07, rim)
+        c.ellipse(x, y - 0.015, 0.20, 0.065, gold)
+    c.ellipse(0.52, 0.34, 0.24, 0.24, rim)
+    c.ellipse(0.52, 0.34, 0.21, 0.21, gold)
+    c.ellipse(0.52, 0.34, 0.11, 0.07, (240, 235, 220, 255))
+    c.ellipse(0.52, 0.34, 0.055, 0.055, (120, 255, 170, 255))
+    c.ellipse(0.52, 0.34, 0.014, 0.05, (0, 0, 0, 255))
+    return glow_under(c.done(size, size), (255, 210, 120), size / 16, 0.6)
+
+
+def sym_council(size, color=None):
+    c = Canvas(size, size)
+    c.ellipse(0.5, 0.52, 0.30, 0.22, (60, 42, 30, 255))
+    c.ellipse(0.5, 0.52, 0.26, 0.18, (85, 60, 40, 255))
+    c.ellipse(0.5, 0.52, 0.10, 0.07, None, (150, 255, 190, 255), 0.02)
+    c.ellipse(0.5, 0.52, 0.03, 0.03, (190, 255, 210, 255))
+    for k in range(7):
+        a = math.radians(90 + k * 360 / 7)
+        x, y = 0.5 + 0.40 * math.cos(a), 0.52 + 0.31 * math.sin(a)
+        c.ellipse(x, y, 0.075, 0.085, (24, 18, 32, 255))
+        c.ellipse(x + 0.012 * math.cos(a + math.pi), y + 0.012 * math.sin(a + math.pi), 0.025, 0.03,
+                  (230, 220, 195, 255))
+    return glow_under(c.done(size, size), (150, 255, 190), size / 14, 0.7)
+
+
+def sym_march(size, color=None):
+    c = Canvas(size, size)
+    for i, x in enumerate([0.60, 0.70, 0.80, 0.90]):
+        tentacle(c, 0.75, 0.40, 0.5, 0.06 * (1 if i % 2 else -1), i, 0.05, 0.01, (45, 30, 50, 255),
+                 dx=(x - 0.75) * 1.2)
+    c.ellipse(0.75, 0.30, 0.17, 0.22, (45, 30, 50, 255))
+    for ex in (0.70, 0.80):
+        c.ellipse(ex, 0.28, 0.025, 0.02, (255, 80, 60, 255))
+    _prophet(c, (78, 58, 96, 255), (245, 235, 205, 255))
+    return glow_under(c.done(size, size), (255, 90, 70), size / 14, 0.7)
+
+
+def sym_temple(size, color=None):
+    c = Canvas(size, size)
+    stone = [(70, 66, 74, 255), (88, 84, 92, 255), (106, 102, 110, 255)]
+    for i, (w, y0, y1) in enumerate([(0.40, 0.70, 0.92), (0.30, 0.50, 0.70), (0.20, 0.32, 0.50)]):
+        c.poly([(0.5 - w, y1), (0.5 + w, y1), (0.5 + w * 0.92, y0), (0.5 - w * 0.92, y0)], stone[i])
+    c.poly([(0.46, 0.92), (0.54, 0.92), (0.54, 0.78), (0.46, 0.78)], (150, 255, 180, 255))
+    c.poly([(0.47, 0.50), (0.53, 0.50), (0.53, 0.40), (0.47, 0.40)], (150, 255, 180, 255))
+    c.ellipse(0.5, 0.17, 0.09, 0.09, None, (230, 190, 90, 255), 0.025)
+    c.ellipse(0.5, 0.17, 0.03, 0.03, (150, 255, 190, 255))
+    return glow_under(c.done(size, size), (130, 255, 170), size / 14, 0.8)
+
+
 SYMBOLS = {
     "cthulhu": sym_cthulhu,
     "nyarlathotep": sym_nyarlathotep,
@@ -526,6 +621,26 @@ SYMBOLS = {
     "curse": sym_curse,
     "rites": sym_elder_sign,
     "incarnate": sym_incarnate,
+    "commune": sym_commune,
+    "preach": sym_preach,
+    "tithe": sym_tithe,
+    "council": sym_council,
+    "temple": sym_temple,
+    "vessel": sym_vessel,
+    "fever": sym_fever,
+    "march": sym_march,
+}
+
+# Decision icons beyond the gods' own (GFX_decision_eldritch_<name>).
+DECISION_ICONS = ["tome", "altar", "sacrifice", "deepen", "anoint", "crown", "servitors", "curse", "incarnate",
+                  "commune", "preach", "tithe", "council", "temple", "vessel"]
+
+# The Prophet's national spirits: picture name -> (inner, outer, border colour).
+PROPHET_SPIRITS = {
+    "fever": ((90, 40, 20), (28, 10, 6), (230, 120, 50)),
+    "council": ((45, 30, 70), (14, 8, 22), (165, 150, 215)),
+    "march": ((80, 22, 24), (24, 6, 8), (200, 60, 50)),
+    "temple": ((40, 50, 45), (10, 14, 12), (235, 195, 90)),
 }
 
 
@@ -577,10 +692,12 @@ def make_ideas():
              "gfx/interface/ideas/eldritch_curse_dreams.dds")
     save_dds(framed(IDEA_SIZE, (80, 20, 10), (25, 5, 5), yellow, (200, 40, 40)),
              "gfx/interface/ideas/eldritch_curse_yellow.dds")
+    for name, (inner, outer, border) in PROPHET_SPIRITS.items():
+        save_dds(framed(IDEA_SIZE, inner, outer, SYMBOLS[name], border), f"gfx/interface/ideas/eldritch_{name}.dds")
 
 
 def make_decisions():
-    for name in ["tome", "altar", "sacrifice", "deepen", "anoint", "crown", "servitors", "curse", "incarnate"] + GODS:
+    for name in DECISION_ICONS + GODS:
         pal = PALETTE.get(name, {"bg": (16, 14, 24)})
         inner = tuple(min(255, int(v * 2.4 + 12)) for v in pal["bg"])
         img = framed(DECISION_SIZE, inner, pal["bg"], SYMBOLS[name], (150, 130, 95), border_width=1,
@@ -1040,9 +1157,11 @@ def write_gfx():
             sprite(f"GFX_idea_eldritch_{god}_{suffix}", f"gfx/interface/ideas/eldritch_{god}_{suffix}.dds")
     for curse in ("dreams", "yellow"):
         sprite(f"GFX_idea_eldritch_curse_{curse}", f"gfx/interface/ideas/eldritch_curse_{curse}.dds")
+    for name in PROPHET_SPIRITS:
+        sprite(f"GFX_idea_eldritch_{name}", f"gfx/interface/ideas/eldritch_{name}.dds")
 
     section("Decisions")
-    for name in ["tome", "altar", "sacrifice", "deepen", "anoint", "crown", "servitors", "curse", "incarnate"] + GODS:
+    for name in DECISION_ICONS + GODS:
         sprite(f"GFX_decision_eldritch_{name}", f"gfx/interface/decisions/eldritch_{name}.dds")
 
     section("Decision category")
