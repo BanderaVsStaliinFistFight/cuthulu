@@ -52,3 +52,17 @@ eldritch_road_to_carcosa = {
 		has_country_flag = eldritch_god_hastur
 	}
 }
+
+# The King's Play: Carcosa as a crisis for the world (see
+# common/scripted_effects/eldritch_crisis_effects.txt).
+eldritch_kings_play = {
+	icon = eldritch_carcosa
+	priority = 146
+	allowed = {
+		always = yes
+	}
+	visible = {
+		has_country_flag = eldritch_carcosa_proclaimed
+	}
+	visible_when_empty = yes
+}

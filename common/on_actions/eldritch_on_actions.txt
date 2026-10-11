@@ -33,4 +33,42 @@ on_actions = {
 			}
 		}
 	}
+
+	# The King's Play: ROOT is the state's new controller, FROM the old one.
+	on_state_control_changed = {
+		effect = {
+			if = {
+				limit = {
+					has_country_flag = eldritch_carcosa_proclaimed
+					FROM = { has_war_with = ROOT }
+				}
+				add_to_variable = { eldritch_dread = 3 }
+				eldritch_crisis_check_acts = yes
+			}
+			if = {
+				limit = { FROM = { has_country_flag = eldritch_carcosa_proclaimed } }
+				FROM = {
+					subtract_from_variable = { eldritch_dread = 3 }
+					eldritch_crisis_clamp_dread = yes
+				}
+			}
+		}
+	}
+
+	# The King's Play: ROOT has capitulated to FROM.
+	on_capitulation = {
+		effect = {
+			if = {
+				limit = { FROM = { has_country_flag = eldritch_carcosa_proclaimed } }
+				FROM = {
+					add_to_variable = { eldritch_dread = 25 }
+					eldritch_crisis_check_acts = yes
+				}
+			}
+			if = {
+				limit = { has_country_flag = eldritch_carcosa_proclaimed }
+				divide_variable = { eldritch_dread = 2 }
+			}
+		}
+	}
 }

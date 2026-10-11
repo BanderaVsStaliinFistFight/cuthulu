@@ -13,6 +13,10 @@
 #   eldritch_relic_*           permanent, the rewards of the Prophet's quests
 #   eldritch_carcosa_road_1-5  Hastur's questline, one stage per chapter
 #   eldritch_yellow_throne     permanent, once the nation becomes Carcosa
+#   eldritch_tattered_host     Carcosa, from Act II of the King's Play
+#   eldritch_stars_wrong       the rest of the world, from Act III, while a
+#                              Carcosa at Act III stands
+#   eldritch_investigators     Carcosa's enemies, from Act IV, likewise
 #####################################################################
 
 ideas = {
@@ -398,6 +402,43 @@ ideas = {
 				research_speed_factor = 0.08
 				political_power_gain = 0.30
 				stability_factor = 0.10
+			}
+		}
+
+		### THE KING'S PLAY (Carcosa as a crisis) ######################
+
+		eldritch_tattered_host = {
+			picture = eldritch_march
+			removal_cost = -1
+			allowed_civil_war = { always = yes }
+			modifier = {
+				army_org_factor = 0.05
+				army_attack_factor = 0.05
+				land_reinforce_rate = 0.05
+			}
+		}
+
+		eldritch_stars_wrong = {
+			picture = eldritch_dread
+			removal_cost = -1
+			cancel = {
+				NOT = { any_country = { has_country_flag = eldritch_crisis_act_3 } }
+			}
+			modifier = {
+				stability_factor = -0.05
+			}
+		}
+
+		eldritch_investigators = {
+			picture = eldritch_council
+			removal_cost = -1
+			cancel = {
+				NOT = { any_country = { has_country_flag = eldritch_crisis_act_4 } }
+			}
+			modifier = {
+				army_attack_factor = 0.05
+				army_defence_factor = 0.05
+				stability_factor = 0.05
 			}
 		}
 	}

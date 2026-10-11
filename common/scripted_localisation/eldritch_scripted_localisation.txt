@@ -12,6 +12,8 @@
 #   [ROOT.GetEldritchCheckTitle]  "A Test of Lore / Zeal / Will" for the
 #                                 last skill check
 #   [ROOT.GetEldritchCheckLine]   the last skill check's roll and outcome
+#   [ROOT.GetEldritchCrisisAct]   the King's Play: the Act Carcosa is in
+#   [ROOT.GetEldritchCrisisNext]  the King's Play: the next Act and its Dread
 #####################################################################
 
 defined_text = {
@@ -217,5 +219,45 @@ defined_text = {
 	}
 	text = {
 		localization_key = eldritch_favor_line_none
+	}
+}
+
+defined_text = {
+	name = GetEldritchCrisisAct
+
+	text = {
+		trigger = { has_country_flag = eldritch_crisis_act_4 }
+		localization_key = eldritch_crisis_act_4_name
+	}
+	text = {
+		trigger = { has_country_flag = eldritch_crisis_act_3 }
+		localization_key = eldritch_crisis_act_3_name
+	}
+	text = {
+		trigger = { has_country_flag = eldritch_crisis_act_2 }
+		localization_key = eldritch_crisis_act_2_name
+	}
+	text = {
+		localization_key = eldritch_crisis_act_1_name
+	}
+}
+
+defined_text = {
+	name = GetEldritchCrisisNext
+
+	text = {
+		trigger = { has_country_flag = eldritch_crisis_act_4 }
+		localization_key = eldritch_crisis_next_none
+	}
+	text = {
+		trigger = { has_country_flag = eldritch_crisis_act_3 }
+		localization_key = eldritch_crisis_next_4
+	}
+	text = {
+		trigger = { has_country_flag = eldritch_crisis_act_2 }
+		localization_key = eldritch_crisis_next_3
+	}
+	text = {
+		localization_key = eldritch_crisis_next_2
 	}
 }

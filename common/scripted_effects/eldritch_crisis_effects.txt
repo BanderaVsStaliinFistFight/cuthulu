@@ -1,0 +1,259 @@
+#####################################################################
+# Eldritch Pacts - The King's Play: Carcosa as a crisis for the world
+#
+# Proclaiming Carcosa (eldritch_proclaim_carcosa) starts the crisis.
+# Carcosa gathers Dread (the country variable eldritch_dread) by
+# conquering, by the Yellow Madness, by its Theatres and by the King
+# walking the earth, and loses it when it is beaten. At each threshold
+# a new Act of the play begins (flags eldritch_crisis_act_1-4) with its
+# own powers, and the world answers it.
+#
+#   Act I    The Sign Spreads    at the proclamation
+#   Act II   The Tattered Host   100 Dread
+#   Act III  Black Stars         250 Dread
+#   Act IV   The Unmasking       450 Dread
+#
+# Dread is gained in eldritch_crisis_pulse (monthly, from the pact's
+# pulse), in the on_actions file (states taken and lost, capitulations)
+# and by the King in Yellow being staged. Acts never close again.
+# Events: eldritch_crisis.*; news: eldritch_news.6-8.
+#####################################################################
+
+# Called by Proclaim Carcosa: Act I begins.
+eldritch_crisis_begin = {
+	set_variable = { eldritch_dread = 0 }
+	set_country_flag = eldritch_crisis_act_1
+	add_named_threat = { threat = 5 name = eldritch_threat_carcosa }
+	eldritch_crisis_sign_spreads = yes
+	country_event = { id = eldritch_crisis.1 days = 1 }
+}
+
+# Dread never falls below zero.
+eldritch_crisis_clamp_dread = {
+	if = {
+		limit = { check_variable = { eldritch_dread < 0 } }
+		set_variable = { eldritch_dread = 0 }
+	}
+}
+
+# Opens every Act whose threshold has been reached (several at once if
+# Dread jumped).
+eldritch_crisis_check_acts = {
+	eldritch_crisis_clamp_dread = yes
+	if = {
+		limit = {
+			has_country_flag = eldritch_crisis_act_1
+			NOT = { has_country_flag = eldritch_crisis_act_2 }
+			check_variable = { eldritch_dread > 99 }
+		}
+		eldritch_crisis_act_2 = yes
+	}
+	if = {
+		limit = {
+			has_country_flag = eldritch_crisis_act_2
+			NOT = { has_country_flag = eldritch_crisis_act_3 }
+			check_variable = { eldritch_dread > 249 }
+		}
+		eldritch_crisis_act_3 = yes
+	}
+	if = {
+		limit = {
+			has_country_flag = eldritch_crisis_act_3
+			NOT = { has_country_flag = eldritch_crisis_act_4 }
+			check_variable = { eldritch_dread > 449 }
+		}
+		eldritch_crisis_act_4 = yes
+	}
+}
+
+#####################################################################
+# The Acts
+#####################################################################
+
+# Act I: every state we control with a Theatre of the Yellow Sign becomes
+# Carcosa's core, and the Yellow Fever spreads into the foreign states on
+# our borders. Run at the proclamation and every month after.
+eldritch_crisis_sign_spreads = {
+	every_controlled_state = {
+		limit = {
+			eldritch_yellow_theatre > 0
+			NOT = { is_core_of = ROOT }
+		}
+		add_core_of = ROOT
+	}
+	every_state = {
+		limit = {
+			NOT = { is_controlled_by = ROOT }
+			NOT = { controller = { is_in_faction_with = ROOT } }
+			NOT = { controller = { is_subject_of = ROOT } }
+			NOT = { has_dynamic_modifier = { modifier = eldritch_yellow_fever } }
+			any_neighbor_state = { is_controlled_by = ROOT }
+		}
+		add_dynamic_modifier = { modifier = eldritch_yellow_fever days = 60 }
+	}
+}
+
+# Act II: the Tattered Host. Hastur's battalions grow stronger, the army
+# takes heart, and every general bears the King's mark.
+eldritch_crisis_act_2 = {
+	set_country_flag = eldritch_crisis_act_2
+	set_technology = { eldritch_carcosa_tattered_host = 1 popup = no }
+	add_ideas = eldritch_tattered_host
+	every_army_leader = {
+		limit = { NOT = { has_trait = eldritch_hastur_general } }
+		add_unit_leader_trait = eldritch_hastur_general
+	}
+	add_named_threat = { threat = 5 name = eldritch_threat_carcosa }
+	country_event = { id = eldritch_crisis.2 }
+	every_other_country = {
+		news_event = { id = eldritch_news.6 hours = 6 }
+	}
+}
+
+# Act III: Black Stars. The rest of the world feels the stars go wrong,
+# Black Stars Rise can be called down, and the great powers are asked to
+# join the Elder Sign Accord against Carcosa.
+eldritch_crisis_act_3 = {
+	set_country_flag = eldritch_crisis_act_3
+	every_other_country = {
+		limit = {
+			NOT = { has_country_flag = eldritch_god_hastur }
+			NOT = { has_idea = eldritch_stars_wrong }
+		}
+		add_ideas = eldritch_stars_wrong
+	}
+	add_named_threat = { threat = 10 name = eldritch_threat_carcosa }
+	country_event = { id = eldritch_crisis.3 }
+	every_other_country = {
+		news_event = { id = eldritch_news.7 hours = 6 }
+	}
+	every_other_country = {
+		limit = {
+			is_major = yes
+			eldritch_crisis_can_oppose = yes
+		}
+		country_event = { id = eldritch_crisis.10 days = 2 }
+	}
+}
+
+# Act IV: the Unmasking can be done, and the world turns on Carcosa: the
+# Accord and every great power at peace with it get the Investigators and
+# a war goal against it.
+eldritch_crisis_act_4 = {
+	set_country_flag = eldritch_crisis_act_4
+	add_named_threat = { threat = 10 name = eldritch_threat_carcosa }
+	country_event = { id = eldritch_crisis.4 }
+	every_other_country = {
+		news_event = { id = eldritch_news.8 hours = 6 }
+	}
+	every_other_country = {
+		limit = {
+			eldritch_crisis_can_oppose = yes
+			OR = {
+				has_country_flag = eldritch_elder_sign_accord
+				is_major = yes
+			}
+		}
+		eldritch_crisis_arm_investigators = yes
+	}
+}
+
+# Country scope, ROOT is Carcosa: the nation takes up the fight against it.
+eldritch_crisis_arm_investigators = {
+	set_country_flag = eldritch_elder_sign_accord
+	if = {
+		limit = { NOT = { has_idea = eldritch_investigators } }
+		add_ideas = eldritch_investigators
+	}
+	if = {
+		limit = { NOT = { has_war_with = ROOT } }
+		create_wargoal = {
+			type = topple_government
+			target = ROOT
+		}
+	}
+}
+
+#####################################################################
+# The monthly pulse (from eldritch_monthly_pulse, while Carcosa stands)
+#####################################################################
+
+eldritch_crisis_pulse = {
+	# Carcosa proclaimed before the King's Play existed: the play begins now
+	if = {
+		limit = { NOT = { has_country_flag = eldritch_crisis_act_1 } }
+		eldritch_crisis_begin = yes
+	}
+	# at war, the play goes on
+	if = {
+		limit = { has_war = yes }
+		add_to_variable = { eldritch_dread = 2 }
+	}
+	# every Theatre of the Yellow Sign
+	every_controlled_state = {
+		limit = { eldritch_yellow_theatre > 0 }
+		ROOT = { add_to_variable = { eldritch_dread = 1 } }
+	}
+	# every enemy under the Yellow Madness
+	every_country = {
+		limit = {
+			has_war_with = ROOT
+			has_idea = eldritch_curse_yellow_madness
+		}
+		ROOT = { add_to_variable = { eldritch_dread = 2 } }
+	}
+	# the King walks the earth; if his division has fallen, Carcosa
+	# loses a great deal of its terror
+	if = {
+		limit = { check_variable = { num_battalions_with_type@eldritch_hastur_incarnate > 0 } }
+		add_to_variable = { eldritch_dread = 3 }
+		set_country_flag = eldritch_crisis_king_walking
+	}
+	else_if = {
+		limit = { has_country_flag = eldritch_crisis_king_walking }
+		clr_country_flag = eldritch_crisis_king_walking
+		subtract_from_variable = { eldritch_dread = 50 }
+		country_event = { id = eldritch_crisis.5 }
+	}
+	# the throne is empty
+	if = {
+		limit = { NOT = { eldritch_yellow_palace > 0 } }
+		subtract_from_variable = { eldritch_dread = 10 }
+	}
+	eldritch_crisis_sign_spreads = yes
+	eldritch_crisis_check_acts = yes
+}
+
+# Dread for a staging of the King in Yellow (Stage the King in Yellow).
+eldritch_crisis_note_staging = {
+	if = {
+		limit = { has_country_flag = eldritch_carcosa_proclaimed }
+		add_to_variable = { eldritch_dread = 10 }
+		eldritch_crisis_check_acts = yes
+	}
+}
+
+#####################################################################
+# Act IV: the Unmasking (FROM is the nation unmasked, ROOT is Carcosa)
+#####################################################################
+
+eldritch_crisis_do_unmask = {
+	add_to_variable = { eldritch_dread = 40 }
+	if = {
+		limit = { FROM = { has_stability < 0.25 } }
+		# the masks come off: it was ours all along
+		puppet = FROM
+		FROM = { country_event = { id = eldritch_crisis.11 } }
+	}
+	else = {
+		# the cult rises against its government
+		FROM = {
+			start_civil_war = {
+				ideology = fascism
+				size = 0.4
+			}
+			country_event = { id = eldritch_crisis.12 }
+		}
+	}
+	eldritch_crisis_check_acts = yes
+}

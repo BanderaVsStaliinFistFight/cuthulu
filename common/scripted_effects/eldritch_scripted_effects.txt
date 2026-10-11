@@ -150,6 +150,12 @@ eldritch_monthly_pulse = {
 	}
 	eldritch_clamp_favor = yes
 
+	# The King's Play: Carcosa's Dread and Acts
+	if = {
+		limit = { has_country_flag = eldritch_carcosa_proclaimed }
+		eldritch_crisis_pulse = yes
+	}
+
 	# While the god walks the earth our armies take heart and our enemies
 	# despair; once its division is destroyed the spirit goes.
 	if = {

@@ -278,6 +278,21 @@ Hastur's quests also unlock six new battalions, one per quest, for the division 
 * **The King walks:** only now can a follower of Hastur incarnate the King in Yellow (see 5).
 * **Spirit:** The Road to Carcosa becomes **The Yellow Throne**: +15% war support and morale, +8% organization and research speed, +5% attack, +10% stability, +0.3 PP a day.
 * **News:** the rest of the world hears of it.
+* **The King's Play begins:** Carcosa becomes a crisis for the whole world (below).
+
+#### The King's Play: Carcosa as a world crisis
+Like a crisis in Stellaris, Carcosa grows more terrible the longer it lasts, and the world answers it. A new decision category, **The King's Play**, shows Carcosa's **Dread**, the Act the play has reached and the next one.
+
+**Dread** grows every month at war (+2), for every Theatre of the Yellow Sign (+1), for every enemy under the Yellow Madness (+2) and while the King in Yellow walks the earth (+3); with every state taken from an enemy (+3), every staging of the King in Yellow (+10), every Black Stars Rise (+5), every Unmasking (+40) and every enemy that capitulates to Carcosa (+25). It falls with every state lost (−3), every month without the Palace of the Yellow King (−10), when the King's division is destroyed (−50), and by half if Carcosa capitulates. An Act, once begun, never ends.
+
+| Act | Dread | Carcosa gains | The world answers |
+|---|---|---|---|
+| **I. The Sign Spreads** | at the proclamation | Every state Carcosa controls with a **Theatre** becomes its **core**, now and later. The **Yellow Fever** spreads into the foreign states on its borders (−15% manpower, construction speed and supply, 60 days at a time). | World tension rises. |
+| **II. The Tattered Host** | 100 | **The Tattered Host** (+5% organization, attack, reinforcement), +10% soft attack and +10 organization for every Hastur battalion, and every general gets the **King's mark** (Hastur's general trait). | News: something is wrong in Carcosa. World tension rises. |
+| **III. Black Stars** | 250 | **Black Stars Rise over [state]** (50 Favor, once every 60 days, a decision on the map): an enemy state on the front and its enemy-held neighbours get −40% supply, −30% manpower and construction speed, +20% factory sabotage for 30 days. | **The Stars Are Wrong** (−5% stability) for every nation that doesn't follow Hastur. The great powers are asked to join the **Elder Sign Accord** (AI: 80% yes), which gives them a war goal against Carcosa. |
+| **IV. The Unmasking** | 450 | **Unmask [nation]** (100 Favor, 30 days): a nation at peace with Carcosa with stability below 50% becomes its **puppet** if its stability is under 25% when the masks come off, or the cult rises against its government in a **civil war**. | The Accord and every great power at peace with Carcosa get **The Investigators** (+5% attack, defence and stability) and a war goal against it. |
+
+Act V and the endgame project (**Raise Lost Carcosa**) are the next part of the crisis and are not in the mod yet.
 
 ### 14. The gods' doctrines
 Sealing a pact opens a fourth doctrine tab, **Eldritch**, next to land, naval and air. It holds one grand doctrine for each god, and a country only ever sees its own patron's: the doctrine, its sub-doctrines and their rewards are visible and available only to the god's followers. It works alongside your land doctrine rather than replacing it.
@@ -317,21 +332,22 @@ The grand doctrine costs 100 army experience, and each sub-doctrine 50. Each gra
 ## Files
 
 ```
-common/decisions/                  decision category and all decisions
+common/decisions/                  decision categories and decisions (the King's Play's own in eldritch_crisis_decisions.txt)
 common/ideas/                      pact spirits, timed blessings, curses
 common/country_leader/             Herald / Chosen leader traits
 common/unit_leader/                general, admiral and avatar traits
 common/units/                      the 12 servitor battalions and the 3 gods incarnate
 common/technologies/               hidden "rite" techs that unlock and buff the battalions
-common/scripted_effects|triggers/  shared logic (summoning, blessings, tiers, favor)
+common/scripted_effects|triggers/  shared logic (summoning, blessings, tiers, favor); eldritch_crisis_effects.txt is the King's Play
 common/scripted_localisation/      [ROOT.GetEldritchGodName] etc.
-common/dynamic_modifiers/          the Prophet's mantle (character sheet stats as modifiers)
+common/dynamic_modifiers/          the Prophet's mantle (character sheet stats as modifiers); the Yellow Fever and Black Stars (states)
 common/doctrines/                  the Eldritch doctrine folder: its tracks, the gods' grand doctrines and sub-doctrines
 common/countries/cosmetic.txt      Carcosa's map colour (replaces the game's file of cosmetic tag colours)
 common/buildings/                  the four buildings of the Road to Carcosa, locked until a chapter unlocks them
 common/game_rules/                 the AI rule
-common/on_actions/                 welcome pop-up at game start; records each nation's starting capital (Road to Carcosa, Chapter V)
-events/                            summoning, tier, whim, curse, news and monthly-pulse events
+common/on_actions/                 welcome pop-up at game start; records each nation's starting capital (Road to Carcosa, Chapter V);
+                                   the King's Play's Dread from states taken and lost and from capitulations
+events/                            summoning, tier, whim, curse, news and monthly-pulse events; eldritch_crisis_events.txt is the King's Play
 interface/eldritch.gfx             sprite definitions
 gfx/                               generated art (DDS): spirit, decision, battalion and trait icons, Carcosa's flags (gfx/flags),
                                    event pictures, and avatar portraits (gfx/leaders/eldritch/)
@@ -369,6 +385,7 @@ The script is written against the standard HoI4 modding syntax. It passes the bu
 * The god battalions carry `recon`, `initiative`, `casualty_trickleback` and `experience_loss_factor`, which vanilla normally gives only to support companies. If a future version stops reading them on a line battalion, the god loses just those extras.
 * The hidden rite technologies, which have no tech-tree folder and are granted with `set_technology`.
 * **The Road to Carcosa's buildings.** They are written like the game's own special buildings (facilities, dams, canals, landmarks): provincial (`province_max = 1`, with `state_max = 1` for one per state), locked until their technology unlocks them (`missing_tech_loc` says how; they are not hidden, so you can always find them in the construction menu), and each with its own `special_icon` (two 36×36 frames, sized for the province building slot, shown only where one stands with `only_display_if_exists`; the validator enforces the size). The same pictures, 20×20, are text icons (`£eldritch_building_<name>_text£`) in their descriptions and the chapter goals. The construction menu shows `icon_frame`, a frame of `GFX_buildings_strip` counted from 1 (checked against the game's own buildings: the naval supply hub is 28, the naval headquarters 29). The mod's strip is the game's 1.16 strip (31 frames) with the four buildings as frames 32 to 35; if a game update adds frames to its strip, put the new `gfx/interface/buildings/building_icon_strip.dds` in `tools/art_sources/`, run `python3 tools/generate_art.py buildings` and move the buildings' `icon_frame` up to match. The AI's free buildings go in the state's first province (`province = { all_provinces = yes first = yes }`). Conquest goals compare `num_controlled_states` with a target recorded when the chapter opens.
+* **The King's Play.** Dread from conquest and capitulation uses the game's `on_state_control_changed` (read as: ROOT the new controller, FROM the old) and `on_capitulation` (ROOT the nation that capitulated, FROM the winner) hooks; if Dread moves the wrong way when states change hands, those scopes are the other way round. The Yellow Fever and Black Stars are dynamic modifiers on states; The Stars Are Wrong and The Investigators remove themselves (`cancel`) when no Carcosa has reached their Act. Unmasking uses `puppet` and `start_civil_war` (the cult's side is fascist).
 * **The quests' map objectives.** Each quest marks its place with state flags (the libraries, the ports) or a state kept in a variable (R'lyeh's shore, the Engine's site, read as `var:`), its mission highlights it with `highlight_states`, and the action there is a state-targeted decision (`state_target = yes`, shown on the map and in the decisions view). The libraries and ports are found from the capitals of fixed nations (no state IDs), so they follow a government that moves its capital. If a quest's decision doesn't appear on the map, check `error.log` for the decision's name.
 * **The Eldritch doctrines.** They follow the format of the game's own doctrine files and use only modifiers, battalion stats and tactics that exist. The tab is a custom folder like the game's own special forces folder. Untested parts: the icon size (54×58, matched to the doctrine list's layout), the tab texture (512×61 in two frames, like the land tab), and the track backgrounds (400×700; the UI clips the edges). The tracks reuse the game's own milestone icons. Reward names are localised as `<sub-doctrine>_<reward>`; if a reward shows its raw key in game, the game expects a different pattern.
 * Icon sizes. The textures are 64×67 (spirits), 46×46 (decisions), 152×42 and 60×12 (battalions: two frames each, picture then NATO symbol; the validator enforces these), 40×40 (traits), 156×210 (portraits) and 210×176 / 397×153 (events). If the UI expects different sizes, change the constants at the top of `tools/generate_art.py` (battalions: `ICON_SIZE`, `DESIGNER_FRAME` and `MAP_FRAME` in `tools/art_units.py`) and regenerate.

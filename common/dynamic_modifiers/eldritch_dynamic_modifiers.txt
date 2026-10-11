@@ -24,3 +24,22 @@ eldritch_prophet_mantle = {
 	army_attack_factor = eldritch_prophet_zeal_bonus
 	stability_factor = eldritch_prophet_will_bonus
 }
+
+# The King's Play: states on Carcosa's borders, while Carcosa stands
+# beside them (Act I), for 60 days at a time.
+eldritch_yellow_fever = {
+	icon = GFX_idea_eldritch_fever
+	local_manpower = -0.15
+	state_production_speed_buildings_factor = -0.15
+	local_supplies = -0.15
+}
+
+# The King's Play: a state and its neighbours under Black Stars Rise
+# (Act III), for 30 days.
+eldritch_black_stars = {
+	icon = GFX_idea_eldritch_dread
+	local_supplies = -0.4
+	local_manpower = -0.3
+	state_production_speed_buildings_factor = -0.3
+	local_factory_sabotage = 0.2
+}

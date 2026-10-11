@@ -1,0 +1,120 @@
+#####################################################################
+# Eldritch Pacts - The King's Play: the powers of Carcosa's Acts
+#
+# The crisis itself (Dread, the Acts, the world's answer) is in
+# common/scripted_effects/eldritch_crisis_effects.txt.
+#####################################################################
+
+eldritch_kings_play = {
+
+	# Act III: Black Stars Rise over an enemy state on our front and its
+	# enemy-held neighbours, for 30 days. Once every 60 days.
+	eldritch_crisis_black_stars = {
+		icon = eldritch_curse
+		state_target = yes
+		on_map_mode = map_and_decisions_view
+		custom_cost_trigger = {
+			check_variable = { eldritch_favor > 49 }
+		}
+		custom_cost_text = eldritch_cost_favor_50
+		fire_only_once = no
+
+		target_root_trigger = {
+			has_country_flag = eldritch_crisis_act_3
+			NOT = { has_country_flag = eldritch_black_stars_cooldown }
+		}
+
+		target_trigger = {
+			FROM = {
+				controller = { has_war_with = ROOT }
+				any_neighbor_state = { is_controlled_by = ROOT }
+			}
+		}
+
+		visible = {
+			has_country_flag = eldritch_crisis_act_3
+		}
+
+		available = {
+			custom_trigger_tooltip = {
+				tooltip = eldritch_black_stars_ready_tt
+				NOT = { has_country_flag = eldritch_black_stars_cooldown }
+			}
+		}
+
+		complete_effect = {
+			hidden_effect = { subtract_from_variable = { eldritch_favor = 50 } }
+			custom_effect_tooltip = eldritch_black_stars_tt
+			hidden_effect = {
+				set_country_flag = { flag = eldritch_black_stars_cooldown days = 60 value = 1 }
+				FROM = {
+					if = {
+						limit = { NOT = { has_dynamic_modifier = { modifier = eldritch_black_stars } } }
+						add_dynamic_modifier = { modifier = eldritch_black_stars days = 30 }
+					}
+					every_neighbor_state = {
+						limit = {
+							controller = { has_war_with = ROOT }
+							NOT = { has_dynamic_modifier = { modifier = eldritch_black_stars } }
+						}
+						add_dynamic_modifier = { modifier = eldritch_black_stars days = 30 }
+					}
+				}
+				add_to_variable = { eldritch_dread = 5 }
+				eldritch_crisis_check_acts = yes
+			}
+		}
+
+		ai_will_do = {
+			factor = 5
+		}
+	}
+
+	# Act IV: unmask a nation at peace with us whose stability is below 50%.
+	# After 30 days it becomes our puppet if its stability is below 25%,
+	# or the cult rises against its government in a civil war.
+	eldritch_crisis_unmask = {
+		icon = eldritch_hastur
+		custom_cost_trigger = {
+			check_variable = { eldritch_favor > 99 }
+		}
+		custom_cost_text = eldritch_cost_favor_100
+		fire_only_once = no
+
+		target_root_trigger = {
+			has_country_flag = eldritch_crisis_act_4
+		}
+
+		target_trigger = {
+			FROM = {
+				exists = yes
+				eldritch_crisis_can_oppose = yes
+				NOT = { has_war_with = ROOT }
+				has_stability < 0.5
+			}
+		}
+
+		visible = {
+			has_country_flag = eldritch_crisis_act_4
+		}
+
+		cancel_trigger = {
+			FROM = { has_war_with = ROOT }
+		}
+
+		days_remove = 30
+
+		complete_effect = {
+			hidden_effect = { subtract_from_variable = { eldritch_favor = 100 } }
+		}
+
+		remove_effect = {
+			custom_effect_tooltip = eldritch_crisis_unmask_tt
+			hidden_effect = { eldritch_crisis_do_unmask = yes }
+		}
+
+		ai_will_do = {
+			factor = 5
+		}
+	}
+}

@@ -197,3 +197,13 @@ eldritch_prophet_can_raise_will = {
 eldritch_check_passed = {
 	check_variable = { eldritch_check_passed = 1 }
 }
+
+# The King's Play (country scope, ROOT is Carcosa): a nation that can take
+# up the fight against Carcosa: not a follower of Hastur, nor Carcosa's
+# ally or subject.
+eldritch_crisis_can_oppose = {
+	NOT = { tag = ROOT }
+	NOT = { has_country_flag = eldritch_god_hastur }
+	NOT = { is_in_faction_with = ROOT }
+	NOT = { is_subject_of = ROOT }
+}

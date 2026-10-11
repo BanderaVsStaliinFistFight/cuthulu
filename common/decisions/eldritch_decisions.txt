@@ -707,6 +707,7 @@ eldritch_forbidden_rites = {
 				}
 				FROM = { country_event = { id = eldritch.61 } }
 				country_event = { id = eldritch.82 }
+				eldritch_crisis_note_staging = yes
 			}
 			eldritch_prophet_gain_xp_10 = yes
 		}
@@ -2946,8 +2947,10 @@ eldritch_road_to_carcosa = {
 				add_ideas = eldritch_yellow_throne
 			}
 			eldritch_prophet_gain_xp_100 = yes
+			custom_effect_tooltip = eldritch_crisis_begins_tt
 			hidden_effect = {
 				set_country_flag = eldritch_carcosa_proclaimed
+				eldritch_crisis_begin = yes
 				country_event = { id = eldritch.370 }
 				every_other_country = {
 					news_event = { id = eldritch_news.5 hours = 6 }

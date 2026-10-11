@@ -337,6 +337,48 @@ technologies = {
 		ai_will_do = { factor = 0 }
 	}
 
+	### HASTUR: THE TATTERED HOST (the King's Play, Act II) ###########
+	# Granted to Carcosa when Act II begins (eldritch_crisis_act_2).
+
+	eldritch_carcosa_tattered_host = {
+		eldritch_yellow_zealots = {
+			soft_attack = 0.1
+			max_organisation = 10
+		}
+		eldritch_byakhee_riders = {
+			soft_attack = 0.1
+			max_organisation = 10
+		}
+		eldritch_lidless = {
+			soft_attack = 0.1
+			max_organisation = 10
+		}
+		eldritch_audience = {
+			soft_attack = 0.1
+			max_organisation = 10
+		}
+		eldritch_cassildas_choir = {
+			soft_attack = 0.1
+			max_organisation = 10
+		}
+		eldritch_pallid_masks = {
+			soft_attack = 0.1
+			max_organisation = 10
+		}
+		eldritch_kings_tatters = {
+			soft_attack = 0.1
+			max_organisation = 10
+		}
+		eldritch_halis_drowned = {
+			soft_attack = 0.1
+			max_organisation = 10
+		}
+		research_cost = 1
+		start_year = 1936
+		allow = { always = no }
+		ai_will_do = { factor = 0 }
+	}
+
 	### AZATHOTH ######################################################
 
 	eldritch_azathoth_rites_1 = {

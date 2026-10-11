@@ -25,6 +25,7 @@
 #   eldritch_news.1-3 world news: a god is summoned / ascends / incarnates
 #   eldritch_news.4   world news: a leader becomes a god's Vessel
 #   eldritch_news.5   world news: a nation proclaims itself Carcosa
+#   eldritch_news.6-8 world news: Carcosa's play reaches Acts II-IV
 #####################################################################
 
 add_namespace = eldritch
@@ -1273,5 +1274,44 @@ news_event = {
 
 	option = {
 		name = eldritch_news.5.a
+	}
+}
+
+news_event = {
+	id = eldritch_news.6
+	title = eldritch_news.6.t
+	desc = eldritch_news.6.d
+	picture = GFX_news_event_eldritch_stars
+
+	is_triggered_only = yes
+
+	option = {
+		name = eldritch_news.6.a
+	}
+}
+
+news_event = {
+	id = eldritch_news.7
+	title = eldritch_news.7.t
+	desc = eldritch_news.7.d
+	picture = GFX_news_event_eldritch_stars
+
+	is_triggered_only = yes
+
+	option = {
+		name = eldritch_news.7.a
+	}
+}
+
+news_event = {
+	id = eldritch_news.8
+	title = eldritch_news.8.t
+	desc = eldritch_news.8.d
+	picture = GFX_news_event_eldritch_stars
+
+	is_triggered_only = yes
+
+	option = {
+		name = eldritch_news.8.a
 	}
 }
