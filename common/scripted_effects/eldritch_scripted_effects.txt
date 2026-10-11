@@ -1490,7 +1490,7 @@ eldritch_carcosa_pick_stranger = {
 			limit = {
 				NOT = { is_owned_by = ROOT }
 				NOT = { is_controlled_by = ROOT }
-				is_on_continent = ROOT
+				is_on_same_continent_as = ROOT
 			}
 			ROOT = { set_variable = { eldritch_carcosa_stranger = PREV } }
 		}

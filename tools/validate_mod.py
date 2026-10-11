@@ -22,6 +22,7 @@ catches the mistakes that are easy to make by hand:
     provincial building), unlocked by a technology that exists, and a
     tooltip (missing_tech_loc) for while they are locked
   * text icons (£name£) in localisation point to sprites that exist
+  * is_on_continent names a continent (it doesn't take a country)
   * doctrines: folders, tracks, grand doctrines and sub-doctrines refer to
     each other correctly, have names, icons and reward names, one milestone
     per track, and only touch battalions that exist
@@ -124,6 +125,10 @@ def load_script(pattern, problems):
         except SyntaxError as e:
             problems.append(str(e))
     return data
+
+
+# the game's continents (map/continent.txt); is_on_continent takes only these
+CONTINENTS = {"europe", "north_america", "south_america", "australia", "africa", "asia", "middle_east"}
 
 
 def main():
@@ -461,6 +466,9 @@ def main():
             if key in ("add_ideas", "has_idea", "remove_idea", "add_idea") and isinstance(value, str):
                 if value.startswith("eldritch_") and value not in ideas:
                     problems.append(f"{path}: unknown idea {value}")
+            if key == "is_on_continent" and value not in CONTINENTS:
+                # it takes a continent name only; to compare with a country use is_on_same_continent_as
+                problems.append(f"{path}: is_on_continent = {value} is not a continent ({', '.join(sorted(CONTINENTS))})")
             if key == "set_cosmetic_tag" and isinstance(value, str):
                 # a formable: its name in every form and ideology, a map colour, and a flag in all three sizes
                 if value not in cosmetic_colours:

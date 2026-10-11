@@ -2432,7 +2432,7 @@ eldritch_road_to_carcosa = {
 				is_capital = yes
 				OR = {
 					is_owned_by = ROOT
-					is_on_continent = ROOT
+					is_on_same_continent_as = ROOT
 				}
 			}
 		}
@@ -2776,7 +2776,7 @@ eldritch_road_to_carcosa = {
 			FROM = {
 				is_capital = yes
 				NOT = { is_owned_by = ROOT }
-				is_on_continent = ROOT
+				is_on_same_continent_as = ROOT
 			}
 		}
 
