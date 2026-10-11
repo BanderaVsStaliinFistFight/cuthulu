@@ -539,13 +539,13 @@ technologies = {
 
 	eldritch_cthulhu_incarnation = {
 		eldritch_cthulhu_incarnate = {
-			soft_attack = 5.0
-			hard_attack = 5.0
-			defense = 6.0
-			breakthrough = 6.0
-			ap_attack = 1.0
-			maximum_speed = 0.5
-			max_organisation = 50
+			soft_attack = 8.0
+			hard_attack = 8.0
+			defense = 10.0
+			breakthrough = 10.0
+			ap_attack = 2.5
+			maximum_speed = 0.75
+			max_organisation = 100
 		}
 		research_cost = 1
 		start_year = 1936
@@ -555,13 +555,13 @@ technologies = {
 
 	eldritch_nyarlathotep_incarnation = {
 		eldritch_nyarlathotep_incarnate = {
-			soft_attack = 5.0
-			hard_attack = 5.0
-			defense = 6.0
-			breakthrough = 6.0
-			ap_attack = 1.0
-			maximum_speed = 0.5
-			max_organisation = 50
+			soft_attack = 8.0
+			hard_attack = 8.0
+			defense = 10.0
+			breakthrough = 10.0
+			ap_attack = 2.5
+			maximum_speed = 0.75
+			max_organisation = 100
 		}
 		research_cost = 1
 		start_year = 1936
@@ -571,13 +571,13 @@ technologies = {
 
 	eldritch_hastur_incarnation = {
 		eldritch_hastur_incarnate = {
-			soft_attack = 5.0
-			hard_attack = 5.0
-			defense = 6.0
-			breakthrough = 6.0
-			ap_attack = 1.0
-			maximum_speed = 0.5
-			max_organisation = 50
+			soft_attack = 8.0
+			hard_attack = 8.0
+			defense = 10.0
+			breakthrough = 10.0
+			ap_attack = 2.5
+			maximum_speed = 0.75
+			max_organisation = 100
 		}
 		research_cost = 1
 		start_year = 1936
@@ -587,13 +587,13 @@ technologies = {
 
 	eldritch_shub_niggurath_incarnation = {
 		eldritch_shub_niggurath_incarnate = {
-			soft_attack = 5.0
-			hard_attack = 5.0
-			defense = 6.0
-			breakthrough = 6.0
-			ap_attack = 1.0
-			maximum_speed = 0.5
-			max_organisation = 50
+			soft_attack = 8.0
+			hard_attack = 8.0
+			defense = 10.0
+			breakthrough = 10.0
+			ap_attack = 2.5
+			maximum_speed = 0.75
+			max_organisation = 100
 		}
 		research_cost = 1
 		start_year = 1936
@@ -603,13 +603,13 @@ technologies = {
 
 	eldritch_yog_sothoth_incarnation = {
 		eldritch_yog_sothoth_incarnate = {
-			soft_attack = 5.0
-			hard_attack = 5.0
-			defense = 6.0
-			breakthrough = 6.0
-			ap_attack = 1.0
-			maximum_speed = 0.5
-			max_organisation = 50
+			soft_attack = 8.0
+			hard_attack = 8.0
+			defense = 10.0
+			breakthrough = 10.0
+			ap_attack = 2.5
+			maximum_speed = 0.75
+			max_organisation = 100
 		}
 		research_cost = 1
 		start_year = 1936
@@ -619,13 +619,13 @@ technologies = {
 
 	eldritch_azathoth_incarnation = {
 		eldritch_azathoth_incarnate = {
-			soft_attack = 5.0
-			hard_attack = 5.0
-			defense = 6.0
-			breakthrough = 6.0
-			ap_attack = 1.0
-			maximum_speed = 0.5
-			max_organisation = 50
+			soft_attack = 8.0
+			hard_attack = 8.0
+			defense = 10.0
+			breakthrough = 10.0
+			ap_attack = 2.5
+			maximum_speed = 0.75
+			max_organisation = 100
 		}
 		research_cost = 1
 		start_year = 1936

@@ -835,16 +835,18 @@ sub_units = {
 	#################################################################
 	# THE GODS INCARNATE
 	#
-	# One battalion per god, used only by the locked "incarnate"
-	# templates spawned by the Incarnate decision. They are never
+	# One battalion per god, alone in the locked "incarnate"
+	# template spawned by the Incarnate decision: the god is the
+	# whole division. They are never
 	# unlocked for the division designer, and the ten-year training
 	# time keeps them from being trained normally, so each god only
 	# takes the field when summoned. Their combat bonuses come from
 	# the hidden eldritch_<god>_incarnation technology.
 	#
-	# A god is a division in itself: a thousand strength, recon, initiative
-	# and field-hospital recovery of its own, and terrain bonuses twice
-	# those of any mortal unit.
+	# A god is a division in itself: two thousand strength, 90% hardness
+	# (soft attacks barely scratch it), recon, initiative and field-hospital
+	# recovery of its own, and terrain bonuses twice those of any mortal
+	# unit.
 	#
 	# The very high priority makes the god's model represent its whole
 	# division on the map (the battalion with the highest priority wins).
@@ -870,14 +872,15 @@ sub_units = {
 
 		combat_width = 8
 
-		max_strength = 1000
-		max_organisation = 220
+		max_strength = 2000
+		max_organisation = 300
 		default_morale = 1.0
 		manpower = 100
 
-		recon = 2
-		initiative = 0.25
-		casualty_trickleback = 0.5
+		recon = 3
+		initiative = 0.5
+		casualty_trickleback = 0.75
+		hardness = 0.9
 		experience_loss_factor = -0.5
 
 		training_time = 3650
@@ -925,14 +928,15 @@ sub_units = {
 
 		combat_width = 8
 
-		max_strength = 1000
-		max_organisation = 220
+		max_strength = 2000
+		max_organisation = 300
 		default_morale = 1.0
 		manpower = 100
 
-		recon = 2
-		initiative = 0.25
-		casualty_trickleback = 0.5
+		recon = 3
+		initiative = 0.5
+		casualty_trickleback = 0.75
+		hardness = 0.9
 		experience_loss_factor = -0.5
 
 		training_time = 3650
@@ -977,14 +981,15 @@ sub_units = {
 
 		combat_width = 8
 
-		max_strength = 1000
-		max_organisation = 220
+		max_strength = 2000
+		max_organisation = 300
 		default_morale = 1.0
 		manpower = 100
 
-		recon = 2
-		initiative = 0.25
-		casualty_trickleback = 0.5
+		recon = 3
+		initiative = 0.5
+		casualty_trickleback = 0.75
+		hardness = 0.9
 		experience_loss_factor = -0.5
 
 		training_time = 3650
@@ -1032,14 +1037,15 @@ sub_units = {
 
 		combat_width = 8
 
-		max_strength = 1000
-		max_organisation = 220
+		max_strength = 2000
+		max_organisation = 300
 		default_morale = 1.0
 		manpower = 100
 
-		recon = 2
-		initiative = 0.25
-		casualty_trickleback = 0.5
+		recon = 3
+		initiative = 0.5
+		casualty_trickleback = 0.75
+		hardness = 0.9
 		experience_loss_factor = -0.5
 
 		training_time = 3650
@@ -1086,14 +1092,15 @@ sub_units = {
 
 		combat_width = 8
 
-		max_strength = 1000
-		max_organisation = 220
+		max_strength = 2000
+		max_organisation = 300
 		default_morale = 1.0
 		manpower = 100
 
-		recon = 2
-		initiative = 0.25
-		casualty_trickleback = 0.5
+		recon = 3
+		initiative = 0.5
+		casualty_trickleback = 0.75
+		hardness = 0.9
 		experience_loss_factor = -0.5
 
 		training_time = 3650
@@ -1140,14 +1147,15 @@ sub_units = {
 
 		combat_width = 8
 
-		max_strength = 1000
-		max_organisation = 220
+		max_strength = 2000
+		max_organisation = 300
 		default_morale = 1.0
 		manpower = 100
 
-		recon = 2
-		initiative = 0.25
-		casualty_trickleback = 0.5
+		recon = 3
+		initiative = 0.5
+		casualty_trickleback = 0.75
+		hardness = 0.9
 		experience_loss_factor = -0.5
 
 		training_time = 3650

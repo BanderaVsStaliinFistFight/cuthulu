@@ -162,12 +162,12 @@
  eldritch_spawn_yog_sothoth_tt:0 "Two veteran §RWardens of the Gate§! divisions step through the Gate near our capital."
  eldritch_spawn_azathoth_tt:0 "Two veteran §RChaos Horde§! divisions spill out of the void near our capital."
 
- eldritch_incarnate_cthulhu_tt:0 "§RGreat Cthulhu§! himself rises from the sea near our capital as a division, escorted by Deep Ones and Star-Spawn."
- eldritch_incarnate_nyarlathotep_tt:0 "§RNyarlathotep§! takes physical form near our capital as a division, escorted by Faceless Cultists and Shantak Riders."
- eldritch_incarnate_hastur_tt:0 "§RHastur, the King in Yellow§!, steps out of Carcosa near our capital as a division, escorted by Zealots and Byakhee Riders."
- eldritch_incarnate_shub_niggurath_tt:0 "§RShub-Niggurath§! walks out of the woods near our capital as a division, escorted by Dark Young and the Thousand Young."
- eldritch_incarnate_yog_sothoth_tt:0 "§RYog-Sothoth§! pours through the Gate near our capital as a division, escorted by Wardens of the Gate and Dunwich Horrors."
- eldritch_incarnate_azathoth_tt:0 "§RA fragment of Azathoth§! tears into our world near our capital as a division, escorted by Spawn of the Nuclear Chaos and Void Pipers."
+ eldritch_incarnate_cthulhu_tt:0 "§RGreat Cthulhu§! himself rises from the sea near our capital as a division of its own, alone and needing no escort."
+ eldritch_incarnate_nyarlathotep_tt:0 "§RNyarlathotep§! takes physical form near our capital as a division of its own, alone and needing no escort."
+ eldritch_incarnate_hastur_tt:0 "§RHastur, the King in Yellow§!, steps out of Carcosa near our capital as a division of its own, alone and needing no escort."
+ eldritch_incarnate_shub_niggurath_tt:0 "§RShub-Niggurath§! walks out of the woods near our capital as a division of its own, alone and needing no escort."
+ eldritch_incarnate_yog_sothoth_tt:0 "§RYog-Sothoth§! pours through the Gate near our capital as a division of its own, alone and needing no escort."
+ eldritch_incarnate_azathoth_tt:0 "§RA fragment of Azathoth§! tears into our world near our capital as a division of its own, alone and needing no escort."
 
  eldritch_gate_insight:0 "Insight from Beyond the Gate"
  eldritch_prophet_insight:0 "The Prophet's Vision"
@@ -215,7 +215,7 @@
  eldritch_call_servitors:0 "Call Forth the Servitors"
  eldritch_call_servitors_desc:0 "The servants of [ROOT.GetEldritchGodName] are numberless, and the god will lend them to its faithful for a price.\n\n§RTwo veteran divisions of the god's locked template appear near our capital.§!"
  eldritch_incarnate_god:0 "Incarnate [ROOT.GetEldritchGodName] in the Flesh"
- eldritch_incarnate_god_desc:0 "The servants are not enough. Over thirty nights, the full congregation of [ROOT.GetNameDef] will chant [ROOT.GetEldritchGodName] into a body that can walk the earth and fight beside our armies.\n\n§RSpawns the god itself as one veteran division: a colossal god battalion with a thousand strength, enormous organization, attack, defense, breakthrough and piercing, and its own recon and initiative, escorted by its servitors. Two more servitor divisions come with it. While it lives, our armies fight harder and every nation at war with us is gripped by dread. The god cannot be trained or added to other templates. Only one incarnation can walk the earth at a time: once it is destroyed, it can be incarnated again, at most once a year.§!\n§RZeal§! check: a pleased god returns some of the offering."
+ eldritch_incarnate_god_desc:0 "The servants are not enough. Over thirty nights, the full congregation of [ROOT.GetNameDef] will chant [ROOT.GetEldritchGodName] into a body that can walk the earth and fight beside our armies.\n\n§RSpawns the god itself as one veteran division: a single colossal god battalion that is the whole division, with two thousand strength, enormous organization, attack, defense, breakthrough and piercing, 90% hardness, and its own recon and initiative. Two servitor divisions come with it. While it lives, our armies fight harder and every nation at war with us is gripped by dread. The god cannot be trained or added to other templates. Only one incarnation can walk the earth at a time: once it is destroyed, it can be incarnated again, at most once a year.§!\n§RZeal§! check: a pleased god returns some of the offering."
 
  ################################################################
  # DECISIONS - CTHULHU

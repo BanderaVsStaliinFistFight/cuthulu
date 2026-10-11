@@ -366,9 +366,9 @@ eldritch_spawn_servitors = {
 #####################################################################
 # THE GODS INCARNATE
 #
-# Each god's incarnate template is the god battalion (column 0) plus an
-# escort of its servitors. Templates are created the first time the god
-# is incarnated; later incarnations only spawn a new division.
+# Each god's incarnate template is the god battalion alone: the god is
+# the whole division. Templates are created the first time the god is
+# incarnated; later incarnations only spawn a new division.
 #####################################################################
 
 eldritch_create_template_cthulhu_incarnate = {
@@ -377,11 +377,6 @@ eldritch_create_template_cthulhu_incarnate = {
 		is_locked = yes
 		regiments = {
 			eldritch_cthulhu_incarnate = { x = 0 y = 0 }
-			eldritch_deep_one_brood = { x = 1 y = 0 }
-			eldritch_deep_one_brood = { x = 1 y = 1 }
-			eldritch_deep_one_brood = { x = 1 y = 2 }
-			eldritch_star_spawn = { x = 2 y = 0 }
-			eldritch_star_spawn = { x = 2 y = 1 }
 		}
 	}
 }
@@ -392,11 +387,6 @@ eldritch_create_template_nyarlathotep_incarnate = {
 		is_locked = yes
 		regiments = {
 			eldritch_nyarlathotep_incarnate = { x = 0 y = 0 }
-			eldritch_faceless_cult = { x = 1 y = 0 }
-			eldritch_faceless_cult = { x = 1 y = 1 }
-			eldritch_faceless_cult = { x = 1 y = 2 }
-			eldritch_shantak_riders = { x = 2 y = 0 }
-			eldritch_shantak_riders = { x = 2 y = 1 }
 		}
 	}
 }
@@ -407,12 +397,6 @@ eldritch_create_template_hastur_incarnate = {
 		is_locked = yes
 		regiments = {
 			eldritch_hastur_incarnate = { x = 0 y = 0 }
-			eldritch_yellow_zealots = { x = 1 y = 0 }
-			eldritch_yellow_zealots = { x = 1 y = 1 }
-			eldritch_yellow_zealots = { x = 1 y = 2 }
-			eldritch_byakhee_riders = { x = 2 y = 0 }
-			eldritch_byakhee_riders = { x = 2 y = 1 }
-			eldritch_byakhee_riders = { x = 2 y = 2 }
 		}
 	}
 }
@@ -423,11 +407,6 @@ eldritch_create_template_shub_niggurath_incarnate = {
 		is_locked = yes
 		regiments = {
 			eldritch_shub_niggurath_incarnate = { x = 0 y = 0 }
-			eldritch_thousand_young = { x = 1 y = 0 }
-			eldritch_thousand_young = { x = 1 y = 1 }
-			eldritch_thousand_young = { x = 1 y = 2 }
-			eldritch_dark_young = { x = 2 y = 0 }
-			eldritch_dark_young = { x = 2 y = 1 }
 		}
 	}
 }
@@ -438,11 +417,6 @@ eldritch_create_template_yog_sothoth_incarnate = {
 		is_locked = yes
 		regiments = {
 			eldritch_yog_sothoth_incarnate = { x = 0 y = 0 }
-			eldritch_gate_wardens = { x = 1 y = 0 }
-			eldritch_gate_wardens = { x = 1 y = 1 }
-			eldritch_gate_wardens = { x = 1 y = 2 }
-			eldritch_dunwich_horror = { x = 2 y = 0 }
-			eldritch_dunwich_horror = { x = 2 y = 1 }
 		}
 	}
 }
@@ -453,11 +427,6 @@ eldritch_create_template_azathoth_incarnate = {
 		is_locked = yes
 		regiments = {
 			eldritch_azathoth_incarnate = { x = 0 y = 0 }
-			eldritch_chaos_spawn = { x = 1 y = 0 }
-			eldritch_chaos_spawn = { x = 1 y = 1 }
-			eldritch_chaos_spawn = { x = 1 y = 2 }
-			eldritch_chaos_spawn = { x = 1 y = 3 }
-			eldritch_void_pipers = { x = 2 y = 0 }
 		}
 	}
 }

@@ -88,22 +88,23 @@ Favor is the currency of the pact. You gain it monthly (5 / 8 / 12 by tier), fro
 | **Azathoth** – the Daemon Sultan *(needs 50% war support, −10% stability)* | Attack, breakthrough, factory output, at a heavy stability cost | **Spawn of the Nuclear Chaos** (shock infantry), **Void Pipers** (sorcerous artillery) – *Chaos Horde* | Mindless Fury (attack, breakthrough, speed) | **The Piper of the Void** | **Bottle the Nuclear Chaos** – a nuclear bomb (Tier II+) | Two nuclear bombs |
 
 ### 5. The gods incarnate
-From Tier II, **Incarnate [God] in the Flesh** brings the god onto the battlefield as a veteran division at your capital, with the world told what has happened. Only one incarnation can be on the map at a time: the decision stays locked while the god's division exists and reopens once it is destroyed (still at most once a year, for 200 Favor). Each incarnate division is one colossal **god battalion** plus an escort of the god's servitors:
+From Tier II, **Incarnate [God] in the Flesh** brings the god onto the battlefield as a veteran division at your capital, with the world told what has happened. Only one incarnation can be on the map at a time: the decision stays locked while the god's division exists and reopens once it is destroyed (still at most once a year, for 200 Favor). Each incarnate division is a single colossal **god battalion**: the god fights alone, and is the whole division.
 
-| God | Division | Escort | Terrain where the god is strongest |
-|---|---|---|---|
-| Cthulhu | **Great Cthulhu** | 3 Deep One Brood, 2 Star-Spawn | sea landings, rivers, marsh |
-| Nyarlathotep | **The Crawling Chaos** | 3 Faceless Cultists, 2 Shantak Riders | cities, desert |
-| Hastur | **The King in Yellow** | 3 Zealots, 3 Byakhee Riders | hills, mountains, cities |
-| Shub-Niggurath | **The Black Goat of the Woods** | 3 Thousand Young, 2 Dark Young | forest, jungle |
-| Yog-Sothoth | **The All-in-One** | 3 Wardens of the Gate, 2 Dunwich Horrors | plains, hills, cities |
-| Azathoth | **Fragment of Azathoth** | 4 Spawn of the Nuclear Chaos, 1 Void Pipers | plains, desert, cities |
+| God | Division | Terrain where the god is strongest |
+|---|---|---|
+| Cthulhu | **Great Cthulhu** | sea landings, rivers, marsh |
+| Nyarlathotep | **The Crawling Chaos** | cities, desert |
+| Hastur | **The King in Yellow** | hills, mountains, cities |
+| Shub-Niggurath | **The Black Goat of the Woods** | forest, jungle |
+| Yog-Sothoth | **The All-in-One** | plains, hills, cities |
+| Azathoth | **Fragment of Azathoth** | plains, desert, cities |
 
-A god battalion is a division in itself:
+What a god battalion has:
 
-* **1,000 strength** (forty infantry battalions' worth) and **220 organization**, plus 50 more from the incarnation and 30 more at Tier III, recovering at 100%.
-* **+500% soft and hard attack, +600% defense and breakthrough, +100% piercing** and **+50% speed**, rising to +600% / +700% at Tier III.
-* Its own **recon (2)**, **initiative (+25%)** and field-hospital recovery (half its casualties return, half the experience loss).
+* **2,000 strength** (eighty infantry battalions' worth) and **300 organization**, plus 100 more from the incarnation and 30 more at Tier III, recovering at 100%.
+* **90% hardness**, so soft attacks (rifles, machine guns, artillery) barely scratch it; only anti-tank weapons hurt it properly.
+* **+800% soft and hard attack, +1,000% defense and breakthrough, +250% piercing** and **+75% speed**, rising to +900% / +1,100% at Tier III.
+* Its own **recon (3)**, **initiative (+50%)** and field-hospital recovery (three quarters of its casualties return, half the experience loss).
 * **Large bonuses in its favoured terrain** from the table above, for example +200% attack in sea landings for Great Cthulhu and +120% attack in forest and jungle for the Black Goat.
 * It takes 8 combat width. You can't put it in your own templates or train it: it only arrives through the ritual. Losses are reinforced from your normal stockpile.
 
