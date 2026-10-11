@@ -626,6 +626,25 @@ def sym_quest(size, color=None):
     return glow_under(c.done(size, size), (255, 220, 150), size / 16, 0.5)
 
 
+def sym_carcosa(size, color=None):
+    """Lost Carcosa: black towers on the shore of Lake Hali under twin suns."""
+    c = Canvas(size, size)
+    c.ellipse(0.5, 0.46, 0.44, 0.40, (150, 105, 30, 255))
+    c.ellipse(0.5, 0.46, 0.40, 0.36, (200, 150, 50, 255))
+    c.ellipse(0.36, 0.30, 0.10, 0.10, (255, 225, 120, 255))
+    c.ellipse(0.62, 0.24, 0.06, 0.06, (255, 240, 170, 255))
+    for x, y in ((0.24, 0.20), (0.76, 0.40), (0.70, 0.16)):
+        c.ellipse(x, y, 0.016, 0.016, (25, 12, 20, 255))
+    for x, top, w in ((0.20, 0.56, 0.06), (0.31, 0.40, 0.05), (0.42, 0.50, 0.045), (0.54, 0.32, 0.06),
+                      (0.66, 0.46, 0.045), (0.78, 0.54, 0.055)):
+        c.poly([(x - w, 0.80), (x + w, 0.80), (x + w * 0.7, top + 0.06), (x, top), (x - w * 0.7, top + 0.06)],
+               (28, 18, 26, 255))
+    c.poly([(0.08, 0.78), (0.92, 0.78), (0.86, 0.90), (0.14, 0.90)], (70, 55, 30, 255))
+    for y in (0.82, 0.86):
+        c.line([(0.24, y), (0.76, y)], (210, 170, 70, 200), 0.008)
+    return glow_under(c.done(size, size), (255, 210, 90), size / 14, 0.7)
+
+
 def sym_temple(size, color=None):
     c = Canvas(size, size)
     stone = [(70, 66, 74, 255), (88, 84, 92, 255), (106, 102, 110, 255)]
@@ -666,6 +685,7 @@ SYMBOLS = {
     "dread": sym_dread,
     "path": sym_path,
     "quest": sym_quest,
+    "carcosa": sym_carcosa,
 }
 
 # Relics won by the Prophet's quests: picture name -> symbol.
@@ -689,7 +709,7 @@ PATH_ICONS = {
 
 # Decision icons beyond the gods' own (GFX_decision_eldritch_<name>).
 DECISION_ICONS = ["tome", "altar", "sacrifice", "deepen", "anoint", "crown", "servitors", "curse", "incarnate",
-                  "commune", "preach", "tithe", "council", "temple", "vessel"]
+                  "commune", "preach", "tithe", "council", "temple", "vessel", "carcosa"]
 
 # National spirits that belong to no single god (the Prophet's rites, the
 # god incarnate): picture name -> (symbol, inner, outer, border colour).
@@ -701,6 +721,8 @@ EXTRA_SPIRITS = {
     "god_walks": ("incarnate", (60, 50, 30), (18, 14, 8), (235, 195, 90)),
     "dread": ("dread", (70, 15, 20), (22, 4, 6), (200, 40, 40)),
     "mantle": ("preach", (50, 34, 70), (16, 10, 24), (235, 195, 90)),
+    "carcosa_road": ("hastur", (70, 52, 18), (22, 16, 6), (200, 160, 60)),
+    "yellow_throne": ("carcosa", (80, 60, 20), (24, 18, 6), (255, 215, 90)),
 }
 
 
@@ -1207,6 +1229,40 @@ def make_trait_icons():
 
 
 # ---------------------------------------------------------------------------
+# Flags of the formable nation (gfx/flags/<cosmetic tag>[_ideology].tga)
+# ---------------------------------------------------------------------------
+
+FLAG_SIZES = {"": (82, 52), "medium/": (41, 26), "small/": (10, 7)}
+
+
+def flag_carcosa():
+    """Black field between ochre bands, the Yellow Sign in gold at its heart."""
+    w, h = 82 * 8, 52 * 8
+    img = Image.new("RGBA", (w, h), (14, 10, 8, 255))
+    d = ImageDraw.Draw(img)
+    band = h // 9
+    d.rectangle([0, 0, w, band], fill=(170, 120, 25, 255))
+    d.rectangle([0, h - band, w, h], fill=(170, 120, 25, 255))
+    d.rectangle([0, band, w, band + h // 60], fill=(90, 60, 10, 255))
+    d.rectangle([0, h - band - h // 60, w, h - band], fill=(90, 60, 10, 255))
+    sign = sym_hastur(int(h * 0.74), color=(235, 190, 45))
+    img.alpha_composite(sign, ((w - sign.width) // 2, (h - sign.height) // 2))
+    for x in (w * 0.12, w * 0.88):
+        r = h * 0.05
+        d.ellipse([x - r, h * 0.5 - r, x + r, h * 0.5 + r], fill=(235, 190, 45, 255))
+    return img
+
+
+def make_flags():
+    flag = flag_carcosa()
+    for ideology in ("", "_fascism", "_communism", "_democratic", "_neutrality"):
+        for folder, size in FLAG_SIZES.items():
+            path = os.path.join(ROOT, "gfx", "flags", folder, f"ELDRITCH_CARCOSA{ideology}.tga")
+            os.makedirs(os.path.dirname(path), exist_ok=True)
+            flag.resize(size, Image.LANCZOS).save(path)
+
+
+# ---------------------------------------------------------------------------
 # Sprite definitions (interface/eldritch.gfx)
 # ---------------------------------------------------------------------------
 
@@ -1246,6 +1302,7 @@ def write_gfx():
     sprite("GFX_decision_eldritch_rites", "gfx/interface/decisions/eldritch_category_rites.dds")
     sprite("GFX_decision_category_eldritch_path", "gfx/interface/decisions/eldritch_category_path.dds")
     sprite("GFX_decision_category_eldritch_quests", "gfx/interface/decisions/eldritch_category_quests.dds")
+    sprite("GFX_decision_category_eldritch_carcosa", "gfx/interface/decisions/eldritch_carcosa.dds")
     for name in PATH_ICONS:
         sprite(f"GFX_decision_eldritch_{name}", f"gfx/interface/decisions/eldritch_{name}.dds")
 
@@ -1283,6 +1340,7 @@ def main():
     make_portraits()
     make_unit_icons()
     make_trait_icons()
+    make_flags()
     make_thumbnail()
     write_gfx()
     print("Art generated.")

@@ -11,6 +11,8 @@
 #   eldritch_god_walks         while the incarnate god is on the map
 #   eldritch_dread_of_the_god  on every nation at war with an incarnate god
 #   eldritch_relic_*           permanent, the rewards of the Prophet's quests
+#   eldritch_carcosa_road_1-5  Hastur's questline, one stage per chapter
+#   eldritch_yellow_throne     permanent, once the nation becomes Carcosa
 #####################################################################
 
 ideas = {
@@ -498,6 +500,83 @@ ideas = {
 				industrial_capacity_factory = 0.15
 				production_factory_max_efficiency_factor = 0.05
 				stability_factor = -0.05
+			}
+		}
+
+		### THE ROAD TO CARCOSA ######################################
+
+		eldritch_carcosa_road_1 = {
+			picture = eldritch_carcosa_road
+			removal_cost = -1
+			allowed_civil_war = { always = yes }
+			modifier = {
+				war_support_factor = 0.05
+				army_morale_factor = 0.03
+			}
+		}
+
+		eldritch_carcosa_road_2 = {
+			picture = eldritch_carcosa_road
+			removal_cost = -1
+			allowed_civil_war = { always = yes }
+			modifier = {
+				war_support_factor = 0.05
+				army_morale_factor = 0.05
+				research_speed_factor = 0.03
+			}
+		}
+
+		eldritch_carcosa_road_3 = {
+			picture = eldritch_carcosa_road
+			removal_cost = -1
+			allowed_civil_war = { always = yes }
+			modifier = {
+				war_support_factor = 0.08
+				army_morale_factor = 0.05
+				research_speed_factor = 0.03
+				army_org_factor = 0.03
+			}
+		}
+
+		eldritch_carcosa_road_4 = {
+			picture = eldritch_carcosa_road
+			removal_cost = -1
+			allowed_civil_war = { always = yes }
+			modifier = {
+				war_support_factor = 0.10
+				army_morale_factor = 0.08
+				research_speed_factor = 0.05
+				army_org_factor = 0.05
+				political_power_gain = 0.10
+			}
+		}
+
+		eldritch_carcosa_road_5 = {
+			picture = eldritch_carcosa_road
+			removal_cost = -1
+			allowed_civil_war = { always = yes }
+			modifier = {
+				war_support_factor = 0.10
+				army_morale_factor = 0.10
+				research_speed_factor = 0.05
+				army_org_factor = 0.05
+				political_power_gain = 0.15
+				stability_factor = 0.05
+			}
+		}
+
+		eldritch_yellow_throne = {
+			picture = eldritch_yellow_throne
+			removal_cost = -1
+			allowed_civil_war = { always = yes }
+			modifier = {
+				war_support_factor = 0.15
+				army_morale_factor = 0.15
+				army_org_factor = 0.08
+				army_attack_factor = 0.05
+				research_speed_factor = 0.08
+				political_power_gain = 0.30
+				stability_factor = 0.10
 			}
 		}
 	}

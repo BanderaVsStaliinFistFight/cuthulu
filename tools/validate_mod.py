@@ -13,6 +13,8 @@ catches the mistakes that are easy to make by hand:
     battalions without a designer icon, traits without an icon, missing
     portrait files, dynamic modifiers without text or icon
   * scripted effects / triggers / events that are used but never defined
+  * formables (set_cosmetic_tag): names for every ideology, flags in all
+    three sizes as uncompressed TGA
   * localisation file encoding (UTF-8 with BOM) and header
 
 Usage:  python3 tools/validate_mod.py      (exit code 1 on problems)
@@ -348,6 +350,22 @@ def main():
             if key in ("add_ideas", "has_idea", "remove_idea", "add_idea") and isinstance(value, str):
                 if value.startswith("eldritch_") and value not in ideas:
                     problems.append(f"{path}: unknown idea {value}")
+            if key == "set_cosmetic_tag" and isinstance(value, str):
+                # a formable: its name in every form and ideology, and a flag in all three sizes
+                for ideology in ("", "_fascism", "_communism", "_democratic", "_neutrality"):
+                    for form in ("", "_DEF", "_ADJ"):
+                        need_loc(value + ideology + form, path)
+                for folder, size in (("", (82, 52)), ("medium/", (41, 26)), ("small/", (10, 7))):
+                    flag = os.path.join(ROOT, "gfx", "flags", folder + value + ".tga")
+                    if not os.path.exists(flag):
+                        problems.append(f"{path}: cosmetic tag {value} has no flag gfx/flags/{folder}{value}.tga")
+                        continue
+                    with open(flag, "rb") as f:
+                        head = f.read(18)
+                    w, h = int.from_bytes(head[12:14], "little"), int.from_bytes(head[14:16], "little")
+                    if head[2] != 2 or (w, h) != size:
+                        problems.append(f"{path}: flag gfx/flags/{folder}{value}.tga must be an uncompressed "
+                                        f"{size[0]}x{size[1]} TGA (is type {head[2]}, {w}x{h})")
             if key == "activate_mission" and isinstance(value, str) and value not in decision_names:
                 problems.append(f"{path}: activate_mission names unknown mission {value}")
             if key in ("add_dynamic_modifier", "remove_dynamic_modifier") and isinstance(value, list):

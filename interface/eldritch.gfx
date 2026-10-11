@@ -139,6 +139,14 @@ spriteTypes = {
 		texturefile = "gfx/interface/ideas/eldritch_mantle.dds"
 	}
 	spriteType = {
+		name = "GFX_idea_eldritch_carcosa_road"
+		texturefile = "gfx/interface/ideas/eldritch_carcosa_road.dds"
+	}
+	spriteType = {
+		name = "GFX_idea_eldritch_yellow_throne"
+		texturefile = "gfx/interface/ideas/eldritch_yellow_throne.dds"
+	}
+	spriteType = {
 		name = "GFX_idea_eldritch_relic_necronomicon"
 		texturefile = "gfx/interface/ideas/eldritch_relic_necronomicon.dds"
 	}
@@ -233,6 +241,10 @@ spriteTypes = {
 		texturefile = "gfx/interface/decisions/eldritch_vessel.dds"
 	}
 	spriteType = {
+		name = "GFX_decision_eldritch_carcosa"
+		texturefile = "gfx/interface/decisions/eldritch_carcosa.dds"
+	}
+	spriteType = {
 		name = "GFX_decision_eldritch_cthulhu"
 		texturefile = "gfx/interface/decisions/eldritch_cthulhu.dds"
 	}
@@ -273,6 +285,10 @@ spriteTypes = {
 	spriteType = {
 		name = "GFX_decision_category_eldritch_quests"
 		texturefile = "gfx/interface/decisions/eldritch_category_quests.dds"
+	}
+	spriteType = {
+		name = "GFX_decision_category_eldritch_carcosa"
+		texturefile = "gfx/interface/decisions/eldritch_carcosa.dds"
 	}
 	spriteType = {
 		name = "GFX_decision_eldritch_path_lore"

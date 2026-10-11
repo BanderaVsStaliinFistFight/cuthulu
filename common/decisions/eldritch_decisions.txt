@@ -1522,6 +1522,7 @@ eldritch_forbidden_rites = {
 				limit = { has_country_flag = eldritch_perk_zeal_2 }
 				modify_timed_idea = { idea = eldritch_prophet_marches days = 90 }
 			}
+			hidden_effect = { eldritch_quest_note_march = yes }
 			eldritch_prophet_gain_xp_25 = yes
 		}
 
@@ -2832,6 +2833,644 @@ eldritch_prophet_quests = {
 
 		ai_will_do = {
 			factor = 1
+		}
+	}
+}
+
+#####################################################################
+# THE ROAD TO CARCOSA - Hastur's questline
+#
+# Six chapters, each unlocked by the one before, built like the
+# Prophet's quests (begin, approach, timed task, skill-check finale).
+# Each success advances the spirit The Road to Carcosa (I-V); the sixth
+# unlocks Proclaim Carcosa, which turns the nation into Carcosa (cosmetic
+# tag ELDRITCH_CARCOSA) under The Yellow Throne. A failed chapter can be
+# begun again 120 days after that attempt began.
+#####################################################################
+
+eldritch_road_to_carcosa = {
+
+	# Chapter 1: begin. After the ritual, eldritch.311 picks the approach
+	# and starts the task (eldritch_carcosa_1_task).
+	eldritch_carcosa_1 = {
+		icon = eldritch_hastur
+		custom_cost_trigger = {
+			check_variable = { eldritch_favor > 49 }
+		}
+		custom_cost_text = eldritch_cost_favor_50
+		fire_only_once = no
+		days_re_enable = 120
+
+		visible = {
+			has_country_flag = eldritch_god_hastur
+			NOT = { has_country_flag = eldritch_carcosa_1_done }
+		}
+
+		available = {
+			custom_trigger_tooltip = {
+				tooltip = eldritch_quest_underway_tt
+				NOT = { has_country_flag = eldritch_carcosa_1_active }
+			}
+		}
+
+		days_remove = 30
+
+		complete_effect = {
+			hidden_effect = {
+				subtract_from_variable = { eldritch_favor = 50 }
+				set_country_flag = eldritch_carcosa_1_active
+				set_variable = { eldritch_carcosa_1_preach = 0 }
+			}
+		}
+
+		remove_effect = {
+			custom_effect_tooltip = eldritch_quest_begin_tt
+			hidden_effect = { country_event = { id = eldritch.311 } }
+		}
+
+		ai_will_do = {
+			factor = 3
+		}
+	}
+
+	# Chapter 1: the timed task.
+	eldritch_carcosa_1_task = {
+		icon = eldritch_hastur
+		activation = { always = no }
+		selectable_mission = no
+		is_good = yes
+		fire_only_once = no
+		days_mission_timeout = 150
+
+		visible = {
+			has_country_flag = eldritch_carcosa_1_active
+		}
+
+		available = {
+			custom_trigger_tooltip = {
+				tooltip = eldritch_carcosa_1_task_tt
+				check_variable = { eldritch_carcosa_1_preach > 1 }
+			}
+		}
+
+		complete_effect = {
+			custom_effect_tooltip = eldritch_quest_finale_tt
+			hidden_effect = {
+				set_variable = { eldritch_quest_stat = eldritch_carcosa_1_stat }
+				set_variable = { eldritch_quest_base = 45 }
+				add_to_variable = { eldritch_quest_base = eldritch_carcosa_1_bonus }
+				eldritch_quest_check = yes
+				clr_country_flag = eldritch_carcosa_1_active
+				if = {
+					limit = { eldritch_check_passed = yes }
+					set_country_flag = eldritch_carcosa_1_done
+					set_variable = { eldritch_carcosa_chapter = 1 }
+					country_event = { id = eldritch.312 }
+				}
+				else = {
+					country_event = { id = eldritch.313 }
+				}
+			}
+		}
+
+		timeout_effect = {
+			custom_effect_tooltip = eldritch_carcosa_timeout_tt
+			hidden_effect = {
+				clr_country_flag = eldritch_carcosa_1_active
+				country_event = { id = eldritch.290 }
+			}
+		}
+
+		ai_will_do = {
+			factor = 1
+		}
+	}
+
+	# Chapter 2: begin. After the ritual, eldritch.321 picks the approach
+	# and starts the task (eldritch_carcosa_2_task).
+	eldritch_carcosa_2 = {
+		icon = eldritch_hastur
+		custom_cost_trigger = {
+			check_variable = { eldritch_favor > 74 }
+		}
+		custom_cost_text = eldritch_cost_favor_75
+		fire_only_once = no
+		days_re_enable = 120
+
+		visible = {
+			has_country_flag = eldritch_carcosa_1_done
+			NOT = { has_country_flag = eldritch_carcosa_2_done }
+		}
+
+		available = {
+			custom_trigger_tooltip = {
+				tooltip = eldritch_quest_underway_tt
+				NOT = { has_country_flag = eldritch_carcosa_2_active }
+			}
+		}
+
+		days_remove = 30
+
+		complete_effect = {
+			hidden_effect = {
+				subtract_from_variable = { eldritch_favor = 75 }
+				set_country_flag = eldritch_carcosa_2_active
+				clr_country_flag = eldritch_carcosa_2_commune
+				clr_country_flag = eldritch_carcosa_2_worship
+			}
+		}
+
+		remove_effect = {
+			custom_effect_tooltip = eldritch_quest_begin_tt
+			hidden_effect = { country_event = { id = eldritch.321 } }
+		}
+
+		ai_will_do = {
+			factor = 3
+		}
+	}
+
+	# Chapter 2: the timed task.
+	eldritch_carcosa_2_task = {
+		icon = eldritch_hastur
+		activation = { always = no }
+		selectable_mission = no
+		is_good = yes
+		fire_only_once = no
+		days_mission_timeout = 150
+
+		visible = {
+			has_country_flag = eldritch_carcosa_2_active
+		}
+
+		available = {
+			custom_trigger_tooltip = {
+				tooltip = eldritch_carcosa_2_task_tt
+				has_country_flag = eldritch_carcosa_2_commune
+				has_country_flag = eldritch_carcosa_2_worship
+			}
+		}
+
+		complete_effect = {
+			custom_effect_tooltip = eldritch_quest_finale_tt
+			hidden_effect = {
+				set_variable = { eldritch_quest_stat = eldritch_carcosa_2_stat }
+				set_variable = { eldritch_quest_base = 40 }
+				add_to_variable = { eldritch_quest_base = eldritch_carcosa_2_bonus }
+				eldritch_quest_check = yes
+				clr_country_flag = eldritch_carcosa_2_active
+				if = {
+					limit = { eldritch_check_passed = yes }
+					set_country_flag = eldritch_carcosa_2_done
+					set_variable = { eldritch_carcosa_chapter = 2 }
+					country_event = { id = eldritch.322 }
+				}
+				else = {
+					country_event = { id = eldritch.323 }
+				}
+			}
+		}
+
+		timeout_effect = {
+			custom_effect_tooltip = eldritch_carcosa_timeout_tt
+			hidden_effect = {
+				clr_country_flag = eldritch_carcosa_2_active
+				country_event = { id = eldritch.290 }
+			}
+		}
+
+		ai_will_do = {
+			factor = 1
+		}
+	}
+
+	# Chapter 3: begin. After the ritual, eldritch.331 picks the approach
+	# and starts the task (eldritch_carcosa_3_task).
+	eldritch_carcosa_3 = {
+		icon = eldritch_hastur
+		custom_cost_trigger = {
+			check_variable = { eldritch_favor > 99 }
+		}
+		custom_cost_text = eldritch_cost_favor_100
+		fire_only_once = no
+		days_re_enable = 120
+
+		visible = {
+			has_country_flag = eldritch_carcosa_2_done
+			NOT = { has_country_flag = eldritch_carcosa_3_done }
+		}
+
+		available = {
+			custom_trigger_tooltip = {
+				tooltip = eldritch_quest_underway_tt
+				NOT = { has_country_flag = eldritch_carcosa_3_active }
+			}
+			eldritch_pact_tier_at_least_2 = yes
+		}
+
+		days_remove = 30
+
+		complete_effect = {
+			hidden_effect = {
+				subtract_from_variable = { eldritch_favor = 100 }
+				set_country_flag = eldritch_carcosa_3_active
+				clr_country_flag = eldritch_carcosa_3_council
+			}
+		}
+
+		remove_effect = {
+			custom_effect_tooltip = eldritch_quest_begin_tt
+			hidden_effect = { country_event = { id = eldritch.331 } }
+		}
+
+		ai_will_do = {
+			factor = 3
+		}
+	}
+
+	# Chapter 3: the timed task.
+	eldritch_carcosa_3_task = {
+		icon = eldritch_hastur
+		activation = { always = no }
+		selectable_mission = no
+		is_good = yes
+		fire_only_once = no
+		days_mission_timeout = 180
+
+		visible = {
+			has_country_flag = eldritch_carcosa_3_active
+		}
+
+		available = {
+			custom_trigger_tooltip = {
+				tooltip = eldritch_carcosa_3_task_tt
+				has_country_flag = eldritch_carcosa_3_council
+			}
+		}
+
+		complete_effect = {
+			custom_effect_tooltip = eldritch_quest_finale_tt
+			hidden_effect = {
+				set_variable = { eldritch_quest_stat = eldritch_carcosa_3_stat }
+				set_variable = { eldritch_quest_base = 35 }
+				add_to_variable = { eldritch_quest_base = eldritch_carcosa_3_bonus }
+				eldritch_quest_check = yes
+				clr_country_flag = eldritch_carcosa_3_active
+				if = {
+					limit = { eldritch_check_passed = yes }
+					set_country_flag = eldritch_carcosa_3_done
+					set_variable = { eldritch_carcosa_chapter = 3 }
+					country_event = { id = eldritch.332 }
+				}
+				else = {
+					country_event = { id = eldritch.333 }
+				}
+			}
+		}
+
+		timeout_effect = {
+			custom_effect_tooltip = eldritch_carcosa_timeout_tt
+			hidden_effect = {
+				clr_country_flag = eldritch_carcosa_3_active
+				country_event = { id = eldritch.290 }
+			}
+		}
+
+		ai_will_do = {
+			factor = 1
+		}
+	}
+
+	# Chapter 4: begin. After the ritual, eldritch.341 picks the approach
+	# and starts the task (eldritch_carcosa_4_task).
+	eldritch_carcosa_4 = {
+		icon = eldritch_hastur
+		custom_cost_trigger = {
+			check_variable = { eldritch_favor > 99 }
+		}
+		custom_cost_text = eldritch_cost_favor_100
+		fire_only_once = no
+		days_re_enable = 120
+
+		visible = {
+			has_country_flag = eldritch_carcosa_3_done
+			NOT = { has_country_flag = eldritch_carcosa_4_done }
+		}
+
+		available = {
+			custom_trigger_tooltip = {
+				tooltip = eldritch_quest_underway_tt
+				NOT = { has_country_flag = eldritch_carcosa_4_active }
+			}
+		}
+
+		days_remove = 30
+
+		complete_effect = {
+			hidden_effect = {
+				subtract_from_variable = { eldritch_favor = 100 }
+				set_country_flag = eldritch_carcosa_4_active
+			}
+		}
+
+		remove_effect = {
+			custom_effect_tooltip = eldritch_quest_begin_tt
+			hidden_effect = { country_event = { id = eldritch.341 } }
+		}
+
+		ai_will_do = {
+			factor = 3
+		}
+	}
+
+	# Chapter 4: the timed task.
+	eldritch_carcosa_4_task = {
+		icon = eldritch_hastur
+		activation = { always = no }
+		selectable_mission = no
+		is_good = yes
+		fire_only_once = no
+		days_mission_timeout = 365
+
+		visible = {
+			has_country_flag = eldritch_carcosa_4_active
+		}
+
+		available = {
+			custom_trigger_tooltip = {
+				tooltip = eldritch_carcosa_4_task_tt
+				check_variable = { eldritch_pact_tier > 2 }
+			}
+		}
+
+		complete_effect = {
+			custom_effect_tooltip = eldritch_quest_finale_tt
+			hidden_effect = {
+				set_variable = { eldritch_quest_stat = eldritch_carcosa_4_stat }
+				set_variable = { eldritch_quest_base = 35 }
+				add_to_variable = { eldritch_quest_base = eldritch_carcosa_4_bonus }
+				eldritch_quest_check = yes
+				clr_country_flag = eldritch_carcosa_4_active
+				if = {
+					limit = { eldritch_check_passed = yes }
+					set_country_flag = eldritch_carcosa_4_done
+					set_variable = { eldritch_carcosa_chapter = 4 }
+					country_event = { id = eldritch.342 }
+				}
+				else = {
+					country_event = { id = eldritch.343 }
+				}
+			}
+		}
+
+		timeout_effect = {
+			custom_effect_tooltip = eldritch_carcosa_timeout_tt
+			hidden_effect = {
+				clr_country_flag = eldritch_carcosa_4_active
+				country_event = { id = eldritch.290 }
+			}
+		}
+
+		ai_will_do = {
+			factor = 1
+		}
+	}
+
+	# Chapter 5: begin. After the ritual, eldritch.351 picks the approach
+	# and starts the task (eldritch_carcosa_5_task).
+	eldritch_carcosa_5 = {
+		icon = eldritch_hastur
+		custom_cost_trigger = {
+			check_variable = { eldritch_favor > 149 }
+		}
+		custom_cost_text = eldritch_cost_favor_150
+		fire_only_once = no
+		days_re_enable = 120
+
+		visible = {
+			has_country_flag = eldritch_carcosa_4_done
+			NOT = { has_country_flag = eldritch_carcosa_5_done }
+		}
+
+		available = {
+			custom_trigger_tooltip = {
+				tooltip = eldritch_quest_underway_tt
+				NOT = { has_country_flag = eldritch_carcosa_5_active }
+			}
+			eldritch_pact_tier_3 = yes
+		}
+
+		days_remove = 30
+
+		complete_effect = {
+			hidden_effect = {
+				subtract_from_variable = { eldritch_favor = 150 }
+				set_country_flag = eldritch_carcosa_5_active
+				clr_country_flag = eldritch_carcosa_5_march
+			}
+		}
+
+		remove_effect = {
+			custom_effect_tooltip = eldritch_quest_begin_tt
+			hidden_effect = { country_event = { id = eldritch.351 } }
+		}
+
+		ai_will_do = {
+			factor = 3
+		}
+	}
+
+	# Chapter 5: the timed task.
+	eldritch_carcosa_5_task = {
+		icon = eldritch_hastur
+		activation = { always = no }
+		selectable_mission = no
+		is_good = yes
+		fire_only_once = no
+		days_mission_timeout = 180
+
+		visible = {
+			has_country_flag = eldritch_carcosa_5_active
+		}
+
+		available = {
+			custom_trigger_tooltip = {
+				tooltip = eldritch_carcosa_5_task_tt
+				eldritch_god_incarnate_deployed = yes
+				has_country_flag = eldritch_carcosa_5_march
+			}
+		}
+
+		complete_effect = {
+			custom_effect_tooltip = eldritch_quest_finale_tt
+			hidden_effect = {
+				set_variable = { eldritch_quest_stat = eldritch_carcosa_5_stat }
+				set_variable = { eldritch_quest_base = 30 }
+				add_to_variable = { eldritch_quest_base = eldritch_carcosa_5_bonus }
+				eldritch_quest_check = yes
+				clr_country_flag = eldritch_carcosa_5_active
+				if = {
+					limit = { eldritch_check_passed = yes }
+					set_country_flag = eldritch_carcosa_5_done
+					set_variable = { eldritch_carcosa_chapter = 5 }
+					country_event = { id = eldritch.352 }
+				}
+				else = {
+					country_event = { id = eldritch.353 }
+				}
+			}
+		}
+
+		timeout_effect = {
+			custom_effect_tooltip = eldritch_carcosa_timeout_tt
+			hidden_effect = {
+				clr_country_flag = eldritch_carcosa_5_active
+				country_event = { id = eldritch.290 }
+			}
+		}
+
+		ai_will_do = {
+			factor = 1
+		}
+	}
+
+	# Chapter 6: begin. After the ritual, eldritch.361 picks the approach
+	# and starts the task (eldritch_carcosa_6_task).
+	eldritch_carcosa_6 = {
+		icon = eldritch_hastur
+		custom_cost_trigger = {
+			check_variable = { eldritch_favor > 199 }
+		}
+		custom_cost_text = eldritch_cost_favor_200
+		fire_only_once = no
+		days_re_enable = 120
+
+		visible = {
+			has_country_flag = eldritch_carcosa_5_done
+			NOT = { has_country_flag = eldritch_carcosa_6_done }
+		}
+
+		available = {
+			custom_trigger_tooltip = {
+				tooltip = eldritch_quest_underway_tt
+				NOT = { has_country_flag = eldritch_carcosa_6_active }
+			}
+		}
+
+		days_remove = 60
+
+		complete_effect = {
+			hidden_effect = {
+				subtract_from_variable = { eldritch_favor = 200 }
+				set_country_flag = eldritch_carcosa_6_active
+			}
+		}
+
+		remove_effect = {
+			custom_effect_tooltip = eldritch_quest_begin_tt
+			hidden_effect = { country_event = { id = eldritch.361 } }
+		}
+
+		ai_will_do = {
+			factor = 3
+		}
+	}
+
+	# Chapter 6: the timed task.
+	eldritch_carcosa_6_task = {
+		icon = eldritch_hastur
+		activation = { always = no }
+		selectable_mission = no
+		is_good = yes
+		fire_only_once = no
+		days_mission_timeout = 365
+
+		visible = {
+			has_country_flag = eldritch_carcosa_6_active
+		}
+
+		available = {
+			custom_trigger_tooltip = {
+				tooltip = eldritch_carcosa_6_task_tt
+				OR = {
+					has_country_leader_with_trait = eldritch_hastur_vessel
+					AND = {
+						eldritch_god_incarnate_deployed = yes
+						eldritch_leader_is_chosen = yes
+					}
+				}
+			}
+		}
+
+		complete_effect = {
+			custom_effect_tooltip = eldritch_quest_finale_tt
+			hidden_effect = {
+				set_variable = { eldritch_quest_stat = eldritch_carcosa_6_stat }
+				set_variable = { eldritch_quest_base = 30 }
+				add_to_variable = { eldritch_quest_base = eldritch_carcosa_6_bonus }
+				eldritch_quest_check = yes
+				clr_country_flag = eldritch_carcosa_6_active
+				if = {
+					limit = { eldritch_check_passed = yes }
+					set_country_flag = eldritch_carcosa_6_done
+					set_variable = { eldritch_carcosa_chapter = 6 }
+					country_event = { id = eldritch.362 }
+				}
+				else = {
+					country_event = { id = eldritch.363 }
+				}
+			}
+		}
+
+		timeout_effect = {
+			custom_effect_tooltip = eldritch_carcosa_timeout_tt
+			hidden_effect = {
+				clr_country_flag = eldritch_carcosa_6_active
+				country_event = { id = eldritch.290 }
+			}
+		}
+
+		ai_will_do = {
+			factor = 1
+		}
+	}
+
+	# The end of the road: the nation becomes Carcosa.
+	eldritch_proclaim_carcosa = {
+		icon = eldritch_carcosa
+		cost = 100
+		fire_only_once = yes
+
+		visible = {
+			has_country_flag = eldritch_carcosa_ready
+		}
+
+		available = {
+			has_stability > 0.25
+		}
+
+		complete_effect = {
+			set_cosmetic_tag = ELDRITCH_CARCOSA
+			custom_effect_tooltip = eldritch_proclaim_carcosa_tt
+			if = {
+				limit = { has_idea = eldritch_carcosa_road_5 }
+				swap_ideas = { remove_idea = eldritch_carcosa_road_5 add_idea = eldritch_yellow_throne }
+			}
+			else = {
+				add_ideas = eldritch_yellow_throne
+			}
+			eldritch_prophet_gain_xp_100 = yes
+			hidden_effect = {
+				set_country_flag = eldritch_carcosa_proclaimed
+				country_event = { id = eldritch.370 }
+				every_other_country = {
+					news_event = { id = eldritch_news.5 hours = 6 }
+				}
+			}
+		}
+
+		ai_will_do = {
+			factor = 10
 		}
 	}
 }

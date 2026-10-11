@@ -239,6 +239,25 @@ A third category, **The Prophet's Quests**, holds multi-stage quests. Every cult
 
 The category description and the character sheet count your completed quests.
 
+### 13. The Road to Carcosa: Hastur's questline and formable
+Hastur's cults get their own category, **The Road to Carcosa**: six chapters, each unlocked by the one before. Each chapter is built like the quests above: a ritual, a choice of approach (one a dialogue check worth +20%), a timed task using the pact's rites, and a skill-check finale. Every success brings experience and Insight and advances the national spirit **The Road to Carcosa** from stage I to V. A failed chapter can be begun again 120 days after that attempt began.
+
+| Chapter | Begin | Task | Finale base | On success |
+|---|---|---|---|---|
+| **I. Have You Seen the Yellow Sign?** | 50 Favor, 30 days | Preach to the Faithful twice, within 150 days | 45% | Road I (+5% war support, +3% morale), +3% war support |
+| **II. Cassilda's Song** | 75 Favor, 30 days | Commune with Hastur and a Rite of Worship, within 150 days | 40% | Road II (adds +3% research), +30 Favor |
+| **III. The Stranger in the Pallid Mask** | 100 Favor, 30 days, Tier II | Convene the Dark Council (with the Stranger or an anointed commander), within 180 days | 35% | Road III (adds +3% organization), +50 command power |
+| **IV. Black Stars Rise** | 100 Favor, 30 days | Raise the pact to Tier III, within 365 days | 35% | Road IV (adds political power), +5% war support |
+| **V. The King Walks** | 150 Favor, 30 days, Tier III | Have the King in Yellow walking the earth and March Beside him, within 180 days | 30% | Road V (adds +5% stability), +50 army experience |
+| **VI. The Throne of Carcosa** | 200 Favor, 60 days | The Prophet is Hastur's Vessel, or is Chosen while the King walks the earth, within 365 days | 30% | unlocks **Proclaim Carcosa** |
+
+**Proclaim Carcosa** (100 PP, needs 25% stability) is the formable. It works for any country, as a cosmetic tag:
+
+* **Name:** the nation is renamed by ideology: the **Kingdom of Carcosa** (non-aligned), the **Yellow Dominion of Carcosa** (fascist), the **Carcosan Commune** (communist) or the **Commonwealth of Carcosa** (democratic). Its adjective becomes *Carcosan*.
+* **Flag:** the Yellow Sign in gold on a black field between two bands of ochre.
+* **Spirit:** The Road to Carcosa becomes **The Yellow Throne**: +15% war support and morale, +8% organization and research speed, +5% attack, +10% stability, +0.3 PP a day.
+* **News:** the rest of the world hears of it.
+
 ---
 
 ## Game rule
@@ -273,7 +292,7 @@ common/game_rules/                 the AI rule
 common/on_actions/                 welcome pop-up at game start
 events/                            summoning, tier, whim, curse, news and monthly-pulse events
 interface/eldritch.gfx             sprite definitions
-gfx/                               generated art (DDS): spirit, decision, battalion and trait icons,
+gfx/                               generated art (DDS): spirit, decision, battalion and trait icons, Carcosa's flags (gfx/flags),
                                    event pictures, and avatar portraits (gfx/leaders/eldritch/)
 localisation/english/              all text (UTF-8 with BOM)
 install/eldritch_pacts.mod         launcher file to copy into your mod/ folder

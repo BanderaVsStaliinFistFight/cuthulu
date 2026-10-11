@@ -40,3 +40,15 @@ eldritch_prophet_quests = {
 		has_country_flag = eldritch_pact_made
 	}
 }
+
+# Hastur's questline, ending in the formable nation of Carcosa.
+eldritch_road_to_carcosa = {
+	icon = eldritch_carcosa
+	priority = 147
+	allowed = {
+		always = yes
+	}
+	visible = {
+		has_country_flag = eldritch_god_hastur
+	}
+}

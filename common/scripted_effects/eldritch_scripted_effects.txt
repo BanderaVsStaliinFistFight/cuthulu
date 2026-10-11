@@ -1359,6 +1359,10 @@ eldritch_quest_note_worship = {
 		limit = { has_country_flag = eldritch_quest_necronomicon_active }
 		set_country_flag = eldritch_quest_necronomicon_worship
 	}
+	if = {
+		limit = { has_country_flag = eldritch_carcosa_2_active }
+		set_country_flag = eldritch_carcosa_2_worship
+	}
 }
 
 eldritch_quest_note_commune = {
@@ -1370,6 +1374,10 @@ eldritch_quest_note_commune = {
 		limit = { has_country_flag = eldritch_quest_yog_sothoth_active }
 		set_country_flag = eldritch_quest_yog_sothoth_commune
 	}
+	if = {
+		limit = { has_country_flag = eldritch_carcosa_2_active }
+		set_country_flag = eldritch_carcosa_2_commune
+	}
 }
 
 eldritch_quest_note_preach = {
@@ -1377,12 +1385,27 @@ eldritch_quest_note_preach = {
 		limit = { has_country_flag = eldritch_quest_mountains_active }
 		set_country_flag = eldritch_quest_mountains_preach
 	}
+	if = {
+		limit = { has_country_flag = eldritch_carcosa_1_active }
+		add_to_variable = { eldritch_carcosa_1_preach = 1 }
+	}
 }
 
 eldritch_quest_note_council = {
 	if = {
 		limit = { has_country_flag = eldritch_quest_mountains_active }
 		set_country_flag = eldritch_quest_mountains_council
+	}
+	if = {
+		limit = { has_country_flag = eldritch_carcosa_3_active }
+		set_country_flag = eldritch_carcosa_3_council
+	}
+}
+
+eldritch_quest_note_march = {
+	if = {
+		limit = { has_country_flag = eldritch_carcosa_5_active }
+		set_country_flag = eldritch_carcosa_5_march
 	}
 }
 
