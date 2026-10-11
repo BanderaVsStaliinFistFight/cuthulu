@@ -14,6 +14,8 @@ small rendered scenes from tools/art_units.py, rendered in parallel (a few
 minutes in all); everything else is drawn here. To redo only some of it:
 
     python3 tools/generate_art.py units       # battalion icons only
+    python3 tools/generate_art.py doctrines   # doctrine art only
+    python3 tools/generate_art.py buildings   # building icons only
 """
 
 import math
@@ -1112,26 +1114,144 @@ def make_doctrine_art():
 
 
 # ---------------------------------------------------------------------------
-# The buildings of the Road to Carcosa (common/buildings): their icons,
-# two frames side by side like the game's special building icons (normal,
-# then dimmed)
+# The buildings of the Road to Carcosa (common/buildings): a picture of each
+# building, used as its special_icon (two frames side by side like the
+# game's special building icons: normal, then dimmed) and as a text icon
+# (one frame) in its description and in the chapter goals
 # ---------------------------------------------------------------------------
 
-BUILDING_ICON_SIZE = (46, 46)      # one frame, the size of the construction menu's building icons
+STONE = (78, 70, 80, 255)
+STONE_LIGHT = (118, 110, 120, 255)
+STONE_DARK = (44, 38, 48, 255)
+CRIMSON = (150, 24, 32, 255)
+CRIMSON_DARK = (92, 12, 20, 255)
+GOLD = (214, 168, 60, 255)
+GOLD_DARK = (140, 100, 30, 255)
+
+
+def _arch(c, x0, x1, spring, bottom, fill, pointed=False):
+    """A round (or pointed) arch filling x0..x1 from its spring line down to bottom."""
+    c.poly([(x0, spring), (x1, spring), (x1, bottom), (x0, bottom)], fill)
+    r = (x1 - x0) / 2
+    if pointed:
+        c.poly([(x0, spring), (x0 + r * 0.25, spring - r * 0.75), ((x0 + x1) / 2, spring - r * 1.35),
+                (x1 - r * 0.25, spring - r * 0.75), (x1, spring)], fill)
+    else:
+        c.ellipse((x0 + x1) / 2, spring, r, r, fill)
+
+
+def sym_bld_theatre(size, color=None):
+    """The Theatre of the Yellow Sign: a playhouse front, its curtains open on the Sign."""
+    c = Canvas(size, size)
+    c.poly([(0.06, 0.88), (0.94, 0.88), (0.94, 0.95), (0.06, 0.95)], STONE_DARK)        # steps
+    c.poly([(0.12, 0.34), (0.88, 0.34), (0.88, 0.88), (0.12, 0.88)], STONE)             # front
+    c.poly([(0.08, 0.34), (0.92, 0.34), (0.5, 0.07)], STONE_LIGHT)                      # pediment
+    c.poly([(0.20, 0.30), (0.80, 0.30), (0.5, 0.13)], STONE_DARK)
+    c.poly([(0.08, 0.34), (0.92, 0.34), (0.92, 0.39), (0.08, 0.39)], STONE_LIGHT)       # cornice
+    for x in (0.17, 0.83):                                                              # columns
+        c.poly([(x - 0.035, 0.39), (x + 0.035, 0.39), (x + 0.035, 0.88), (x - 0.035, 0.88)], STONE_LIGHT)
+    _arch(c, 0.27, 0.73, 0.56, 0.88, (34, 14, 18, 255))                                 # the stage
+    for side in (-1, 1):                                                                # curtains, tied back
+        x0, x1 = 0.5 + side * 0.23, 0.5 + side * 0.10
+        c.poly([(x0, 0.44), (x1, 0.40), (0.5 + side * 0.15, 0.62), (0.5 + side * 0.21, 0.88), (x0, 0.88)], CRIMSON)
+        c.line([(0.5 + side * 0.20, 0.47), (0.5 + side * 0.165, 0.80)], CRIMSON_DARK, 0.02)
+    c.poly([(0.30, 0.38), (0.70, 0.38), (0.70, 0.44), (0.30, 0.44)], CRIMSON_DARK)      # valance
+    c.ellipse(0.5, 0.36, 0.06, 0.04, GOLD)                                              # the mask on the keystone
+    img = c.done(size, size)
+    sign = sym_hastur(int(size * 0.34))
+    img = paste_center(img, sign, 0.5, 0.70)
+    return glow_under(img, (255, 205, 90), size / 18, 0.6)
+
+
+def sym_bld_masque(size, color=None):
+    """The Hall of the Pallid Masque: a ballroom window lit gold, and the pallid mask before it."""
+    c = Canvas(size, size)
+    _arch(c, 0.14, 0.86, 0.40, 0.94, (58, 30, 66, 255), pointed=True)                  # the hall's window
+    _arch(c, 0.20, 0.80, 0.42, 0.94, (186, 136, 46, 255), pointed=True)                # candlelight
+    c.line([(0.5, 0.08), (0.5, 0.94)], (58, 30, 66, 255), 0.03)                         # tracery
+    c.line([(0.20, 0.56), (0.80, 0.56)], (58, 30, 66, 255), 0.03)
+    for side in (-1, 1):                                                                # ribbons
+        c.stroke([(0.5 + side * (0.24 + 0.02 * t), 0.50 + 0.30 * t + 0.03 * math.sin(t * 7)) for t in
+                  [i / 30 for i in range(31)]], (220, 180, 60, 255), 0.03, 0.012)
+    c.ellipse(0.5, 0.50, 0.25, 0.31, (150, 140, 128, 255))                              # the mask
+    c.ellipse(0.49, 0.49, 0.235, 0.295, (236, 230, 214, 255))
+    c.ellipse(0.56, 0.54, 0.12, 0.20, (214, 206, 190, 255))                             # shadowed cheek
+    for side in (-1, 1):                                                                # the eye holes
+        x = 0.5 + side * 0.105
+        c.poly([(x - 0.075, 0.44 - side * 0.01), (x, 0.40), (x + 0.075, 0.44 + side * 0.01), (x, 0.48)],
+               (10, 6, 10, 255))
+    c.line([(0.43, 0.68), (0.57, 0.68)], (60, 50, 50, 255), 0.018)                     # no mouth to speak of
+    c.line([(0.40, 0.48), (0.38, 0.62)], (180, 140, 40, 220), 0.012)                    # a yellow tear
+    return glow_under(c.done(size, size), (255, 205, 90), size / 18, 0.5)
+
+
+def sym_bld_observatory(size, color=None):
+    """The Black Star Observatory: a domed tower whose telescope watches black stars."""
+    c = Canvas(size, size)
+    for x, y, r in ((0.83, 0.14, 0.075), (0.20, 0.20, 0.055), (0.52, 0.09, 0.04)):      # the black stars
+        c.ellipse(x, y, r + 0.03, r + 0.03, (250, 200, 70, 255))
+        c.ellipse(x, y, r, r, (6, 4, 8, 255))
+    c.ellipse(0.5, 0.60, 0.31, 0.30, (130, 126, 138, 255))                              # the dome
+    c.ellipse(0.46, 0.57, 0.24, 0.25, (160, 156, 168, 255))
+    c.poly([(0.17, 0.60), (0.83, 0.60), (0.83, 0.92), (0.17, 0.92)], (0, 0, 0, 0))     # (only its top half)
+    c.poly([(0.10, 0.88), (0.90, 0.88), (0.90, 0.95), (0.10, 0.95)], STONE_DARK)        # terrace
+    c.poly([(0.22, 0.60), (0.78, 0.60), (0.78, 0.88), (0.22, 0.88)], STONE)             # the tower
+    c.poly([(0.22, 0.60), (0.30, 0.60), (0.30, 0.88), (0.22, 0.88)], STONE_LIGHT)
+    _arch(c, 0.44, 0.56, 0.76, 0.88, (20, 12, 16, 255))                                 # door
+    c.poly([(0.18, 0.58), (0.82, 0.58), (0.82, 0.63), (0.18, 0.63)], STONE_DARK)        # drum ring
+    c.poly([(0.47, 0.58), (0.56, 0.58), (0.60, 0.32), (0.53, 0.30)], (24, 16, 22, 255))  # the slit
+    c.line([(0.52, 0.50), (0.70, 0.29)], GOLD_DARK, 0.09)                               # the telescope
+    c.line([(0.52, 0.50), (0.70, 0.29)], GOLD, 0.06)
+    c.ellipse(0.71, 0.28, 0.045, 0.045, (40, 30, 20, 255))
+    return glow_under(c.done(size, size), (255, 205, 90), size / 18, 0.5)
+
+
+def sym_bld_palace(size, color=None):
+    """The Palace of the Yellow King: gold towers under the twin suns, a crown on the spire."""
+    c = Canvas(size, size)
+    c.ellipse(0.28, 0.30, 0.15, 0.15, (255, 226, 130, 255))                             # the twin suns
+    c.ellipse(0.76, 0.24, 0.08, 0.08, (255, 240, 180, 255))
+    c.poly([(0.06, 0.88), (0.94, 0.88), (0.94, 0.95), (0.06, 0.95)], STONE_DARK)
+    roof = (70, 18, 30, 255)
+    for x, w, top, roof_top in ((0.20, 0.08, 0.50, 0.30), (0.80, 0.08, 0.50, 0.30)):    # flanking towers
+        c.poly([(x - w, top), (x + w, top), (x + w, 0.88), (x - w, 0.88)], GOLD_DARK)
+        c.poly([(x - w, top), (x - w + 0.04, top), (x - w + 0.04, 0.88), (x - w, 0.88)], GOLD)
+        c.poly([(x - w - 0.02, top), (x + w + 0.02, top), (x, roof_top)], roof)
+    c.poly([(0.20, 0.64), (0.80, 0.64), (0.80, 0.88), (0.20, 0.88)], GOLD)              # the curtain wall
+    for k in range(6):
+        x = 0.28 + k * 0.09
+        c.poly([(x, 0.60), (x + 0.05, 0.60), (x + 0.05, 0.64), (x, 0.64)], GOLD)
+    c.poly([(0.36, 0.40), (0.64, 0.40), (0.64, 0.88), (0.36, 0.88)], GOLD)              # the keep
+    c.poly([(0.56, 0.40), (0.64, 0.40), (0.64, 0.88), (0.56, 0.88)], GOLD_DARK)
+    c.poly([(0.34, 0.40), (0.66, 0.40), (0.5, 0.13)], roof)                             # its spire
+    c.poly([(0.44, 0.14), (0.56, 0.14), (0.58, 0.05), (0.535, 0.10), (0.5, 0.03), (0.465, 0.10), (0.42, 0.05)],
+           (255, 214, 80, 255))                                                         # the crown
+    _arch(c, 0.43, 0.57, 0.76, 0.88, (30, 12, 18, 255))                                 # gate
+    for x in (0.20, 0.80, 0.46, 0.54):                                                  # windows
+        y = 0.58 if x in (0.20, 0.80) else 0.50
+        c.poly([(x - 0.015, y), (x + 0.015, y), (x + 0.015, y + 0.07), (x - 0.015, y + 0.07)], (40, 16, 22, 255))
+    return glow_under(c.done(size, size), (255, 205, 90), size / 18, 0.6)
+
+
+BUILDING_ICON_SIZE = (36, 36)      # one frame of the special icon: fits the state view's province building slot
+BUILDING_TEXT_ICON_SIZE = (20, 20)  # the text icon, inline in descriptions and tooltips
 BUILDING_ICONS = {
-    "yellow_theatre": "preach",            # a figure on the stage, lit from below
-    "masque_hall": "council",              # the court of eyes at midnight
-    "black_star_observatory": "temple",    # the tower that watches the black stars
-    "yellow_palace": "carcosa",            # the towers of Carcosa under twin suns
+    "yellow_theatre": sym_bld_theatre,
+    "masque_hall": sym_bld_masque,
+    "black_star_observatory": sym_bld_observatory,
+    "yellow_palace": sym_bld_palace,
 }
+
+
+def building_icon(size, symbol):
+    return framed(size, (58, 44, 20), (14, 10, 4), symbol, (200, 160, 60), border_width=1, sym_scale=0.90,
+                  aura=None)
 
 
 def make_building_icons():
     w, h = BUILDING_ICON_SIZE
-    pal = PALETTE["hastur"]
     for name, symbol in BUILDING_ICONS.items():
-        icon = framed(BUILDING_ICON_SIZE, (52, 40, 18), (14, 10, 4), SYMBOLS[symbol], (200, 160, 60), border_width=1,
-                      sym_scale=0.84, aura=pal["glow"])
+        icon = building_icon(BUILDING_ICON_SIZE, symbol)
         a = np.array(icon).astype(float)
         grey = a[..., :3].mean(axis=2, keepdims=True)
         a[..., :3] = grey * 0.55
@@ -1140,6 +1260,7 @@ def make_building_icons():
         strip.paste(icon, (0, 0))
         strip.paste(dim, (w, 0))
         save_dds(strip, f"gfx/interface/buildings/eldritch_{name}.dds")
+        save_dds(building_icon(BUILDING_TEXT_ICON_SIZE, symbol), f"gfx/interface/buildings/eldritch_{name}_text.dds")
 
 
 # ---------------------------------------------------------------------------
@@ -1233,9 +1354,10 @@ def write_gfx():
     for kind in ("land", "navy"):
         sprite(f"GFX_trait_eldritch_avatar_{kind}", f"gfx/interface/traits/eldritch_avatar_{kind}.dds")
 
-    section("The buildings of the Road to Carcosa (special icons: normal, dimmed)")
+    section("The buildings of the Road to Carcosa (special icons: normal, dimmed; text icons)")
     for name in BUILDING_ICONS:
         sprite(f"GFX_eldritch_building_{name}", f"gfx/interface/buildings/eldritch_{name}.dds", 2)
+        sprite(f"GFX_eldritch_building_{name}_text", f"gfx/interface/buildings/eldritch_{name}_text.dds")
 
     section("The Eldritch doctrine folder: tab, grand doctrines, sub-doctrines (per track), track backgrounds")
     sprite("GFX_eldritch_doctrine_tab", "gfx/interface/doctrines/eldritch_doctrine_tab.dds", 2)

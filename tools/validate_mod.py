@@ -16,8 +16,10 @@ catches the mistakes that are easy to make by hand:
   * scripted effects / triggers / events that are used but never defined
   * formables (set_cosmetic_tag): names for every ideology, flags in all
     three sizes as uncompressed TGA, and a map colour in common/countries
-  * buildings: names, descriptions, special icons, hidden until a technology
-    unlocks them, and only unlocked by technologies that exist
+  * buildings: names, descriptions, special icons (two 36x36 frames, on a
+    provincial building), hidden until a technology unlocks them, and only
+    unlocked by technologies that exist
+  * text icons (£name£) in localisation point to sprites that exist
   * doctrines: folders, tracks, grand doctrines and sub-doctrines refer to
     each other correctly, have names, icons and reward names, one milestone
     per track, and only touch battalions that exist
@@ -168,6 +170,12 @@ def main():
         if name not in sprites:
             problems.append(f"missing sprite '{name}' ({where})")
 
+    # text icons in localisation: £name£ shows the sprite GFX_name
+    for key, text in loc.items():
+        for icon in re.findall(r"£([\w.]+)", text):
+            if icon.startswith("eldritch_"):
+                need_sprite(f"GFX_{icon}", f"text icon in {key}")
+
     # ------------------------------------------------------------- cosmetic tag colours
     cosmetic_colours = set()
     for path, items in load_script("common/countries/*.txt", problems).items():
@@ -306,7 +314,24 @@ def main():
                     need_loc(building + "_desc", path)
                     fields = {k: v for k, _, v in body}
                     if "special_icon" in fields:
-                        need_sprite(fields["special_icon"], f"{path} {building}")
+                        icon = fields["special_icon"]
+                        need_sprite(icon, f"{path} {building}")
+                        # The game shows a building's special icon in the province row of the
+                        # state view, as it does for its own special buildings (dams, canals,
+                        # landmarks, facilities), all of them provincial.
+                        cap = fields.get("level_cap")
+                        if not isinstance(cap, list) or not any(k == "province_max" for k, _, _ in cap):
+                            problems.append(f"{path}: {building} has a special_icon, so it must be provincial "
+                                            "(level_cap province_max)")
+                        tex = sprites.get(icon)
+                        if tex and os.path.exists(os.path.join(ROOT, tex)):
+                            if frames.get(icon) != 2:
+                                problems.append(f"interface: {icon} needs noOfFrames = 2")
+                            with open(os.path.join(ROOT, tex), "rb") as f:
+                                head = f.read(20)
+                            h, w = int.from_bytes(head[12:16], "little"), int.from_bytes(head[16:20], "little")
+                            if (w, h) != (72, 36):
+                                problems.append(f"{tex}: {icon} must be 72x36 (two 36x36 frames), is {w}x{h}")
                     if fields.get("hide_if_missing_tech") != "yes":
                         problems.append(f"{path}: {building} must be hidden until its technology unlocks it")
 

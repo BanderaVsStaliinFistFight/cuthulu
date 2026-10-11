@@ -1231,7 +1231,8 @@ eldritch_unlock_halis_drowned = {
 #
 # Shows its decision, records the conquest target where it has one
 # (states controlled now + N), unlocks the chapter's building, and
-# for the AI, which would not build it, puts the building down.
+# for the AI, which would not build it, puts the building down (in
+# the first province of the state: the buildings are provincial).
 #####################################################################
 
 eldritch_carcosa_open_1 = {
@@ -1239,7 +1240,7 @@ eldritch_carcosa_open_1 = {
 	set_technology = { eldritch_carcosa_theatre = 1 popup = no }
 	if = {
 		limit = { is_ai = yes }
-		capital_scope = { add_building_construction = { type = eldritch_yellow_theatre level = 1 instant_build = yes } }
+		capital_scope = { add_building_construction = { type = eldritch_yellow_theatre level = 1 instant_build = yes province = { all_provinces = yes first = yes } } }
 	}
 }
 
@@ -1249,11 +1250,11 @@ eldritch_carcosa_open_2 = {
 		limit = { is_ai = yes }
 		random_owned_controlled_state = {
 			limit = { NOT = { eldritch_yellow_theatre > 0 } }
-			add_building_construction = { type = eldritch_yellow_theatre level = 1 instant_build = yes }
+			add_building_construction = { type = eldritch_yellow_theatre level = 1 instant_build = yes province = { all_provinces = yes first = yes } }
 		}
 		random_owned_controlled_state = {
 			limit = { NOT = { eldritch_yellow_theatre > 0 } }
-			add_building_construction = { type = eldritch_yellow_theatre level = 1 instant_build = yes }
+			add_building_construction = { type = eldritch_yellow_theatre level = 1 instant_build = yes province = { all_provinces = yes first = yes } }
 		}
 	}
 }
@@ -1265,7 +1266,7 @@ eldritch_carcosa_open_3 = {
 	set_technology = { eldritch_carcosa_masque_hall = 1 popup = no }
 	if = {
 		limit = { is_ai = yes }
-		capital_scope = { add_building_construction = { type = eldritch_masque_hall level = 1 instant_build = yes } }
+		capital_scope = { add_building_construction = { type = eldritch_masque_hall level = 1 instant_build = yes province = { all_provinces = yes first = yes } } }
 	}
 }
 
@@ -1276,11 +1277,11 @@ eldritch_carcosa_open_4 = {
 		limit = { is_ai = yes }
 		random_owned_controlled_state = {
 			limit = { NOT = { eldritch_black_star_observatory > 0 } }
-			add_building_construction = { type = eldritch_black_star_observatory level = 1 instant_build = yes }
+			add_building_construction = { type = eldritch_black_star_observatory level = 1 instant_build = yes province = { all_provinces = yes first = yes } }
 		}
 		random_owned_controlled_state = {
 			limit = { NOT = { eldritch_black_star_observatory > 0 } }
-			add_building_construction = { type = eldritch_black_star_observatory level = 1 instant_build = yes }
+			add_building_construction = { type = eldritch_black_star_observatory level = 1 instant_build = yes province = { all_provinces = yes first = yes } }
 		}
 	}
 }
@@ -1296,6 +1297,6 @@ eldritch_carcosa_open_6 = {
 	set_technology = { eldritch_carcosa_palace = 1 popup = no }
 	if = {
 		limit = { is_ai = yes }
-		capital_scope = { add_building_construction = { type = eldritch_yellow_palace level = 1 instant_build = yes } }
+		capital_scope = { add_building_construction = { type = eldritch_yellow_palace level = 1 instant_build = yes province = { all_provinces = yes first = yes } } }
 	}
 }

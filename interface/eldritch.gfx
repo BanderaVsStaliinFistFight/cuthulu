@@ -443,11 +443,15 @@ spriteTypes = {
 		texturefile = "gfx/interface/traits/eldritch_avatar_navy.dds"
 	}
 
-	### The buildings of the Road to Carcosa (special icons: normal, dimmed) ###
+	### The buildings of the Road to Carcosa (special icons: normal, dimmed; text icons) ###
 	spriteType = {
 		name = "GFX_eldritch_building_yellow_theatre"
 		texturefile = "gfx/interface/buildings/eldritch_yellow_theatre.dds"
 		noOfFrames = 2
+	}
+	spriteType = {
+		name = "GFX_eldritch_building_yellow_theatre_text"
+		texturefile = "gfx/interface/buildings/eldritch_yellow_theatre_text.dds"
 	}
 	spriteType = {
 		name = "GFX_eldritch_building_masque_hall"
@@ -455,14 +459,26 @@ spriteTypes = {
 		noOfFrames = 2
 	}
 	spriteType = {
+		name = "GFX_eldritch_building_masque_hall_text"
+		texturefile = "gfx/interface/buildings/eldritch_masque_hall_text.dds"
+	}
+	spriteType = {
 		name = "GFX_eldritch_building_black_star_observatory"
 		texturefile = "gfx/interface/buildings/eldritch_black_star_observatory.dds"
 		noOfFrames = 2
 	}
 	spriteType = {
+		name = "GFX_eldritch_building_black_star_observatory_text"
+		texturefile = "gfx/interface/buildings/eldritch_black_star_observatory_text.dds"
+	}
+	spriteType = {
 		name = "GFX_eldritch_building_yellow_palace"
 		texturefile = "gfx/interface/buildings/eldritch_yellow_palace.dds"
 		noOfFrames = 2
+	}
+	spriteType = {
+		name = "GFX_eldritch_building_yellow_palace_text"
+		texturefile = "gfx/interface/buildings/eldritch_yellow_palace_text.dds"
 	}
 
 	### The Eldritch doctrine folder: tab, grand doctrines, sub-doctrines (per track), track backgrounds ###

@@ -3,9 +3,15 @@
 #
 # Hidden until a Road to Carcosa chapter unlocks them through its
 # technology (eldritch_carcosa_*, see common/technologies), so only
-# Hastur's followers can build them. One per state. The construction
-# menu shows special_icon; icon_frame is a vanilla frame used as a
-# fallback.
+# Hastur's followers can build them. One per state.
+#
+# Each has its own icon (special_icon, gfx/interface/buildings),
+# added as new sprites: nothing of the game's is overridden. Like the
+# game's own special buildings (facilities, dams, canals, landmarks)
+# they are built in a province (province_max), which is what puts
+# the special icon in the state view; state_max still allows only one
+# per state. icon_frame, which every building needs, is a frame of
+# the game's own building strip, left as it is.
 #####################################################################
 
 buildings = {
@@ -20,8 +26,8 @@ buildings = {
 		hide_if_missing_tech = yes
 		show_modifier = yes
 		level_cap = {
+			province_max = 1
 			state_max = 1
-			shares_slots = no
 		}
 		state_modifiers = {
 			local_manpower = 0.1
@@ -43,8 +49,8 @@ buildings = {
 		hide_if_missing_tech = yes
 		show_modifier = yes
 		level_cap = {
+			province_max = 1
 			state_max = 1
-			shares_slots = no
 		}
 		country_modifiers = {
 			modifiers = {
@@ -63,8 +69,8 @@ buildings = {
 		hide_if_missing_tech = yes
 		show_modifier = yes
 		level_cap = {
+			province_max = 1
 			state_max = 1
-			shares_slots = no
 		}
 		country_modifiers = {
 			modifiers = {
@@ -84,8 +90,8 @@ buildings = {
 		hide_if_missing_tech = yes
 		show_modifier = yes
 		level_cap = {
+			province_max = 1
 			state_max = 1
-			shares_slots = no
 		}
 		country_modifiers = {
 			modifiers = {
