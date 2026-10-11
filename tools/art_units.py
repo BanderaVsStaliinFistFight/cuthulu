@@ -8,8 +8,8 @@ god's colour), then reduced and given film grain and scratches at the final
 size so the grit survives.
 
 Figures face +Z (toward the camera) with their feet at y = 0, in metres.
-Each scene returns the picture and the coverage of its figures, so the white
-icon variant is the figures' own silhouette.
+Each scene returns the picture and the coverage of its figures; textures()
+lays them out the way the game reads battalion icons (see GAME TEXTURES).
 """
 
 import math
@@ -20,7 +20,7 @@ from PIL import Image, ImageFilter
 import art_render as R
 from art_render import Field, Material, Camera, Light, smoothstep
 
-ICON_SIZE = (60, 40)
+ICON_SIZE = (63, 42)  # the picture: 3:2, as tall as the designer slot
 SCALE = 4          # render at SCALE x the icon size, then reduce
 
 
@@ -550,15 +550,6 @@ def finish(out, seed, tint=(0.0, 0.0, 0.0), saturation=0.45, exposure=0.85, smok
     return R.to_image(np.clip(a, 0, 1))
 
 
-def white_icon(alpha):
-    """The white variant: the figures' silhouette, reduced to icon size."""
-    W, H = ICON_SIZE
-    m = Image.fromarray((np.clip(alpha, 0, 1) * 255).astype(np.uint8)).resize((W, H), Image.LANCZOS)
-    img = Image.new("RGBA", ICON_SIZE, (235, 235, 235, 0))
-    img.putalpha(m)
-    return img
-
-
 def render_icon(scene, mats, cam, lights, seed, bg, figure_mats, ambient=(0.03, 0.03, 0.03), rim=None,
                 fog=None, ss=2, max_dist=None, **finish_kw):
     W, H = ICON_SIZE
@@ -567,7 +558,7 @@ def render_icon(scene, mats, cam, lights, seed, bg, figure_mats, ambient=(0.03, 
     out = R.render(scene, mats, cam, lights, (W * SCALE, H * SCALE), ss=ss, background=bg, ambient=ambient,
                    rim=rim, fog=fog, max_dist=max_dist, ao_scale=0.12, shadow_dist=6.0, coverage=figure_mats,
                    shadow_bias=(0.006, 0.03))
-    return finish(out, seed, **finish_kw), white_icon(out["coverage"])
+    return finish(out, seed, **finish_kw), out["coverage"]
 
 
 # ---------------------------------------------------------------------------
@@ -1217,7 +1208,7 @@ def dunwich_horror():
     rgb = bent * (1 - mix) + (bent * 0.4 + full["rgb"] * 0.6) * mix
     out = {"rgb": rgb, "depth": np.minimum(full["depth"], empty["depth"]), "alpha": full["alpha"]}
     return finish(out, seed, tint=(-0.004, 0.0, 0.014), smoke_col=(0.25, 0.27, 0.33), smoke_src=(0.45, 0.3)), \
-        white_icon(alone)
+        alone
 
 
 # ---------------------------------------------------------------------------
@@ -1354,7 +1345,7 @@ def king_in_yellow():
     a = a + rng.normal(0, 0.028, (h, w, 1)) + rng.normal(0, 0.008, (h, w, 3))
     b = np.array([150, 120, 60]) / 255
     a[0, :], a[-1, :], a[:, 0], a[:, -1] = b, b, b, b
-    return R.to_image(np.clip(a, 0, 1)), white_icon(cov[box[0]:box[1]])
+    return R.to_image(np.clip(a, 0, 1)), cov[box[0]:box[1]]
 
 
 def black_goat_fig(p, k, seed):
@@ -1602,3 +1593,113 @@ ICONS = {
     "eldritch_yog_sothoth_incarnate": all_in_one,
     "eldritch_azathoth_incarnate": azathoth_fragment,
 }
+
+
+# ---------------------------------------------------------------------------
+# GAME TEXTURES
+#
+# The game reads a battalion's icons as two frames side by side: the picture,
+# and the NATO symbol shown when the player switches to NATO counters.
+#   GFX_unit_<unit>_icon_medium        152 x 42 (two 76 x 42 frames): the
+#                                      division designer and unit panels
+#   GFX_unit_<unit>_icon_medium_white  60 x 12 (two 30 x 12 frames): the small
+#                                      light icon inside a division's counter
+#                                      on the map
+# ---------------------------------------------------------------------------
+
+DESIGNER_FRAME = (76, 42)
+MAP_FRAME = (30, 12)
+
+# NATO symbol per battalion: the role it plays.
+NATO = {
+    "eldritch_deep_one_brood": "infantry",
+    "eldritch_star_spawn": "armour",
+    "eldritch_faceless_cult": "infantry",
+    "eldritch_shantak_riders": "cavalry",
+    "eldritch_yellow_zealots": "infantry",
+    "eldritch_byakhee_riders": "air_cavalry",
+    "eldritch_dark_young": "armour",
+    "eldritch_thousand_young": "infantry",
+    "eldritch_gate_wardens": "infantry",
+    "eldritch_dunwich_horror": "armour",
+    "eldritch_chaos_spawn": "infantry",
+    "eldritch_void_pipers": "artillery",
+}
+
+
+def nato_frame(kind, frame, box, line):
+    """A NATO counter symbol: a light box with the role's mark, centred in a
+    transparent frame. Drawn at the frame's own resolution so lines stay crisp."""
+    from PIL import ImageDraw
+    fw, fh = frame
+    bw, bh = box
+    img = Image.new("RGBA", frame, (0, 0, 0, 0))
+    d = ImageDraw.Draw(img)
+    x0, y0 = (fw - bw) // 2, (fh - bh) // 2
+    x1, y1 = x0 + bw - 1, y0 + bh - 1
+    dark = (22, 20, 18, 255)
+    fill = (225, 192, 90, 255) if kind == "god" else (214, 208, 190, 255)
+    d.rectangle([x0, y0, x1, y1], fill=fill, outline=dark, width=line)
+    ix0, iy0, ix1, iy1 = x0 + line, y0 + line, x1 - line, y1 - line
+    cx, cy = (x0 + x1) / 2, (y0 + y1) / 2
+    if kind == "infantry":
+        d.line([ix0, iy0, ix1, iy1], fill=dark, width=line)
+        d.line([ix0, iy1, ix1, iy0], fill=dark, width=line)
+    elif kind == "armour":
+        ew, eh = (ix1 - ix0) * 0.30, (iy1 - iy0) * 0.30
+        d.ellipse([cx - ew, cy - eh, cx + ew, cy + eh], outline=dark, width=line)
+    elif kind in ("cavalry", "air_cavalry"):
+        d.line([ix0, iy1, ix1, iy0], fill=dark, width=line)
+        if kind == "air_cavalry":
+            r = (ix1 - ix0) * 0.14
+            d.arc([cx - r, iy1 - r * 0.9, cx + r, iy1 + r * 0.9], 180, 360, fill=dark, width=line)
+    elif kind == "artillery":
+        r = max(1.0, (iy1 - iy0) * 0.22)
+        d.ellipse([cx - r, cy - r, cx + r, cy + r], fill=dark)
+    elif kind == "god":
+        r = (iy1 - iy0) * 0.48
+        pts = [(cx + r * (1 if k % 2 == 0 else 0.42) * math.sin(math.radians(k * 36)),
+                cy - r * (1 if k % 2 == 0 else 0.42) * math.cos(math.radians(k * 36))) for k in range(10)]
+        d.polygon(pts, fill=dark)
+    return img
+
+
+def map_silhouette(coverage, frame=MAP_FRAME):
+    """The figures' silhouette, cropped to them and fitted into a small frame:
+    light, with a dark rim so it reads on any counter colour."""
+    fw, fh = frame
+    img = Image.new("RGBA", frame, (0, 0, 0, 0))
+    cov = np.clip(np.asarray(coverage, float), 0, 1)
+    ys, xs = np.where(cov > 0.3)
+    if ys.size == 0:
+        return img
+    cov = cov[ys.min():ys.max() + 1, xs.min():xs.max() + 1]
+    h, w = cov.shape
+    k = min((fw - 2) / w, (fh - 2) / h)
+    sw, sh = max(1, round(w * k)), max(1, round(h * k))
+    a = np.asarray(Image.fromarray((cov * 255).astype(np.uint8)).resize((sw, sh), Image.LANCZOS)).astype(float) / 255
+    a = np.clip((a - 0.2) * 1.8, 0, 1)
+    alpha = Image.fromarray((a * 255).astype(np.uint8))
+    x, y = (fw - sw) // 2, (fh - sh) // 2
+    rim = Image.new("L", frame, 0)
+    rim.paste(alpha, (x, y))
+    rim = rim.filter(ImageFilter.MaxFilter(3))
+    img.paste(Image.new("RGBA", frame, (24, 22, 20, 255)), (0, 0), rim)
+    body = Image.new("RGBA", (sw, sh), (238, 236, 228, 255))
+    img.paste(body, (x, y), alpha)
+    return img
+
+
+def textures(unit):
+    """(designer texture, map texture) for a battalion, in the game's layouts."""
+    picture, coverage = ICONS[unit]()
+    kind = NATO.get(unit, "god")
+    fw, fh = DESIGNER_FRAME
+    designer = Image.new("RGBA", (fw * 2, fh), (0, 0, 0, 0))
+    designer.paste(picture, ((fw - picture.width) // 2, (fh - picture.height) // 2))
+    designer.alpha_composite(nato_frame(kind, DESIGNER_FRAME, (52, 30), 2), (fw, 0))
+    mw, mh = MAP_FRAME
+    small = Image.new("RGBA", (mw * 2, mh), (0, 0, 0, 0))
+    small.alpha_composite(map_silhouette(coverage), (0, 0))
+    small.alpha_composite(nato_frame(kind, MAP_FRAME, (26, 12), 1), (mw, 0))
+    return designer, small

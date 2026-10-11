@@ -341,150 +341,186 @@ spriteTypes = {
 		texturefile = "gfx/event_pictures/eldritch_news_stars.dds"
 	}
 
-	### Battalion icons (division designer and unit views) ###
+	### Battalion icons: the designer (152x42) and the map counter (60x12), each picture + NATO ###
 	spriteType = {
 		name = "GFX_unit_eldritch_deep_one_brood_icon_medium"
 		texturefile = "gfx/interface/counters/divisions_large/eldritch_deep_one_brood.dds"
+		noOfFrames = 2
 	}
 	spriteType = {
 		name = "GFX_unit_eldritch_deep_one_brood_icon_medium_white"
-		texturefile = "gfx/interface/counters/divisions_large/eldritch_deep_one_brood_white.dds"
+		texturefile = "gfx/interface/counters/divisions_small/eldritch_deep_one_brood.dds"
+		noOfFrames = 2
 	}
 	spriteType = {
 		name = "GFX_unit_eldritch_star_spawn_icon_medium"
 		texturefile = "gfx/interface/counters/divisions_large/eldritch_star_spawn.dds"
+		noOfFrames = 2
 	}
 	spriteType = {
 		name = "GFX_unit_eldritch_star_spawn_icon_medium_white"
-		texturefile = "gfx/interface/counters/divisions_large/eldritch_star_spawn_white.dds"
+		texturefile = "gfx/interface/counters/divisions_small/eldritch_star_spawn.dds"
+		noOfFrames = 2
 	}
 	spriteType = {
 		name = "GFX_unit_eldritch_faceless_cult_icon_medium"
 		texturefile = "gfx/interface/counters/divisions_large/eldritch_faceless_cult.dds"
+		noOfFrames = 2
 	}
 	spriteType = {
 		name = "GFX_unit_eldritch_faceless_cult_icon_medium_white"
-		texturefile = "gfx/interface/counters/divisions_large/eldritch_faceless_cult_white.dds"
+		texturefile = "gfx/interface/counters/divisions_small/eldritch_faceless_cult.dds"
+		noOfFrames = 2
 	}
 	spriteType = {
 		name = "GFX_unit_eldritch_shantak_riders_icon_medium"
 		texturefile = "gfx/interface/counters/divisions_large/eldritch_shantak_riders.dds"
+		noOfFrames = 2
 	}
 	spriteType = {
 		name = "GFX_unit_eldritch_shantak_riders_icon_medium_white"
-		texturefile = "gfx/interface/counters/divisions_large/eldritch_shantak_riders_white.dds"
+		texturefile = "gfx/interface/counters/divisions_small/eldritch_shantak_riders.dds"
+		noOfFrames = 2
 	}
 	spriteType = {
 		name = "GFX_unit_eldritch_yellow_zealots_icon_medium"
 		texturefile = "gfx/interface/counters/divisions_large/eldritch_yellow_zealots.dds"
+		noOfFrames = 2
 	}
 	spriteType = {
 		name = "GFX_unit_eldritch_yellow_zealots_icon_medium_white"
-		texturefile = "gfx/interface/counters/divisions_large/eldritch_yellow_zealots_white.dds"
+		texturefile = "gfx/interface/counters/divisions_small/eldritch_yellow_zealots.dds"
+		noOfFrames = 2
 	}
 	spriteType = {
 		name = "GFX_unit_eldritch_byakhee_riders_icon_medium"
 		texturefile = "gfx/interface/counters/divisions_large/eldritch_byakhee_riders.dds"
+		noOfFrames = 2
 	}
 	spriteType = {
 		name = "GFX_unit_eldritch_byakhee_riders_icon_medium_white"
-		texturefile = "gfx/interface/counters/divisions_large/eldritch_byakhee_riders_white.dds"
+		texturefile = "gfx/interface/counters/divisions_small/eldritch_byakhee_riders.dds"
+		noOfFrames = 2
 	}
 	spriteType = {
 		name = "GFX_unit_eldritch_dark_young_icon_medium"
 		texturefile = "gfx/interface/counters/divisions_large/eldritch_dark_young.dds"
+		noOfFrames = 2
 	}
 	spriteType = {
 		name = "GFX_unit_eldritch_dark_young_icon_medium_white"
-		texturefile = "gfx/interface/counters/divisions_large/eldritch_dark_young_white.dds"
+		texturefile = "gfx/interface/counters/divisions_small/eldritch_dark_young.dds"
+		noOfFrames = 2
 	}
 	spriteType = {
 		name = "GFX_unit_eldritch_thousand_young_icon_medium"
 		texturefile = "gfx/interface/counters/divisions_large/eldritch_thousand_young.dds"
+		noOfFrames = 2
 	}
 	spriteType = {
 		name = "GFX_unit_eldritch_thousand_young_icon_medium_white"
-		texturefile = "gfx/interface/counters/divisions_large/eldritch_thousand_young_white.dds"
+		texturefile = "gfx/interface/counters/divisions_small/eldritch_thousand_young.dds"
+		noOfFrames = 2
 	}
 	spriteType = {
 		name = "GFX_unit_eldritch_gate_wardens_icon_medium"
 		texturefile = "gfx/interface/counters/divisions_large/eldritch_gate_wardens.dds"
+		noOfFrames = 2
 	}
 	spriteType = {
 		name = "GFX_unit_eldritch_gate_wardens_icon_medium_white"
-		texturefile = "gfx/interface/counters/divisions_large/eldritch_gate_wardens_white.dds"
+		texturefile = "gfx/interface/counters/divisions_small/eldritch_gate_wardens.dds"
+		noOfFrames = 2
 	}
 	spriteType = {
 		name = "GFX_unit_eldritch_dunwich_horror_icon_medium"
 		texturefile = "gfx/interface/counters/divisions_large/eldritch_dunwich_horror.dds"
+		noOfFrames = 2
 	}
 	spriteType = {
 		name = "GFX_unit_eldritch_dunwich_horror_icon_medium_white"
-		texturefile = "gfx/interface/counters/divisions_large/eldritch_dunwich_horror_white.dds"
+		texturefile = "gfx/interface/counters/divisions_small/eldritch_dunwich_horror.dds"
+		noOfFrames = 2
 	}
 	spriteType = {
 		name = "GFX_unit_eldritch_chaos_spawn_icon_medium"
 		texturefile = "gfx/interface/counters/divisions_large/eldritch_chaos_spawn.dds"
+		noOfFrames = 2
 	}
 	spriteType = {
 		name = "GFX_unit_eldritch_chaos_spawn_icon_medium_white"
-		texturefile = "gfx/interface/counters/divisions_large/eldritch_chaos_spawn_white.dds"
+		texturefile = "gfx/interface/counters/divisions_small/eldritch_chaos_spawn.dds"
+		noOfFrames = 2
 	}
 	spriteType = {
 		name = "GFX_unit_eldritch_void_pipers_icon_medium"
 		texturefile = "gfx/interface/counters/divisions_large/eldritch_void_pipers.dds"
+		noOfFrames = 2
 	}
 	spriteType = {
 		name = "GFX_unit_eldritch_void_pipers_icon_medium_white"
-		texturefile = "gfx/interface/counters/divisions_large/eldritch_void_pipers_white.dds"
+		texturefile = "gfx/interface/counters/divisions_small/eldritch_void_pipers.dds"
+		noOfFrames = 2
 	}
 	spriteType = {
 		name = "GFX_unit_eldritch_cthulhu_incarnate_icon_medium"
 		texturefile = "gfx/interface/counters/divisions_large/eldritch_cthulhu_incarnate.dds"
+		noOfFrames = 2
 	}
 	spriteType = {
 		name = "GFX_unit_eldritch_cthulhu_incarnate_icon_medium_white"
-		texturefile = "gfx/interface/counters/divisions_large/eldritch_cthulhu_incarnate_white.dds"
+		texturefile = "gfx/interface/counters/divisions_small/eldritch_cthulhu_incarnate.dds"
+		noOfFrames = 2
 	}
 	spriteType = {
 		name = "GFX_unit_eldritch_nyarlathotep_incarnate_icon_medium"
 		texturefile = "gfx/interface/counters/divisions_large/eldritch_nyarlathotep_incarnate.dds"
+		noOfFrames = 2
 	}
 	spriteType = {
 		name = "GFX_unit_eldritch_nyarlathotep_incarnate_icon_medium_white"
-		texturefile = "gfx/interface/counters/divisions_large/eldritch_nyarlathotep_incarnate_white.dds"
+		texturefile = "gfx/interface/counters/divisions_small/eldritch_nyarlathotep_incarnate.dds"
+		noOfFrames = 2
 	}
 	spriteType = {
 		name = "GFX_unit_eldritch_hastur_incarnate_icon_medium"
 		texturefile = "gfx/interface/counters/divisions_large/eldritch_hastur_incarnate.dds"
+		noOfFrames = 2
 	}
 	spriteType = {
 		name = "GFX_unit_eldritch_hastur_incarnate_icon_medium_white"
-		texturefile = "gfx/interface/counters/divisions_large/eldritch_hastur_incarnate_white.dds"
+		texturefile = "gfx/interface/counters/divisions_small/eldritch_hastur_incarnate.dds"
+		noOfFrames = 2
 	}
 	spriteType = {
 		name = "GFX_unit_eldritch_shub_niggurath_incarnate_icon_medium"
 		texturefile = "gfx/interface/counters/divisions_large/eldritch_shub_niggurath_incarnate.dds"
+		noOfFrames = 2
 	}
 	spriteType = {
 		name = "GFX_unit_eldritch_shub_niggurath_incarnate_icon_medium_white"
-		texturefile = "gfx/interface/counters/divisions_large/eldritch_shub_niggurath_incarnate_white.dds"
+		texturefile = "gfx/interface/counters/divisions_small/eldritch_shub_niggurath_incarnate.dds"
+		noOfFrames = 2
 	}
 	spriteType = {
 		name = "GFX_unit_eldritch_yog_sothoth_incarnate_icon_medium"
 		texturefile = "gfx/interface/counters/divisions_large/eldritch_yog_sothoth_incarnate.dds"
+		noOfFrames = 2
 	}
 	spriteType = {
 		name = "GFX_unit_eldritch_yog_sothoth_incarnate_icon_medium_white"
-		texturefile = "gfx/interface/counters/divisions_large/eldritch_yog_sothoth_incarnate_white.dds"
+		texturefile = "gfx/interface/counters/divisions_small/eldritch_yog_sothoth_incarnate.dds"
+		noOfFrames = 2
 	}
 	spriteType = {
 		name = "GFX_unit_eldritch_azathoth_incarnate_icon_medium"
 		texturefile = "gfx/interface/counters/divisions_large/eldritch_azathoth_incarnate.dds"
+		noOfFrames = 2
 	}
 	spriteType = {
 		name = "GFX_unit_eldritch_azathoth_incarnate_icon_medium_white"
-		texturefile = "gfx/interface/counters/divisions_large/eldritch_azathoth_incarnate_white.dds"
+		texturefile = "gfx/interface/counters/divisions_small/eldritch_azathoth_incarnate.dds"
+		noOfFrames = 2
 	}
 
 	### General and admiral traits ###

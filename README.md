@@ -302,8 +302,10 @@ tools/generate_art.py              regenerates every texture and the thumbnail (
 tools/art_portraits.py             the King in Yellow's painted portrait: forms sculpted and lit by
                                    art_render.py, then repainted stroke by stroke by art_paint.py
 tools/art_units.py                 the battalion icons: each unit as a small scene (figures, mud or sea, smoky
-                                   sky) rendered by art_render.py and graded like a worn war photograph, with
-                                   the figures' silhouette as the white variant
+                                   sky) rendered by art_render.py and graded like a worn war photograph, laid
+                                   out in the game's two-frame textures: the scene and a NATO symbol for the
+                                   designer (counters/divisions_large, 152×42), and the figures' silhouette and
+                                   the same symbol for the division counter on the map (counters/divisions_small, 60×12)
 tools/generate_models.py           regenerates the 3D models and animations (add --preview DIR to render PNG
                                    previews, an animated GIF per animation and a contact sheet per model)
 tools/validate_mod.py              static checks: braces, localisation, sprites, entities, animations, references
@@ -322,4 +324,4 @@ The script is written against the standard HoI4 modding syntax. It passes the bu
 * The god battalions are deliberately never unlocked for the designer. If the game refuses to spawn a template that contains them, the god division will not appear. `error.log` will say so.
 * The god battalions carry `recon`, `initiative`, `casualty_trickleback` and `experience_loss_factor`, which vanilla normally gives only to support companies. If a future version stops reading them on a line battalion, the god loses just those extras.
 * The hidden rite technologies, which have no tech-tree folder and are granted with `set_technology`.
-* Icon sizes. The textures are 64×67 (spirits), 46×46 (decisions), 60×40 (battalions), 40×40 (traits), 156×210 (portraits) and 210×176 / 397×153 (events). If the UI expects different sizes, change the constants at the top of `tools/generate_art.py` (battalions: `ICON_SIZE` in `tools/art_units.py`) and regenerate.
+* Icon sizes. The textures are 64×67 (spirits), 46×46 (decisions), 152×42 and 60×12 (battalions: two frames each, picture then NATO symbol; the validator enforces these), 40×40 (traits), 156×210 (portraits) and 210×176 / 397×153 (events). If the UI expects different sizes, change the constants at the top of `tools/generate_art.py` (battalions: `ICON_SIZE`, `DESIGNER_FRAME` and `MAP_FRAME` in `tools/art_units.py`) and regenerate.

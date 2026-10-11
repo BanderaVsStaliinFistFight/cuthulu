@@ -10,7 +10,8 @@ catches the mistakes that are easy to make by hand:
     without an animation on the mesh, animations whose .anim file is not
     next to the .asset that defines them (the game resolves it from there)
   * icons / pictures without a sprite, sprites without a texture file,
-    battalions without a designer icon, traits without an icon, missing
+    battalions without a designer or map icon (or with one in the wrong
+    size or frame count), traits without an icon, missing
     portrait files, dynamic modifiers without text or icon
   * scripted effects / triggers / events that are used but never defined
   * formables (set_cosmetic_tag): names for every ideology, flags in all
@@ -146,6 +147,7 @@ def main():
 
     # ------------------------------------------------------------- sprites
     sprites = {}
+    frames = {}
     for path, items in load_script("interface/*.gfx", problems).items():
         for key, _, value in walk(items):
             if key == "spriteType" and isinstance(value, list):
@@ -153,6 +155,7 @@ def main():
                 name = fields.get("name", "").strip('"')
                 tex = fields.get("texturefile", "").strip('"')
                 sprites[name] = tex
+                frames[name] = int(fields.get("noOfFrames", 1))
                 if not os.path.exists(os.path.join(ROOT, tex)):
                     problems.append(f"{path}: sprite {name} points to missing texture {tex}")
 
@@ -261,6 +264,21 @@ def main():
                     need_loc(unit, path)
                     need_loc(unit + "_desc", path)
                     need_sprite(f"GFX_unit_{unit}_icon_medium", path)
+                    need_sprite(f"GFX_unit_{unit}_icon_medium_white", path)
+                    # The game reads battalion icons as two frames side by side (picture, NATO
+                    # symbol): 152x42 in the designer, 60x12 inside the counter on the map.
+                    for sprite, size in ((f"GFX_unit_{unit}_icon_medium", (152, 42)),
+                                         (f"GFX_unit_{unit}_icon_medium_white", (60, 12))):
+                        tex = sprites.get(sprite)
+                        if not tex or not os.path.exists(os.path.join(ROOT, tex)):
+                            continue
+                        if frames.get(sprite) != 2:
+                            problems.append(f"interface: {sprite} needs noOfFrames = 2")
+                        with open(os.path.join(ROOT, tex), "rb") as f:
+                            head = f.read(20)
+                        h, w = int.from_bytes(head[12:16], "little"), int.from_bytes(head[16:20], "little")
+                        if (w, h) != size:
+                            problems.append(f"{tex}: {sprite} must be {size[0]}x{size[1]} (two frames), is {w}x{h}")
                     sprite = {k: v for k, _, v in body}.get("sprite", "")
                     if sprite.startswith("eldritch_") and sprite + "_entity" not in entities:
                         problems.append(f"{path}: {unit} uses sprite {sprite} but {sprite}_entity is not defined")

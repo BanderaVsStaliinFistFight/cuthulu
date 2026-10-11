@@ -1193,16 +1193,17 @@ UNIT_ICONS = list(art_units.ICONS)
 
 
 def _render_unit_icon(unit):
-    return unit, art_units.ICONS[unit]()
+    return unit, art_units.textures(unit)
 
 
 def make_unit_icons():
-    """Each battalion as a small lit scene, plus a white silhouette of its
-    figures for the _white variant. Rendered in parallel."""
+    """Each battalion as a small lit scene for the division designer, and its
+    figures' silhouette for the counter on the map, each with its NATO symbol
+    as a second frame (art_units, GAME TEXTURES). Rendered in parallel."""
     with ProcessPoolExecutor() as pool:
-        for unit, (icon, white) in pool.map(_render_unit_icon, UNIT_ICONS):
-            save_dds(icon, f"gfx/interface/counters/divisions_large/{unit}.dds")
-            save_dds(white, f"gfx/interface/counters/divisions_large/{unit}_white.dds")
+        for unit, (designer, small) in pool.map(_render_unit_icon, UNIT_ICONS):
+            save_dds(designer, f"gfx/interface/counters/divisions_large/{unit}.dds")
+            save_dds(small, f"gfx/interface/counters/divisions_small/{unit}.dds")
 
 
 # ---------------------------------------------------------------------------
@@ -1279,8 +1280,11 @@ def write_gfx():
     def section(title):
         lines.extend(["", f"\t### {title} ###"])
 
-    def sprite(name, tex):
-        lines.extend(["\tspriteType = {", f'\t\tname = "{name}"', f'\t\ttexturefile = "{tex}"', "\t}"])
+    def sprite(name, tex, frames=1):
+        lines.extend(["\tspriteType = {", f'\t\tname = "{name}"', f'\t\ttexturefile = "{tex}"'])
+        if frames > 1:
+            lines.append(f"\t\tnoOfFrames = {frames}")
+        lines.append("\t}")
 
     section("National spirits")
     for god in GODS:
@@ -1311,10 +1315,10 @@ def write_gfx():
         sprite(f"GFX_report_event_eldritch_{name}", f"gfx/event_pictures/eldritch_{name}.dds")
     sprite("GFX_news_event_eldritch_stars", "gfx/event_pictures/eldritch_news_stars.dds")
 
-    section("Battalion icons (division designer and unit views)")
+    section("Battalion icons: the designer (152x42) and the map counter (60x12), each picture + NATO")
     for unit in UNIT_ICONS:
-        sprite(f"GFX_unit_{unit}_icon_medium", f"gfx/interface/counters/divisions_large/{unit}.dds")
-        sprite(f"GFX_unit_{unit}_icon_medium_white", f"gfx/interface/counters/divisions_large/{unit}_white.dds")
+        sprite(f"GFX_unit_{unit}_icon_medium", f"gfx/interface/counters/divisions_large/{unit}.dds", 2)
+        sprite(f"GFX_unit_{unit}_icon_medium_white", f"gfx/interface/counters/divisions_small/{unit}.dds", 2)
 
     section("General and admiral traits")
     for god in GODS:
