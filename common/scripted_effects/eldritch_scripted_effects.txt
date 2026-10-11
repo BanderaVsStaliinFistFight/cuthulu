@@ -997,53 +997,117 @@ eldritch_quest_hastur_curse_all = {
 	}
 }
 
-# Quest progress: the rites mark the quests that are underway.
-eldritch_quest_note_worship = {
-	if = {
-		limit = { has_country_flag = eldritch_quest_necronomicon_active }
-		set_country_flag = eldritch_quest_necronomicon_worship
-	}
-}
-
-eldritch_quest_note_commune = {
-	if = {
-		limit = { has_country_flag = eldritch_quest_necronomicon_active }
-		set_country_flag = eldritch_quest_necronomicon_commune
-	}
-}
-
-eldritch_quest_note_preach = {
-	if = {
-		limit = { has_country_flag = eldritch_quest_mountains_active }
-		set_country_flag = eldritch_quest_mountains_preach
-	}
-}
-
-eldritch_quest_note_council = {
-	if = {
-		limit = { has_country_flag = eldritch_quest_mountains_active }
-		set_country_flag = eldritch_quest_mountains_council
-	}
-}
-
-eldritch_quest_note_servitors = {
-	if = {
-		limit = { has_country_flag = eldritch_quest_cthulhu_active }
-		set_country_flag = eldritch_quest_cthulhu_servitors
-	}
-}
-
-eldritch_quest_note_stage_play = {
-	if = {
-		limit = { has_country_flag = eldritch_quest_hastur_active }
-		set_country_flag = eldritch_quest_hastur_stage_play
-	}
-}
-
+# Quest progress: Bottle the Nuclear Chaos marks the Engine quest when it is
+# underway. The other quests are done on the map (sites below).
 eldritch_quest_note_nuclear_chaos = {
 	if = {
 		limit = { has_country_flag = eldritch_quest_azathoth_active }
 		set_country_flag = eldritch_quest_azathoth_chaos
+	}
+}
+
+#####################################################################
+# THE PROPHET'S QUESTS - sites on the map
+#
+# Each quest marks where it is done when it begins; its mission
+# highlights the place and a targeted decision acts on it there.
+#####################################################################
+
+# The libraries that keep a copy of the Necronomicon: the capitals of
+# the nations that hold the known copies, wherever their governments
+# have gone. If none is left beyond our reach, a great power's capital.
+eldritch_necronomicon_mark_libraries = {
+	every_country = {
+		limit = {
+			OR = {
+				tag = ENG
+				tag = FRA
+				tag = USA
+				tag = ARG
+			}
+			NOT = { tag = ROOT }
+		}
+		capital_scope = { set_state_flag = eldritch_necronomicon_library }
+	}
+	if = {
+		limit = {
+			NOT = {
+				any_state = {
+					has_state_flag = eldritch_necronomicon_library
+					NOT = { is_controlled_by = ROOT }
+				}
+			}
+		}
+		random_country = {
+			limit = {
+				is_major = yes
+				NOT = { tag = ROOT }
+			}
+			capital_scope = { set_state_flag = eldritch_necronomicon_library }
+		}
+	}
+}
+
+# The last ports before the ice, for the Antarctic expedition: the
+# coastal capitals of the southern nations, or failing those, any coast
+# of Oceania or South America.
+eldritch_mountains_mark_ports = {
+	every_country = {
+		limit = {
+			OR = {
+				tag = AST
+				tag = NZL
+				tag = ARG
+				tag = CHL
+				tag = SAF
+			}
+		}
+		capital_scope = {
+			if = {
+				limit = { is_coastal = yes }
+				set_state_flag = eldritch_expedition_port
+			}
+		}
+	}
+	if = {
+		limit = {
+			NOT = { any_state = { has_state_flag = eldritch_expedition_port } }
+		}
+		random_state = {
+			limit = {
+				is_coastal = yes
+				OR = {
+					is_on_continent = australia
+					is_on_continent = south_america
+				}
+			}
+			set_state_flag = eldritch_expedition_port
+		}
+	}
+}
+
+# The shore R'lyeh rises off: a coast of Oceania that we and our
+# allies don't hold (or failing that, any coast beyond our reach).
+eldritch_rlyeh_pick_shore = {
+	clear_variable = eldritch_rlyeh_shore
+	random_state = {
+		limit = {
+			is_coastal = yes
+			is_on_continent = australia
+			NOT = { is_controlled_by = ROOT }
+			NOT = { controller = { is_in_faction_with = ROOT } }
+		}
+		ROOT = { set_variable = { eldritch_rlyeh_shore = PREV } }
+	}
+	if = {
+		limit = { NOT = { has_variable = eldritch_rlyeh_shore } }
+		random_state = {
+			limit = {
+				is_coastal = yes
+				NOT = { is_controlled_by = ROOT }
+			}
+			ROOT = { set_variable = { eldritch_rlyeh_shore = PREV } }
+		}
 	}
 }
 

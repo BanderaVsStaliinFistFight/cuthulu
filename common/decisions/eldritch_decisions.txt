@@ -183,7 +183,6 @@ eldritch_forbidden_rites = {
 		complete_effect = {
 			eldritch_gain_favor_15 = yes
 			eldritch_prophet_gain_xp_10 = yes
-			hidden_effect = { eldritch_quest_note_worship = yes }
 		}
 
 		ai_will_do = {
@@ -379,7 +378,6 @@ eldritch_forbidden_rites = {
 			hidden_effect = { subtract_from_variable = { eldritch_favor = 60 } }
 			eldritch_spawn_servitors = yes
 			eldritch_prophet_gain_xp_10 = yes
-			hidden_effect = { eldritch_quest_note_servitors = yes }
 		}
 
 		ai_will_do = {
@@ -711,7 +709,6 @@ eldritch_forbidden_rites = {
 				country_event = { id = eldritch.82 }
 			}
 			eldritch_prophet_gain_xp_10 = yes
-			hidden_effect = { eldritch_quest_note_stage_play = yes }
 		}
 
 		ai_will_do = {
@@ -881,7 +878,6 @@ eldritch_forbidden_rites = {
 				}
 			}
 			eldritch_prophet_gain_xp_25 = yes
-			hidden_effect = { eldritch_quest_note_commune = yes }
 		}
 
 		ai_will_do = {
@@ -925,7 +921,6 @@ eldritch_forbidden_rites = {
 				country_event = { id = eldritch.82 }
 			}
 			eldritch_prophet_gain_xp_10 = yes
-			hidden_effect = { eldritch_quest_note_preach = yes }
 		}
 
 		ai_will_do = {
@@ -1009,7 +1004,6 @@ eldritch_forbidden_rites = {
 				add_command_power = 25
 			}
 			eldritch_prophet_gain_xp_25 = yes
-			hidden_effect = { eldritch_quest_note_council = yes }
 		}
 
 		ai_will_do = {
@@ -1601,9 +1595,13 @@ eldritch_prophet_path = {
 #                                     stat the finale tests (one option is
 #                                     a dialogue check worth +20%), and
 #                                     start the timed task
-#   3. eldritch_quest_<key>_task      a mission: use the pact's rites within
-#                                     the time limit; the rites mark their
-#                                     progress (eldritch_quest_note_*)
+#   3. eldritch_quest_<key>_task      a mission with a place on the map: the
+#                                     quest marks its site when it begins
+#                                     (eldritch_*_mark_* / _pick_*, scripted
+#                                     effects), the mission highlights it, and
+#                                     a state-targeted decision acts there
+#                                     (or the site is simply taken), within
+#                                     the time limit
 #   4. the finale: a skill check (eldritch_quest_check); success brings a
 #      relic spirit, experience and Insight (eldritch.<n+1>), failure a
 #      cost (eldritch.<n+2>). A failed quest can be begun again a year
@@ -1643,8 +1641,8 @@ eldritch_prophet_quests = {
 				add_political_power = -50
 				subtract_from_variable = { eldritch_favor = 25 }
 				set_country_flag = eldritch_quest_necronomicon_active
-				clr_country_flag = eldritch_quest_necronomicon_worship
-				clr_country_flag = eldritch_quest_necronomicon_commune
+				clr_country_flag = eldritch_quest_necronomicon_stolen
+				eldritch_necronomicon_mark_libraries = yes
 			}
 		}
 
@@ -1667,6 +1665,10 @@ eldritch_prophet_quests = {
 		fire_only_once = no
 		days_mission_timeout = 120
 
+		highlight_states = {
+			highlight_states_trigger = { has_state_flag = eldritch_necronomicon_library }
+		}
+
 		visible = {
 			has_country_flag = eldritch_quest_necronomicon_active
 		}
@@ -1674,8 +1676,13 @@ eldritch_prophet_quests = {
 		available = {
 			custom_trigger_tooltip = {
 				tooltip = eldritch_quest_necronomicon_task_tt
-				has_country_flag = eldritch_quest_necronomicon_worship
-				has_country_flag = eldritch_quest_necronomicon_commune
+				OR = {
+					has_country_flag = eldritch_quest_necronomicon_stolen
+					any_controlled_state = {
+						has_state_flag = eldritch_necronomicon_library
+						NOT = { is_core_of = ROOT }
+					}
+				}
 			}
 		}
 
@@ -1712,6 +1719,54 @@ eldritch_prophet_quests = {
 		}
 	}
 
+	# necronomicon: on the map, steal the book from a library we don't hold
+	eldritch_quest_necronomicon_theft = {
+		icon = eldritch_tome
+		state_target = yes
+		on_map_mode = map_and_decisions_view
+		custom_cost_trigger = {
+			check_variable = { eldritch_favor > 24 }
+		}
+		custom_cost_text = eldritch_cost_favor_25
+		fire_only_once = no
+
+		target_root_trigger = {
+			has_country_flag = eldritch_quest_necronomicon_active
+			NOT = { has_country_flag = eldritch_quest_necronomicon_stolen }
+		}
+
+		target_trigger = {
+			FROM = {
+				has_state_flag = eldritch_necronomicon_library
+				NOT = { is_controlled_by = ROOT }
+			}
+		}
+
+		visible = {
+			has_country_flag = eldritch_quest_necronomicon_active
+			NOT = { has_country_flag = eldritch_quest_necronomicon_stolen }
+		}
+
+		cancel_trigger = {
+			NOT = { has_country_flag = eldritch_quest_necronomicon_active }
+		}
+
+		days_remove = 45
+
+		complete_effect = {
+			hidden_effect = { subtract_from_variable = { eldritch_favor = 25 } }
+		}
+
+		remove_effect = {
+			custom_effect_tooltip = eldritch_quest_necronomicon_stolen_tt
+			hidden_effect = { set_country_flag = eldritch_quest_necronomicon_stolen }
+		}
+
+		ai_will_do = {
+			factor = 10
+		}
+	}
+
 	# mountains: begin the quest. After the ritual, eldritch.271 picks the
 	# approach and starts the timed task (eldritch_quest_mountains_task).
 	eldritch_quest_mountains = {
@@ -1738,8 +1793,8 @@ eldritch_prophet_quests = {
 		complete_effect = {
 			hidden_effect = {
 				set_country_flag = eldritch_quest_mountains_active
-				clr_country_flag = eldritch_quest_mountains_council
-				clr_country_flag = eldritch_quest_mountains_preach
+				clr_country_flag = eldritch_quest_mountains_sailed
+				eldritch_mountains_mark_ports = yes
 			}
 		}
 
@@ -1762,6 +1817,10 @@ eldritch_prophet_quests = {
 		fire_only_once = no
 		days_mission_timeout = 150
 
+		highlight_states = {
+			highlight_states_trigger = { has_state_flag = eldritch_expedition_port }
+		}
+
 		visible = {
 			has_country_flag = eldritch_quest_mountains_active
 		}
@@ -1769,8 +1828,7 @@ eldritch_prophet_quests = {
 		available = {
 			custom_trigger_tooltip = {
 				tooltip = eldritch_quest_mountains_task_tt
-				has_country_flag = eldritch_quest_mountains_council
-				has_country_flag = eldritch_quest_mountains_preach
+				has_country_flag = eldritch_quest_mountains_sailed
 			}
 		}
 
@@ -1807,6 +1865,59 @@ eldritch_prophet_quests = {
 		}
 	}
 
+	# mountains: on the map, send the expedition south from a southern port
+	eldritch_quest_mountains_sail = {
+		icon = eldritch_deepen
+		state_target = yes
+		on_map_mode = map_and_decisions_view
+		cost = 50
+		fire_only_once = no
+
+		target_root_trigger = {
+			has_country_flag = eldritch_quest_mountains_active
+			NOT = { has_country_flag = eldritch_quest_mountains_sailed }
+		}
+
+		target_trigger = {
+			FROM = { has_state_flag = eldritch_expedition_port }
+		}
+
+		visible = {
+			has_country_flag = eldritch_quest_mountains_active
+			NOT = { has_country_flag = eldritch_quest_mountains_sailed }
+		}
+
+		available = {
+			custom_trigger_tooltip = {
+				tooltip = eldritch_quest_mountains_port_tt
+				FROM = {
+					OR = {
+						is_controlled_by = ROOT
+						controller = { NOT = { has_war_with = ROOT } }
+					}
+				}
+			}
+		}
+
+		cancel_trigger = {
+			OR = {
+				NOT = { has_country_flag = eldritch_quest_mountains_active }
+				FROM = { controller = { has_war_with = ROOT } }
+			}
+		}
+
+		days_remove = 60
+
+		remove_effect = {
+			custom_effect_tooltip = eldritch_quest_mountains_sailed_tt
+			hidden_effect = { set_country_flag = eldritch_quest_mountains_sailed }
+		}
+
+		ai_will_do = {
+			factor = 10
+		}
+	}
+
 	# cthulhu: begin the quest. After the ritual, eldritch.211 picks the
 	# approach and starts the timed task (eldritch_quest_cthulhu_task).
 	eldritch_quest_cthulhu = {
@@ -1837,7 +1948,8 @@ eldritch_prophet_quests = {
 			hidden_effect = {
 				subtract_from_variable = { eldritch_favor = 100 }
 				set_country_flag = eldritch_quest_cthulhu_active
-				clr_country_flag = eldritch_quest_cthulhu_servitors
+				clr_country_flag = eldritch_quest_cthulhu_called
+				eldritch_rlyeh_pick_shore = yes
 			}
 		}
 
@@ -1860,6 +1972,10 @@ eldritch_prophet_quests = {
 		fire_only_once = no
 		days_mission_timeout = 180
 
+		highlight_states = {
+			highlight_state_targets = { state = var:eldritch_rlyeh_shore }
+		}
+
 		visible = {
 			has_country_flag = eldritch_quest_cthulhu_active
 		}
@@ -1867,10 +1983,9 @@ eldritch_prophet_quests = {
 		available = {
 			custom_trigger_tooltip = {
 				tooltip = eldritch_quest_cthulhu_task_tt
-				has_country_flag = eldritch_quest_cthulhu_servitors
 				OR = {
-					eldritch_god_incarnate_deployed = yes
-					check_variable = { num_battalions_with_type@eldritch_deep_one_brood > 11 }
+					has_country_flag = eldritch_quest_cthulhu_called
+					var:eldritch_rlyeh_shore = { is_controlled_by = ROOT }
 				}
 			}
 		}
@@ -1908,6 +2023,59 @@ eldritch_prophet_quests = {
 		}
 	}
 
+	# cthulhu: on the map, call the Deep Ones to the shore where R'lyeh rises
+	eldritch_quest_cthulhu_call = {
+		icon = eldritch_cthulhu
+		state_target = yes
+		on_map_mode = map_and_decisions_view
+		targets = { var:eldritch_rlyeh_shore }
+		targets_dynamic = yes
+		custom_cost_trigger = {
+			check_variable = { eldritch_favor > 29 }
+		}
+		custom_cost_text = eldritch_cost_favor_30
+		fire_only_once = no
+
+		target_root_trigger = {
+			has_country_flag = eldritch_quest_cthulhu_active
+			NOT = { has_country_flag = eldritch_quest_cthulhu_called }
+		}
+
+		visible = {
+			has_country_flag = eldritch_quest_cthulhu_active
+			NOT = { has_country_flag = eldritch_quest_cthulhu_called }
+		}
+
+		available = {
+			custom_trigger_tooltip = {
+				tooltip = eldritch_quest_cthulhu_call_tt
+				OR = {
+					eldritch_god_incarnate_deployed = yes
+					check_variable = { num_battalions_with_type@eldritch_deep_one_brood > 11 }
+				}
+			}
+		}
+
+		cancel_trigger = {
+			NOT = { has_country_flag = eldritch_quest_cthulhu_active }
+		}
+
+		days_remove = 30
+
+		complete_effect = {
+			hidden_effect = { subtract_from_variable = { eldritch_favor = 30 } }
+		}
+
+		remove_effect = {
+			custom_effect_tooltip = eldritch_quest_cthulhu_called_tt
+			hidden_effect = { set_country_flag = eldritch_quest_cthulhu_called }
+		}
+
+		ai_will_do = {
+			factor = 10
+		}
+	}
+
 	# hastur: begin the quest. After the ritual, eldritch.231 picks the
 	# approach and starts the timed task (eldritch_quest_hastur_task).
 	eldritch_quest_hastur = {
@@ -1938,7 +2106,7 @@ eldritch_prophet_quests = {
 			hidden_effect = {
 				subtract_from_variable = { eldritch_favor = 100 }
 				set_country_flag = eldritch_quest_hastur_active
-				clr_country_flag = eldritch_quest_hastur_stage_play
+				clr_country_flag = eldritch_quest_hastur_premiere
 			}
 		}
 
@@ -1961,6 +2129,13 @@ eldritch_prophet_quests = {
 		fire_only_once = no
 		days_mission_timeout = 150
 
+		highlight_states = {
+			highlight_states_trigger = {
+				is_capital = yes
+				owner = { has_war_with = ROOT }
+			}
+		}
+
 		visible = {
 			has_country_flag = eldritch_quest_hastur_active
 		}
@@ -1968,7 +2143,7 @@ eldritch_prophet_quests = {
 		available = {
 			custom_trigger_tooltip = {
 				tooltip = eldritch_quest_hastur_task_tt
-				has_country_flag = eldritch_quest_hastur_stage_play
+				has_country_flag = eldritch_quest_hastur_premiere
 				has_war_support > 0.5
 			}
 		}
@@ -2006,6 +2181,64 @@ eldritch_prophet_quests = {
 		}
 	}
 
+	# hastur: on the map, stage the premiere at the gates of an enemy capital
+	eldritch_quest_hastur_premiere = {
+		icon = eldritch_hastur
+		state_target = yes
+		on_map_mode = map_and_decisions_view
+		cost = 25
+		fire_only_once = no
+
+		target_root_trigger = {
+			has_country_flag = eldritch_quest_hastur_active
+			NOT = { has_country_flag = eldritch_quest_hastur_premiere }
+		}
+
+		target_trigger = {
+			FROM = {
+				is_capital = yes
+				owner = { has_war_with = ROOT }
+			}
+		}
+
+		visible = {
+			has_country_flag = eldritch_quest_hastur_active
+			NOT = { has_country_flag = eldritch_quest_hastur_premiere }
+		}
+
+		available = {
+			custom_trigger_tooltip = {
+				tooltip = eldritch_quest_hastur_gates_tt
+				FROM = {
+					any_neighbor_state = { is_controlled_by = ROOT }
+				}
+			}
+		}
+
+		cancel_trigger = {
+			OR = {
+				NOT = { has_country_flag = eldritch_quest_hastur_active }
+				FROM = {
+					NOT = { any_neighbor_state = { is_controlled_by = ROOT } }
+				}
+			}
+		}
+
+		days_remove = 14
+
+		remove_effect = {
+			custom_effect_tooltip = eldritch_quest_hastur_premiere_tt
+			hidden_effect = {
+				set_country_flag = eldritch_quest_hastur_premiere
+				FROM = { owner = { add_war_support = -0.03 } }
+			}
+		}
+
+		ai_will_do = {
+			factor = 10
+		}
+	}
+
 	# azathoth: begin the quest. After the ritual, eldritch.261 picks the
 	# approach and starts the timed task (eldritch_quest_azathoth_task).
 	eldritch_quest_azathoth = {
@@ -2037,6 +2270,7 @@ eldritch_prophet_quests = {
 				subtract_from_variable = { eldritch_favor = 150 }
 				set_country_flag = eldritch_quest_azathoth_active
 				clr_country_flag = eldritch_quest_azathoth_chaos
+				clr_country_flag = eldritch_quest_azathoth_engine
 			}
 		}
 
@@ -2059,6 +2293,14 @@ eldritch_prophet_quests = {
 		fire_only_once = no
 		days_mission_timeout = 180
 
+		highlight_states = {
+			highlight_states_trigger = {
+				is_owned_by = ROOT
+				is_controlled_by = ROOT
+				industrial_complex > 2
+			}
+		}
+
 		visible = {
 			has_country_flag = eldritch_quest_azathoth_active
 		}
@@ -2067,6 +2309,8 @@ eldritch_prophet_quests = {
 			custom_trigger_tooltip = {
 				tooltip = eldritch_quest_azathoth_task_tt
 				has_country_flag = eldritch_quest_azathoth_chaos
+				has_country_flag = eldritch_quest_azathoth_engine
+				var:eldritch_engine_site = { is_controlled_by = ROOT }
 			}
 		}
 
@@ -2100,6 +2344,60 @@ eldritch_prophet_quests = {
 
 		ai_will_do = {
 			factor = 1
+		}
+	}
+
+	# azathoth: on the map, raise the Engine in one of our industrial states
+	eldritch_quest_azathoth_engine = {
+		icon = eldritch_azathoth
+		state_target = yes
+		on_map_mode = map_and_decisions_view
+		cost = 50
+		fire_only_once = no
+
+		target_root_trigger = {
+			has_country_flag = eldritch_quest_azathoth_active
+			NOT = { has_country_flag = eldritch_quest_azathoth_engine }
+		}
+
+		target_trigger = {
+			FROM = {
+				is_owned_by = ROOT
+				is_controlled_by = ROOT
+				industrial_complex > 2
+			}
+		}
+
+		visible = {
+			has_country_flag = eldritch_quest_azathoth_active
+			NOT = { has_country_flag = eldritch_quest_azathoth_engine }
+		}
+
+		cancel_trigger = {
+			OR = {
+				NOT = { has_country_flag = eldritch_quest_azathoth_active }
+				FROM = { NOT = { is_controlled_by = ROOT } }
+			}
+		}
+
+		days_remove = 60
+
+		remove_effect = {
+			custom_effect_tooltip = eldritch_quest_azathoth_engine_tt
+			FROM = {
+				remove_building = {
+					type = industrial_complex
+					level = 2
+				}
+			}
+			hidden_effect = {
+				set_variable = { eldritch_engine_site = FROM }
+				set_country_flag = eldritch_quest_azathoth_engine
+			}
+		}
+
+		ai_will_do = {
+			factor = 10
 		}
 	}
 }
