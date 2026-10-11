@@ -234,6 +234,22 @@ spriteTypes = {
 		name = "GFX_decision_eldritch_rites"
 		texturefile = "gfx/interface/decisions/eldritch_category_rites.dds"
 	}
+	spriteType = {
+		name = "GFX_decision_category_eldritch_path"
+		texturefile = "gfx/interface/decisions/eldritch_category_path.dds"
+	}
+	spriteType = {
+		name = "GFX_decision_eldritch_path_lore"
+		texturefile = "gfx/interface/decisions/eldritch_path_lore.dds"
+	}
+	spriteType = {
+		name = "GFX_decision_eldritch_path_zeal"
+		texturefile = "gfx/interface/decisions/eldritch_path_zeal.dds"
+	}
+	spriteType = {
+		name = "GFX_decision_eldritch_path_will"
+		texturefile = "gfx/interface/decisions/eldritch_path_will.dds"
+	}
 
 	### Event pictures ###
 	spriteType = {

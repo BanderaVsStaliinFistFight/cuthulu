@@ -6,12 +6,18 @@
 #                             army attack and stability. The values are
 #                             country variables kept up to date by
 #                             eldritch_prophet_update_mantle. It only works
-#                             while the current leader bears the god's mark.
+#                             while the current leader bears the god's mark
+#                             (always, with the Apostolic Succession perk).
 #####################################################################
 
 eldritch_prophet_mantle = {
 	icon = GFX_idea_eldritch_mantle
-	enable = { eldritch_leader_is_herald = yes }
+	enable = {
+		OR = {
+			eldritch_leader_is_herald = yes
+			has_country_flag = eldritch_perk_will_3
+		}
+	}
 	custom_modifier_tooltip = eldritch_prophet_mantle_tt
 
 	research_speed_factor = eldritch_prophet_lore_bonus

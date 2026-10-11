@@ -691,7 +691,7 @@ country_event = {
 
 	option = {
 		name = eldritch.81.keep
-		ai_chance = { factor = 0 }
+		ai_chance = { factor = 35 }
 	}
 }
 

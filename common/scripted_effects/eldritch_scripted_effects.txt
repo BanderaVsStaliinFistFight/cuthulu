@@ -97,6 +97,15 @@ eldritch_monthly_pulse = {
 	eldritch_prophet_init = yes
 	eldritch_prophet_update_mantle = yes
 
+	# Apostolic Succession: the god marks each new leader itself
+	if = {
+		limit = {
+			has_country_flag = eldritch_perk_will_3
+			NOT = { eldritch_leader_is_herald = yes }
+		}
+		eldritch_mark_herald_effect = yes
+	}
+
 	if = {
 		limit = { check_variable = { eldritch_pact_tier > 2 } }
 		add_to_variable = { eldritch_favor = 12 }
@@ -811,6 +820,35 @@ eldritch_anoint_admiral_effect = {
 	}
 }
 
+# Gives the current country leader the patron's Herald trait (Apostolic
+# Succession).
+eldritch_mark_herald_effect = {
+	if = {
+		limit = { has_country_flag = eldritch_god_cthulhu }
+		add_country_leader_trait = eldritch_cthulhu_herald
+	}
+	else_if = {
+		limit = { has_country_flag = eldritch_god_nyarlathotep }
+		add_country_leader_trait = eldritch_nyarlathotep_herald
+	}
+	else_if = {
+		limit = { has_country_flag = eldritch_god_hastur }
+		add_country_leader_trait = eldritch_hastur_herald
+	}
+	else_if = {
+		limit = { has_country_flag = eldritch_god_shub_niggurath }
+		add_country_leader_trait = eldritch_shub_niggurath_herald
+	}
+	else_if = {
+		limit = { has_country_flag = eldritch_god_yog_sothoth }
+		add_country_leader_trait = eldritch_yog_sothoth_herald
+	}
+	else_if = {
+		limit = { has_country_flag = eldritch_god_azathoth }
+		add_country_leader_trait = eldritch_azathoth_herald
+	}
+}
+
 # Gives the current country leader the patron's traits. Also re-grants the
 # Herald trait, so a leader who came to power after the pact is covered.
 eldritch_exalt_prophet_effect = {
@@ -1038,6 +1076,23 @@ eldritch_prophet_update_mantle = {
 	set_variable = { eldritch_odds_vessel = eldritch_prophet_will }
 	multiply_variable = { eldritch_odds_vessel = 6 }
 	add_to_variable = { eldritch_odds_vessel = 30 }
+	# perks of the Prophet's Path
+	if = {
+		limit = { has_country_flag = eldritch_perk_lore_1 }
+		add_to_variable = { eldritch_odds_curse = 10 }
+	}
+	if = {
+		limit = { has_country_flag = eldritch_perk_zeal_2 }
+		add_to_variable = { eldritch_odds_preach = 10 }
+		add_to_variable = { eldritch_odds_incarnate = 10 }
+	}
+	if = {
+		limit = { has_country_flag = eldritch_perk_will_1 }
+		add_to_variable = { eldritch_odds_commune = 10 }
+		add_to_variable = { eldritch_odds_vessel = 10 }
+		add_to_variable = { eldritch_prophet_will_bonus = 0.03 }
+		add_to_variable = { eldritch_prophet_will_pct = 3 }
+	}
 	clamp_variable = { var = eldritch_odds_commune min = 5 max = 95 }
 	clamp_variable = { var = eldritch_odds_curse min = 5 max = 95 }
 	clamp_variable = { var = eldritch_odds_preach min = 5 max = 95 }

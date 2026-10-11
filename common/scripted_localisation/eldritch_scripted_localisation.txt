@@ -152,7 +152,12 @@ defined_text = {
 	name = GetEldritchMantleState
 
 	text = {
-		trigger = { eldritch_leader_is_herald = yes }
+		trigger = {
+			OR = {
+				eldritch_leader_is_herald = yes
+				has_country_flag = eldritch_perk_will_3
+			}
+		}
 		localization_key = eldritch_mantle_state_worn
 	}
 	text = {

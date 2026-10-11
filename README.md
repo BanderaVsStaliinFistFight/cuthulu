@@ -178,7 +178,7 @@ The Prophet levels up like a role-playing character. **The Prophet's Record** (f
 | **Will** | +2% stability | what is left of the Prophet's own mind |
 
 * **Experience** comes from every rite of the pact, scaled to its weight. Most rites give 10. Exalt the Prophet, the avatars, Commune, the Dark Council and March Beside the God give 25. Tier II, incarnations and the Great Temple give 50. Tier III and Become the Vessel give 100.
-* **Levels** need 100 experience, then 50 more for each level after that. Each level brings a point of **Insight**. Spend it straight away when the level-up event appears, or keep it and spend it later on the sheet.
+* **Levels** need 100 experience, then 50 more for each level after that. Each level brings a point of **Insight**. Spend it on a stat straight away when the level-up event appears, keep it and spend it later on the sheet, or save it for a perk (see **The Prophet's Path** below).
 * **Stats** start at 1 and go up to 10. There aren't enough levels in a game to max all three, so your choices shape the Prophet.
 * **The mantle belongs to the cult, not to one leader.** If the leader changes, the stats and levels stay, but the mantle's bonuses lapse until the new leader is marked by **Exalt the Prophet**.
 * **Older saves:** a pact sealed before this update gets a level 1 mantle at its next monthly pulse, or as soon as you open the record.
@@ -206,6 +206,17 @@ Odds never go below 5% or above 95%. Checks use the stats even while the mantle 
 | Dreams of the faithful | Zeal 3 | Turn the dream into a war cry: +10 Favor, +25 army experience |
 | The Prophet communes | Lore 5 | Ask to be taught, not given: 100% research bonuses for an industry and a land doctrine tech, +10 Favor |
 | The Prophet returns changed | Will 5 | The Prophet masters the fever: +40 Favor, +2% stability, no fever |
+
+### 11. The Prophet's Path: a perk tree
+A second decision category, **The Prophet's Path**, holds three paths of three perks, one path per stat. A perk costs **1 Insight**, the same points that raise stats, so every point is a choice between a stat and a perk. Each perk needs its stat at **2 / 4 / 6** and the perk before it. Perks belong to the mantle, so they survive a change of leader.
+
+| | Tier 1 (stat 2) | Tier 2 (stat 4) | Tier 3 (stat 6) |
+|---|---|---|---|
+| **Lore**, the Scholar | **The Pnakotic Fragments**: +10% to every Lore check | **Curses That Linger**: curses last 30 days longer; Whisper Madness costs its target 3% more stability | **Forbidden Science**: +1 research slot |
+| **Zeal**, the Zealot | **The Fervent Host**: servitor battalions get +15% soft attack, defense and breakthrough and +10 organization | **The Prophet's Banner**: +10% to every Zeal check; March Beside the God lasts 180 days | **Voice of the God**: the incarnate god gets +50% soft and hard attack, defense and breakthrough |
+| **Will**, the Mystic | **Iron Composure**: +10% to every Will check, +3% stability | **The Elder Sign**: enemy cultists can no longer curse you, and any curse on you is lifted | **Apostolic Succession**: every new leader is marked by the god at once, so the mantle never lapses |
+
+The category description and the character sheet show your Insight and how far along each path you are. AI Prophets sometimes bank Insight and walk the paths too.
 
 ---
 

@@ -15,3 +15,16 @@ eldritch_forbidden_rites = {
 	# is easy to confirm in-game that the mod is loaded.
 	visible_when_empty = yes
 }
+
+# The Prophet's perk tree: three paths, Lore, Zeal and Will, bought with
+# Insight once a pact is sealed.
+eldritch_prophet_path = {
+	icon = eldritch_path
+	priority = 149
+	allowed = {
+		always = yes
+	}
+	visible = {
+		has_country_flag = eldritch_pact_made
+	}
+}

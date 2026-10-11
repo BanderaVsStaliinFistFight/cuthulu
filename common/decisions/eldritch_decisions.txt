@@ -643,6 +643,7 @@ eldritch_forbidden_rites = {
 
 		target_trigger = {
 			FROM = {
+				NOT = { has_country_flag = eldritch_perk_will_2 }
 				has_war_with = ROOT
 			}
 		}
@@ -668,6 +669,10 @@ eldritch_forbidden_rites = {
 				}
 				else = {
 					FROM = { add_timed_idea = { idea = eldritch_curse_dreams_of_rlyeh days = 45 } }
+				}
+				if = {
+					limit = { has_country_flag = eldritch_perk_lore_2 }
+					FROM = { modify_timed_idea = { idea = eldritch_curse_dreams_of_rlyeh days = 30 } }
 				}
 				FROM = { country_event = { id = eldritch.60 } }
 				country_event = { id = eldritch.82 }
@@ -763,6 +768,7 @@ eldritch_forbidden_rites = {
 
 		target_trigger = {
 			FROM = {
+				NOT = { has_country_flag = eldritch_perk_will_2 }
 				NOT = { tag = ROOT }
 				OR = {
 					is_neighbor_of = ROOT
@@ -804,6 +810,10 @@ eldritch_forbidden_rites = {
 				}
 				else = {
 					FROM = { add_stability = -0.04 }
+				}
+				if = {
+					limit = { has_country_flag = eldritch_perk_lore_2 }
+					FROM = { add_stability = -0.03 }
 				}
 				FROM = { country_event = { id = eldritch.62 } }
 				country_event = { id = eldritch.82 }
@@ -903,6 +913,7 @@ eldritch_forbidden_rites = {
 
 		target_trigger = {
 			FROM = {
+				NOT = { has_country_flag = eldritch_perk_will_2 }
 				has_war_with = ROOT
 			}
 		}
@@ -928,6 +939,10 @@ eldritch_forbidden_rites = {
 				}
 				else = {
 					FROM = { add_timed_idea = { idea = eldritch_curse_yellow_madness days = 45 } }
+				}
+				if = {
+					limit = { has_country_flag = eldritch_perk_lore_2 }
+					FROM = { modify_timed_idea = { idea = eldritch_curse_yellow_madness days = 30 } }
 				}
 				FROM = { country_event = { id = eldritch.61 } }
 				country_event = { id = eldritch.82 }
@@ -1493,6 +1508,10 @@ eldritch_forbidden_rites = {
 		complete_effect = {
 			hidden_effect = { subtract_from_variable = { eldritch_favor = 50 } }
 			add_timed_idea = { idea = eldritch_prophet_marches days = 90 }
+			if = {
+				limit = { has_country_flag = eldritch_perk_zeal_2 }
+				modify_timed_idea = { idea = eldritch_prophet_marches days = 90 }
+			}
 			eldritch_prophet_gain_xp_25 = yes
 		}
 
@@ -1646,6 +1665,363 @@ eldritch_forbidden_rites = {
 
 		ai_will_do = {
 			factor = 3
+		}
+	}
+}
+
+#####################################################################
+# THE PROPHET'S PATH - the perk tree
+#
+# Three paths of three perks, one per stat. A perk costs a point of
+# Insight (the same points that raise stats), needs its stat at 2 / 4 / 6
+# and the perk before it. Perks are country flags (eldritch_perk_<stat>_<n>)
+# and belong to the mantle, so they survive a change of leader.
+#####################################################################
+
+eldritch_prophet_path = {
+
+	eldritch_perk_lore_1 = {
+		icon = eldritch_path_lore
+		custom_cost_trigger = {
+			check_variable = { eldritch_prophet_insight > 0 }
+		}
+		custom_cost_text = eldritch_cost_insight_1
+		fire_only_once = yes
+
+		visible = {
+			eldritch_has_pact = yes
+		}
+
+		available = {
+			custom_trigger_tooltip = {
+				tooltip = eldritch_needs_lore_2_tt
+				check_variable = { eldritch_prophet_lore > 1 }
+			}
+		}
+
+		complete_effect = {
+			hidden_effect = {
+				subtract_from_variable = { eldritch_prophet_insight = 1 }
+				set_country_flag = eldritch_perk_lore_1
+				add_to_variable = { eldritch_path_lore = 1 }
+			}
+			custom_effect_tooltip = eldritch_perk_lore_1_tt
+			hidden_effect = { eldritch_prophet_update_mantle = yes }
+		}
+
+		ai_will_do = {
+			factor = 1
+		}
+	}
+
+	eldritch_perk_lore_2 = {
+		icon = eldritch_path_lore
+		custom_cost_trigger = {
+			check_variable = { eldritch_prophet_insight > 0 }
+		}
+		custom_cost_text = eldritch_cost_insight_1
+		fire_only_once = yes
+
+		visible = {
+			eldritch_has_pact = yes
+		}
+
+		available = {
+			custom_trigger_tooltip = {
+				tooltip = eldritch_needs_lore_4_tt
+				check_variable = { eldritch_prophet_lore > 3 }
+			}
+			custom_trigger_tooltip = {
+				tooltip = eldritch_perk_lore_1_needed_tt
+				has_country_flag = eldritch_perk_lore_1
+			}
+		}
+
+		complete_effect = {
+			hidden_effect = {
+				subtract_from_variable = { eldritch_prophet_insight = 1 }
+				set_country_flag = eldritch_perk_lore_2
+				add_to_variable = { eldritch_path_lore = 1 }
+			}
+			custom_effect_tooltip = eldritch_perk_lore_2_tt
+			hidden_effect = { eldritch_prophet_update_mantle = yes }
+		}
+
+		ai_will_do = {
+			factor = 1
+		}
+	}
+
+	eldritch_perk_lore_3 = {
+		icon = eldritch_path_lore
+		custom_cost_trigger = {
+			check_variable = { eldritch_prophet_insight > 0 }
+		}
+		custom_cost_text = eldritch_cost_insight_1
+		fire_only_once = yes
+
+		visible = {
+			eldritch_has_pact = yes
+		}
+
+		available = {
+			custom_trigger_tooltip = {
+				tooltip = eldritch_needs_lore_6_tt
+				check_variable = { eldritch_prophet_lore > 5 }
+			}
+			custom_trigger_tooltip = {
+				tooltip = eldritch_perk_lore_2_needed_tt
+				has_country_flag = eldritch_perk_lore_2
+			}
+		}
+
+		complete_effect = {
+			hidden_effect = {
+				subtract_from_variable = { eldritch_prophet_insight = 1 }
+				set_country_flag = eldritch_perk_lore_3
+				add_to_variable = { eldritch_path_lore = 1 }
+			}
+			custom_effect_tooltip = eldritch_perk_lore_3_tt
+			add_research_slot = 1
+			hidden_effect = { eldritch_prophet_update_mantle = yes }
+		}
+
+		ai_will_do = {
+			factor = 1
+		}
+	}
+
+	eldritch_perk_zeal_1 = {
+		icon = eldritch_path_zeal
+		custom_cost_trigger = {
+			check_variable = { eldritch_prophet_insight > 0 }
+		}
+		custom_cost_text = eldritch_cost_insight_1
+		fire_only_once = yes
+
+		visible = {
+			eldritch_has_pact = yes
+		}
+
+		available = {
+			custom_trigger_tooltip = {
+				tooltip = eldritch_needs_zeal_2_tt
+				check_variable = { eldritch_prophet_zeal > 1 }
+			}
+		}
+
+		complete_effect = {
+			hidden_effect = {
+				subtract_from_variable = { eldritch_prophet_insight = 1 }
+				set_country_flag = eldritch_perk_zeal_1
+				add_to_variable = { eldritch_path_zeal = 1 }
+			}
+			custom_effect_tooltip = eldritch_perk_zeal_1_tt
+			hidden_effect = { set_technology = { eldritch_perk_fervent_host = 1 popup = no } }
+			hidden_effect = { eldritch_prophet_update_mantle = yes }
+		}
+
+		ai_will_do = {
+			factor = 1
+		}
+	}
+
+	eldritch_perk_zeal_2 = {
+		icon = eldritch_path_zeal
+		custom_cost_trigger = {
+			check_variable = { eldritch_prophet_insight > 0 }
+		}
+		custom_cost_text = eldritch_cost_insight_1
+		fire_only_once = yes
+
+		visible = {
+			eldritch_has_pact = yes
+		}
+
+		available = {
+			custom_trigger_tooltip = {
+				tooltip = eldritch_needs_zeal_4_tt
+				check_variable = { eldritch_prophet_zeal > 3 }
+			}
+			custom_trigger_tooltip = {
+				tooltip = eldritch_perk_zeal_1_needed_tt
+				has_country_flag = eldritch_perk_zeal_1
+			}
+		}
+
+		complete_effect = {
+			hidden_effect = {
+				subtract_from_variable = { eldritch_prophet_insight = 1 }
+				set_country_flag = eldritch_perk_zeal_2
+				add_to_variable = { eldritch_path_zeal = 1 }
+			}
+			custom_effect_tooltip = eldritch_perk_zeal_2_tt
+			hidden_effect = { eldritch_prophet_update_mantle = yes }
+		}
+
+		ai_will_do = {
+			factor = 1
+		}
+	}
+
+	eldritch_perk_zeal_3 = {
+		icon = eldritch_path_zeal
+		custom_cost_trigger = {
+			check_variable = { eldritch_prophet_insight > 0 }
+		}
+		custom_cost_text = eldritch_cost_insight_1
+		fire_only_once = yes
+
+		visible = {
+			eldritch_has_pact = yes
+		}
+
+		available = {
+			custom_trigger_tooltip = {
+				tooltip = eldritch_needs_zeal_6_tt
+				check_variable = { eldritch_prophet_zeal > 5 }
+			}
+			custom_trigger_tooltip = {
+				tooltip = eldritch_perk_zeal_2_needed_tt
+				has_country_flag = eldritch_perk_zeal_2
+			}
+		}
+
+		complete_effect = {
+			hidden_effect = {
+				subtract_from_variable = { eldritch_prophet_insight = 1 }
+				set_country_flag = eldritch_perk_zeal_3
+				add_to_variable = { eldritch_path_zeal = 1 }
+			}
+			custom_effect_tooltip = eldritch_perk_zeal_3_tt
+			hidden_effect = { set_technology = { eldritch_perk_voice_of_the_god = 1 popup = no } }
+			hidden_effect = { eldritch_prophet_update_mantle = yes }
+		}
+
+		ai_will_do = {
+			factor = 1
+		}
+	}
+
+	eldritch_perk_will_1 = {
+		icon = eldritch_path_will
+		custom_cost_trigger = {
+			check_variable = { eldritch_prophet_insight > 0 }
+		}
+		custom_cost_text = eldritch_cost_insight_1
+		fire_only_once = yes
+
+		visible = {
+			eldritch_has_pact = yes
+		}
+
+		available = {
+			custom_trigger_tooltip = {
+				tooltip = eldritch_needs_will_2_tt
+				check_variable = { eldritch_prophet_will > 1 }
+			}
+		}
+
+		complete_effect = {
+			hidden_effect = {
+				subtract_from_variable = { eldritch_prophet_insight = 1 }
+				set_country_flag = eldritch_perk_will_1
+				add_to_variable = { eldritch_path_will = 1 }
+			}
+			custom_effect_tooltip = eldritch_perk_will_1_tt
+			hidden_effect = { eldritch_prophet_update_mantle = yes }
+		}
+
+		ai_will_do = {
+			factor = 1
+		}
+	}
+
+	eldritch_perk_will_2 = {
+		icon = eldritch_path_will
+		custom_cost_trigger = {
+			check_variable = { eldritch_prophet_insight > 0 }
+		}
+		custom_cost_text = eldritch_cost_insight_1
+		fire_only_once = yes
+
+		visible = {
+			eldritch_has_pact = yes
+		}
+
+		available = {
+			custom_trigger_tooltip = {
+				tooltip = eldritch_needs_will_4_tt
+				check_variable = { eldritch_prophet_will > 3 }
+			}
+			custom_trigger_tooltip = {
+				tooltip = eldritch_perk_will_1_needed_tt
+				has_country_flag = eldritch_perk_will_1
+			}
+		}
+
+		complete_effect = {
+			hidden_effect = {
+				subtract_from_variable = { eldritch_prophet_insight = 1 }
+				set_country_flag = eldritch_perk_will_2
+				add_to_variable = { eldritch_path_will = 1 }
+			}
+			custom_effect_tooltip = eldritch_perk_will_2_tt
+			if = {
+				limit = { has_idea = eldritch_curse_dreams_of_rlyeh }
+				remove_ideas = eldritch_curse_dreams_of_rlyeh
+			}
+			if = {
+				limit = { has_idea = eldritch_curse_yellow_madness }
+				remove_ideas = eldritch_curse_yellow_madness
+			}
+			hidden_effect = { eldritch_prophet_update_mantle = yes }
+		}
+
+		ai_will_do = {
+			factor = 1
+		}
+	}
+
+	eldritch_perk_will_3 = {
+		icon = eldritch_path_will
+		custom_cost_trigger = {
+			check_variable = { eldritch_prophet_insight > 0 }
+		}
+		custom_cost_text = eldritch_cost_insight_1
+		fire_only_once = yes
+
+		visible = {
+			eldritch_has_pact = yes
+		}
+
+		available = {
+			custom_trigger_tooltip = {
+				tooltip = eldritch_needs_will_6_tt
+				check_variable = { eldritch_prophet_will > 5 }
+			}
+			custom_trigger_tooltip = {
+				tooltip = eldritch_perk_will_2_needed_tt
+				has_country_flag = eldritch_perk_will_2
+			}
+		}
+
+		complete_effect = {
+			hidden_effect = {
+				subtract_from_variable = { eldritch_prophet_insight = 1 }
+				set_country_flag = eldritch_perk_will_3
+				add_to_variable = { eldritch_path_will = 1 }
+			}
+			custom_effect_tooltip = eldritch_perk_will_3_tt
+			if = {
+				limit = { NOT = { eldritch_leader_is_herald = yes } }
+				eldritch_mark_herald_effect = yes
+			}
+			hidden_effect = { eldritch_prophet_update_mantle = yes }
+		}
+
+		ai_will_do = {
+			factor = 1
 		}
 	}
 }

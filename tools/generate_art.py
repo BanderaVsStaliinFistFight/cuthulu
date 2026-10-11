@@ -596,6 +596,20 @@ def sym_dread(size, color=None):
     return tint(sym_incarnate(size), (220, 40, 30), 0.5)
 
 
+def sym_path(size, color=None):
+    """A trunk splitting into three branches: Lore, Zeal and Will."""
+    c = Canvas(size, size)
+    trunk = (190, 160, 100, 255)
+    c.line([(0.5, 0.92), (0.5, 0.58)], trunk, 0.05)
+    for (x, y), col in (((0.20, 0.24), (120, 170, 255)), ((0.5, 0.13), (255, 90, 70)),
+                        ((0.80, 0.24), (130, 255, 170))):
+        c.line([(0.5, 0.58), ((0.5 + x) / 2, 0.42), (x, y)], trunk, 0.035)
+        c.ellipse(x, y, 0.085, 0.085, col + (255,))
+        c.ellipse(x, y, 0.035, 0.035, (255, 255, 240, 255))
+    c.ellipse(0.5, 0.58, 0.05, 0.05, trunk)
+    return glow_under(c.done(size, size), (255, 220, 150), size / 14, 0.6)
+
+
 def sym_temple(size, color=None):
     c = Canvas(size, size)
     stone = [(70, 66, 74, 255), (88, 84, 92, 255), (106, 102, 110, 255)]
@@ -634,6 +648,14 @@ SYMBOLS = {
     "fever": sym_fever,
     "march": sym_march,
     "dread": sym_dread,
+    "path": sym_path,
+}
+
+# The Prophet's Path: one icon per branch (symbol, border colour).
+PATH_ICONS = {
+    "path_lore": ("tome", (120, 170, 255)),
+    "path_zeal": ("preach", (230, 90, 70)),
+    "path_will": ("rites", (130, 255, 170)),
 }
 
 # Decision icons beyond the gods' own (GFX_decision_eldritch_<name>).
@@ -715,6 +737,13 @@ def make_decisions():
     img = framed(DECISION_SIZE, (40, 30, 60), (12, 8, 20), SYMBOLS["rites"], (190, 160, 90), border_width=1,
                  sym_scale=0.9)
     save_dds(img, "gfx/interface/decisions/eldritch_category_rites.dds")
+    for name, (symbol, border) in PATH_ICONS.items():
+        img = framed(DECISION_SIZE, (40, 30, 60), (12, 8, 20), SYMBOLS[symbol], border, border_width=1,
+                     sym_scale=0.86)
+        save_dds(img, f"gfx/interface/decisions/eldritch_{name}.dds")
+    img = framed(DECISION_SIZE, (40, 30, 60), (12, 8, 20), SYMBOLS["path"], (190, 160, 90), border_width=1,
+                 sym_scale=0.9)
+    save_dds(img, "gfx/interface/decisions/eldritch_category_path.dds")
 
 
 # ---------------------------------------------------------------------------
@@ -1176,6 +1205,9 @@ def write_gfx():
     section("Decision category")
     sprite("GFX_decision_category_eldritch_rites", "gfx/interface/decisions/eldritch_category_rites.dds")
     sprite("GFX_decision_eldritch_rites", "gfx/interface/decisions/eldritch_category_rites.dds")
+    sprite("GFX_decision_category_eldritch_path", "gfx/interface/decisions/eldritch_category_path.dds")
+    for name in PATH_ICONS:
+        sprite(f"GFX_decision_eldritch_{name}", f"gfx/interface/decisions/eldritch_{name}.dds")
 
     section("Event pictures")
     for name in ["tome", "omen"] + GODS:

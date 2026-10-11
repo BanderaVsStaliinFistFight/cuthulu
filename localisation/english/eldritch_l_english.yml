@@ -7,6 +7,9 @@
  eldritch_forbidden_rites:0 "The Forbidden Rites"
  eldritch_forbidden_rites_desc:0 "Beneath the cities of men, beneath the seas, and in the spaces between the stars, things older than humanity wait. They do not care for flags or ideologies, but they can be bargained with.\n\n§HPatron:§! §Y[ROOT.GetEldritchGodName]§!\n§HPact:§! [ROOT.GetEldritchPactStage]\n[ROOT.GetEldritchFavorLine]\n[ROOT.GetEldritchProphetLine]\n[ROOT.GetEldritchMantleLine]"
 
+ eldritch_prophet_path:0 "The Prophet's Path"
+ eldritch_prophet_path_desc:0 "The rites have taught the Prophet more than any one life should hold. Spend Insight here to walk one of three paths, or a little of each.\n\n§HInsight to spend:§! §G[?eldritch_prophet_insight|0]§!\n§HPaths:§! Lore §Y[?eldritch_path_lore|0]§!/3, Zeal §Y[?eldritch_path_zeal|0]§!/3, Will §Y[?eldritch_path_will|0]§!/3\n\nEach perk costs a point of Insight and needs its stat at 2, 4 or 6, and the perk before it. Insight also raises stats, so choose carefully."
+
  eldritch_god_name_cthulhu:0 "Cthulhu"
  eldritch_god_name_nyarlathotep:0 "Nyarlathotep"
  eldritch_god_name_hastur:0 "Hastur"
@@ -62,6 +65,8 @@
  eldritch_cost_manpower_20k_blocked:0 "§R20k§! Manpower"
  eldritch_cost_temple:0 "§Y100§! Political Power and §Y75§! Favor"
  eldritch_cost_temple_blocked:0 "§R100§! Political Power and §R75§! Favor"
+ eldritch_cost_insight_1:0 "§Y1§! Insight"
+ eldritch_cost_insight_1_blocked:0 "§R1§! Insight"
 
  eldritch_no_ritual_underway_tt:0 "No summoning ritual is currently underway"
  eldritch_has_coastline_tt:0 "Owns at least one coastal state"
@@ -90,6 +95,30 @@
  eldritch_check_line_zeal_fail:0 "§HZeal check:§! rolled §Y[?eldritch_check_roll|0]§!, needed under §Y[?eldritch_check_chance|0]§!. §RFailure.§!"
  eldritch_check_line_will_pass:0 "§HWill check:§! rolled §Y[?eldritch_check_roll|0]§!, needed under §Y[?eldritch_check_chance|0]§!. §GSuccess.§!"
  eldritch_check_line_will_fail:0 "§HWill check:§! rolled §Y[?eldritch_check_roll|0]§!, needed under §Y[?eldritch_check_chance|0]§!. §RFailure.§!"
+ eldritch_needs_lore_2_tt:0 "The Prophet's §YLore§! is at least 2"
+ eldritch_needs_lore_4_tt:0 "The Prophet's §YLore§! is at least 4"
+ eldritch_needs_lore_6_tt:0 "The Prophet's §YLore§! is at least 6"
+ eldritch_needs_zeal_2_tt:0 "The Prophet's §YZeal§! is at least 2"
+ eldritch_needs_zeal_4_tt:0 "The Prophet's §YZeal§! is at least 4"
+ eldritch_needs_zeal_6_tt:0 "The Prophet's §YZeal§! is at least 6"
+ eldritch_needs_will_2_tt:0 "The Prophet's §YWill§! is at least 2"
+ eldritch_needs_will_4_tt:0 "The Prophet's §YWill§! is at least 4"
+ eldritch_needs_will_6_tt:0 "The Prophet's §YWill§! is at least 6"
+ eldritch_perk_lore_1_needed_tt:0 "The Prophet has learned §YThe Pnakotic Fragments§!"
+ eldritch_perk_lore_2_needed_tt:0 "The Prophet has learned §YCurses That Linger§!"
+ eldritch_perk_zeal_1_needed_tt:0 "The Prophet has learned §YThe Fervent Host§!"
+ eldritch_perk_zeal_2_needed_tt:0 "The Prophet has learned §YThe Prophet's Banner§!"
+ eldritch_perk_will_1_needed_tt:0 "The Prophet has learned §YIron Composure§!"
+ eldritch_perk_will_2_needed_tt:0 "The Prophet has learned §YThe Elder Sign§!"
+ eldritch_perk_lore_1_tt:0 "§G+10%§! to every §YLore§! check."
+ eldritch_perk_lore_2_tt:0 "Our curses last §G30§! days longer, and §YWhisper Madness§! costs its target §R3%§! more stability."
+ eldritch_perk_lore_3_tt:0 "Our scientists study what the Prophet has learned."
+ eldritch_perk_zeal_1_tt:0 "Our §Yservitor battalions§! gain §G+15%§! soft attack, defense and breakthrough and §G+10§! organization."
+ eldritch_perk_zeal_2_tt:0 "§G+10%§! to every §YZeal§! check, and §YMarch Beside the God§! lasts §G180§! days instead of 90."
+ eldritch_perk_zeal_3_tt:0 "The §Yincarnate god§! gains §G+50%§! soft and hard attack, defense and breakthrough."
+ eldritch_perk_will_1_tt:0 "§G+10%§! to every §YWill§! check, and §G+3%§! stability while the mantle is worn."
+ eldritch_perk_will_2_tt:0 "Enemy cultists can no longer §Ycurse§! us, and any curse on us now is lifted."
+ eldritch_perk_will_3_tt:0 "The mantle never lapses: every new leader is marked by the god at once (the §YHerald§! trait)."
  eldritch_council_avatar_tt:0 "An §Yavatar§! sits on the council:"
  eldritch_temple_favor_tt:0 "Gain §G3§! more Eldritch Favor every month."
  eldritch_dread_tt:0 "Every nation at war with us is struck by §RDread of the Incarnate§! (-15% morale, -10% organization, -10% war support), renewed every month while the god walks the earth."
@@ -142,6 +171,8 @@
 
  eldritch_gate_insight:0 "Insight from Beyond the Gate"
  eldritch_prophet_insight:0 "The Prophet's Vision"
+ eldritch_perk_fervent_host:0 "The Fervent Host"
+ eldritch_perk_voice_of_the_god:0 "Voice of the God"
 
  ################################################################
  # DECISIONS - THE FORBIDDEN LORE & SUMMONINGS
@@ -276,6 +307,25 @@
  eldritch_prophet_great_temple_desc:0 "[ROOT.GetLeader] will lay the first stone of a temple to [ROOT.GetEldritchGodName] in the heart of the capital. Its architects have stopped sleeping, and its angles do not quite meet.\n\n§YA 90-day construction. The Great Temple adds stability and political power, and §G3§! Eldritch Favor every month for the rest of the game. Once per game.§!"
  eldritch_prophet_become_vessel:0 "Become the Vessel"
  eldritch_prophet_become_vessel_desc:0 "[ROOT.GetEldritchGodName] has asked for the last thing [ROOT.GetLeader] has left to give. For sixty days the Prophet will lie in the sanctum while the god pours itself in. What comes out will still lead the nation. It will not be entirely human.\n\n§YNeeds an Ascendant pact and a Chosen leader. The leader gains the god's powerful §YVessel§! trait; the nation loses stability and gains war support, and the whole world will hear of it. Once per game; the trait is lost if the leader is replaced.§!\n§HWill§! check: a Prophet who keeps hold of their mind halves the stability loss."
+
+ eldritch_perk_lore_1:0 "Lore: The Pnakotic Fragments"
+ eldritch_perk_lore_1_desc:0 "The oldest pages in the cult's library were written before there were humans to read them. The Prophet has learned to read them anyway."
+ eldritch_perk_lore_2:0 "Lore: Curses That Linger"
+ eldritch_perk_lore_2_desc:0 "A curse is a word that keeps being spoken. The Prophet has learned how to make it echo."
+ eldritch_perk_lore_3:0 "Lore: Forbidden Science"
+ eldritch_perk_lore_3_desc:0 "The Prophet takes the nation's scientists into the sanctum, one at a time. They come out knowing things."
+ eldritch_perk_zeal_1:0 "Zeal: The Fervent Host"
+ eldritch_perk_zeal_1_desc:0 "The servitors have seen the Prophet bleed for the god, and now they will bleed for the Prophet."
+ eldritch_perk_zeal_2:0 "Zeal: The Prophet's Banner"
+ eldritch_perk_zeal_2_desc:0 "Wherever the Prophet's banner goes, the faithful follow, and they follow faster."
+ eldritch_perk_zeal_3:0 "Zeal: Voice of the God"
+ eldritch_perk_zeal_3_desc:0 "When the Prophet speaks, the god listens. On the battlefield, it fights for that voice."
+ eldritch_perk_will_1:0 "Will: Iron Composure"
+ eldritch_perk_will_1_desc:0 "The Prophet has stared into the abyss long enough to stop flinching."
+ eldritch_perk_will_2:0 "Will: The Elder Sign"
+ eldritch_perk_will_2_desc:0 "The Prophet carves the five-pointed sign over every door of the capital. The servants of other gods cannot pass it."
+ eldritch_perk_will_3:0 "Will: Apostolic Succession"
+ eldritch_perk_will_3_desc:0 "The god no longer waits to be asked. Whoever leads [ROOT.GetNameDef] next will wake up already marked."
 
  ################################################################
  # NATIONAL SPIRITS
@@ -648,7 +698,7 @@
  eldritch.72.a:0 "All hail the Vessel."
 
  eldritch.80.t:0 "The Prophet's Record"
- eldritch.80.d:0 "§HThe Mantle of the Prophet§!\n[ROOT.GetEldritchProphetLine]\n[ROOT.GetEldritchMantleState]\n\n§HLevel§! §Y[?eldritch_prophet_level|0]§!   §HExperience§! [?eldritch_prophet_xp|0] / [?eldritch_prophet_xp_next|0]\n§HInsight to spend:§! §G[?eldritch_prophet_insight|0]§!\n\n§YLore§! [?eldritch_prophet_lore|0] / 10: §G+[?eldritch_prophet_lore_pct|0]%§! research speed\nKnowledge of the rites, the old tongues and the angles between the stars.\n\n§YZeal§! [?eldritch_prophet_zeal|0] / 10: §G+[?eldritch_prophet_zeal_pct|0]%§! army attack\nThe fire that sends soldiers into battle beside things that are not human.\n\n§YWill§! [?eldritch_prophet_will|0] / 10: §G+[?eldritch_prophet_will_pct|0]%§! stability\nWhat is left of the Prophet's own mind, and the nation's faith in it.\n\n§HSkill checks§! (the odds of each roll)\nCommune, §YWill§!: [?eldritch_odds_commune|0]%   Curses, §YLore§!: [?eldritch_odds_curse|0]%\nPreach, §YZeal§!: [?eldritch_odds_preach|0]%   Incarnation, §YZeal§!: [?eldritch_odds_incarnate|0]%   Vessel, §YWill§!: [?eldritch_odds_vessel|0]%\nSome events also offer choices that only a Prophet with enough Lore, Zeal or Will can make.\n\nThe Prophet gains experience from every rite of the pact, and more from the great ones. Each level brings a point of Insight."
+ eldritch.80.d:0 "§HThe Mantle of the Prophet§!\n[ROOT.GetEldritchProphetLine]\n[ROOT.GetEldritchMantleState]\n\n§HLevel§! §Y[?eldritch_prophet_level|0]§!   §HExperience§! [?eldritch_prophet_xp|0] / [?eldritch_prophet_xp_next|0]\n§HInsight to spend:§! §G[?eldritch_prophet_insight|0]§!\n\n§YLore§! [?eldritch_prophet_lore|0] / 10: §G+[?eldritch_prophet_lore_pct|0]%§! research speed\nKnowledge of the rites, the old tongues and the angles between the stars.\n\n§YZeal§! [?eldritch_prophet_zeal|0] / 10: §G+[?eldritch_prophet_zeal_pct|0]%§! army attack\nThe fire that sends soldiers into battle beside things that are not human.\n\n§YWill§! [?eldritch_prophet_will|0] / 10: §G+[?eldritch_prophet_will_pct|0]%§! stability\nWhat is left of the Prophet's own mind, and the nation's faith in it.\n\n§HSkill checks§! (the odds of each roll)\nCommune, §YWill§!: [?eldritch_odds_commune|0]%   Curses, §YLore§!: [?eldritch_odds_curse|0]%\nPreach, §YZeal§!: [?eldritch_odds_preach|0]%   Incarnation, §YZeal§!: [?eldritch_odds_incarnate|0]%   Vessel, §YWill§!: [?eldritch_odds_vessel|0]%\nSome events also offer choices that only a Prophet with enough Lore, Zeal or Will can make.\n\n§HPaths:§! Lore [?eldritch_path_lore|0]/3, Zeal [?eldritch_path_zeal|0]/3, Will [?eldritch_path_will|0]/3. Spend Insight on perks in §YThe Prophet's Path§!.\n\nThe Prophet gains experience from every rite of the pact, and more from the great ones. Each level brings a point of Insight."
  eldritch.80.lore:0 "Study the forbidden texts (+1 Lore)"
  eldritch.80.zeal:0 "Stoke the fire (+1 Zeal)"
  eldritch.80.will:0 "Steel the mind (+1 Will)"

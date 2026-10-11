@@ -6,7 +6,7 @@
 # a pact is sealed (rites_1) and each time it is deepened (rites_2/3).
 # rites_1 unlocks the god's battalions; every tier makes them stronger.
 # eldritch_<god>_incarnation is granted when the god itself is
-# incarnated as a division.
+# incarnated as a division. eldritch_perk_* come from the Prophet's Path.
 #####################################################################
 
 technologies = {
@@ -473,6 +473,131 @@ technologies = {
 			ap_attack = 1.0
 			maximum_speed = 0.5
 			max_organisation = 50
+		}
+		research_cost = 1
+		start_year = 1936
+		allow = { always = no }
+		ai_will_do = { factor = 0 }
+	}
+
+	### THE PROPHET'S PATH ############################################
+	# Granted by the Fervent Host and Voice of the God perks.
+
+	eldritch_perk_fervent_host = {
+		eldritch_deep_one_brood = {
+			soft_attack = 0.15
+			defense = 0.15
+			breakthrough = 0.15
+			max_organisation = 10
+		}
+		eldritch_star_spawn = {
+			soft_attack = 0.15
+			defense = 0.15
+			breakthrough = 0.15
+			max_organisation = 10
+		}
+		eldritch_faceless_cult = {
+			soft_attack = 0.15
+			defense = 0.15
+			breakthrough = 0.15
+			max_organisation = 10
+		}
+		eldritch_shantak_riders = {
+			soft_attack = 0.15
+			defense = 0.15
+			breakthrough = 0.15
+			max_organisation = 10
+		}
+		eldritch_yellow_zealots = {
+			soft_attack = 0.15
+			defense = 0.15
+			breakthrough = 0.15
+			max_organisation = 10
+		}
+		eldritch_byakhee_riders = {
+			soft_attack = 0.15
+			defense = 0.15
+			breakthrough = 0.15
+			max_organisation = 10
+		}
+		eldritch_dark_young = {
+			soft_attack = 0.15
+			defense = 0.15
+			breakthrough = 0.15
+			max_organisation = 10
+		}
+		eldritch_thousand_young = {
+			soft_attack = 0.15
+			defense = 0.15
+			breakthrough = 0.15
+			max_organisation = 10
+		}
+		eldritch_gate_wardens = {
+			soft_attack = 0.15
+			defense = 0.15
+			breakthrough = 0.15
+			max_organisation = 10
+		}
+		eldritch_dunwich_horror = {
+			soft_attack = 0.15
+			defense = 0.15
+			breakthrough = 0.15
+			max_organisation = 10
+		}
+		eldritch_chaos_spawn = {
+			soft_attack = 0.15
+			defense = 0.15
+			breakthrough = 0.15
+			max_organisation = 10
+		}
+		eldritch_void_pipers = {
+			soft_attack = 0.15
+			defense = 0.15
+			breakthrough = 0.15
+			max_organisation = 10
+		}
+		research_cost = 1
+		start_year = 1936
+		allow = { always = no }
+		ai_will_do = { factor = 0 }
+	}
+
+	eldritch_perk_voice_of_the_god = {
+		eldritch_cthulhu_incarnate = {
+			soft_attack = 0.5
+			hard_attack = 0.5
+			defense = 0.5
+			breakthrough = 0.5
+		}
+		eldritch_nyarlathotep_incarnate = {
+			soft_attack = 0.5
+			hard_attack = 0.5
+			defense = 0.5
+			breakthrough = 0.5
+		}
+		eldritch_hastur_incarnate = {
+			soft_attack = 0.5
+			hard_attack = 0.5
+			defense = 0.5
+			breakthrough = 0.5
+		}
+		eldritch_shub_niggurath_incarnate = {
+			soft_attack = 0.5
+			hard_attack = 0.5
+			defense = 0.5
+			breakthrough = 0.5
+		}
+		eldritch_yog_sothoth_incarnate = {
+			soft_attack = 0.5
+			hard_attack = 0.5
+			defense = 0.5
+			breakthrough = 0.5
+		}
+		eldritch_azathoth_incarnate = {
+			soft_attack = 0.5
+			hard_attack = 0.5
+			defense = 0.5
+			breakthrough = 0.5
 		}
 		research_cost = 1
 		start_year = 1936
