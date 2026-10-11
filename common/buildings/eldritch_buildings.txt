@@ -11,6 +11,9 @@
 #   (GFX_buildings_strip, counted from 1). The mod's strip is the
 #   game's 31 frames with these four appended as 32 to 35 (drawn by
 #   tools/generate_art.py, sprite in interface/eldritch.gfx).
+# Besides their modifiers, they feed the pact Favor every month
+# (eldritch_monthly_pulse).
+#
 # - special_icon: its icon in the view of the province where one
 #   stands (only_display_if_exists). Like the game's own special
 #   buildings (facilities, dams, canals, landmarks) they are built in
@@ -35,11 +38,13 @@ buildings = {
 			state_max = 1
 		}
 		state_modifiers = {
-			local_manpower = 0.1
+			local_manpower = 0.2
+			local_non_core_manpower = 0.1
 		}
 		country_modifiers = {
 			modifiers = {
 				war_support_factor = 0.01
+				compliance_growth = 0.02
 			}
 		}
 	}
@@ -60,7 +65,10 @@ buildings = {
 		}
 		country_modifiers = {
 			modifiers = {
-				command_power_gain_mult = 0.1
+				command_power_gain_mult = 0.15
+				max_command_power = 15
+				army_leader_start_level = 1
+				encryption_factor = 0.15
 			}
 		}
 	}
@@ -81,8 +89,10 @@ buildings = {
 		}
 		country_modifiers = {
 			modifiers = {
-				research_speed_factor = 0.02
-				air_night_penalty = -0.1
+				research_speed_factor = 0.03
+				decryption_factor = 0.1
+				air_night_penalty = -0.15
+				air_weather_penalty = -0.1
 			}
 		}
 	}
@@ -101,10 +111,17 @@ buildings = {
 			province_max = 1
 			state_max = 1
 		}
+		state_modifiers = {
+			state_production_speed_buildings_factor = 0.15
+			local_building_slots_factor = 0.2
+		}
 		country_modifiers = {
 			modifiers = {
-				political_power_factor = 0.1
-				stability_factor = 0.03
+				political_power_factor = 0.15
+				stability_factor = 0.05
+				war_support_factor = 0.05
+				army_morale_factor = 0.05
+				drift_defence_factor = 0.5
 			}
 		}
 	}

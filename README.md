@@ -61,7 +61,7 @@ Sealing a pact:
 * sends world news to every other nation.
 
 ### 3. Spend Eldritch Favor on blessings
-Favor is the currency of the pact. You gain it monthly (5 / 8 / 12 by tier), from **Hold a Rite of Worship** (15 PP → 15 Favor, every 30 days), from **Offer a Blood Sacrifice** (20k manpower → 40 Favor, every 60 days), and from the god's random whims (events).
+Favor is the currency of the pact. You gain it monthly (5 / 8 / 12 by tier), from **Hold a Rite of Worship** (15 PP → 15 Favor, every 30 days), from **Offer a Blood Sacrifice** (20k manpower → 40 Favor, every 60 days), from the god's random whims (events), and, for followers of Hastur, from the Road to Carcosa's buildings (up to +3 for Theatres, +2 for a Hall, +2 for an Observatory, +5 for the Palace; see 13).
 
 | Blessing | Cost | Effect |
 |---|---|---|
@@ -249,10 +249,10 @@ The chapters unlock four buildings. Every country sees them in the construction 
 
 | Building | Unlocked by | Cost | Effects |
 |---|---|---|---|
-| **Theatre of the Yellow Sign** | Chapter I | 3,000 | +10% manpower in its state, +1% war support |
-| **Hall of the Pallid Masque** | Chapter III | 6,000 | +10% command power gain |
-| **Black Star Observatory** | Chapter IV | 8,000 | +2% research speed, −10% air night penalty |
-| **Palace of the Yellow King** | Chapter VI | 15,000 | +10% political power, +3% stability |
+| **Theatre of the Yellow Sign** | Chapter I | 3,000 | +20% manpower and +10% non-core manpower in its state; per Theatre, +1% war support and +2% compliance growth; +1 Favor a month (+2 with three, +3 with five) |
+| **Hall of the Pallid Masque** | Chapter III | 6,000 | +15% command power gain, +15 maximum command power, new generals start a level higher, +15% encryption; +2 Favor a month |
+| **Black Star Observatory** | Chapter IV | 8,000 | +3% research speed, +10% decryption, −15% air night penalty, −10% air weather penalty; +2 Favor a month |
+| **Palace of the Yellow King** | Chapter VI | 15,000 | +15% political power, +5% stability, +5% war support, +5% army morale, +50% resistance to ideology drift; in its state +15% construction speed and +20% building slots; +5 Favor a month |
 
 The AI doesn't build special buildings by itself, so an AI follower of Hastur gets each chapter's buildings placed for free when the chapter opens. It still has to do the conquering, though in Chapter III it may conquer any 5 states instead of the Stranger's, and it is spared Cassilda's Song.
 

@@ -122,6 +122,32 @@ eldritch_monthly_pulse = {
 		limit = { has_country_flag = eldritch_great_temple }
 		add_to_variable = { eldritch_favor = 3 }
 	}
+	# the Road to Carcosa's buildings: +1 for a Theatre, +2 for three,
+	# +3 for five; +2 for a Hall, +2 for an Observatory, +5 for the Palace
+	if = {
+		limit = { eldritch_yellow_theatre > 0 }
+		add_to_variable = { eldritch_favor = 1 }
+	}
+	if = {
+		limit = { eldritch_yellow_theatre > 2 }
+		add_to_variable = { eldritch_favor = 1 }
+	}
+	if = {
+		limit = { eldritch_yellow_theatre > 4 }
+		add_to_variable = { eldritch_favor = 1 }
+	}
+	if = {
+		limit = { eldritch_masque_hall > 0 }
+		add_to_variable = { eldritch_favor = 2 }
+	}
+	if = {
+		limit = { eldritch_black_star_observatory > 0 }
+		add_to_variable = { eldritch_favor = 2 }
+	}
+	if = {
+		limit = { eldritch_yellow_palace > 0 }
+		add_to_variable = { eldritch_favor = 5 }
+	}
 	eldritch_clamp_favor = yes
 
 	# While the god walks the earth our armies take heart and our enemies
