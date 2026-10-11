@@ -1,6 +1,6 @@
 # Eldritch Pacts – Call of the Old Ones
 
-A Hearts of Iron IV mod that lets any nation summon one of the Lovecraftian Old Ones, bind it in a pact, and spend its favor on blessings. Blessings buff the nation, give traits to its generals, admirals and leader, raise avatar commanders, and unlock unique eldritch battalions.
+A Hearts of Iron IV mod that lets any nation summon one of three Lovecraftian Old Ones (Cthulhu, Hastur or Azathoth), bind it in a pact, and spend its favor on blessings. Blessings buff the nation, give traits to its generals, admirals and leader, raise avatar commanders, and unlock unique eldritch battalions.
 
 Everything is in a new decision category, **The Forbidden Rites**, open to every country. The mod overwrites no vanilla files.
 
@@ -47,7 +47,7 @@ When the mod is loaded, every human player gets an **"Eldritch Pacts Is Active"*
 ## How it works
 
 ### 1. Find the lore
-**Seek the Forbidden Lore** (25 PP, 30 days) reveals the six summoning rituals.
+**Seek the Forbidden Lore** (25 PP, 30 days) reveals the three summoning rituals: Cthulhu, Hastur and Azathoth.
 
 ### 2. Summon one god
 Each summoning takes 60 days and costs political power plus a manpower sacrifice. **You can only ever bind one god.** Once a pact is sealed, the other rituals disappear for good, and while one ritual is running the others are locked.
@@ -81,10 +81,7 @@ Favor is the currency of the pact. You gain it monthly (5 / 8 / 12 by tier), fro
 | God | Pact spirit focus | Battalions (template) | Timed blessing | Avatar | Unique rite | Tier III gift |
 |---|---|---|---|---|---|---|
 | **Cthulhu** – the Dreamer in R'lyeh *(needs a coastline)* | Navy damage and speed, dockyards, amphibious invasions | **Deep One Brood** (amphibious infantry), **Star-Spawn of Cthulhu** (heavy monsters) – *Deep One Swarm* | Tide of R'lyeh (naval and invasion bonuses) | Admiral **Father Dagon** and field marshal **Mother Hydra** | **Send Nightmares** – curse an enemy at war with you: −stability, −PP, −war support for 90 days | Two more Deep One Swarms |
-| **Nyarlathotep** – the Crawling Chaos *(needs 40% stability)* | Political power, faster war goals, stability | **Faceless Cultists** (urban infantry), **Shantak Riders** (fast mobile) – *Faceless Legion* | Masks of Nyarlathotep (PP, stability) | **The Black Pharaoh** | **Whisper Madness** – target a neighbour, enemy or major: −8% stability and a push toward your ideology | +200 PP |
 | **Hastur** – the King in Yellow *(needs 30% war support)* | Army morale, air attack and agility, aces | **Zealots of the Yellow Sign** (unbreakable infantry), **Byakhee Riders** (paradrop-capable shock troops) – *Host of the Yellow Sign*; six more are earned by quests (see 13) | The Yellow Sign Unveiled (morale, org, war support) | **The Stranger in the Pallid Mask** | **Stage 'The King in Yellow'** – curse an enemy: −morale, −org, −stability for 90 days | +10% war support |
-| **Shub-Niggurath** – the Black Goat *(25k manpower sacrifice)* | Population growth, recruitable pop, organization | **Dark Young** (forest/jungle monsters), **Thousand Young** (cheap swarm infantry) – *Brood of the Black Goat* | Fecundity of the Black Goat (growth, reinforcement, attrition) | **The Shepherd of the Black Goat** | **Rite of the Thousand Young** – +25k manpower | +100k manpower |
-| **Yog-Sothoth** – the Gate and the Key | Research speed, planning, factory efficiency | **Wardens of the Gate** (defensive infantry), **Dunwich Horror** (invisible monster) – *Wardens of the Gate* | All Is One (research, planning) | **Wilbur Whateley** | **Open the Gate** – +100% research bonus for one industry and one electronics tech | +1 research slot |
 | **Azathoth** – the Daemon Sultan *(needs 50% war support, −10% stability)* | Attack, breakthrough, factory output, at a heavy stability cost | **Spawn of the Nuclear Chaos** (shock infantry), **Void Pipers** (sorcerous artillery) – *Chaos Horde* | Mindless Fury (attack, breakthrough, speed) | **The Piper of the Void** | **Bottle the Nuclear Chaos** – a nuclear bomb (Tier II+) | Two nuclear bombs |
 
 ### 5. The gods incarnate
@@ -95,10 +92,7 @@ From Tier II, **Incarnate [God] in the Flesh** brings the god onto the battlefie
 | God | Division | Terrain where the god is strongest |
 |---|---|---|
 | Cthulhu | **Great Cthulhu** | sea landings, rivers, marsh |
-| Nyarlathotep | **The Crawling Chaos** | cities, desert |
 | Hastur | **The King in Yellow** | hills, mountains, cities |
-| Shub-Niggurath | **The Black Goat of the Woods** | forest, jungle |
-| Yog-Sothoth | **The All-in-One** | plains, hills, cities |
 | Azathoth | **Fragment of Azathoth** | plains, desert, cities |
 
 What every other god battalion has:
@@ -107,7 +101,7 @@ What every other god battalion has:
 * **90% hardness**, so soft attacks (rifles, machine guns, artillery) barely scratch it; only anti-tank weapons hurt it properly.
 * **+800% soft and hard attack, +1,000% defense and breakthrough, +250% piercing** and **+75% speed**, rising to +900% / +1,100% at Tier III.
 * Its own **recon (3)**, **initiative (+50%)** and field-hospital recovery (three quarters of its casualties return, half the experience loss).
-* **Large bonuses in its favoured terrain** from the table above, for example +200% attack in sea landings for Great Cthulhu and +120% attack in forest and jungle for the Black Goat.
+* **Large bonuses in its favoured terrain** from the table above, for example +200% attack in sea landings for Great Cthulhu.
 * It takes 8 combat width. You can't put it in your own templates or train it: it only arrives through the ritual. Losses are reinforced from your normal stockpile.
 
 The god never comes alone. Every incarnation also brings **two veteran servitor divisions** of the god's template. While the god's division is on the map:
@@ -165,10 +159,7 @@ Your country leader can take part in the pact in person. These rites need the le
 | God | Vessel trait |
 |---|---|
 | Cthulhu | **Flesh of the Sleeper**: +10% naval damage, +20% invasion speed, +10% war support, +0.15 PP a day, −5% stability |
-| Nyarlathotep | **Mask of the Crawling Chaos**: +0.35 PP a day, +5% stability, −25% war goal justification time, +25% ideology drift defence |
 | Hastur | **The Pallid Mask**: +15% morale, +5% organization, +15% war support, +10% air attack |
-| Shub-Niggurath | **Womb of the Thousand Young**: +25% monthly population, +2% recruitable population, +3% reinforce rate, +0.1 PP a day |
-| Yog-Sothoth | **The Key Made Flesh**: +10% research speed, +15% planning speed, +5% max factory efficiency |
 | Azathoth | **Seat of the Daemon Sultan**: +10% attack and breakthrough, +10% factory output, −10% stability |
 
 ### 9. The Prophet's Mantle: a character sheet
@@ -225,7 +216,7 @@ The category description and the character sheet show your Insight and how far a
 A third category, **The Prophet's Quests**, holds multi-stage quests. Every cult can undertake three: two that any pact may attempt, and its patron's own great work.
 
 1. **Begin.** The quest decision has a cost and a ritual of 30 to 60 days.
-2. **Choose an approach.** An event decides which stat the finale will test. One approach is a dialogue check (Lore, or Zeal for Yog-Sothoth and Azathoth) worth **+20%** to the finale.
+2. **Choose an approach.** An event decides which stat the finale will test. One approach is a dialogue check (Lore, or Zeal for Azathoth) worth **+20%** to the finale.
 3. **The task.** A timed mission with a countdown in the mission bar asks you to use the pact's rites before time runs out. Rites performed since the quest began count, and only toward quests that are underway.
 4. **The finale.** A skill check of **base + 7% per point** of the chosen stat, plus 10% with the perk that boosts that stat's checks (The Pnakotic Fragments, The Prophet's Banner or Iron Composure). Success brings a permanent **relic** spirit, 100 experience and 1 Insight. Failure has a price, gives 25 experience, and the quest can be begun again a year after that attempt began. Running out of time also fails the quest.
 
@@ -234,10 +225,7 @@ A third category, **The Prophet's Quests**, holds multi-stage quests. Every cult
 | **Recover the Necronomicon** | any pact | 50 PP + 25 Favor, 30 days | Rite of Worship and Commune, within 120 days | 40% | **The Necronomicon**: +5% research, +0.1 PP a day | −3% stability, +20 Favor |
 | **At the Mountains of Madness** | any pact, Tier II | 75 PP, 45 days | Dark Council and Preach, within 150 days | 35% | **The Elder Things' Archive**: +5% research, +5% factory output | −10k manpower, −3% stability |
 | **Raise R'lyeh** | Cthulhu, Tier II | 100 Favor, 60 days | Call Forth the Servitors, then have Great Cthulhu walking or 12+ Deep One Brood battalions, within 180 days | 30% | **R'lyeh Risen**: naval damage, dockyards, invasions; plus two servitor divisions | −5% stability, −40 Favor |
-| **The Thousand Masks** | Nyarlathotep | 100 Favor, 45 days | Whisper Madness twice, within 180 days | 35% | **The Thousand Masks**: +0.25 PP a day, ideology defence, faster war goals; plus 100 PP | −100 PP, −3% stability |
 | **Stage the Full Play** | Hastur, at war | 100 Favor, 30 days | Stage the play in an enemy nation with war support above 50%, within 150 days | 30% | **The Full Play Performed**: morale, organization, war support; plus the Yellow Madness on every enemy, and the **Audience** battalion | the Yellow Madness on yourself for 60 days |
-| **The Hunt of the Thousand Young** | Shub-Niggurath | 25k manpower, 30 days | Rite of the Thousand Young with 50k manpower in reserve, within 120 days | 35% | **The Black Goat's Brood**: population, recruitment, reinforcement; plus two servitor divisions | −30k manpower, −3% stability |
-| **Find the Silver Key** | Yog-Sothoth | 100 PP, 45 days | Open the Gate and Commune, within 180 days | 30% | **The Silver Key**: +10% research and planning; plus two 100% research bonuses | −5% stability, −40 Favor |
 | **The Daemon Sultan's Engine** | Azathoth, Tier II | 150 Favor, 60 days | Bottle the Nuclear Chaos, within 180 days | 30% | **The Daemon Engine**: +15% factory output, +5% efficiency, −5% stability; plus two nuclear bombs | −8% stability, −5% war support |
 
 The category description and the character sheet count your completed quests.
@@ -287,10 +275,7 @@ The grand doctrine costs 100 army experience, and each sub-doctrine 50. Each gra
 | God | Grand doctrine | The Servitors | The Faithful | Rites of War |
 |---|---|---|---|---|
 | Cthulhu | **The Rising Tide**: +25% invasion speed, +10 invasion capacity; milestones add invasion prep, reinforcement and smaller invasion penalties | **The Brood of Dagon**: Deep Ones fight in rivers and marshes, Star-Spawn hit harder, more organization, morale and recovered casualties | **The Esoteric Order of Dagon**: infantry organization, defense and morale, marsh and river attacks, faster invasion prep | **Dreams of the Sleeper**: morale, planning, organization, invasion capacity, breakthrough |
-| Nyarlathotep | **The Thousand Masks**: +15% planning speed, +15% army intel; milestones add Unexpected Thrust, Guerrilla Tactics and initiative | **The Faceless Host**: Faceless Cultists defend better, Shantak Riders break through and move faster | **The Church of Starry Wisdom**: city fighting, intel, coordination, night attacks | **The Mask of Fear**: initiative, planning, breakthrough, attack speed, morale |
 | Hastur | **The Yellow Sign**: +10% army morale; milestones add Infantry Charge, Relentless Assault, paradrop organization and weather-proof aircraft | **The Host of Carcosa**: all eight of Hastur's battalions, including those from the Road to Carcosa | **The Second Act**: infantry morale and organization, war support, less organization loss when broken | **The Winds of Hali**: aircraft fly in any weather, by night and faster; enemy air superiority counts for less |
-| Shub-Niggurath | **The Thousand Young**: +3% reinforcement, +250 manpower a week; milestones add Human Wave Tactics and less attrition | **The Black Goat's Brood**: Dark Young in forests and jungles, sturdier Thousand Young | **The Fertile Earth**: manpower, reinforcement, forest and jungle fighting | **The Wood Grows Thick**: less attrition and winter attrition, more enemy attrition, terrain penalties reduced |
-| Yog-Sothoth | **The Key and the Gate**: +20% planning speed, +10% max planning; milestones add Elastic Defense, Backhand Blow and Planned Attack | **The Guardians of the Threshold**: Gate Wardens dig in and hold, the Dunwich Horror breaks through | **The Seers**: digging in, entrenchment, initiative, organization | **The Opened Way**: army speed, slower planning decay, coordination, max planning |
 | Azathoth | **The Nuclear Chaos**: +5% army attack but −5% organization; milestones add Blitz, Relentless Assault and Barrage | **The Court of the Daemon Sultan**: Chaos Spawn tear through armour, Void Pipers hit harder | **The Mindless Dancers**: infantry soft attack and morale, breakthrough | **The Blind Idiot God**: artillery attack, army attack, morale |
 
 ---
@@ -318,7 +303,7 @@ common/decisions/                  decision category and all decisions
 common/ideas/                      pact spirits, timed blessings, curses
 common/country_leader/             Herald / Chosen leader traits
 common/unit_leader/                general, admiral and avatar traits
-common/units/                      the 18 servitor battalions and the 6 gods incarnate
+common/units/                      the 12 servitor battalions and the 3 gods incarnate
 common/technologies/               hidden "rite" techs that unlock and buff the battalions
 common/scripted_effects|triggers/  shared logic (summoning, blessings, tiers, favor)
 common/scripted_localisation/      [ROOT.GetEldritchGodName] etc.

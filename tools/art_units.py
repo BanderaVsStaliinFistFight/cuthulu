@@ -746,19 +746,6 @@ def ruins(seed, z=-9.0):
     return fn
 
 
-def dead_trees(seed, spots):
-    """Bare, splintered trunks standing in the haze."""
-    def fn(p):
-        d = np.full(len(p), 1e9)
-        for j, (x, z, hgt) in enumerate(spots):
-            lean = 0.15 * math.sin(j * 2.3)
-            d = np.minimum(d, R.sd_round_cone(p, (x, -0.2, z), (x + lean, hgt, z), 0.22, 0.05))
-            d = np.minimum(d, R.sd_round_cone(p, (x + lean * 0.6, hgt * 0.6, z), (x + 0.8 * (1 if j % 2 else -1),
-                                                                                    hgt * 0.85, z + 0.2), 0.07, 0.02))
-        return d
-    return fn
-
-
 def deep_one_brood():
     seed = 101
     k = Kit(skin=1, gear=2, metal=3, eye=4)
@@ -784,97 +771,6 @@ def deep_one_brood():
                           (0.75, 0.90, 0.85), (0.8, 0.45, 0.4), back_col=(0.65, 0.95, 0.85),
                           env=[(lambda q: sea(q, seed, 0.12), water)], cam_target=(0.0, 0.95, 0.0),
                           tint=(-0.01, 0.012, 0.01), smoke_col=(0.30, 0.38, 0.35), smoke_src=(0.6, 0.3))
-
-
-def faceless_cult():
-    seed = 201
-    k = Kit(skin=1, cloth=2, gear=3, metal=1, eye=4)
-    mats = [
-        Material((0.40, 0.38, 0.40), tex=mottled((0.40, 0.38, 0.40), seed, 4, 0.08, 0.1), tex_mode="replace",
-                 wrap=0.4, spec=0.6, gloss=50, sheen=0.3),                                  # 1 blank faces
-        Material((0.035, 0.028, 0.040), tex=mottled((0.035, 0.028, 0.040), seed + 1, grime=0.3),
-                 tex_mode="replace", wrap=0.3, spec=0.05, gloss=8, sheen=0.6),              # 2 black robes
-        Material((0.06, 0.045, 0.035), tex=mottled((0.06, 0.045, 0.035), seed + 2), tex_mode="replace", spec=0.2),
-        Material((0.0, 0.0, 0.0)),
-    ]
-    stone = Material((0.10, 0.09, 0.09), tex=mottled((0.10, 0.09, 0.09), seed + 3, 1.5, 0.4, 0.3),
-                     tex_mode="replace")
-
-    def fig(q):
-        return figure(q, k, seed, hunch=0.05, robe=True, head="faceless", arms="rifle", stride=0.7)
-
-    placements = [((0.25, 0, 0.6), -10, 1.02), ((-1.0, 0, -1.3), -6, 1.0), ((1.25, 0, -2.6), -18, 1.0)]
-    return _infantry_icon(seed, mats, fig, placements,
-                          dict(top=(0.012, 0.008, 0.016), horizon=(0.22, 0.09, 0.07), glow=(1.3, 0.45, 0.18),
-                               glow_at=(-0.25, 0.03), glow_size=40.0),
-                          (0.85, 0.65, 0.75), (0.9, 0.4, 0.3), back_col=(1.0, 0.45, 0.25),
-                          env=[(ruins(seed), stone)], tint=(0.012, -0.004, 0.02),
-                          smoke_col=(0.30, 0.18, 0.22), smoke_src=(0.3, 0.45))
-
-
-def thousand_young():
-    seed = 401
-    k = Kit(skin=1, gear=2, eye=3)
-    mats = [
-        Material((0.05, 0.04, 0.035), tex=mottled((0.05, 0.04, 0.035), seed, 18, 0.5, 0.2), tex_mode="replace",
-                 wrap=0.3, spec=0.3, gloss=20, sheen=0.8),                                  # 1 matted black hide
-        Material((0.30, 0.26, 0.20), tex=mottled((0.30, 0.26, 0.20), seed + 1, 20, 0.3, 0.3),
-                 tex_mode="replace", spec=0.4, gloss=30),                                   # 2 horn and claw
-        Material((0.0, 0.0, 0.0), emit=(1.6, 0.18, 0.06)),                                  # 3 eyes
-    ]
-    bark = Material((0.05, 0.045, 0.04), tex=mottled((0.05, 0.045, 0.04), seed + 2, 3, 0.4, 0.3),
-                    tex_mode="replace")
-
-    def fig(q):
-        return figure(q, k, seed, hunch=0.7, head="horned", arms="claws", stride=1.2, build=1.05, legs="goat",
-                      rough=0.03)
-
-    rng = np.random.default_rng(seed)
-    placements = [((0.15, 0, 0.9), -12, 0.78), ((-0.95, 0, 0.1), 14, 0.72), ((0.95, 0, -0.4), -26, 0.74),
-                  ((-0.30, 0, -1.3), 4, 0.70), ((-1.70, 0, -2.0), 20, 0.72), ((1.75, 0, -2.3), -30, 0.70),
-                  ((0.45, 0, -3.2), -8, 0.72)]
-    trees = dead_trees(seed, [(-2.6, -4.0, 5.0), (-0.9, -6.5, 6.0), (2.3, -5.0, 5.5), (3.6, -8.0, 6.0),
-                              (-4.0, -9.0, 6.0)])
-    return _infantry_icon(seed, mats, fig, placements,
-                          dict(top=(0.008, 0.010, 0.006), horizon=(0.12, 0.13, 0.08), glow=(0.7, 0.55, 0.30),
-                               glow_at=(0.05, 0.06), glow_size=45.0),
-                          (0.75, 0.70, 0.55), (0.8, 0.4, 0.4), back_col=(0.85, 0.70, 0.45),
-                          env=[(trees, bark)], squad_kw=dict(center=0.9, radius=1.35, pad=0.08),
-                          tint=(0.004, 0.008, -0.006), smoke_col=(0.25, 0.26, 0.20), smoke_src=(0.5, 0.4))
-
-
-def gate_wardens():
-    seed = 501
-    k = Kit(skin=1, cloth=2, gear=3, metal=4, eye=5)
-    mats = [
-        Material((0.25, 0.22, 0.20), tex=mottled((0.25, 0.22, 0.20), seed), tex_mode="replace", wrap=0.3),
-        Material((0.06, 0.07, 0.09), tex=mottled((0.06, 0.07, 0.09), seed + 1, grime=0.5), tex_mode="replace",
-                 wrap=0.3, spec=0.05, gloss=8, sheen=0.4),                                  # 2 slate cloaks
-        Material((0.07, 0.055, 0.04), tex=mottled((0.07, 0.055, 0.04), seed + 2), tex_mode="replace", spec=0.2),
-        Material((0.22, 0.24, 0.27), tex=mottled((0.22, 0.24, 0.27), seed + 3, 12, 0.3, 0.45),
-                 tex_mode="replace", spec=1.2, gloss=45),                                   # 4 dark steel
-        Material((0.05, 0.07, 0.10), emit=(0.25, 0.45, 0.85), spec=0.5),                    # 5 the sigil's glow
-    ]
-    stone = Material((0.09, 0.09, 0.10), tex=mottled((0.09, 0.09, 0.10), seed + 4, 1.5, 0.4, 0.3),
-                     tex_mode="replace")
-
-    def gate(p):
-        # a monumental trilithon far behind them
-        d = sd_box(p, (-2.4, 3.0, -10.0), (0.7, 3.0, 0.7))
-        d = np.minimum(d, sd_box(p, (2.4, 3.0, -10.0), (0.7, 3.0, 0.7)))
-        d = np.minimum(d, sd_box(p, (0.0, 6.5, -10.0), (3.5, 0.6, 0.8)))
-        return displace(d, p, 0.08, 1.5, seed, 0.2)
-
-    def fig(q):
-        return figure(q, k, seed, hunch=0.0, robe=True, head="helmet", arms="shield", stride=0.5)
-
-    placements = [((0.10, 0, 0.6), -8, 1.05), ((-1.15, 0, -0.9), 4, 1.05), ((1.35, 0, -1.9), -14, 1.05)]
-    return _infantry_icon(seed, mats, fig, placements,
-                          dict(top=(0.008, 0.010, 0.016), horizon=(0.12, 0.15, 0.22), glow=(0.6, 0.9, 1.5),
-                               glow_at=(0.0, 0.15), glow_size=25.0),
-                          (0.70, 0.75, 0.85), (0.8, 0.45, 0.4), back_col=(0.55, 0.75, 1.0),
-                          env=[(gate, stone)], tint=(-0.006, 0.0, 0.016), smoke_col=(0.22, 0.26, 0.34),
-                          smoke_src=(0.5, 0.25), glow=0.3)
 
 
 def chaos_spawn():
@@ -1076,29 +972,6 @@ def byakhee_riders():
                        smoke_col=(0.45, 0.35, 0.18), smoke_src=(0.4, 0.3))
 
 
-def shantak_riders():
-    seed = 211
-    k = Kit(skin=1, cloth=2, gear=3, metal=4, eye=5, extra=6)
-    mats = [
-        Material((0.07, 0.07, 0.06), tex=scaly((0.07, 0.07, 0.06), seed, 30), tex_mode="replace", wrap=0.2,
-                 spec=0.9, gloss=50),                                                       # 1 scaled hide
-        Material((0.03, 0.025, 0.035), tex=mottled((0.03, 0.025, 0.035), seed + 1, grime=0.3),
-                 tex_mode="replace", wrap=0.3, sheen=0.6),                                  # 2 black robes
-        Material((0.06, 0.05, 0.04)),
-        Material((0.35, 0.33, 0.36), spec=0.6, gloss=50),                                   # 4 blank face, steel
-        Material((0.0, 0.0, 0.0), emit=(1.6, 0.35, 0.15)),
-        Material((0.06, 0.045, 0.05), tex=mottled((0.06, 0.045, 0.05), seed + 2, 6, 0.3, 0.0), tex_mode="replace",
-                 wrap=0.6, spec=0.3, sss=(0.3, 0.06, 0.08)),                                # 6 wing membranes
-    ]
-    placements = [((0.0, 3.0, 0.0), -26, 1.0), ((-5.0, 4.8, -6.5), -16, 0.95)]
-    cam = Camera((0.0, 1.6, 10.6), (-0.8, 3.5, 0.0), 32.0)
-    return _rider_icon(seed, "shantak", mats, k,
-                       dict(top=(0.012, 0.008, 0.016), horizon=(0.22, 0.09, 0.08), glow=(1.3, 0.45, 0.2),
-                            glow_at=(0.2, 0.18), glow_size=30.0, clouds=0.9),
-                       (0.85, 0.6, 0.7), (1.0, 0.45, 0.25), placements, cam, tint=(0.012, -0.004, 0.02),
-                       smoke_col=(0.30, 0.16, 0.20), smoke_src=(0.6, 0.3))
-
-
 def _silhouettes(seed, placements, **fig_kw):
     """Small dark human figures as scenery, for scale (kept out of the
     icon's silhouette)."""
@@ -1152,179 +1025,6 @@ def star_spawn():
                             glow_at=(-0.05, 0.12), glow_size=25.0, clouds=0.9),
                        cam, lights, fog_density=0.04, fog_start=8.0, tint=(-0.01, 0.012, 0.01),
                        smoke_col=(0.28, 0.36, 0.33), smoke_src=(0.45, 0.3))
-
-
-def dark_young_fig(p, k, seed):
-    """A Dark Young of Shub-Niggurath: a knot of ropy black trunks on four
-    hoofed legs, branching into tentacles, its sides split by mouths."""
-    f = Field(len(p))
-    d = np.full(len(p), 1e9)
-    for j, (sx, sz) in enumerate(((1, 1), (-1, 1), (1, -1), (-1, -1))):
-        pts = [(0.0, 1.55, 0.0), (0.42 * sx, 0.85, 0.32 * sz), (0.62 * sx, 0.06, 0.48 * sz)]
-        d = R.smin(d, R.sd_tube(p, pts, [0.26, 0.15, 0.08]), 0.15)
-        f.add(R.sd_ellipsoid(p, (0.62 * sx, 0.06, 0.48 * sz), (0.10, 0.07, 0.10)), k.gear, 0.03)
-    for j in range(5):
-        a0 = j * 2 * math.pi / 5
-        pts, radii = [], []
-        for i in range(7):
-            t = i / 6
-            a = a0 + t * 2.2
-            pts.append((0.20 * math.cos(a), 1.2 + 2.3 * t, 0.20 * math.sin(a)))
-            radii.append(0.17 - 0.07 * t)
-        d = R.smin(d, R.sd_tube(p, pts, radii), 0.10)
-    top = np.array([0.0, 3.45, 0.0])
-    for j in range(9):
-        a = j * 2 * math.pi / 9 + 0.3
-        c, s_ = math.cos(a), math.sin(a)
-        rise = 0.35 + 0.25 * math.sin(j * 1.7)
-        pts = [top, top + (0.55 * c, 0.45 + rise, 0.55 * s_), top + (1.15 * c, 0.55 + rise, 1.15 * s_),
-               top + (1.75 * c, 0.15 + rise * 0.5, 1.75 * s_), top + (2.0 * c, -0.45, 2.0 * s_),
-               top + (1.9 * c + 0.2 * s_, -0.85, 1.9 * s_ - 0.2 * c)]
-        d = R.smin(d, R.sd_tube(p, pts, [0.15, 0.11, 0.08, 0.05, 0.025, 0.006]), 0.08)
-    # ropy, knotted surface
-    d = displace(d, p, 0.05, 6, seed, 0.12, ridged=True)
-    d = displace(d, p, 0.015, 24, seed + 1, 0.05)
-    # mouths torn into the trunk
-    mouths = [(0.0, 2.2, 0.26), (0.20, 2.9, 0.18), (-0.24, 1.75, 0.20), (0.05, 3.25, -0.2)]
-    for m in mouths:
-        m = np.asarray(m)
-        d = np.maximum(d, -R.sd_ellipsoid(p, m, (0.10, 0.04, 0.08)))
-        f.add(R.sd_ellipsoid(p, m * (1, 1, 0.9), (0.08, 0.025, 0.05)), k.eye)
-    f.add(d, k.skin, 0.0)
-    return f
-
-
-def dark_young():
-    seed = 421
-    k = Kit(skin=1, gear=2, eye=3)
-    mats = [
-        Material((0.035, 0.03, 0.028), tex=mottled((0.035, 0.03, 0.028), seed, 10, 0.4, 0.2), tex_mode="replace",
-                 wrap=0.3, spec=0.8, gloss=40, sss=(0.06, 0.03, 0.02)),                     # 1 black, wet hide
-        Material((0.10, 0.09, 0.07), spec=0.6, gloss=40),                                    # 2 hooves
-        Material((0.05, 0.10, 0.03), emit=(0.35, 1.3, 0.25)),                                # 3 glowing maws
-    ]
-    bark = Material((0.05, 0.045, 0.04), tex=mottled((0.05, 0.045, 0.04), seed + 2, 3, 0.4, 0.3),
-                    tex_mode="replace")
-
-    def fig(q):
-        return dark_young_fig(q, k, seed)
-
-    trees = dead_trees(seed, [(-3.3, -3.0, 6.0), (-1.4, -7.0, 7.0), (3.0, -4.0, 6.5), (4.4, -9.0, 7.0),
-                              (-5.0, -8.0, 7.0), (1.5, -11.0, 7.0)])
-
-    def scene(p):
-        f = Field(len(p))
-        f.add_group(p, (0.3, 2.2, 0.0), 3.3, lambda q: scaled(fig, q, (0.3, 0, 0.0), 20, 1.0), pad=0.2)
-        f.add(trees(p), 4)
-        f.add(ground(p, seed, 0.0), 0)
-        return f
-
-    gm = Material((0.05, 0.045, 0.035), tex=mud(seed, (0.05, 0.045, 0.035)), tex_mode="replace", spec=0.3,
-                  gloss=60, spec_tex=mud_spec(seed))
-    cam = Camera((0.6, 1.3, 9.8), (0.2, 2.2, 0.0), 32.0)
-    lights = [Light((0.70, 0.75, 0.65), 0.8, direction=(0.8, 0.5, 0.4), softness=10),
-              Light((0.70, 0.85, 0.55), 2.8, direction=(-0.3, 0.4, -1.0), softness=14),
-              Light((0.30, 0.33, 0.40), 0.15, direction=(0.4, 0.5, 0.8), shadow=False)]
-    return _scene_icon(seed, [gm] + mats + [bark], [1, 2, 3], scene,
-                       dict(top=(0.006, 0.009, 0.005), horizon=(0.10, 0.13, 0.07), glow=(0.55, 0.65, 0.35),
-                            glow_at=(0.1, 0.2), glow_size=30.0),
-                       cam, lights, fog_density=0.05, fog_start=7.0, tint=(0.0, 0.01, -0.006),
-                       smoke_col=(0.22, 0.27, 0.18), smoke_src=(0.5, 0.3), glow=0.3)
-
-
-def dunwich_fig(p, k, seed):
-    """The Dunwich Horror: a barn-sized, egg-shaped bulk of squirming ropes on
-    legs like hogsheads, eyes bulging all over it."""
-    f = Field(len(p))
-    d = R.sd_ellipsoid(p, (0, 2.6, 0), (1.6, 1.45, 1.35))
-    for j, (sx, sz) in enumerate(((1, 1), (-1, 1), (1, -1), (-1, -1), (0, 1.3))):
-        pts = [(0.7 * sx, 1.8, 0.6 * sz), (0.95 * sx, 0.9, 0.85 * sz), (1.0 * sx, 0.1, 0.9 * sz)]
-        d = R.smin(d, R.sd_tube(p, pts, [0.42, 0.36, 0.32]), 0.25)
-    for j in range(14):
-        a = j * 2 * math.pi / 14
-        c, s_ = math.cos(a), math.sin(a)
-        y0 = 2.0 + 0.4 * math.sin(j * 1.3)
-        pts = [(1.3 * c, y0, 1.1 * s_), (1.8 * c, y0 - 0.5, 1.5 * s_), (2.0 * c + 0.3 * s_, y0 - 1.2, 1.7 * s_),
-               (1.9 * c, 0.15, 1.6 * s_ + 0.2 * c)]
-        d = R.smin(d, R.sd_tube(p, pts, [0.16, 0.12, 0.08, 0.04]), 0.12)
-    d = displace(d, p, 0.08, 4.5, seed, 0.18, ridged=True)
-    d = displace(d, p, 0.02, 16, seed + 1, 0.06)
-    f.add(d, k.skin)
-    rng = np.random.default_rng(seed)
-    for _ in range(9):
-        th, ph = rng.uniform(-0.6, 0.6), rng.uniform(-1.2, 1.2)
-        e = np.array([1.6 * math.sin(ph) * math.cos(th), 2.6 + 1.45 * math.sin(th), 1.35 * math.cos(ph) * math.cos(th)])
-        f.add(R.sd_sphere(p, e, rng.uniform(0.08, 0.15)), k.eye)
-    return f
-
-
-def dunwich_horror():
-    """Mostly invisible: the farm shows through it, bent as if through
-    heat-haze, with only its sheen, its eyes and its rim catching the light."""
-    seed = 521
-    k = Kit(skin=1, eye=2)
-    mats = [
-        Material((0.10, 0.10, 0.11), tex=mottled((0.10, 0.10, 0.11), seed, 8, 0.4, 0.0), tex_mode="replace",
-                 wrap=0.3, spec=1.6, gloss=60, sheen=0.8),                                   # 1 glistening ropes
-        Material((0.55, 0.55, 0.45), emit=(0.25, 0.30, 0.22), spec=1.5, gloss=90),           # 2 eyes
-    ]
-    wood = Material((0.08, 0.06, 0.045), tex=mottled((0.08, 0.06, 0.045), seed + 3, 4, 0.4, 0.3),
-                    tex_mode="replace")
-
-    def farm(p):
-        d = sd_box(p, (-5.5, 1.4, -14.0), (1.8, 1.4, 1.4))
-        roof = sd_box(p, (-5.5, 2.8, -14.0), (1.35, 1.35, 1.5), R.rot_z(45))
-        d = np.minimum(d, np.maximum(roof, -(p[:, 1] - 2.8)))
-        for x in np.arange(-4.5, 5.0, 1.4):
-            d = np.minimum(d, sd_box(p, (x, 0.55, 2.4), (0.06, 0.55, 0.06)))
-        d = np.minimum(d, sd_box(p, (0.0, 0.85, 2.4), (5.0, 0.04, 0.03)))
-        d = np.minimum(d, sd_box(p, (0.0, 0.45, 2.4), (5.0, 0.04, 0.03)))
-        return d
-
-    def fig(q):
-        return dunwich_fig(q, k, seed)
-
-    def scene(with_horror):
-        def fn(p):
-            f = Field(len(p))
-            if with_horror:
-                f.add_group(p, (0.5, 2.3, -0.5), 4.2, lambda q: scaled(fig, q, (0.5, 0, -0.5), -15, 1.0), pad=0.3)
-            f.add(farm(p), 3)
-            f.add(ground(p, seed, 0.0), 0)
-            return f
-        return fn
-
-    gm = Material((0.06, 0.05, 0.035), tex=mud(seed, (0.06, 0.05, 0.035)), tex_mode="replace", spec=0.3,
-                  gloss=60, spec_tex=mud_spec(seed))
-    all_mats = [gm] + mats + [wood]
-    cam = Camera((0.5, 1.4, 11.5), (0.2, 2.2, 0.0), 32.0)
-    lights = [Light((0.75, 0.75, 0.85), 0.9, direction=(0.8, 0.5, 0.4), softness=10),
-              Light((0.65, 0.75, 1.0), 2.8, direction=(-0.3, 0.4, -1.0), softness=14),
-              Light((0.30, 0.33, 0.40), 0.15, direction=(0.4, 0.5, 0.8), shadow=False)]
-    sky_kw = dict(top=(0.008, 0.010, 0.016), horizon=(0.13, 0.15, 0.20), glow=(0.5, 0.6, 0.9), glow_at=(-0.2, 0.1),
-                  glow_size=30.0)
-    bg = sky(seed, **sky_kw)
-    W, H = ICON_SIZE
-    kw = dict(ss=2, background=bg, ambient=(0.035, 0.035, 0.04), rim=((0.45, 0.5, 0.65), 2.5),
-              fog=(np.asarray(sky_kw["horizon"]) * 0.85, 0.04, 8.0), max_dist=60.0, ao_scale=0.12,
-              shadow_dist=6.0, shadow_bias=(0.006, 0.03))
-    full = R.render(scene(True), all_mats, cam, lights, (W * SCALE, H * SCALE), coverage=[1, 2], **kw)
-    empty = R.render(scene(False), all_mats, cam, lights, (W * SCALE, H * SCALE), **kw)
-    cov = full["coverage"]
-    # its whole outline for the white icon, fence and all in front of it ignored
-    alone = R.render(lambda p: Field(len(p)).add_group(p, (0.5, 2.3, -0.5), 4.2,
-                                                       lambda q: scaled(fig, q, (0.5, 0, -0.5), -15, 1.0), pad=0.3),
-                     all_mats, cam, [], (W * SCALE, H * SCALE), ss=2, max_dist=60.0, coverage=[1, 2])["coverage"]
-    # the farm bent through it, as through heat haze
-    h, w = cov.shape
-    yy, xx = np.mgrid[0:h, 0:w]
-    shift = (R.fbm2(xx / 40.0, yy / 40.0, 3, seed) * 10 * cov).astype(int)
-    bent = empty["rgb"][np.clip(yy + shift // 2, 0, h - 1), np.clip(xx + shift, 0, w - 1)]
-    mix = cov[..., None]
-    rgb = bent * (1 - mix) + (bent * 0.4 + full["rgb"] * 0.6) * mix
-    out = {"rgb": rgb, "depth": np.minimum(full["depth"], empty["depth"]), "alpha": full["alpha"]}
-    return finish(out, seed, tint=(-0.004, 0.0, 0.014), smoke_col=(0.25, 0.27, 0.33), smoke_src=(0.45, 0.3)), \
-        alone
 
 
 
@@ -1752,61 +1452,6 @@ def great_cthulhu():
                        border=(150, 120, 60), glow=0.3)
 
 
-def pyramid(p, base, half, height):
-    """A bound for a square pyramid standing on base."""
-    q = p - np.asarray(base, float)
-    n = math.hypot(height, half)
-    a = (height * np.maximum(np.abs(q[:, 0]), np.abs(q[:, 2])) + half * q[:, 1] - half * height) / n
-    return np.maximum(a, -q[:, 1])
-
-
-def crawling_chaos():
-    """The Black Pharaoh standing before the pyramids, the three-lobed
-    burning eye hanging over it."""
-    seed = 231
-    k = Kit(skin=1, cloth=2, gear=3, metal=4, eye=5)
-    mats = [
-        Material((0.01, 0.01, 0.012), spec=1.2, gloss=80),                                  # 1 the void of its face
-        Material((0.03, 0.022, 0.03), tex=mottled((0.03, 0.022, 0.03), seed, grime=0.2), tex_mode="replace",
-                 wrap=0.3, sheen=0.7),                                                       # 2 black robes
-        Material((0.30, 0.22, 0.07), tex=lambda p, n: np.where((np.sin(p[:, 1] * 95) > 0)[:, None],
-                                                               np.array([0.32, 0.23, 0.06]),
-                                                               np.array([0.03, 0.03, 0.05])),
-                 tex_mode="replace", spec=1.0, gloss=40),                                   # 3 striped nemes
-        Material((0.35, 0.25, 0.06), spec=1.5, gloss=60),                                   # 4 gold
-        Material((0.0, 0.0, 0.0), emit=(4.0, 0.9, 0.25)),                                   # 5 the burning eye
-    ]
-    sand = Material((0.10, 0.065, 0.04), tex=mottled((0.10, 0.065, 0.04), seed + 1, 0.8, 0.3, 0.2),
-                    tex_mode="replace", spec=0.1)
-    stone = Material((0.12, 0.08, 0.06), tex=mottled((0.12, 0.08, 0.06), seed + 2, 1.0, 0.3, 0.3),
-                     tex_mode="replace")
-
-    def fig(q):
-        f = figure(q, k, seed, hunch=0.0, robe=True, head="pharaoh", arms="crossed", stride=0.3, build=1.05)
-        # the three-lobed eye
-        c = np.array([0.0, 2.22, 0.05])
-        for j in range(3):
-            a = math.pi / 2 + j * 2 * math.pi / 3
-            f.add(R.sd_sphere(q, c + (0.11 * math.cos(a), 0.11 * math.sin(a), 0), 0.085), k.eye, 0.04)
-        return f
-
-    def scene(p):
-        f = _squad(p, [((0.0, 0, 0.0), -8, 1.6)], fig, center=1.3, radius=1.6, pad=0.1)
-        f.add(np.minimum(pyramid(p, (-13.0, 0, -45.0), 10.0, 11.5), pyramid(p, (11.0, 0, -60.0), 8.0, 9.0)), 7)
-        f.add(p[:, 1] - 0.15 * R.fbm3(p * np.array([0.25, 0, 0.12]), 3, seed) * (np.abs(p[:, 1]) < 0.5), 6)
-        return f
-
-    cam = Camera((0.5, 1.4, 8.6), (0.0, 2.25, 0.0), 26.0)
-    lights = [Light((1.0, 0.7, 0.5), 0.8, direction=(0.8, 0.45, 0.4), softness=10),
-              Light((1.0, 0.45, 0.2), 3.2, direction=(-0.3, 0.25, -1.0), softness=14),
-              Light((0.30, 0.33, 0.40), 0.12, direction=(0.4, 0.5, 0.8), shadow=False)]
-    return _scene_icon(seed, [sand] + mats + [sand, stone], [1, 2, 3, 4, 5], scene,
-                       dict(top=(0.012, 0.006, 0.012), horizon=(0.30, 0.10, 0.05), glow=(1.6, 0.55, 0.20),
-                            glow_at=(0.0, 0.10), glow_size=30.0, stars=0.4),
-                       cam, lights, fog_density=0.012, fog_start=15.0, tint=(0.014, -0.004, 0.016),
-                       smoke_col=(0.35, 0.16, 0.12), smoke_src=(0.5, 0.35), border=(150, 120, 60), glow=0.6)
-
-
 def king_in_yellow():
     """The King's painted portrait, cropped to his wrapped head and the
     tentacles behind it, so the icon is the same creature as the avatar."""
@@ -1829,154 +1474,6 @@ def king_in_yellow():
     b = np.array([150, 120, 60]) / 255
     a[0, :], a[-1, :], a[:, 0], a[:, -1] = b, b, b, b
     return R.to_image(np.clip(a, 0, 1)), cov[box[0]:box[1]]
-
-
-def black_goat_fig(p, k, seed):
-    """Shub-Niggurath: a cloudy bulk of black flesh on goat legs, ropy
-    tentacles trailing to the ground, horns and a scatter of eyes."""
-    f = Field(len(p))
-    rng = np.random.default_rng(seed)
-    d = np.full(len(p), 1e9)
-    for _ in range(11):
-        c = np.array([rng.uniform(-1.0, 1.0), 2.9 + rng.uniform(-0.6, 0.8), rng.uniform(-0.6, 0.6)])
-        d = R.smin(d, R.sd_sphere(p, c, rng.uniform(0.55, 0.95)), 0.35)
-    for sx, sz in ((1, 0.6), (-1, 0.6), (0.6, -1), (-0.6, -1)):
-        pts = [(0.6 * sx, 2.3, 0.5 * sz), (0.85 * sx, 1.4, 0.95 * sz), (0.9 * sx, 0.75, 0.55 * sz),
-               (0.95 * sx, 0.05, 0.75 * sz)]
-        d = R.smin(d, R.sd_tube(p, pts, [0.38, 0.26, 0.13, 0.10]), 0.2)
-        f.add(R.sd_ellipsoid(p, (0.95 * sx, 0.05, 0.75 * sz + 0.06), (0.13, 0.09, 0.15)), k.gear, 0.03)
-    for j in range(16):
-        a = j * 2 * math.pi / 16 + rng.uniform(-0.2, 0.2)
-        c, s_ = math.cos(a), math.sin(a)
-        y0 = 2.6 + rng.uniform(-0.6, 0.9)
-        reach = rng.uniform(1.6, 2.8)
-        up = rng.random() < 0.35
-        end_y = y0 + rng.uniform(0.5, 1.6) if up else rng.uniform(0.0, 0.8)
-        pts = [(0.8 * c, y0, 0.7 * s_), (reach * 0.55 * c, y0 + (0.6 if up else -0.2), reach * 0.5 * s_),
-               (reach * 0.85 * c, (y0 + end_y) / 2, reach * 0.8 * s_), (reach * c + 0.3 * s_, end_y, reach * s_)]
-        d = R.smin(d, R.sd_tube(p, pts, [0.22, 0.13, 0.07, 0.015]), 0.12)
-    for side in (-1, 1):
-        base = np.array([0.45 * side, 3.85, 0.1])
-        pts = [base, base + (0.45 * side, 0.55, -0.15), base + (1.05 * side, 0.55, -0.45),
-               base + (1.30 * side, 0.05, -0.30), base + (1.05 * side, -0.25, 0.05), base + (0.85 * side, 0.0, 0.2)]
-        f.add(R.sd_tube(p, pts, [0.20, 0.18, 0.14, 0.10, 0.06, 0.02]), k.gear, 0.05)
-    d = displace(d, p, 0.18, 1.8, seed, 0.4)
-    d = displace(d, p, 0.04, 7, seed + 1, 0.1, ridged=True)
-    f.add(d, k.skin)
-    for _ in range(13):
-        th, ph = rng.uniform(-0.3, 0.7), rng.uniform(-1.0, 1.0)
-        e = np.array([1.3 * math.sin(ph), 2.9 + 0.9 * th, 1.05 * math.cos(ph)])
-        f.add(R.sd_sphere(p, e, rng.uniform(0.05, 0.10)), k.eye)
-    return f
-
-
-def black_goat():
-    seed = 431
-    k = Kit(skin=1, gear=2, eye=3)
-    mats = [
-        Material((0.025, 0.022, 0.02), tex=mottled((0.025, 0.022, 0.02), seed, 3, 0.4, 0.2), tex_mode="replace",
-                 wrap=0.3, spec=0.9, gloss=40, sss=(0.08, 0.02, 0.02)),
-        Material((0.16, 0.13, 0.09), tex=mottled((0.16, 0.13, 0.09), seed + 1, 12, 0.3, 0.3), tex_mode="replace",
-                 spec=0.5, gloss=30),
-        Material((0.0, 0.0, 0.0), emit=(2.0, 1.1, 0.15)),
-    ]
-    bark = Material((0.03, 0.03, 0.025))
-
-    def pines(p):
-        d = np.full(len(p), 1e9)
-        rng = np.random.default_rng(seed + 7)
-        for _ in range(22):
-            x, z = rng.uniform(-22, 22), rng.uniform(6, 30)
-            h = rng.uniform(4, 8)
-            q = p - np.array([x, 0, z])
-            r = np.sqrt(q[:, 0] ** 2 + q[:, 2] ** 2)
-            cone = np.maximum(r - (h - q[:, 1]) * 0.22, -q[:, 1])
-            d = np.minimum(d, np.maximum(cone, q[:, 1] - h))
-        return d
-
-    def fig(q):
-        return black_goat_fig(q, k, seed)
-
-    S = 6.0
-
-    def scene(p):
-        f = Field(len(p))
-        f.add_group(p, (0.0, 2.6 * S, -4.0), 3.9 * S, lambda q: scaled(fig, q, (0.0, 0, -4.0), 15, S), pad=0.3 * S)
-        f.add(pines(p), 4)
-        f.add(ground(p / 3.0, seed) * 3.0, 0)
-        return f
-
-    gm = Material((0.04, 0.04, 0.03), tex=mud(seed, (0.04, 0.04, 0.03)), tex_mode="replace", spec=0.2)
-    cam = Camera((2.0, 2.0, 72.0), (0.0, 14.0, 0.0), 30.0)
-    lights = [Light((0.8, 0.7, 0.6), 0.6, direction=(0.8, 0.5, 0.4), softness=10),
-              Light((0.9, 0.8, 0.6), 4.0, direction=(0.0, 0.35, -1.0), softness=14),
-              Light((0.30, 0.33, 0.40), 0.15, direction=(0.4, 0.5, 0.8), shadow=False)]
-    return _scene_icon(seed, [gm] + mats + [bark], [1, 2, 3], scene,
-                       dict(top=(0.010, 0.012, 0.009), horizon=(0.17, 0.15, 0.10), glow=(1.0, 0.78, 0.45),
-                            glow_at=(0.02, 0.24), glow_size=14.0, clouds=0.9),
-                       cam, lights, fog_density=0.010, fog_start=30.0, rim=((0.45, 0.38, 0.25), 2.6),
-                       tint=(0.004, 0.006, -0.006), smoke_col=(0.22, 0.22, 0.17), smoke_src=(0.5, 0.25),
-                       border=(150, 120, 60), glow=0.3)
-
-
-def iridescent(seed):
-    def tex(p, n):
-        ph = n @ np.array([0.5, 0.8, 0.3]) * 2.2 + R.fbm3(p * 0.8, 2, seed) * 1.2
-        col = 0.5 + 0.5 * np.cos(2 * math.pi * (ph[:, None] + np.array([0.0, 0.33, 0.67])))
-        return 0.12 + 0.55 * col
-    return tex
-
-
-def all_in_one():
-    """Yog-Sothoth: a heap of iridescent globes hanging over a ring of
-    standing stones."""
-    seed = 531
-    rng = np.random.default_rng(seed)
-    globes = []
-    for _ in range(34):
-        v = rng.normal(0, 1, 3)
-        v = v / np.linalg.norm(v) * rng.uniform(0.0, 1.0) ** 0.5
-        globes.append((np.array([v[0] * 4.2, 11.0 + v[1] * 3.0, v[2] * 3.0]), rng.uniform(0.6, 1.7)))
-    mats = [
-        Material((0.3, 0.3, 0.3), tex=iridescent(seed), tex_mode="replace", spec=2.0, gloss=90, wrap=0.2,
-                 emit=lambda p, n: np.array([0.10, 0.12, 0.20]) * (1 + R.fbm3(p * 0.5, 2, seed + 1))[:, None]),
-    ]
-    stone = Material((0.09, 0.09, 0.10), tex=mottled((0.09, 0.09, 0.10), seed + 2, 1.2, 0.4, 0.3), tex_mode="replace")
-    grass = Material((0.04, 0.045, 0.04), tex=mud(seed, (0.04, 0.045, 0.04)), tex_mode="replace", spec=0.2)
-
-    def stones(p):
-        d = np.full(len(p), 1e9)
-        for j in range(9):
-            a = j * 2 * math.pi / 9 + 0.2
-            c = np.array([7.5 * math.cos(a), 1.6, 7.5 * math.sin(a) - 2.0])
-            d = np.minimum(d, sd_box(p, c, (0.55, 1.8 + 0.4 * math.sin(j * 2.1), 0.35), rot_y(math.degrees(a)), r=0.1))
-        return displace(d, p, 0.12, 1.2, seed, 0.3)
-
-    def cluster(p):
-        f = Field(len(p))
-        d = np.full(len(p), 1e9)
-        for c, r in globes:
-            d = R.smin(d, R.sd_sphere(p, c, r), 0.25)
-        f.add(d, 1)
-        return f
-
-    def scene(p):
-        f = Field(len(p))
-        f.add_group(p, (0.0, 11.0, 0.0), 7.5, cluster, pad=0.2)
-        f.add(stones(p), 2)
-        f.add(ground(p / 3.0, seed) * 3.0, 0)
-        return f
-
-    cam = Camera((1.2, 2.2, 23.0), (0.0, 9.0, 0.0), 36.0)
-    lights = [Light((0.7, 0.8, 1.0), 0.9, direction=(0.7, 0.6, 0.5), softness=10),
-              Light((0.6, 0.8, 1.0), 2.5, direction=(-0.3, 0.4, -1.0), softness=14),
-              Light((0.30, 0.33, 0.40), 0.2, direction=(0.4, 0.5, 0.8), shadow=False)]
-    return _scene_icon(seed, [grass] + mats + [stone], [1], scene,
-                       dict(top=(0.005, 0.006, 0.014), horizon=(0.10, 0.12, 0.18), glow=(0.5, 0.6, 1.0),
-                            glow_at=(0.0, 0.35), glow_size=12.0, stars=0.7),
-                       cam, lights, fog_density=0.015, fog_start=25.0, rim=((0.35, 0.40, 0.55), 2.5),
-                       tint=(-0.004, 0.0, 0.016), smoke_col=(0.22, 0.25, 0.34), smoke_src=(0.5, 0.25),
-                       border=(150, 120, 60), glow=0.4, saturation=0.75)
 
 
 def azathoth_fragment():
@@ -2059,14 +1556,8 @@ def azathoth_fragment():
 ICONS = {
     "eldritch_deep_one_brood": deep_one_brood,
     "eldritch_star_spawn": star_spawn,
-    "eldritch_faceless_cult": faceless_cult,
-    "eldritch_shantak_riders": shantak_riders,
     "eldritch_yellow_zealots": yellow_zealots,
     "eldritch_byakhee_riders": byakhee_riders,
-    "eldritch_dark_young": dark_young,
-    "eldritch_thousand_young": thousand_young,
-    "eldritch_gate_wardens": gate_wardens,
-    "eldritch_dunwich_horror": dunwich_horror,
     "eldritch_chaos_spawn": chaos_spawn,
     "eldritch_void_pipers": void_pipers,
     "eldritch_lidless": lidless,
@@ -2076,10 +1567,7 @@ ICONS = {
     "eldritch_kings_tatters": kings_tatters,
     "eldritch_halis_drowned": halis_drowned,
     "eldritch_cthulhu_incarnate": great_cthulhu,
-    "eldritch_nyarlathotep_incarnate": crawling_chaos,
     "eldritch_hastur_incarnate": king_in_yellow,
-    "eldritch_shub_niggurath_incarnate": black_goat,
-    "eldritch_yog_sothoth_incarnate": all_in_one,
     "eldritch_azathoth_incarnate": azathoth_fragment,
 }
 
@@ -2103,14 +1591,8 @@ MAP_FRAME = (30, 12)
 NATO = {
     "eldritch_deep_one_brood": "infantry",
     "eldritch_star_spawn": "armour",
-    "eldritch_faceless_cult": "infantry",
-    "eldritch_shantak_riders": "cavalry",
     "eldritch_yellow_zealots": "infantry",
     "eldritch_byakhee_riders": "air_cavalry",
-    "eldritch_dark_young": "armour",
-    "eldritch_thousand_young": "infantry",
-    "eldritch_gate_wardens": "infantry",
-    "eldritch_dunwich_horror": "armour",
     "eldritch_chaos_spawn": "infantry",
     "eldritch_void_pipers": "artillery",
     "eldritch_lidless": "infantry",

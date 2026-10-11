@@ -15,8 +15,6 @@ eldritch_servitors = {
 		sub_units = {
 			eldritch_deep_one_brood
 			eldritch_star_spawn
-			eldritch_faceless_cult
-			eldritch_shantak_riders
 			eldritch_yellow_zealots
 			eldritch_byakhee_riders
 			eldritch_lidless
@@ -25,17 +23,10 @@ eldritch_servitors = {
 			eldritch_pallid_masks
 			eldritch_kings_tatters
 			eldritch_halis_drowned
-			eldritch_dark_young
-			eldritch_thousand_young
-			eldritch_gate_wardens
-			eldritch_dunwich_horror
 			eldritch_chaos_spawn
 			eldritch_void_pipers
 			eldritch_cthulhu_incarnate
-			eldritch_nyarlathotep_incarnate
 			eldritch_hastur_incarnate
-			eldritch_shub_niggurath_incarnate
-			eldritch_yog_sothoth_incarnate
 			eldritch_azathoth_incarnate
 		}
 	}

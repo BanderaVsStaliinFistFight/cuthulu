@@ -33,31 +33,6 @@ leader_traits = {
 		}
 	}
 
-	### NYARLATHOTEP ##################################################
-
-	eldritch_nyarlathotep_general = {
-		random = no
-		type = land
-		trait_type = personality_trait
-		planning_skill = 1
-		logistics_skill = 1
-		modifier = {
-			army_defence_factor = 0.05
-			breakthrough_factor = 0.05
-		}
-	}
-
-	eldritch_nyarlathotep_admiral = {
-		random = no
-		type = navy
-		trait_type = personality_trait
-		maneuvering_skill = 1
-		coordination_skill = 2
-		modifier = {
-			naval_speed_factor = 0.05
-		}
-	}
-
 	### HASTUR ########################################################
 
 	eldritch_hastur_general = {
@@ -80,55 +55,6 @@ leader_traits = {
 		coordination_skill = 1
 		modifier = {
 			naval_damage_factor = 0.05
-		}
-	}
-
-	### SHUB-NIGGURATH ################################################
-
-	eldritch_shub_niggurath_general = {
-		random = no
-		type = land
-		trait_type = personality_trait
-		defense_skill = 1
-		logistics_skill = 2
-		modifier = {
-			supply_consumption_factor = -0.10
-			attrition = -0.10
-		}
-	}
-
-	eldritch_shub_niggurath_admiral = {
-		random = no
-		type = navy
-		trait_type = personality_trait
-		defense_skill = 2
-		coordination_skill = 1
-		modifier = {
-			naval_speed_factor = 0.05
-		}
-	}
-
-	### YOG-SOTHOTH ###################################################
-
-	eldritch_yog_sothoth_general = {
-		random = no
-		type = land
-		trait_type = personality_trait
-		planning_skill = 2
-		logistics_skill = 1
-		modifier = {
-			army_speed_factor = 0.05
-		}
-	}
-
-	eldritch_yog_sothoth_admiral = {
-		random = no
-		type = navy
-		trait_type = personality_trait
-		maneuvering_skill = 2
-		coordination_skill = 1
-		modifier = {
-			naval_speed_factor = 0.10
 		}
 	}
 

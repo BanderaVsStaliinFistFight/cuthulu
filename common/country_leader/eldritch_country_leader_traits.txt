@@ -33,28 +33,6 @@ leader_traits = {
 		stability_factor = -0.05
 	}
 
-	### NYARLATHOTEP ##################################################
-
-	eldritch_nyarlathotep_herald = {
-		random = no
-		political_power_gain = 0.25
-		stability_factor = -0.03
-	}
-
-	eldritch_nyarlathotep_chosen = {
-		random = no
-		stability_factor = 0.10
-		justify_war_goal_time = -0.25
-	}
-
-	eldritch_nyarlathotep_vessel = {
-		random = no
-		political_power_gain = 0.35
-		stability_factor = 0.05
-		justify_war_goal_time = -0.25
-		drift_defence_factor = 0.25
-	}
-
 	### HASTUR ########################################################
 
 	eldritch_hastur_herald = {
@@ -76,51 +54,6 @@ leader_traits = {
 		army_org_factor = 0.05
 		war_support_factor = 0.15
 		air_attack_factor = 0.10
-	}
-
-	### SHUB-NIGGURATH ################################################
-
-	eldritch_shub_niggurath_herald = {
-		random = no
-		monthly_population = 0.10
-		stability_factor = -0.03
-	}
-
-	eldritch_shub_niggurath_chosen = {
-		random = no
-		conscription = 0.01
-		land_reinforce_rate = 0.02
-		political_power_gain = 0.10
-	}
-
-	eldritch_shub_niggurath_vessel = {
-		random = no
-		monthly_population = 0.25
-		conscription = 0.02
-		land_reinforce_rate = 0.03
-		political_power_gain = 0.10
-	}
-
-	### YOG-SOTHOTH ###################################################
-
-	eldritch_yog_sothoth_herald = {
-		random = no
-		research_speed_factor = 0.03
-		stability_factor = -0.03
-	}
-
-	eldritch_yog_sothoth_chosen = {
-		random = no
-		research_speed_factor = 0.05
-		planning_speed = 0.10
-		political_power_gain = 0.10
-	}
-
-	eldritch_yog_sothoth_vessel = {
-		random = no
-		research_speed_factor = 0.10
-		planning_speed = 0.15
-		production_factory_max_efficiency_factor = 0.05
 	}
 
 	### AZATHOTH ######################################################

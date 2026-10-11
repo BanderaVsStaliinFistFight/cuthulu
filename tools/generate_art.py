@@ -39,14 +39,11 @@ NEWS_SIZE = (397, 153)
 PORTRAIT_SIZE = (156, 210)
 TRAIT_SIZE = (40, 40)
 
-GODS = ["cthulhu", "nyarlathotep", "hastur", "shub_niggurath", "yog_sothoth", "azathoth"]
+GODS = ["cthulhu", "hastur", "azathoth"]
 
 PALETTE = {
     "cthulhu": {"main": (95, 179, 122), "dark": (25, 70, 52), "glow": (120, 255, 170), "bg": (8, 28, 26)},
-    "nyarlathotep": {"main": (70, 40, 95), "dark": (25, 12, 35), "glow": (255, 80, 40), "bg": (20, 10, 28)},
     "hastur": {"main": (240, 197, 65), "dark": (110, 80, 15), "glow": (255, 225, 120), "bg": (30, 22, 8)},
-    "shub_niggurath": {"main": (70, 50, 40), "dark": (25, 15, 12), "glow": (255, 60, 50), "bg": (16, 22, 12)},
-    "yog_sothoth": {"main": (170, 190, 255), "dark": (40, 50, 110), "glow": (190, 230, 255), "bg": (10, 14, 38)},
     "azathoth": {"main": (230, 60, 170), "dark": (70, 10, 60), "glow": (255, 170, 80), "bg": (26, 6, 24)},
 }
 
@@ -246,23 +243,6 @@ def sym_cthulhu(size, color=None):
     return glow_under(c.done(size, size), pal["glow"], size / 18, 0.8)
 
 
-def sym_nyarlathotep(size, color=None):
-    pal = PALETTE["nyarlathotep"]
-    main = color or pal["main"]
-    c = Canvas(size, size)
-    c.poly([(0.5, 0.06), (0.95, 0.90), (0.05, 0.90)], main + (255,))
-    c.poly([(0.5, 0.06), (0.95, 0.90), (0.5, 0.90)], tuple(int(v * 0.6) for v in main) + (255,))
-    c.line([(0.5, 0.06), (0.95, 0.90), (0.05, 0.90), (0.5, 0.06)], (160, 120, 200, 255), 0.02)
-    # three-lobed burning eye
-    for ang in (90, 210, 330):
-        a = math.radians(ang)
-        c.ellipse(0.5 + 0.09 * math.cos(a), 0.60 - 0.09 * math.sin(a), 0.11, 0.11, (255, 90, 40, 255))
-    c.ellipse(0.5, 0.60, 0.10, 0.10, (255, 200, 80, 255))
-    c.ellipse(0.5, 0.60, 0.018, 0.075, (10, 0, 0, 255))
-    img = c.done(size, size)
-    return glow_under(img, pal["glow"], size / 16, 0.7)
-
-
 def sym_hastur(size, color=None):
     pal = PALETTE["hastur"]
     main = color or pal["main"]
@@ -289,72 +269,6 @@ def sym_hastur(size, color=None):
     c.ellipse(0.5, 0.52, 0.07, 0.07, main + (255,))
     c.ellipse(0.5, 0.52, 0.035, 0.035, (40, 25, 5, 255))
     return glow_under(c.done(size, size), pal["glow"], size / 14, 0.8)
-
-
-def sym_shub_niggurath(size, color=None):
-    pal = PALETTE["shub_niggurath"]
-    main = color or (55, 40, 32)
-    c = Canvas(size, size)
-    # tentacle legs
-    for i, x in enumerate([0.36, 0.5, 0.64]):
-        tentacle(c, x, 0.58, 0.38, 0.05 * (-1 if i % 2 else 1), i, 0.04, 0.012, (30, 22, 18, 255),
-                 dx=(x - 0.5) * 0.6)
-    # horns: quadratic curves from the top of the head, curling outward
-    for side in (-1, 1):
-        p0, p1, p2 = (0.5 + side * 0.12, 0.30), (0.5 + side * 0.46, 0.0), (0.5 + side * 0.40, 0.40)
-        pts = []
-        for i in range(60):
-            t = i / 59
-            pts.append(((1 - t) ** 2 * p0[0] + 2 * (1 - t) * t * p1[0] + t * t * p2[0],
-                        (1 - t) ** 2 * p0[1] + 2 * (1 - t) * t * p1[1] + t * t * p2[1]))
-        c.stroke(pts, (150, 130, 110, 255), 0.05, 0.012)
-    # head
-    c.poly([(0.32, 0.26), (0.68, 0.26), (0.60, 0.55), (0.50, 0.70), (0.40, 0.55)], main + (255,))
-    # many eyes
-    rng = random.Random(7)
-    eyes = [(0.43, 0.38), (0.57, 0.38), (0.5, 0.48)]
-    for _ in range(6):
-        eyes.append((rng.uniform(0.2, 0.8), rng.uniform(0.55, 0.9)))
-    for ex, ey in eyes:
-        r = 0.035 if ey < 0.5 else 0.022
-        c.ellipse(ex, ey, r, r * 0.8, (255, 60, 50, 255))
-        c.ellipse(ex, ey, r * 0.35, r * 0.6, (20, 0, 0, 255))
-    return glow_under(c.done(size, size), pal["glow"], size / 18, 0.6)
-
-
-def sym_yog_sothoth(size, color=None):
-    pal = PALETTE["yog_sothoth"]
-    c = Canvas(size, size)
-    # gate arch behind
-    arch = (150, 160, 190, 255)
-    c.line([(0.18, 0.95), (0.18, 0.40)], arch, 0.05)
-    c.line([(0.82, 0.95), (0.82, 0.40)], arch, 0.05)
-    pts = [(0.5 + 0.32 * math.cos(math.radians(a)), 0.40 - 0.30 * math.sin(math.radians(a)))
-           for a in range(0, 181, 5)]
-    c.line(pts, arch, 0.05)
-    img = c.done(size, size)
-    # iridescent spheres
-    rng = random.Random(3)
-    hues = [(120, 230, 255), (255, 120, 230), (255, 215, 110), (170, 140, 255), (110, 255, 200)]
-    spheres = Image.new("RGBA", (size * SS, size * SS), (0, 0, 0, 0))
-    spheres_list = []
-    for _ in range(14):
-        r = rng.uniform(0.06, 0.15)
-        a = rng.uniform(0, 2 * math.pi)
-        d = rng.uniform(0, 0.22)
-        spheres_list.append((0.5 + d * math.cos(a), 0.55 + d * math.sin(a) * 0.9, r, rng.choice(hues)))
-    spheres_list.sort(key=lambda s: -s[2])
-    for x, y, r, hue in spheres_list:
-        px = int(r * size * SS * 2)
-        sph = radial_bg((px, px), tuple(min(255, v + 80) for v in hue), tuple(int(v * 0.35) for v in hue),
-                        center=(0.35, 0.35), scale=0.9)
-        mask = Image.new("L", (px, px), 0)
-        ImageDraw.Draw(mask).ellipse([0, 0, px - 1, px - 1], fill=255)
-        sph.putalpha(mask)
-        spheres.paste(sph, (int(x * size * SS - px / 2), int(y * size * SS - px / 2)), sph)
-    spheres = spheres.resize((size, size), Image.LANCZOS)
-    img = Image.alpha_composite(img, spheres)
-    return glow_under(img, pal["glow"], size / 14, 0.7)
 
 
 def sym_azathoth(size, color=None):
@@ -659,10 +573,7 @@ def sym_temple(size, color=None):
 
 SYMBOLS = {
     "cthulhu": sym_cthulhu,
-    "nyarlathotep": sym_nyarlathotep,
     "hastur": sym_hastur,
-    "shub_niggurath": sym_shub_niggurath,
-    "yog_sothoth": sym_yog_sothoth,
     "azathoth": sym_azathoth,
     "tome": sym_tome,
     "altar": sym_altar,
@@ -693,10 +604,7 @@ RELICS = {
     "relic_necronomicon": "tome",
     "relic_elder_archive": "rites",
     "relic_rlyeh": "cthulhu",
-    "relic_masks": "nyarlathotep",
     "relic_full_play": "hastur",
-    "relic_brood": "shub_niggurath",
-    "relic_silver_key": "yog_sothoth",
     "relic_engine": "azathoth",
 }
 
@@ -836,19 +744,6 @@ def sea(img, top_y, color, line_color, seed):
         d.line([(x, y), (x + ln, y)], fill=line_color, width=1)
 
 
-def forest(img, base_y, color, seed):
-    rng = random.Random(seed)
-    d = ImageDraw.Draw(img)
-    w, h = img.size
-    x = -10
-    while x < w + 10:
-        th = rng.randint(25, 55)
-        tw = rng.randint(10, 18)
-        d.polygon([(x, base_y), (x + tw / 2, base_y - th), (x + tw, base_y)], fill=color)
-        x += rng.randint(5, 11)
-    d.rectangle([0, base_y, w, h], fill=color)
-
-
 def finish(img, seed):
     return grain(vignette(img, 0.65), 6, seed)
 
@@ -863,15 +758,6 @@ def make_report_events():
     sea(img, int(h * 0.68), (8, 30, 32, 255), (40, 110, 100, 255), 2)
     save_dds(finish(img, 1), "gfx/event_pictures/eldritch_cthulhu.dds")
 
-    # Nyarlathotep: the black pyramid in the desert
-    img = vertical_bg(REPORT_SIZE, (8, 4, 16), (70, 30, 40))
-    img = stars(img, 80, 0.6, 3)
-    img = paste_center(img, sym_nyarlathotep(130), 0.5, 0.48)
-    d = ImageDraw.Draw(img)
-    d.polygon([(0, h), (0, h * 0.82), (w * 0.3, h * 0.76), (w * 0.7, h * 0.8), (w, h * 0.74), (w, h)],
-              fill=(40, 22, 20, 255))
-    save_dds(finish(img, 2), "gfx/event_pictures/eldritch_nyarlathotep.dds")
-
     # Hastur: Carcosa beneath twin suns
     img = vertical_bg(REPORT_SIZE, (20, 12, 5), (120, 80, 20))
     img = stars(img, 40, 0.4, 5)
@@ -884,24 +770,6 @@ def make_report_events():
     silhouette_city(img, (25, 15, 5, 255), int(h * 0.90), 6, towers=True)
     sea(img, int(h * 0.86), (60, 40, 10, 255), (140, 100, 30, 255), 7)
     save_dds(finish(img, 3), "gfx/event_pictures/eldritch_hastur.dds")
-
-    # Shub-Niggurath in the burning woods
-    img = vertical_bg(REPORT_SIZE, (5, 8, 6), (60, 25, 15))
-    img = stars(img, 50, 0.45, 8)
-    img = paste_center(img, sym_shub_niggurath(140), 0.5, 0.46)
-    fire = Image.new("RGBA", (120, 60), (0, 0, 0, 0))
-    ImageDraw.Draw(fire).ellipse([20, 20, 100, 60], fill=(255, 120, 40, 200))
-    img = paste_center(img, fire.filter(ImageFilter.GaussianBlur(10)), 0.5, 0.92)
-    forest(img, int(h * 0.90), (8, 12, 8, 255), 9)
-    save_dds(finish(img, 4), "gfx/event_pictures/eldritch_shub_niggurath.dds")
-
-    # Yog-Sothoth: spheres above the standing gate
-    img = vertical_bg(REPORT_SIZE, (4, 6, 20), (30, 40, 90))
-    img = stars(img, 120, 0.8, 10)
-    img = paste_center(img, sym_yog_sothoth(150), 0.5, 0.45)
-    d = ImageDraw.Draw(img)
-    d.polygon([(0, h), (0, h * 0.86), (w * 0.5, h * 0.78), (w, h * 0.86), (w, h)], fill=(12, 14, 24, 255))
-    save_dds(finish(img, 5), "gfx/event_pictures/eldritch_yog_sothoth.dds")
 
     # Azathoth: the vortex above the crater
     img = vertical_bg(REPORT_SIZE, (10, 2, 12), (60, 10, 50))
@@ -1075,77 +943,6 @@ def portrait_hydra():
     return finish_portrait(bg, c.done(*PORTRAIT_SIZE), (170, 140, 255), 42)
 
 
-def portrait_black_pharaoh():
-    bg = portrait_frame((120, 70, 30), (14, 6, 18), glow_center=(0.5, 0.25))
-    c = Canvas(*PORTRAIT_SIZE)
-    shoulders(c, (20, 14, 26, 255))
-    # broad collar
-    for k, col in enumerate([(210, 170, 60), (40, 60, 140), (210, 170, 60), (40, 60, 140), (210, 170, 60)]):
-        c.ellipse(0.5, 0.66, 0.40 - k * 0.05, 0.22 - k * 0.03, col + (255,))
-    c.poly([(0.44, 0.56), (0.56, 0.56), (0.57, 0.66), (0.43, 0.66)], (22, 16, 26, 255))
-    # nemes headdress
-    stripes = [(215, 175, 60), (35, 55, 130)]
-    pts = [(0.28, 0.16), (0.72, 0.16), (0.84, 0.66), (0.16, 0.66)]
-    c.poly(pts, stripes[0] + (255,))
-    for k in range(9):
-        y0 = 0.18 + k * 0.055
-        f = (y0 - 0.16) / 0.50
-        xl, xr = 0.28 - 0.12 * f, 0.72 + 0.12 * f
-        c.poly([(xl, y0), (xr, y0), (xr + 0.006, y0 + 0.025), (xl - 0.006, y0 + 0.025)], stripes[1] + (255,))
-    c.ellipse(0.5, 0.38, 0.20, 0.26, (22, 16, 26, 255))
-    for side in (-1, 1):
-        c.poly([(0.5 + side * 0.06, 0.34), (0.5 + side * 0.14, 0.32), (0.5 + side * 0.13, 0.35)], (255, 60, 30, 255))
-    c.line([(0.47, 0.50), (0.53, 0.50)], (90, 30, 30, 255), 0.012)
-    c.poly([(0.47, 0.20), (0.53, 0.20), (0.5, 0.12)], (230, 190, 70, 255))
-    c.ellipse(0.5, 0.11, 0.025, 0.03, (230, 190, 70, 255))
-    return finish_portrait(bg, c.done(*PORTRAIT_SIZE), (255, 120, 60), 43)
-
-
-def portrait_shepherd():
-    bg = portrait_frame((60, 25, 15), (6, 10, 6), glow_center=(0.5, 0.6))
-    c = Canvas(*PORTRAIT_SIZE)
-    shoulders(c, (18, 16, 14, 255))
-    c.line([(0.86, 1.0), (0.86, 0.20)], (90, 65, 40, 255), 0.03)
-    c.d.arc([c.p(0.80, 0.12)[0], c.p(0.80, 0.12)[1], c.p(0.92, 0.12)[0] + c.s(0.0), c.p(0.92, 0.26)[1]],
-            180, 360, fill=(90, 65, 40, 255), width=int(c.s(0.03)))
-    c.poly([(0.5, 0.10), (0.80, 0.50), (0.84, 0.84), (0.16, 0.84), (0.20, 0.50)], (28, 24, 20, 255))
-    for side in (-1, 1):
-        p0, p1, p2 = (0.5 + side * 0.10, 0.22), (0.5 + side * 0.48, 0.02), (0.5 + side * 0.38, 0.40)
-        pts = [((1 - t) ** 2 * p0[0] + 2 * (1 - t) * t * p1[0] + t * t * p2[0],
-                (1 - t) ** 2 * p0[1] + 2 * (1 - t) * t * p1[1] + t * t * p2[1]) for t in np.linspace(0, 1, 60)]
-        c.stroke(pts, (160, 140, 115, 255), 0.05, 0.012)
-    c.poly([(0.36, 0.26), (0.64, 0.26), (0.58, 0.58), (0.5, 0.68), (0.42, 0.58)], (45, 32, 26, 255))
-    for side in (-1, 1):
-        c.ellipse(0.5 + side * 0.07, 0.36, 0.035, 0.02, (255, 50, 40, 255))
-    rng = random.Random(9)
-    for _ in range(5):
-        c.ellipse(rng.uniform(0.25, 0.75), rng.uniform(0.86, 0.97), 0.015, 0.012, (255, 60, 50, 255))
-    return finish_portrait(bg, c.done(*PORTRAIT_SIZE), (255, 80, 60), 45)
-
-
-def portrait_wilbur():
-    bg = portrait_frame((90, 80, 60), (14, 12, 10))
-    c = Canvas(*PORTRAIT_SIZE)
-    shoulders(c, (40, 38, 42, 255), y=1.0)
-    for i, (x, dx) in enumerate([(0.24, -0.10), (0.30, -0.06), (0.70, 0.06), (0.76, 0.10)]):
-        pts = [(x + dx * t + 0.02 * math.sin(6 * t + i), 1.0 - 0.16 * t) for t in np.linspace(0, 1, 40)]
-        c.stroke(pts, (90, 140, 80, 255), 0.03, 0.008)
-    c.poly([(0.38, 0.66), (0.62, 0.66), (0.5, 0.92)], (225, 220, 205, 255))
-    c.poly([(0.47, 0.70), (0.53, 0.70), (0.55, 0.90), (0.5, 0.95), (0.45, 0.90)], (90, 20, 25, 255))
-    c.poly([(0.30, 0.70), (0.42, 0.66), (0.5, 0.92), (0.36, 0.95)], (55, 52, 58, 255))
-    c.poly([(0.70, 0.70), (0.58, 0.66), (0.5, 0.92), (0.64, 0.95)], (55, 52, 58, 255))
-    c.poly([(0.44, 0.52), (0.56, 0.52), (0.57, 0.68), (0.43, 0.68)], (200, 185, 140, 255))
-    c.ellipse(0.5, 0.36, 0.20, 0.30, (205, 190, 145, 255))
-    c.ellipse(0.5, 0.18, 0.21, 0.13, (35, 28, 22, 255))
-    for side in (-1, 1):
-        c.ellipse(0.5 + side * 0.075, 0.33, 0.03, 0.018, (30, 25, 20, 255))
-        c.ellipse(0.5 + side * 0.075, 0.33, 0.012, 0.012, (200, 190, 80, 255))
-        c.ellipse(0.5 + side * 0.205, 0.36, 0.03, 0.05, (190, 170, 130, 255))
-    c.line([(0.5, 0.36), (0.48, 0.46), (0.51, 0.47)], (150, 130, 95, 255), 0.01)
-    c.line([(0.43, 0.53), (0.57, 0.53)], (120, 70, 60, 255), 0.018)
-    return finish_portrait(bg, c.done(*PORTRAIT_SIZE), (190, 170, 120), 46)
-
-
 def portrait_piper():
     bg = portrait_frame((90, 20, 80), (8, 2, 12))
     bg = stars(bg, 50, 1.0, 47)
@@ -1172,10 +969,7 @@ def portrait_piper():
 PORTRAITS = {
     "eldritch_avatar_dagon": portrait_dagon,
     "eldritch_avatar_hydra": portrait_hydra,
-    "eldritch_avatar_black_pharaoh": portrait_black_pharaoh,
     "eldritch_avatar_pallid_mask": art_portraits.king_in_yellow,  # painted; see tools/art_portraits.py
-    "eldritch_avatar_shepherd": portrait_shepherd,
-    "eldritch_avatar_wilbur": portrait_wilbur,
     "eldritch_avatar_piper": portrait_piper,
 }
 

@@ -22,20 +22,8 @@ defined_text = {
 		localization_key = eldritch_god_name_cthulhu
 	}
 	text = {
-		trigger = { has_country_flag = eldritch_god_nyarlathotep }
-		localization_key = eldritch_god_name_nyarlathotep
-	}
-	text = {
 		trigger = { has_country_flag = eldritch_god_hastur }
 		localization_key = eldritch_god_name_hastur
-	}
-	text = {
-		trigger = { has_country_flag = eldritch_god_shub_niggurath }
-		localization_key = eldritch_god_name_shub_niggurath
-	}
-	text = {
-		trigger = { has_country_flag = eldritch_god_yog_sothoth }
-		localization_key = eldritch_god_name_yog_sothoth
 	}
 	text = {
 		trigger = { has_country_flag = eldritch_god_azathoth }

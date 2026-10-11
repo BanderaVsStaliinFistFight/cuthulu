@@ -83,55 +83,6 @@ ideas = {
 			}
 		}
 
-		### NYARLATHOTEP ##############################################
-
-		eldritch_nyarlathotep_pact_1 = {
-			picture = eldritch_nyarlathotep_1
-			removal_cost = -1
-			allowed_civil_war = { always = yes }
-			modifier = {
-				political_power_gain = 0.15
-				justify_war_goal_time = -0.10
-				war_support_factor = -0.05
-			}
-		}
-
-		eldritch_nyarlathotep_pact_2 = {
-			picture = eldritch_nyarlathotep_2
-			removal_cost = -1
-			allowed_civil_war = { always = yes }
-			modifier = {
-				political_power_gain = 0.30
-				justify_war_goal_time = -0.25
-				stability_factor = 0.05
-				research_speed_factor = 0.03
-			}
-		}
-
-		eldritch_nyarlathotep_pact_3 = {
-			picture = eldritch_nyarlathotep_3
-			removal_cost = -1
-			allowed_civil_war = { always = yes }
-			modifier = {
-				political_power_gain = 0.50
-				justify_war_goal_time = -0.50
-				stability_factor = 0.10
-				research_speed_factor = 0.05
-				war_support_factor = 0.05
-			}
-		}
-
-		eldritch_nyarlathotep_blessing = {
-			picture = eldritch_nyarlathotep_blessing
-			removal_cost = -1
-			allowed_civil_war = { always = yes }
-			modifier = {
-				political_power_gain = 0.50
-				stability_factor = 0.10
-				consumer_goods_factor = -0.05
-			}
-		}
-
 		### HASTUR ####################################################
 
 		eldritch_hastur_pact_1 = {
@@ -193,104 +144,6 @@ ideas = {
 				army_org_factor = -0.05
 				stability_factor = -0.05
 				war_support_factor = -0.05
-			}
-		}
-
-		### SHUB-NIGGURATH ############################################
-
-		eldritch_shub_niggurath_pact_1 = {
-			picture = eldritch_shub_niggurath_1
-			removal_cost = -1
-			allowed_civil_war = { always = yes }
-			modifier = {
-				monthly_population = 0.10
-				conscription = 0.005
-				consumer_goods_factor = 0.02
-			}
-		}
-
-		eldritch_shub_niggurath_pact_2 = {
-			picture = eldritch_shub_niggurath_2
-			removal_cost = -1
-			allowed_civil_war = { always = yes }
-			modifier = {
-				monthly_population = 0.25
-				conscription = 0.01
-				army_org_factor = 0.05
-				consumer_goods_factor = 0.02
-			}
-		}
-
-		eldritch_shub_niggurath_pact_3 = {
-			picture = eldritch_shub_niggurath_3
-			removal_cost = -1
-			allowed_civil_war = { always = yes }
-			modifier = {
-				monthly_population = 0.50
-				conscription = 0.02
-				land_reinforce_rate = 0.02
-				army_org_factor = 0.10
-				stability_factor = -0.05
-			}
-		}
-
-		eldritch_shub_niggurath_blessing = {
-			picture = eldritch_shub_niggurath_blessing
-			removal_cost = -1
-			allowed_civil_war = { always = yes }
-			modifier = {
-				monthly_population = 0.50
-				conscription_factor = 0.10
-				land_reinforce_rate = 0.03
-				attrition = -0.10
-			}
-		}
-
-		### YOG-SOTHOTH ###############################################
-
-		eldritch_yog_sothoth_pact_1 = {
-			picture = eldritch_yog_sothoth_1
-			removal_cost = -1
-			allowed_civil_war = { always = yes }
-			modifier = {
-				research_speed_factor = 0.05
-				stability_factor = -0.05
-			}
-		}
-
-		eldritch_yog_sothoth_pact_2 = {
-			picture = eldritch_yog_sothoth_2
-			removal_cost = -1
-			allowed_civil_war = { always = yes }
-			modifier = {
-				research_speed_factor = 0.08
-				planning_speed = 0.10
-				production_factory_efficiency_gain_factor = 0.05
-				stability_factor = -0.05
-			}
-		}
-
-		eldritch_yog_sothoth_pact_3 = {
-			picture = eldritch_yog_sothoth_3
-			removal_cost = -1
-			allowed_civil_war = { always = yes }
-			modifier = {
-				research_speed_factor = 0.12
-				planning_speed = 0.20
-				max_planning = 0.10
-				production_factory_efficiency_gain_factor = 0.10
-				stability_factor = -0.05
-			}
-		}
-
-		eldritch_yog_sothoth_blessing = {
-			picture = eldritch_yog_sothoth_blessing
-			removal_cost = -1
-			allowed_civil_war = { always = yes }
-			modifier = {
-				research_speed_factor = 0.15
-				planning_speed = 0.25
-				production_factory_max_efficiency_factor = 0.05
 			}
 		}
 
@@ -449,17 +302,6 @@ ideas = {
 			}
 		}
 
-		eldritch_relic_masks = {
-			picture = eldritch_relic_masks
-			removal_cost = -1
-			allowed_civil_war = { always = yes }
-			modifier = {
-				political_power_gain = 0.25
-				drift_defence_factor = 0.20
-				justify_war_goal_time = -0.20
-			}
-		}
-
 		eldritch_relic_full_play = {
 			picture = eldritch_relic_full_play
 			removal_cost = -1
@@ -468,27 +310,6 @@ ideas = {
 				army_morale_factor = 0.10
 				army_org_factor = 0.05
 				war_support_factor = 0.10
-			}
-		}
-
-		eldritch_relic_brood = {
-			picture = eldritch_relic_brood
-			removal_cost = -1
-			allowed_civil_war = { always = yes }
-			modifier = {
-				monthly_population = 0.20
-				conscription = 0.02
-				land_reinforce_rate = 0.02
-			}
-		}
-
-		eldritch_relic_silver_key = {
-			picture = eldritch_relic_silver_key
-			removal_cost = -1
-			allowed_civil_war = { always = yes }
-			modifier = {
-				research_speed_factor = 0.10
-				planning_speed = 0.10
 			}
 		}
 

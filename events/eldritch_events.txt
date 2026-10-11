@@ -3,11 +3,11 @@
 #
 #   eldritch.1        the forbidden lore is found
 #   eldritch.2        welcome message for human players at game start
-#   eldritch.11-16    a summoning succeeds (one per god)
+#   eldritch.11/13/16 a summoning succeeds (Cthulhu, Hastur, Azathoth)
 #   eldritch.20/30    the pact deepens (tier II / tier III)
-#   eldritch.31-36    the god is incarnated as a division (one per god)
+#   eldritch.31/33/36 the god is incarnated as a division (Cthulhu, Hastur, Azathoth)
 #   eldritch.40-43    the patron's whims (random, monthly)
-#   eldritch.60-62    received by the target of a curse
+#   eldritch.60/61    received by the target of a curse
 #   eldritch.63       received by a cursed enemy whose name the Prophet speaks
 #   eldritch.70/71    the Prophet communes with the god (asks / returns changed)
 #   eldritch.72       the Prophet becomes the god's Vessel
@@ -15,8 +15,7 @@
 #   eldritch.81       the Prophet reaches a new level
 #   eldritch.82       the result of a skill check (roll, odds, outcome)
 #   eldritch.201-273  the Prophet's quests: approach, success, failure
-#                     (201 Necronomicon, 211 Cthulhu, 221 Nyarlathotep,
-#                     231 Hastur, 241 Shub-Niggurath, 251 Yog-Sothoth,
+#                     (201 Necronomicon, 211 Cthulhu, 231 Hastur,
 #                     261 Azathoth, 271 At the Mountains of Madness)
 #   eldritch.290      a quest's task ran out of time
 #   eldritch.311-363  The Road to Carcosa, Hastur's questline: chapter n is
@@ -85,19 +84,6 @@ country_event = {
 }
 
 country_event = {
-	id = eldritch.12
-	title = eldritch.12.t
-	desc = eldritch.12.d
-	picture = GFX_report_event_eldritch_nyarlathotep
-
-	is_triggered_only = yes
-
-	option = {
-		name = eldritch.12.a
-	}
-}
-
-country_event = {
 	id = eldritch.13
 	title = eldritch.13.t
 	desc = eldritch.13.d
@@ -107,32 +93,6 @@ country_event = {
 
 	option = {
 		name = eldritch.13.a
-	}
-}
-
-country_event = {
-	id = eldritch.14
-	title = eldritch.14.t
-	desc = eldritch.14.d
-	picture = GFX_report_event_eldritch_shub_niggurath
-
-	is_triggered_only = yes
-
-	option = {
-		name = eldritch.14.a
-	}
-}
-
-country_event = {
-	id = eldritch.15
-	title = eldritch.15.t
-	desc = eldritch.15.d
-	picture = GFX_report_event_eldritch_yog_sothoth
-
-	is_triggered_only = yes
-
-	option = {
-		name = eldritch.15.a
 	}
 }
 
@@ -161,20 +121,8 @@ country_event = {
 		trigger = { has_country_flag = eldritch_god_cthulhu }
 	}
 	desc = {
-		text = eldritch.20.d.nyarlathotep
-		trigger = { has_country_flag = eldritch_god_nyarlathotep }
-	}
-	desc = {
 		text = eldritch.20.d.hastur
 		trigger = { has_country_flag = eldritch_god_hastur }
-	}
-	desc = {
-		text = eldritch.20.d.shub_niggurath
-		trigger = { has_country_flag = eldritch_god_shub_niggurath }
-	}
-	desc = {
-		text = eldritch.20.d.yog_sothoth
-		trigger = { has_country_flag = eldritch_god_yog_sothoth }
 	}
 	desc = {
 		text = eldritch.20.d.azathoth
@@ -197,20 +145,8 @@ country_event = {
 		trigger = { has_country_flag = eldritch_god_cthulhu }
 	}
 	desc = {
-		text = eldritch.30.d.nyarlathotep
-		trigger = { has_country_flag = eldritch_god_nyarlathotep }
-	}
-	desc = {
 		text = eldritch.30.d.hastur
 		trigger = { has_country_flag = eldritch_god_hastur }
-	}
-	desc = {
-		text = eldritch.30.d.shub_niggurath
-		trigger = { has_country_flag = eldritch_god_shub_niggurath }
-	}
-	desc = {
-		text = eldritch.30.d.yog_sothoth
-		trigger = { has_country_flag = eldritch_god_yog_sothoth }
 	}
 	desc = {
 		text = eldritch.30.d.azathoth
@@ -243,19 +179,6 @@ country_event = {
 }
 
 country_event = {
-	id = eldritch.32
-	title = eldritch.32.t
-	desc = eldritch.32.d
-	picture = GFX_report_event_eldritch_nyarlathotep
-
-	is_triggered_only = yes
-
-	option = {
-		name = eldritch.32.a
-	}
-}
-
-country_event = {
 	id = eldritch.33
 	title = eldritch.33.t
 	desc = eldritch.33.d
@@ -265,32 +188,6 @@ country_event = {
 
 	option = {
 		name = eldritch.33.a
-	}
-}
-
-country_event = {
-	id = eldritch.34
-	title = eldritch.34.t
-	desc = eldritch.34.d
-	picture = GFX_report_event_eldritch_shub_niggurath
-
-	is_triggered_only = yes
-
-	option = {
-		name = eldritch.34.a
-	}
-}
-
-country_event = {
-	id = eldritch.35
-	title = eldritch.35.t
-	desc = eldritch.35.d
-	picture = GFX_report_event_eldritch_yog_sothoth
-
-	is_triggered_only = yes
-
-	option = {
-		name = eldritch.35.a
 	}
 }
 
@@ -466,19 +363,6 @@ country_event = {
 }
 
 country_event = {
-	id = eldritch.62
-	title = eldritch.62.t
-	desc = eldritch.62.d
-	picture = GFX_report_event_eldritch_nyarlathotep
-
-	is_triggered_only = yes
-
-	option = {
-		name = eldritch.62.a
-	}
-}
-
-country_event = {
 	id = eldritch.63
 	title = eldritch.63.t
 	desc = eldritch.63.d
@@ -597,20 +481,8 @@ country_event = {
 		trigger = { has_country_flag = eldritch_god_cthulhu }
 	}
 	desc = {
-		text = eldritch.72.d.nyarlathotep
-		trigger = { has_country_flag = eldritch_god_nyarlathotep }
-	}
-	desc = {
 		text = eldritch.72.d.hastur
 		trigger = { has_country_flag = eldritch_god_hastur }
-	}
-	desc = {
-		text = eldritch.72.d.shub_niggurath
-		trigger = { has_country_flag = eldritch_god_shub_niggurath }
-	}
-	desc = {
-		text = eldritch.72.d.yog_sothoth
-		trigger = { has_country_flag = eldritch_god_yog_sothoth }
 	}
 	desc = {
 		text = eldritch.72.d.azathoth
@@ -1021,88 +893,6 @@ country_event = {
 	}
 }
 
-# nyarlathotep: choose the approach, then the finale (success / failure)
-country_event = {
-	id = eldritch.221
-	title = eldritch.221.t
-	desc = eldritch.221.d
-	picture = GFX_report_event_eldritch_nyarlathotep
-
-	is_triggered_only = yes
-
-	option = {
-		name = eldritch.221.a
-		custom_effect_tooltip = eldritch_quest_tests_will_tt
-		add_political_power = -25
-		custom_effect_tooltip = eldritch_quest_nyarlathotep_task_tt
-		hidden_effect = {
-			set_variable = { eldritch_quest_nyarlathotep_stat = 3 }
-			set_variable = { eldritch_quest_nyarlathotep_bonus = 0 }
-			activate_mission = eldritch_quest_nyarlathotep_task
-		}
-		ai_chance = { factor = 20 }
-	}
-
-	option = {
-		name = eldritch.221.b
-		custom_effect_tooltip = eldritch_quest_tests_zeal_tt
-		custom_effect_tooltip = eldritch_quest_nyarlathotep_task_tt
-		hidden_effect = {
-			set_variable = { eldritch_quest_nyarlathotep_stat = 2 }
-			set_variable = { eldritch_quest_nyarlathotep_bonus = 0 }
-			activate_mission = eldritch_quest_nyarlathotep_task
-		}
-		ai_chance = { factor = 20 }
-	}
-
-	option = {
-		name = eldritch.221.c
-		trigger = { check_variable = { eldritch_prophet_lore > 3 } }
-		custom_effect_tooltip = eldritch_quest_tests_lore_tt
-		custom_effect_tooltip = eldritch_quest_bonus_tt
-		custom_effect_tooltip = eldritch_quest_nyarlathotep_task_tt
-		hidden_effect = {
-			set_variable = { eldritch_quest_nyarlathotep_stat = 1 }
-			set_variable = { eldritch_quest_nyarlathotep_bonus = 20 }
-			activate_mission = eldritch_quest_nyarlathotep_task
-		}
-		ai_chance = { factor = 60 }
-	}
-}
-
-country_event = {
-	id = eldritch.222
-	title = eldritch.222.t
-	desc = eldritch.222.d
-	picture = GFX_report_event_eldritch_nyarlathotep
-
-	is_triggered_only = yes
-
-	option = {
-		name = eldritch.222.a
-		add_ideas = eldritch_relic_masks
-		add_political_power = 100
-		eldritch_prophet_gain_xp_100 = yes
-		eldritch_prophet_gain_insight = yes
-	}
-}
-
-country_event = {
-	id = eldritch.223
-	title = eldritch.223.t
-	desc = eldritch.223.d
-	picture = GFX_report_event_eldritch_nyarlathotep
-
-	is_triggered_only = yes
-
-	option = {
-		name = eldritch.223.a
-		add_political_power = -100
-		add_stability = -0.03
-		eldritch_prophet_gain_xp_25 = yes
-	}
-}
-
 # hastur: choose the approach, then the finale (success / failure)
 country_event = {
 	id = eldritch.231
@@ -1180,179 +970,6 @@ country_event = {
 	option = {
 		name = eldritch.233.a
 		add_timed_idea = { idea = eldritch_curse_yellow_madness days = 60 }
-		eldritch_prophet_gain_xp_25 = yes
-	}
-}
-
-# shub_niggurath: choose the approach, then the finale (success / failure)
-country_event = {
-	id = eldritch.241
-	title = eldritch.241.t
-	desc = eldritch.241.d
-	picture = GFX_report_event_eldritch_shub_niggurath
-
-	is_triggered_only = yes
-
-	option = {
-		name = eldritch.241.a
-		custom_effect_tooltip = eldritch_quest_tests_zeal_tt
-		custom_effect_tooltip = eldritch_quest_shub_niggurath_task_tt
-		hidden_effect = {
-			set_variable = { eldritch_quest_shub_niggurath_stat = 2 }
-			set_variable = { eldritch_quest_shub_niggurath_bonus = 0 }
-			activate_mission = eldritch_quest_shub_niggurath_task
-		}
-		ai_chance = { factor = 20 }
-	}
-
-	option = {
-		name = eldritch.241.b
-		custom_effect_tooltip = eldritch_quest_tests_will_tt
-		custom_effect_tooltip = eldritch_quest_shub_niggurath_task_tt
-		hidden_effect = {
-			set_variable = { eldritch_quest_shub_niggurath_stat = 3 }
-			set_variable = { eldritch_quest_shub_niggurath_bonus = 0 }
-			activate_mission = eldritch_quest_shub_niggurath_task
-		}
-		ai_chance = { factor = 20 }
-	}
-
-	option = {
-		name = eldritch.241.c
-		trigger = { check_variable = { eldritch_prophet_lore > 3 } }
-		custom_effect_tooltip = eldritch_quest_tests_lore_tt
-		custom_effect_tooltip = eldritch_quest_bonus_tt
-		custom_effect_tooltip = eldritch_quest_shub_niggurath_task_tt
-		hidden_effect = {
-			set_variable = { eldritch_quest_shub_niggurath_stat = 1 }
-			set_variable = { eldritch_quest_shub_niggurath_bonus = 20 }
-			activate_mission = eldritch_quest_shub_niggurath_task
-		}
-		ai_chance = { factor = 60 }
-	}
-}
-
-country_event = {
-	id = eldritch.242
-	title = eldritch.242.t
-	desc = eldritch.242.d
-	picture = GFX_report_event_eldritch_shub_niggurath
-
-	is_triggered_only = yes
-
-	option = {
-		name = eldritch.242.a
-		add_ideas = eldritch_relic_brood
-		eldritch_spawn_servitors = yes
-		eldritch_prophet_gain_xp_100 = yes
-		eldritch_prophet_gain_insight = yes
-	}
-}
-
-country_event = {
-	id = eldritch.243
-	title = eldritch.243.t
-	desc = eldritch.243.d
-	picture = GFX_report_event_eldritch_shub_niggurath
-
-	is_triggered_only = yes
-
-	option = {
-		name = eldritch.243.a
-		add_manpower = -30000
-		add_stability = -0.03
-		eldritch_prophet_gain_xp_25 = yes
-	}
-}
-
-# yog_sothoth: choose the approach, then the finale (success / failure)
-country_event = {
-	id = eldritch.251
-	title = eldritch.251.t
-	desc = eldritch.251.d
-	picture = GFX_report_event_eldritch_yog_sothoth
-
-	is_triggered_only = yes
-
-	option = {
-		name = eldritch.251.a
-		custom_effect_tooltip = eldritch_quest_tests_lore_tt
-		custom_effect_tooltip = eldritch_quest_yog_sothoth_task_tt
-		hidden_effect = {
-			set_variable = { eldritch_quest_yog_sothoth_stat = 1 }
-			set_variable = { eldritch_quest_yog_sothoth_bonus = 0 }
-			activate_mission = eldritch_quest_yog_sothoth_task
-		}
-		ai_chance = { factor = 20 }
-	}
-
-	option = {
-		name = eldritch.251.b
-		custom_effect_tooltip = eldritch_quest_tests_will_tt
-		custom_effect_tooltip = eldritch_quest_yog_sothoth_task_tt
-		hidden_effect = {
-			set_variable = { eldritch_quest_yog_sothoth_stat = 3 }
-			set_variable = { eldritch_quest_yog_sothoth_bonus = 0 }
-			activate_mission = eldritch_quest_yog_sothoth_task
-		}
-		ai_chance = { factor = 20 }
-	}
-
-	option = {
-		name = eldritch.251.c
-		trigger = { check_variable = { eldritch_prophet_zeal > 3 } }
-		custom_effect_tooltip = eldritch_quest_tests_zeal_tt
-		custom_effect_tooltip = eldritch_quest_bonus_tt
-		custom_effect_tooltip = eldritch_quest_yog_sothoth_task_tt
-		hidden_effect = {
-			set_variable = { eldritch_quest_yog_sothoth_stat = 2 }
-			set_variable = { eldritch_quest_yog_sothoth_bonus = 20 }
-			activate_mission = eldritch_quest_yog_sothoth_task
-		}
-		ai_chance = { factor = 60 }
-	}
-}
-
-country_event = {
-	id = eldritch.252
-	title = eldritch.252.t
-	desc = eldritch.252.d
-	picture = GFX_report_event_eldritch_yog_sothoth
-
-	is_triggered_only = yes
-
-	option = {
-		name = eldritch.252.a
-		add_ideas = eldritch_relic_silver_key
-		add_tech_bonus = {
-			name = eldritch_silver_key_insight
-			bonus = 1.0
-			uses = 1
-			category = industry
-		}
-		add_tech_bonus = {
-			name = eldritch_silver_key_insight
-			bonus = 1.0
-			uses = 1
-			category = electronics
-		}
-		eldritch_prophet_gain_xp_100 = yes
-		eldritch_prophet_gain_insight = yes
-	}
-}
-
-country_event = {
-	id = eldritch.253
-	title = eldritch.253.t
-	desc = eldritch.253.d
-	picture = GFX_report_event_eldritch_yog_sothoth
-
-	is_triggered_only = yes
-
-	option = {
-		name = eldritch.253.a
-		add_stability = -0.05
-		eldritch_lose_favor_40 = yes
 		eldritch_prophet_gain_xp_25 = yes
 	}
 }
@@ -1989,20 +1606,8 @@ news_event = {
 		trigger = { FROM = { has_country_flag = eldritch_god_cthulhu } }
 	}
 	desc = {
-		text = eldritch_news.1.d.nyarlathotep
-		trigger = { FROM = { has_country_flag = eldritch_god_nyarlathotep } }
-	}
-	desc = {
 		text = eldritch_news.1.d.hastur
 		trigger = { FROM = { has_country_flag = eldritch_god_hastur } }
-	}
-	desc = {
-		text = eldritch_news.1.d.shub_niggurath
-		trigger = { FROM = { has_country_flag = eldritch_god_shub_niggurath } }
-	}
-	desc = {
-		text = eldritch_news.1.d.yog_sothoth
-		trigger = { FROM = { has_country_flag = eldritch_god_yog_sothoth } }
 	}
 	desc = {
 		text = eldritch_news.1.d.azathoth
@@ -2038,20 +1643,8 @@ news_event = {
 		trigger = { FROM = { has_country_flag = eldritch_god_cthulhu } }
 	}
 	desc = {
-		text = eldritch_news.3.d.nyarlathotep
-		trigger = { FROM = { has_country_flag = eldritch_god_nyarlathotep } }
-	}
-	desc = {
 		text = eldritch_news.3.d.hastur
 		trigger = { FROM = { has_country_flag = eldritch_god_hastur } }
-	}
-	desc = {
-		text = eldritch_news.3.d.shub_niggurath
-		trigger = { FROM = { has_country_flag = eldritch_god_shub_niggurath } }
-	}
-	desc = {
-		text = eldritch_news.3.d.yog_sothoth
-		trigger = { FROM = { has_country_flag = eldritch_god_yog_sothoth } }
 	}
 	desc = {
 		text = eldritch_news.3.d.azathoth
