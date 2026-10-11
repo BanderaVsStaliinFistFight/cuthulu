@@ -1073,54 +1073,6 @@ country_event = {
 # THE ROAD TO CARCOSA (see the decisions file for the structure)
 #####################################################################
 
-# Chapter 1: the approach, then the finale (success / failure)
-country_event = {
-	id = eldritch.311
-	title = eldritch.311.t
-	desc = eldritch.311.d
-	picture = GFX_report_event_eldritch_hastur
-
-	is_triggered_only = yes
-
-	option = {
-		name = eldritch.311.a
-		custom_effect_tooltip = eldritch_quest_tests_zeal_tt
-		custom_effect_tooltip = eldritch_carcosa_1_task_tt
-		hidden_effect = {
-			set_variable = { eldritch_carcosa_1_stat = 2 }
-			set_variable = { eldritch_carcosa_1_bonus = 0 }
-			activate_mission = eldritch_carcosa_1_task
-		}
-		ai_chance = { factor = 20 }
-	}
-
-	option = {
-		name = eldritch.311.b
-		custom_effect_tooltip = eldritch_quest_tests_will_tt
-		custom_effect_tooltip = eldritch_carcosa_1_task_tt
-		hidden_effect = {
-			set_variable = { eldritch_carcosa_1_stat = 3 }
-			set_variable = { eldritch_carcosa_1_bonus = 0 }
-			activate_mission = eldritch_carcosa_1_task
-		}
-		ai_chance = { factor = 20 }
-	}
-
-	option = {
-		name = eldritch.311.c
-		trigger = { check_variable = { eldritch_prophet_lore > 2 } }
-		custom_effect_tooltip = eldritch_quest_tests_lore_tt
-		custom_effect_tooltip = eldritch_quest_bonus_tt
-		custom_effect_tooltip = eldritch_carcosa_1_task_tt
-		hidden_effect = {
-			set_variable = { eldritch_carcosa_1_stat = 1 }
-			set_variable = { eldritch_carcosa_1_bonus = 20 }
-			activate_mission = eldritch_carcosa_1_task
-		}
-		ai_chance = { factor = 60 }
-	}
-}
-
 country_event = {
 	id = eldritch.312
 	title = eldritch.312.t
@@ -1131,74 +1083,6 @@ country_event = {
 
 	option = {
 		name = eldritch.312.a
-		add_ideas = eldritch_carcosa_road_1
-		eldritch_unlock_lidless = yes
-		add_war_support = 0.03
-		eldritch_prophet_gain_xp_100 = yes
-		eldritch_prophet_gain_insight = yes
-	}
-}
-
-country_event = {
-	id = eldritch.313
-	title = eldritch.313.t
-	desc = eldritch.313.d
-	picture = GFX_report_event_eldritch_hastur
-
-	is_triggered_only = yes
-
-	option = {
-		name = eldritch.313.a
-		add_stability = -0.03
-		eldritch_prophet_gain_xp_25 = yes
-	}
-}
-
-# Chapter 2: the approach, then the finale (success / failure)
-country_event = {
-	id = eldritch.321
-	title = eldritch.321.t
-	desc = eldritch.321.d
-	picture = GFX_report_event_eldritch_hastur
-
-	is_triggered_only = yes
-
-	option = {
-		name = eldritch.321.a
-		custom_effect_tooltip = eldritch_quest_tests_lore_tt
-		custom_effect_tooltip = eldritch_carcosa_2_task_tt
-		hidden_effect = {
-			set_variable = { eldritch_carcosa_2_stat = 1 }
-			set_variable = { eldritch_carcosa_2_bonus = 0 }
-			activate_mission = eldritch_carcosa_2_task
-		}
-		ai_chance = { factor = 20 }
-	}
-
-	option = {
-		name = eldritch.321.b
-		custom_effect_tooltip = eldritch_quest_tests_will_tt
-		custom_effect_tooltip = eldritch_carcosa_2_task_tt
-		hidden_effect = {
-			set_variable = { eldritch_carcosa_2_stat = 3 }
-			set_variable = { eldritch_carcosa_2_bonus = 0 }
-			activate_mission = eldritch_carcosa_2_task
-		}
-		ai_chance = { factor = 20 }
-	}
-
-	option = {
-		name = eldritch.321.c
-		trigger = { check_variable = { eldritch_prophet_zeal > 3 } }
-		custom_effect_tooltip = eldritch_quest_tests_zeal_tt
-		custom_effect_tooltip = eldritch_quest_bonus_tt
-		custom_effect_tooltip = eldritch_carcosa_2_task_tt
-		hidden_effect = {
-			set_variable = { eldritch_carcosa_2_stat = 2 }
-			set_variable = { eldritch_carcosa_2_bonus = 20 }
-			activate_mission = eldritch_carcosa_2_task
-		}
-		ai_chance = { factor = 60 }
 	}
 }
 
@@ -1212,74 +1096,6 @@ country_event = {
 
 	option = {
 		name = eldritch.322.a
-		swap_ideas = { remove_idea = eldritch_carcosa_road_1 add_idea = eldritch_carcosa_road_2 }
-		eldritch_unlock_cassildas_choir = yes
-		eldritch_gain_favor_30 = yes
-		eldritch_prophet_gain_xp_100 = yes
-		eldritch_prophet_gain_insight = yes
-	}
-}
-
-country_event = {
-	id = eldritch.323
-	title = eldritch.323.t
-	desc = eldritch.323.d
-	picture = GFX_report_event_eldritch_hastur
-
-	is_triggered_only = yes
-
-	option = {
-		name = eldritch.323.a
-		add_stability = -0.03
-		eldritch_prophet_gain_xp_25 = yes
-	}
-}
-
-# Chapter 3: the approach, then the finale (success / failure)
-country_event = {
-	id = eldritch.331
-	title = eldritch.331.t
-	desc = eldritch.331.d
-	picture = GFX_report_event_eldritch_hastur
-
-	is_triggered_only = yes
-
-	option = {
-		name = eldritch.331.a
-		custom_effect_tooltip = eldritch_quest_tests_will_tt
-		custom_effect_tooltip = eldritch_carcosa_3_task_tt
-		hidden_effect = {
-			set_variable = { eldritch_carcosa_3_stat = 3 }
-			set_variable = { eldritch_carcosa_3_bonus = 0 }
-			activate_mission = eldritch_carcosa_3_task
-		}
-		ai_chance = { factor = 20 }
-	}
-
-	option = {
-		name = eldritch.331.b
-		custom_effect_tooltip = eldritch_quest_tests_zeal_tt
-		custom_effect_tooltip = eldritch_carcosa_3_task_tt
-		hidden_effect = {
-			set_variable = { eldritch_carcosa_3_stat = 2 }
-			set_variable = { eldritch_carcosa_3_bonus = 0 }
-			activate_mission = eldritch_carcosa_3_task
-		}
-		ai_chance = { factor = 20 }
-	}
-
-	option = {
-		name = eldritch.331.c
-		trigger = { check_variable = { eldritch_prophet_lore > 3 } }
-		custom_effect_tooltip = eldritch_quest_tests_lore_tt
-		custom_effect_tooltip = eldritch_quest_bonus_tt
-		custom_effect_tooltip = eldritch_carcosa_3_task_tt
-		hidden_effect = {
-			set_variable = { eldritch_carcosa_3_stat = 1 }
-			set_variable = { eldritch_carcosa_3_bonus = 20 }
-			activate_mission = eldritch_carcosa_3_task
-		}
-		ai_chance = { factor = 60 }
 	}
 }
 
@@ -1293,75 +1109,6 @@ country_event = {
 
 	option = {
 		name = eldritch.332.a
-		swap_ideas = { remove_idea = eldritch_carcosa_road_2 add_idea = eldritch_carcosa_road_3 }
-		eldritch_unlock_pallid_masks = yes
-		add_command_power = 50
-		eldritch_prophet_gain_xp_100 = yes
-		eldritch_prophet_gain_insight = yes
-	}
-}
-
-country_event = {
-	id = eldritch.333
-	title = eldritch.333.t
-	desc = eldritch.333.d
-	picture = GFX_report_event_eldritch_hastur
-
-	is_triggered_only = yes
-
-	option = {
-		name = eldritch.333.a
-		add_stability = -0.05
-		add_political_power = -50
-		eldritch_prophet_gain_xp_25 = yes
-	}
-}
-
-# Chapter 4: the approach, then the finale (success / failure)
-country_event = {
-	id = eldritch.341
-	title = eldritch.341.t
-	desc = eldritch.341.d
-	picture = GFX_report_event_eldritch_hastur
-
-	is_triggered_only = yes
-
-	option = {
-		name = eldritch.341.a
-		custom_effect_tooltip = eldritch_quest_tests_lore_tt
-		custom_effect_tooltip = eldritch_carcosa_4_task_tt
-		hidden_effect = {
-			set_variable = { eldritch_carcosa_4_stat = 1 }
-			set_variable = { eldritch_carcosa_4_bonus = 0 }
-			activate_mission = eldritch_carcosa_4_task
-		}
-		ai_chance = { factor = 20 }
-	}
-
-	option = {
-		name = eldritch.341.b
-		custom_effect_tooltip = eldritch_quest_tests_zeal_tt
-		custom_effect_tooltip = eldritch_carcosa_4_task_tt
-		hidden_effect = {
-			set_variable = { eldritch_carcosa_4_stat = 2 }
-			set_variable = { eldritch_carcosa_4_bonus = 0 }
-			activate_mission = eldritch_carcosa_4_task
-		}
-		ai_chance = { factor = 20 }
-	}
-
-	option = {
-		name = eldritch.341.c
-		trigger = { check_variable = { eldritch_prophet_will > 3 } }
-		custom_effect_tooltip = eldritch_quest_tests_will_tt
-		custom_effect_tooltip = eldritch_quest_bonus_tt
-		custom_effect_tooltip = eldritch_carcosa_4_task_tt
-		hidden_effect = {
-			set_variable = { eldritch_carcosa_4_stat = 3 }
-			set_variable = { eldritch_carcosa_4_bonus = 20 }
-			activate_mission = eldritch_carcosa_4_task
-		}
-		ai_chance = { factor = 60 }
 	}
 }
 
@@ -1375,74 +1122,6 @@ country_event = {
 
 	option = {
 		name = eldritch.342.a
-		swap_ideas = { remove_idea = eldritch_carcosa_road_3 add_idea = eldritch_carcosa_road_4 }
-		add_war_support = 0.05
-		eldritch_prophet_gain_xp_100 = yes
-		eldritch_prophet_gain_insight = yes
-	}
-}
-
-country_event = {
-	id = eldritch.343
-	title = eldritch.343.t
-	desc = eldritch.343.d
-	picture = GFX_report_event_eldritch_hastur
-
-	is_triggered_only = yes
-
-	option = {
-		name = eldritch.343.a
-		add_stability = -0.05
-		add_war_support = -0.05
-		eldritch_prophet_gain_xp_25 = yes
-	}
-}
-
-# Chapter 5: the approach, then the finale (success / failure)
-country_event = {
-	id = eldritch.351
-	title = eldritch.351.t
-	desc = eldritch.351.d
-	picture = GFX_report_event_eldritch_hastur
-
-	is_triggered_only = yes
-
-	option = {
-		name = eldritch.351.a
-		custom_effect_tooltip = eldritch_quest_tests_zeal_tt
-		custom_effect_tooltip = eldritch_carcosa_5_task_tt
-		hidden_effect = {
-			set_variable = { eldritch_carcosa_5_stat = 2 }
-			set_variable = { eldritch_carcosa_5_bonus = 0 }
-			activate_mission = eldritch_carcosa_5_task
-		}
-		ai_chance = { factor = 20 }
-	}
-
-	option = {
-		name = eldritch.351.b
-		custom_effect_tooltip = eldritch_quest_tests_will_tt
-		custom_effect_tooltip = eldritch_carcosa_5_task_tt
-		hidden_effect = {
-			set_variable = { eldritch_carcosa_5_stat = 3 }
-			set_variable = { eldritch_carcosa_5_bonus = 0 }
-			activate_mission = eldritch_carcosa_5_task
-		}
-		ai_chance = { factor = 20 }
-	}
-
-	option = {
-		name = eldritch.351.c
-		trigger = { check_variable = { eldritch_prophet_lore > 4 } }
-		custom_effect_tooltip = eldritch_quest_tests_lore_tt
-		custom_effect_tooltip = eldritch_quest_bonus_tt
-		custom_effect_tooltip = eldritch_carcosa_5_task_tt
-		hidden_effect = {
-			set_variable = { eldritch_carcosa_5_stat = 1 }
-			set_variable = { eldritch_carcosa_5_bonus = 20 }
-			activate_mission = eldritch_carcosa_5_task
-		}
-		ai_chance = { factor = 60 }
 	}
 }
 
@@ -1456,74 +1135,6 @@ country_event = {
 
 	option = {
 		name = eldritch.352.a
-		swap_ideas = { remove_idea = eldritch_carcosa_road_4 add_idea = eldritch_carcosa_road_5 }
-		eldritch_unlock_kings_tatters = yes
-		army_experience = 50
-		eldritch_prophet_gain_xp_100 = yes
-		eldritch_prophet_gain_insight = yes
-	}
-}
-
-country_event = {
-	id = eldritch.353
-	title = eldritch.353.t
-	desc = eldritch.353.d
-	picture = GFX_report_event_eldritch_hastur
-
-	is_triggered_only = yes
-
-	option = {
-		name = eldritch.353.a
-		add_stability = -0.08
-		eldritch_prophet_gain_xp_25 = yes
-	}
-}
-
-# Chapter 6: the approach, then the finale (success / failure)
-country_event = {
-	id = eldritch.361
-	title = eldritch.361.t
-	desc = eldritch.361.d
-	picture = GFX_report_event_eldritch_hastur
-
-	is_triggered_only = yes
-
-	option = {
-		name = eldritch.361.a
-		custom_effect_tooltip = eldritch_quest_tests_will_tt
-		custom_effect_tooltip = eldritch_carcosa_6_task_tt
-		hidden_effect = {
-			set_variable = { eldritch_carcosa_6_stat = 3 }
-			set_variable = { eldritch_carcosa_6_bonus = 0 }
-			activate_mission = eldritch_carcosa_6_task
-		}
-		ai_chance = { factor = 20 }
-	}
-
-	option = {
-		name = eldritch.361.b
-		custom_effect_tooltip = eldritch_quest_tests_zeal_tt
-		custom_effect_tooltip = eldritch_carcosa_6_task_tt
-		hidden_effect = {
-			set_variable = { eldritch_carcosa_6_stat = 2 }
-			set_variable = { eldritch_carcosa_6_bonus = 0 }
-			activate_mission = eldritch_carcosa_6_task
-		}
-		ai_chance = { factor = 20 }
-	}
-
-	option = {
-		name = eldritch.361.c
-		trigger = { check_variable = { eldritch_prophet_lore > 5 } }
-		custom_effect_tooltip = eldritch_quest_tests_lore_tt
-		custom_effect_tooltip = eldritch_quest_bonus_tt
-		custom_effect_tooltip = eldritch_carcosa_6_task_tt
-		hidden_effect = {
-			set_variable = { eldritch_carcosa_6_stat = 1 }
-			set_variable = { eldritch_carcosa_6_bonus = 20 }
-			activate_mission = eldritch_carcosa_6_task
-		}
-		ai_chance = { factor = 60 }
 	}
 }
 
@@ -1537,26 +1148,6 @@ country_event = {
 
 	option = {
 		name = eldritch.362.a
-		custom_effect_tooltip = eldritch_carcosa_ready_tt
-		hidden_effect = { set_country_flag = eldritch_carcosa_ready }
-		eldritch_unlock_halis_drowned = yes
-		eldritch_prophet_gain_xp_100 = yes
-		eldritch_prophet_gain_insight = yes
-	}
-}
-
-country_event = {
-	id = eldritch.363
-	title = eldritch.363.t
-	desc = eldritch.363.d
-	picture = GFX_report_event_eldritch_hastur
-
-	is_triggered_only = yes
-
-	option = {
-		name = eldritch.363.a
-		add_stability = -0.10
-		eldritch_prophet_gain_xp_25 = yes
 	}
 }
 

@@ -1112,6 +1112,37 @@ def make_doctrine_art():
 
 
 # ---------------------------------------------------------------------------
+# The buildings of the Road to Carcosa (common/buildings): their icons,
+# two frames side by side like the game's special building icons (normal,
+# then dimmed)
+# ---------------------------------------------------------------------------
+
+BUILDING_ICON_SIZE = (46, 46)      # one frame, the size of the construction menu's building icons
+BUILDING_ICONS = {
+    "yellow_theatre": "preach",            # a figure on the stage, lit from below
+    "masque_hall": "council",              # the court of eyes at midnight
+    "black_star_observatory": "temple",    # the tower that watches the black stars
+    "yellow_palace": "carcosa",            # the towers of Carcosa under twin suns
+}
+
+
+def make_building_icons():
+    w, h = BUILDING_ICON_SIZE
+    pal = PALETTE["hastur"]
+    for name, symbol in BUILDING_ICONS.items():
+        icon = framed(BUILDING_ICON_SIZE, (52, 40, 18), (14, 10, 4), SYMBOLS[symbol], (200, 160, 60), border_width=1,
+                      sym_scale=0.84, aura=pal["glow"])
+        a = np.array(icon).astype(float)
+        grey = a[..., :3].mean(axis=2, keepdims=True)
+        a[..., :3] = grey * 0.55
+        dim = Image.fromarray(a.astype(np.uint8), "RGBA")
+        strip = Image.new("RGBA", (w * 2, h), (0, 0, 0, 0))
+        strip.paste(icon, (0, 0))
+        strip.paste(dim, (w, 0))
+        save_dds(strip, f"gfx/interface/buildings/eldritch_{name}.dds")
+
+
+# ---------------------------------------------------------------------------
 # Flags of the formable nation (gfx/flags/<cosmetic tag>[_ideology].tga)
 # ---------------------------------------------------------------------------
 
@@ -1202,6 +1233,10 @@ def write_gfx():
     for kind in ("land", "navy"):
         sprite(f"GFX_trait_eldritch_avatar_{kind}", f"gfx/interface/traits/eldritch_avatar_{kind}.dds")
 
+    section("The buildings of the Road to Carcosa (special icons: normal, dimmed)")
+    for name in BUILDING_ICONS:
+        sprite(f"GFX_eldritch_building_{name}", f"gfx/interface/buildings/eldritch_{name}.dds", 2)
+
     section("The Eldritch doctrine folder: tab, grand doctrines, sub-doctrines (per track), track backgrounds")
     sprite("GFX_eldritch_doctrine_tab", "gfx/interface/doctrines/eldritch_doctrine_tab.dds", 2)
     sprite("GFX_eldritch_doctrine_folder_icon", "gfx/interface/doctrines/eldritch_doctrine_tab.dds", 2)
@@ -1224,6 +1259,11 @@ def main():
         make_unit_icons()
         print("Battalion icons generated.")
         return
+    if sys.argv[1:] == ["buildings"]:
+        make_building_icons()
+        write_gfx()
+        print("Building icons generated.")
+        return
     if sys.argv[1:] == ["doctrines"]:
         make_doctrine_art()
         write_gfx()
@@ -1238,6 +1278,7 @@ def main():
     make_trait_icons()
     make_flags()
     make_doctrine_art()
+    make_building_icons()
     make_thumbnail()
     write_gfx()
     print("Art generated.")

@@ -289,6 +289,54 @@ technologies = {
 		ai_will_do = { factor = 0 }
 	}
 
+	### HASTUR: THE BUILDINGS OF THE ROAD TO CARCOSA ##################
+	# Each unlocks one building (common/buildings/eldritch_buildings.txt)
+	# when its chapter opens (eldritch_carcosa_open_<n>).
+
+	eldritch_carcosa_theatre = {
+		enable_building = {
+			building = eldritch_yellow_theatre
+			level = 1
+		}
+		research_cost = 1
+		start_year = 1936
+		allow = { always = no }
+		ai_will_do = { factor = 0 }
+	}
+
+	eldritch_carcosa_masque_hall = {
+		enable_building = {
+			building = eldritch_masque_hall
+			level = 1
+		}
+		research_cost = 1
+		start_year = 1936
+		allow = { always = no }
+		ai_will_do = { factor = 0 }
+	}
+
+	eldritch_carcosa_observatory = {
+		enable_building = {
+			building = eldritch_black_star_observatory
+			level = 1
+		}
+		research_cost = 1
+		start_year = 1936
+		allow = { always = no }
+		ai_will_do = { factor = 0 }
+	}
+
+	eldritch_carcosa_palace = {
+		enable_building = {
+			building = eldritch_yellow_palace
+			level = 1
+		}
+		research_cost = 1
+		start_year = 1936
+		allow = { always = no }
+		ai_will_do = { factor = 0 }
+	}
+
 	### AZATHOTH ######################################################
 
 	eldritch_azathoth_rites_1 = {

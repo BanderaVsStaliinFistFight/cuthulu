@@ -16,6 +16,8 @@ catches the mistakes that are easy to make by hand:
   * scripted effects / triggers / events that are used but never defined
   * formables (set_cosmetic_tag): names for every ideology, flags in all
     three sizes as uncompressed TGA, and a map colour in common/countries
+  * buildings: names, descriptions, special icons, hidden until a technology
+    unlocks them, and only unlocked by technologies that exist
   * doctrines: folders, tracks, grand doctrines and sub-doctrines refer to
     each other correctly, have names, icons and reward names, one milestone
     per track, and only touch battalions that exist
@@ -293,6 +295,21 @@ def main():
                     if sprite.startswith("eldritch_") and sprite + "_entity" not in entities:
                         problems.append(f"{path}: {unit} uses sprite {sprite} but {sprite}_entity is not defined")
 
+    # ------------------------------------------------------------- buildings
+    buildings = set()
+    for path, items in load_script("common/buildings/*.txt", problems).items():
+        for key, _, value in items:
+            if key == "buildings":
+                for building, _, body in value:
+                    buildings.add(building)
+                    need_loc(building, path)
+                    need_loc(building + "_desc", path)
+                    fields = {k: v for k, _, v in body}
+                    if "special_icon" in fields:
+                        need_sprite(fields["special_icon"], f"{path} {building}")
+                    if fields.get("hide_if_missing_tech") != "yes":
+                        problems.append(f"{path}: {building} must be hidden until its technology unlocks it")
+
     techs = set()
     for path, items in load_script("common/technologies/*.txt", problems).items():
         for key, _, value in items:
@@ -301,6 +318,10 @@ def main():
                     techs.add(tech)
                     need_loc(tech, path)
                     for k, _, v in body:
+                        if k == "enable_building":
+                            b = {kk: vv for kk, _, vv in v}.get("building")
+                            if b and b.startswith("eldritch_") and b not in buildings:
+                                problems.append(f"{path}: {tech} unlocks unknown building {b}")
                         if k == "enable_subunits":
                             for unit, _, _ in v:
                                 if unit not in subunits:

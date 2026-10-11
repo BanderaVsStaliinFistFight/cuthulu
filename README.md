@@ -231,16 +231,28 @@ A third category, **The Prophet's Quests**, holds multi-stage quests. Every cult
 The category description and the character sheet count your completed quests.
 
 ### 13. The Road to Carcosa: Hastur's questline and formable
-Hastur's cults get their own category, **The Road to Carcosa**: six chapters, each unlocked by the one before. Each chapter is built like the quests above: a ritual, a choice of approach (one a dialogue check worth +20%), a timed task using the pact's rites, and a skill-check finale. Every success brings experience and Insight and advances the national spirit **The Road to Carcosa** from stage I to V. A failed chapter can be begun again 120 days after that attempt began.
+Hastur's cults get their own category, **The Road to Carcosa**: six chapters. Chapter I opens when the pact is sealed, and each chapter opens the next. A chapter is a single decision whose requirements are its **goals**: lands to **conquer**, the cult's own **buildings** to raise, and other aims. The decision's tooltip ticks off each goal as you meet it. When all are met, complete the chapter (it costs Favor) to collect its rewards: experience and Insight for the Prophet, and the next stage of the national spirit **The Road to Carcosa** (I to V). There is no time limit and no dice roll; the goals are the challenge.
 
-| Chapter | Begin | Task | Finale base | On success |
-|---|---|---|---|---|
-| **I. Have You Seen the Yellow Sign?** | 50 Favor, 30 days | Preach to the Faithful twice, within 150 days | 45% | Road I (+5% war support, +3% morale), +3% war support, the **Lidless** |
-| **II. Cassilda's Song** | 75 Favor, 30 days | Commune with Hastur and a Rite of Worship, within 150 days | 40% | Road II (adds +3% research), +30 Favor, **Cassilda's Choir** |
-| **III. The Stranger in the Pallid Mask** | 100 Favor, 30 days, Tier II | Convene the Dark Council (with the Stranger or an anointed commander), within 180 days | 35% | Road III (adds +3% organization), +50 command power, the **Pallid Masks** |
-| **IV. Black Stars Rise** | 100 Favor, 30 days | Raise the pact to Tier III, within 365 days | 35% | Road IV (adds political power), +5% war support |
-| **V. The King Walks** | 150 Favor, 30 days, Tier III | Call Forth the Servitors (they march in the King's procession) and Preach to the Faithful, within 180 days | 30% | Road V (adds +5% stability), +50 army experience, the **King's Tatters** |
-| **VI. The Throne of Carcosa** | 200 Favor, 60 days | The Prophet is Hastur's Vessel, or is Chosen and leads at least 8 Pallid Masks battalions, within 365 days | 30% | unlocks **Proclaim Carcosa**, **Hali's Drowned** |
+| Chapter | Cost | Goals | Rewards |
+|---|---|---|---|
+| **I. Have You Seen the Yellow Sign?** | 50 Favor | A **Theatre of the Yellow Sign** in your capital; at least 40% war support | Road I (+5% war support, +3% morale), +3% war support, the **Lidless** |
+| **II. Cassilda's Song** | 75 Favor | **Theatres of the Yellow Sign** in at least 3 of your states; at least 9 Zealot battalions in the field | Road II (adds +3% research), +30 Favor, **Cassilda's Choir** |
+| **III. The Stranger in the Pallid Mask** | 100 Favor | Tier II pact; **conquer 5 more states** than you controlled when the chapter opened; build the **Hall of the Pallid Masque** | Road III (adds +3% organization), +50 command power, the **Pallid Masks** |
+| **IV. Black Stars Rise** | 100 Favor | Tier III pact; **Black Star Observatories** in at least 2 of your states | Road IV (adds political power), +5% war support |
+| **V. The King Walks** | 150 Favor | **Conquer 10 more states** than you controlled when the chapter opened; **hold another nation's capital** | Road V (adds +5% stability), +50 army experience, the **King's Tatters** |
+| **VI. The Throne of Carcosa** | 200 Favor | The **Palace of the Yellow King** in your capital; **an enemy has capitulated** to you; the Prophet is Hastur's Vessel or Chosen | unlocks **Proclaim Carcosa**, **Hali's Drowned** |
+
+#### The cult's buildings
+The chapters unlock four buildings in the construction menu. They are hidden from every other country (each is unlocked by a hidden technology when its chapter opens). Each can be built once per state and doesn't take a building slot.
+
+| Building | Unlocked by | Cost | Effects |
+|---|---|---|---|
+| **Theatre of the Yellow Sign** | Chapter I | 3,000 | +10% manpower in its state, +1% war support |
+| **Hall of the Pallid Masque** | Chapter III | 6,000 | +10% command power gain |
+| **Black Star Observatory** | Chapter IV | 8,000 | +2% research speed, −10% air night penalty |
+| **Palace of the Yellow King** | Chapter VI | 15,000 | +10% political power, +3% stability |
+
+The AI doesn't build special buildings by itself, so an AI follower of Hastur gets each chapter's buildings placed for free when the chapter opens. It still has to do the conquering.
 
 #### Battalions earned on the road
 Hastur's quests also unlock six new battalions, one per quest, for the division designer. Each arrives with an editable template and a first veteran division of it at the capital. Like Hastur's other battalions, they grow stronger with the Rites of Carcosa II and III and the Fervent Host perk. Their in-game descriptions say what they are; none of it is pleasant.
@@ -310,6 +322,7 @@ common/scripted_localisation/      [ROOT.GetEldritchGodName] etc.
 common/dynamic_modifiers/          the Prophet's mantle (character sheet stats as modifiers)
 common/doctrines/                  the Eldritch doctrine folder: its tracks, the gods' grand doctrines and sub-doctrines
 common/countries/                  map colours of the formables (cosmetic tags), in a file of their own
+common/buildings/                  the four buildings of the Road to Carcosa, hidden until a chapter unlocks them
 common/game_rules/                 the AI rule
 common/on_actions/                 welcome pop-up at game start
 events/                            summoning, tier, whim, curse, news and monthly-pulse events
@@ -348,5 +361,6 @@ The script is written against the standard HoI4 modding syntax. It passes the bu
 * The god battalions are deliberately never unlocked for the designer. If the game refuses to spawn a template that contains them, the god division will not appear. `error.log` will say so.
 * The god battalions carry `recon`, `initiative`, `casualty_trickleback` and `experience_loss_factor`, which vanilla normally gives only to support companies. If a future version stops reading them on a line battalion, the god loses just those extras.
 * The hidden rite technologies, which have no tech-tree folder and are granted with `set_technology`.
+* **The Road to Carcosa's buildings.** They are written like the game's own special buildings and are hidden until their technology unlocks them. Their icon in the construction menu comes from `special_icon` (46×46, two frames); if the game uses `icon_frame` there instead, they show a vanilla icon. Conquest goals compare `num_controlled_states` with a target recorded when the chapter opens.
 * **The Eldritch doctrines.** They follow the format of the game's own doctrine files and use only modifiers, battalion stats and tactics that exist. The tab is a custom folder like the game's own special forces folder. Untested parts: the icon size (54×58, matched to the doctrine list's layout), the tab texture (512×61 in two frames, like the land tab), and the track backgrounds (400×700; the UI clips the edges). The tracks reuse the game's own milestone icons. Reward names are localised as `<sub-doctrine>_<reward>`; if a reward shows its raw key in game, the game expects a different pattern.
 * Icon sizes. The textures are 64×67 (spirits), 46×46 (decisions), 152×42 and 60×12 (battalions: two frames each, picture then NATO symbol; the validator enforces these), 40×40 (traits), 156×210 (portraits) and 210×176 / 397×153 (events). If the UI expects different sizes, change the constants at the top of `tools/generate_art.py` (battalions: `ICON_SIZE`, `DESIGNER_FRAME` and `MAP_FRAME` in `tools/art_units.py`) and regenerate.

@@ -443,6 +443,28 @@ spriteTypes = {
 		texturefile = "gfx/interface/traits/eldritch_avatar_navy.dds"
 	}
 
+	### The buildings of the Road to Carcosa (special icons: normal, dimmed) ###
+	spriteType = {
+		name = "GFX_eldritch_building_yellow_theatre"
+		texturefile = "gfx/interface/buildings/eldritch_yellow_theatre.dds"
+		noOfFrames = 2
+	}
+	spriteType = {
+		name = "GFX_eldritch_building_masque_hall"
+		texturefile = "gfx/interface/buildings/eldritch_masque_hall.dds"
+		noOfFrames = 2
+	}
+	spriteType = {
+		name = "GFX_eldritch_building_black_star_observatory"
+		texturefile = "gfx/interface/buildings/eldritch_black_star_observatory.dds"
+		noOfFrames = 2
+	}
+	spriteType = {
+		name = "GFX_eldritch_building_yellow_palace"
+		texturefile = "gfx/interface/buildings/eldritch_yellow_palace.dds"
+		noOfFrames = 2
+	}
+
 	### The Eldritch doctrine folder: tab, grand doctrines, sub-doctrines (per track), track backgrounds ###
 	spriteType = {
 		name = "GFX_eldritch_doctrine_tab"

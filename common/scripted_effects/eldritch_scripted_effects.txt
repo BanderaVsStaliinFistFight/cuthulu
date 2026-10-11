@@ -431,6 +431,7 @@ eldritch_summon_hastur_effect = {
 		set_country_flag = eldritch_god_hastur
 		set_technology = { eldritch_hastur_rites_1 = 1 popup = no }
 		eldritch_create_template_hastur = yes
+		eldritch_carcosa_open_1 = yes
 	}
 	add_ideas = eldritch_hastur_pact_1
 	add_country_leader_trait = eldritch_hastur_herald
@@ -1000,20 +1001,12 @@ eldritch_quest_note_worship = {
 		limit = { has_country_flag = eldritch_quest_necronomicon_active }
 		set_country_flag = eldritch_quest_necronomicon_worship
 	}
-	if = {
-		limit = { has_country_flag = eldritch_carcosa_2_active }
-		set_country_flag = eldritch_carcosa_2_worship
-	}
 }
 
 eldritch_quest_note_commune = {
 	if = {
 		limit = { has_country_flag = eldritch_quest_necronomicon_active }
 		set_country_flag = eldritch_quest_necronomicon_commune
-	}
-	if = {
-		limit = { has_country_flag = eldritch_carcosa_2_active }
-		set_country_flag = eldritch_carcosa_2_commune
 	}
 }
 
@@ -1022,14 +1015,6 @@ eldritch_quest_note_preach = {
 		limit = { has_country_flag = eldritch_quest_mountains_active }
 		set_country_flag = eldritch_quest_mountains_preach
 	}
-	if = {
-		limit = { has_country_flag = eldritch_carcosa_1_active }
-		add_to_variable = { eldritch_carcosa_1_preach = 1 }
-	}
-	if = {
-		limit = { has_country_flag = eldritch_carcosa_5_active }
-		set_country_flag = eldritch_carcosa_5_preach
-	}
 }
 
 eldritch_quest_note_council = {
@@ -1037,20 +1022,12 @@ eldritch_quest_note_council = {
 		limit = { has_country_flag = eldritch_quest_mountains_active }
 		set_country_flag = eldritch_quest_mountains_council
 	}
-	if = {
-		limit = { has_country_flag = eldritch_carcosa_3_active }
-		set_country_flag = eldritch_carcosa_3_council
-	}
 }
 
 eldritch_quest_note_servitors = {
 	if = {
 		limit = { has_country_flag = eldritch_quest_cthulhu_active }
 		set_country_flag = eldritch_quest_cthulhu_servitors
-	}
-	if = {
-		limit = { has_country_flag = eldritch_carcosa_5_active }
-		set_country_flag = eldritch_carcosa_5_servitors
 	}
 }
 
@@ -1246,5 +1223,79 @@ eldritch_unlock_halis_drowned = {
 				count = 1
 			}
 		}
+	}
+}
+
+#####################################################################
+# THE ROAD TO CARCOSA - opening a chapter
+#
+# Shows its decision, records the conquest target where it has one
+# (states controlled now + N), unlocks the chapter's building, and
+# for the AI, which would not build it, puts the building down.
+#####################################################################
+
+eldritch_carcosa_open_1 = {
+	set_country_flag = eldritch_carcosa_1_open
+	set_technology = { eldritch_carcosa_theatre = 1 popup = no }
+	if = {
+		limit = { is_ai = yes }
+		capital_scope = { add_building_construction = { type = eldritch_yellow_theatre level = 1 instant_build = yes } }
+	}
+}
+
+eldritch_carcosa_open_2 = {
+	set_country_flag = eldritch_carcosa_2_open
+	if = {
+		limit = { is_ai = yes }
+		random_owned_controlled_state = {
+			limit = { NOT = { eldritch_yellow_theatre > 0 } }
+			add_building_construction = { type = eldritch_yellow_theatre level = 1 instant_build = yes }
+		}
+		random_owned_controlled_state = {
+			limit = { NOT = { eldritch_yellow_theatre > 0 } }
+			add_building_construction = { type = eldritch_yellow_theatre level = 1 instant_build = yes }
+		}
+	}
+}
+
+eldritch_carcosa_open_3 = {
+	set_country_flag = eldritch_carcosa_3_open
+	set_variable = { eldritch_carcosa_3_states = num_controlled_states }
+	add_to_variable = { eldritch_carcosa_3_states = 5 }
+	set_technology = { eldritch_carcosa_masque_hall = 1 popup = no }
+	if = {
+		limit = { is_ai = yes }
+		capital_scope = { add_building_construction = { type = eldritch_masque_hall level = 1 instant_build = yes } }
+	}
+}
+
+eldritch_carcosa_open_4 = {
+	set_country_flag = eldritch_carcosa_4_open
+	set_technology = { eldritch_carcosa_observatory = 1 popup = no }
+	if = {
+		limit = { is_ai = yes }
+		random_owned_controlled_state = {
+			limit = { NOT = { eldritch_black_star_observatory > 0 } }
+			add_building_construction = { type = eldritch_black_star_observatory level = 1 instant_build = yes }
+		}
+		random_owned_controlled_state = {
+			limit = { NOT = { eldritch_black_star_observatory > 0 } }
+			add_building_construction = { type = eldritch_black_star_observatory level = 1 instant_build = yes }
+		}
+	}
+}
+
+eldritch_carcosa_open_5 = {
+	set_country_flag = eldritch_carcosa_5_open
+	set_variable = { eldritch_carcosa_5_states = num_controlled_states }
+	add_to_variable = { eldritch_carcosa_5_states = 10 }
+}
+
+eldritch_carcosa_open_6 = {
+	set_country_flag = eldritch_carcosa_6_open
+	set_technology = { eldritch_carcosa_palace = 1 popup = no }
+	if = {
+		limit = { is_ai = yes }
+		capital_scope = { add_building_construction = { type = eldritch_yellow_palace level = 1 instant_build = yes } }
 	}
 }
