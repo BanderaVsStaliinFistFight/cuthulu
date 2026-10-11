@@ -2371,13 +2371,6 @@ eldritch_road_to_carcosa = {
 				capital_scope = { eldritch_yellow_palace > 0 }
 			}
 			custom_trigger_tooltip = {
-				tooltip = eldritch_carcosa_goal_capitulated_tt
-				any_country = {
-					has_war_with = ROOT
-					has_capitulated = yes
-				}
-			}
-			custom_trigger_tooltip = {
 				tooltip = eldritch_carcosa_goal_prophet_tt
 				OR = {
 					has_country_leader_with_trait = eldritch_hastur_vessel

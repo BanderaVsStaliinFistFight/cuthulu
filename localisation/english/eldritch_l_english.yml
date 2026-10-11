@@ -719,7 +719,6 @@
  eldritch_carcosa_goal_states_5_tt:0 "We control at least §R[?eldritch_carcosa_5_states|0]§! states (10 more than when this chapter opened)"
  eldritch_carcosa_goal_capital_tt:0 "We control a state that was another nation's §Rcapital§! when the game began"
  eldritch_carcosa_goal_palace_tt:0 "£eldritch_building_yellow_palace_text£ The §RPalace of the Yellow King§! stands in our capital"
- eldritch_carcosa_goal_capitulated_tt:0 "A nation at war with us has §Rcapitulated§!"
  eldritch_carcosa_goal_prophet_tt:0 "[ROOT.GetLeader] is Hastur's §RVessel§! or §RChosen§!"
  eldritch_carcosa_opens_2_tt:0 "Opens §RChapter II: Cassilda's Song§!."
  eldritch_carcosa_opens_3_tt:0 "Opens §RChapter III: The Stranger in the Pallid Mask§!, and the §RHall of the Pallid Masque§! can be built."
@@ -794,7 +793,7 @@
  eldritch_carcosa_road_5_desc:0 "The King in Yellow has walked our streets. The road to Carcosa is almost at its end."
 
  eldritch_carcosa_6:0 "Chapter VI: The Throne of Carcosa"
- eldritch_carcosa_6_desc:0 "Lost Carcosa waits on the far shore of Lake Hali, and its throne is empty. The King does not sit on it; he only offers it, to a nation that has built him a palace and broken an enemy, and whose Prophet is more than human: the King's own Vessel, or his Chosen.\n\nGoals: the §RPalace of the Yellow King§! in our capital (unlocked now); an enemy that has capitulated to us; and a Prophet who is Hastur's Vessel or Chosen.\n\n§RReward: the right to proclaim Carcosa, the Hali's Drowned battalion and a first division of it, experience and Insight.§!"
+ eldritch_carcosa_6_desc:0 "Lost Carcosa waits on the far shore of Lake Hali, and its throne is empty. The King does not sit on it; he only offers it, to a nation that has built him a palace and whose Prophet is more than human: the King's own Vessel, or his Chosen.\n\nGoals: the §RPalace of the Yellow King§! in our capital (unlocked now), and a Prophet who is Hastur's Vessel or Chosen.\n\n§RReward: the right to proclaim Carcosa, the Hali's Drowned battalion and a first division of it, experience and Insight.§!"
  eldritch.362.t:0 "The Empty Throne"
  eldritch.362.d:0 "[ROOT.GetLeader] crossed Lake Hali and climbed the stairs of the highest tower in Carcosa, and the throne was there, empty and waiting. The Prophet did not sit. Not yet. The throne will be there when [ROOT.GetNameDef] is ready to proclaim it."
  eldritch.362.a:0 "Carcosa awaits."
