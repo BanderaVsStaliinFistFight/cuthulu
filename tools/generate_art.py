@@ -1236,31 +1236,22 @@ def make_trait_icons():
 FLAG_SIZES = {"": (82, 52), "medium/": (41, 26), "small/": (10, 7)}
 
 
-def flag_carcosa():
-    """Black field between ochre bands, the Yellow Sign in gold at its heart."""
-    w, h = 82 * 8, 52 * 8
-    img = Image.new("RGBA", (w, h), (14, 10, 8, 255))
-    d = ImageDraw.Draw(img)
-    band = h // 9
-    d.rectangle([0, 0, w, band], fill=(170, 120, 25, 255))
-    d.rectangle([0, h - band, w, h], fill=(170, 120, 25, 255))
-    d.rectangle([0, band, w, band + h // 60], fill=(90, 60, 10, 255))
-    d.rectangle([0, h - band - h // 60, w, h - band], fill=(90, 60, 10, 255))
-    sign = sym_hastur(int(h * 0.74), color=(235, 190, 45))
-    img.alpha_composite(sign, ((w - sign.width) // 2, (h - sign.height) // 2))
-    for x in (w * 0.12, w * 0.88):
-        r = h * 0.05
-        d.ellipse([x - r, h * 0.5 - r, x + r, h * 0.5 + r], fill=(235, 190, 45, 255))
-    return img
+# The King in Yellow between two sigils, gold on a black field between gold bands.
+FLAG_SOURCE = os.path.join(ROOT, "tools", "art_sources", "carcosa_flag.png")
+# The part of the source that becomes the flag: the full width, and the rows that
+# make its black field (source rows 170-1160) exactly 40 of the flag's 52 rows, so
+# the gold bands come out as whole pixels (6 px, 3 px at medium) instead of a
+# blurred edge row.
+FLAG_BOX = (0, 21.5, 2000, 1308.5)
 
 
 def make_flags():
-    flag = flag_carcosa()
+    flag = Image.open(FLAG_SOURCE).convert("RGBA")
     for ideology in ("", "_fascism", "_communism", "_democratic", "_neutrality"):
         for folder, size in FLAG_SIZES.items():
             path = os.path.join(ROOT, "gfx", "flags", folder, f"ELDRITCH_CARCOSA{ideology}.tga")
             os.makedirs(os.path.dirname(path), exist_ok=True)
-            flag.resize(size, Image.LANCZOS).save(path)
+            flag.resize(size, Image.LANCZOS, box=FLAG_BOX).save(path)
 
 
 # ---------------------------------------------------------------------------

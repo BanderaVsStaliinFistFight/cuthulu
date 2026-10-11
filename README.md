@@ -254,7 +254,7 @@ Hastur's cults get their own category, **The Road to Carcosa**: six chapters, ea
 **Proclaim Carcosa** (100 PP, needs 25% stability) is the formable. It works for any country, as a cosmetic tag:
 
 * **Name:** the nation is renamed by ideology: the **Kingdom of Carcosa** (non-aligned), the **Yellow Dominion of Carcosa** (fascist), the **Carcosan Commune** (communist) or the **Commonwealth of Carcosa** (democratic). Its adjective becomes *Carcosan*.
-* **Flag:** the Yellow Sign in gold on a black field between two bands of ochre.
+* **Flag:** the King in Yellow, crowned and antlered with the Yellow Sign on its robe, between two sigils, in gold on a black field between two gold bands.
 * **Spirit:** The Road to Carcosa becomes **The Yellow Throne**: +15% war support and morale, +8% organization and research speed, +5% attack, +10% stability, +0.3 PP a day.
 * **News:** the rest of the world hears of it.
 
@@ -299,6 +299,7 @@ install/eldritch_pacts.mod         launcher file to copy into your mod/ folder
 gfx/entities/                      King in Yellow mesh definitions (.gfx) and unit entities with their animation states (.asset)
 gfx/models/units/eldritch/         King in Yellow .mesh models, .anim animations, their definitions and the texture atlas
 tools/generate_art.py              regenerates every texture and the thumbnail (`units` for the battalion icons only)
+tools/art_sources/                 hand-made source art the generator reads (carcosa_flag.png: Carcosa's flag)
 tools/art_portraits.py             the King in Yellow's painted portrait: forms sculpted and lit by
                                    art_render.py, then repainted stroke by stroke by art_paint.py
 tools/art_units.py                 the battalion icons: each unit as a small scene (figures, mud or sea, smoky
