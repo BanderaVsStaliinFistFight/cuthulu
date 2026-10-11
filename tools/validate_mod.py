@@ -17,7 +17,7 @@ catches the mistakes that are easy to make by hand:
   * formables (set_cosmetic_tag): names for every ideology, flags in all
     three sizes as uncompressed TGA, and a map colour in
     common/countries/cosmetic.txt (the only file the game reads them from)
-  * buildings: names, descriptions, special icons (two 36x36 frames, on a
+  * buildings: names, plurals, descriptions, construction speed modifier names, special icons (two 36x36 frames, on a
     provincial building), unlocked by a technology that exists, and a
     tooltip (missing_tech_loc) for while they are locked
   * text icons (£name£) in localisation point to sprites that exist
@@ -314,6 +314,9 @@ def main():
                     buildings.add(building)
                     need_loc(building, path)
                     need_loc(building + "_desc", path)
+                    need_loc(building + "_plural", path)
+                    for modifier in ("production_speed_{}_factor", "state_production_speed_{}_factor"):
+                        need_loc("modifier_" + modifier.format(building), path)
                     fields = {k: v for k, _, v in body}
                     if "special_icon" in fields:
                         icon = fields["special_icon"]
