@@ -523,6 +523,17 @@ eldritch_forbidden_rites = {
 
 		remove_effect = {
 			eldritch_incarnate_god_effect = yes
+			custom_effect_tooltip = eldritch_check_incarnate_tt
+			hidden_effect = {
+				eldritch_check_incarnate = yes
+				if = {
+					limit = { eldritch_check_passed = yes }
+					add_to_variable = { eldritch_favor = 50 }
+					eldritch_clamp_favor = yes
+					army_experience = 25
+				}
+				country_event = { id = eldritch.82 }
+			}
 			eldritch_prophet_gain_xp_50 = yes
 		}
 
@@ -648,9 +659,18 @@ eldritch_forbidden_rites = {
 
 		complete_effect = {
 			hidden_effect = { subtract_from_variable = { eldritch_favor = 50 } }
-			FROM = {
-				add_timed_idea = { idea = eldritch_curse_dreams_of_rlyeh days = 90 }
-				hidden_effect = { country_event = { id = eldritch.60 } }
+			custom_effect_tooltip = eldritch_check_curse_tt
+			hidden_effect = {
+				eldritch_check_curse = yes
+				if = {
+					limit = { eldritch_check_passed = yes }
+					FROM = { add_timed_idea = { idea = eldritch_curse_dreams_of_rlyeh days = 90 } }
+				}
+				else = {
+					FROM = { add_timed_idea = { idea = eldritch_curse_dreams_of_rlyeh days = 45 } }
+				}
+				FROM = { country_event = { id = eldritch.60 } }
+				country_event = { id = eldritch.82 }
 			}
 			eldritch_prophet_gain_xp_10 = yes
 		}
@@ -758,24 +778,35 @@ eldritch_forbidden_rites = {
 
 		complete_effect = {
 			hidden_effect = { subtract_from_variable = { eldritch_favor = 60 } }
-			FROM = {
-				add_stability = -0.08
+			custom_effect_tooltip = eldritch_check_whisper_tt
+			hidden_effect = {
+				eldritch_check_curse = yes
 				if = {
-					limit = { ROOT = { has_government = fascism } }
-					add_popularity = { ideology = fascism popularity = 0.08 }
-				}
-				else_if = {
-					limit = { ROOT = { has_government = communism } }
-					add_popularity = { ideology = communism popularity = 0.08 }
-				}
-				else_if = {
-					limit = { ROOT = { has_government = democratic } }
-					add_popularity = { ideology = democratic popularity = 0.08 }
+					limit = { eldritch_check_passed = yes }
+					FROM = {
+						add_stability = -0.08
+						if = {
+							limit = { ROOT = { has_government = fascism } }
+							add_popularity = { ideology = fascism popularity = 0.08 }
+						}
+						else_if = {
+							limit = { ROOT = { has_government = communism } }
+							add_popularity = { ideology = communism popularity = 0.08 }
+						}
+						else_if = {
+							limit = { ROOT = { has_government = democratic } }
+							add_popularity = { ideology = democratic popularity = 0.08 }
+						}
+						else = {
+							add_popularity = { ideology = neutrality popularity = 0.08 }
+						}
+					}
 				}
 				else = {
-					add_popularity = { ideology = neutrality popularity = 0.08 }
+					FROM = { add_stability = -0.04 }
 				}
-				hidden_effect = { country_event = { id = eldritch.62 } }
+				FROM = { country_event = { id = eldritch.62 } }
+				country_event = { id = eldritch.82 }
 			}
 			eldritch_prophet_gain_xp_10 = yes
 		}
@@ -888,9 +919,18 @@ eldritch_forbidden_rites = {
 
 		complete_effect = {
 			hidden_effect = { subtract_from_variable = { eldritch_favor = 50 } }
-			FROM = {
-				add_timed_idea = { idea = eldritch_curse_yellow_madness days = 90 }
-				hidden_effect = { country_event = { id = eldritch.61 } }
+			custom_effect_tooltip = eldritch_check_curse_tt
+			hidden_effect = {
+				eldritch_check_curse = yes
+				if = {
+					limit = { eldritch_check_passed = yes }
+					FROM = { add_timed_idea = { idea = eldritch_curse_yellow_madness days = 90 } }
+				}
+				else = {
+					FROM = { add_timed_idea = { idea = eldritch_curse_yellow_madness days = 45 } }
+				}
+				FROM = { country_event = { id = eldritch.61 } }
+				country_event = { id = eldritch.82 }
 			}
 			eldritch_prophet_gain_xp_10 = yes
 		}
@@ -1223,6 +1263,7 @@ eldritch_forbidden_rites = {
 
 		complete_effect = {
 			eldritch_prophet_init = yes
+			eldritch_prophet_update_mantle = yes
 			custom_effect_tooltip = eldritch_prophet_record_tt
 			hidden_effect = { country_event = { id = eldritch.80 } }
 		}
@@ -1232,8 +1273,8 @@ eldritch_forbidden_rites = {
 		}
 	}
 
-	# Ten days alone with the god. The leader chooses what to ask for
-	# (eldritch.70), or, one time in four, comes back changed (eldritch.71).
+	# Ten days alone with the god. On a Will check the leader chooses what
+	# to ask for (eldritch.70); on a failure, comes back changed (eldritch.71).
 	eldritch_prophet_commune = {
 		icon = eldritch_commune
 		cost = 25
@@ -1253,9 +1294,13 @@ eldritch_forbidden_rites = {
 		remove_effect = {
 			custom_effect_tooltip = eldritch_prophet_commune_tt
 			hidden_effect = {
-				random_list = {
-					75 = { country_event = { id = eldritch.70 } }
-					25 = { country_event = { id = eldritch.71 } }
+				eldritch_check_commune = yes
+				if = {
+					limit = { eldritch_check_passed = yes }
+					country_event = { id = eldritch.70 }
+				}
+				else = {
+					country_event = { id = eldritch.71 }
 				}
 			}
 			eldritch_prophet_gain_xp_25 = yes
@@ -1291,6 +1336,15 @@ eldritch_forbidden_rites = {
 			if = {
 				limit = { eldritch_leader_is_chosen = yes }
 				add_stability = 0.03
+			}
+			custom_effect_tooltip = eldritch_check_preach_tt
+			hidden_effect = {
+				eldritch_check_preach = yes
+				if = {
+					limit = { eldritch_check_passed = yes }
+					add_war_support = 0.03
+				}
+				country_event = { id = eldritch.82 }
 			}
 			eldritch_prophet_gain_xp_10 = yes
 		}
@@ -1578,6 +1632,15 @@ eldritch_forbidden_rites = {
 
 		remove_effect = {
 			eldritch_become_vessel_effect = yes
+			custom_effect_tooltip = eldritch_check_vessel_tt
+			hidden_effect = {
+				eldritch_check_vessel = yes
+				if = {
+					limit = { eldritch_check_passed = yes }
+					add_stability = 0.05
+				}
+				country_event = { id = eldritch.82 }
+			}
 			eldritch_prophet_gain_xp_100 = yes
 		}
 

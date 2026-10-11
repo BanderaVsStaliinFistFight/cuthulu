@@ -13,6 +13,7 @@
 #   eldritch.72       the Prophet becomes the god's Vessel
 #   eldritch.80       the Prophet's record: the character sheet
 #   eldritch.81       the Prophet reaches a new level
+#   eldritch.82       the result of a skill check (roll, odds, outcome)
 #   eldritch.100      hidden monthly pulse (Favor income, random whims)
 #   eldritch_news.1-3 world news: a god is summoned / ascends / incarnates
 #   eldritch_news.4   world news: a leader becomes a god's Vessel
@@ -331,6 +332,13 @@ country_event = {
 		add_stability = -0.05
 		ai_chance = { factor = 10 }
 	}
+
+	option = {
+		name = eldritch.40.will
+		trigger = { check_variable = { eldritch_prophet_will > 3 } }
+		add_stability = 0.02
+		ai_chance = { factor = 60 }
+	}
 }
 
 # A prophet in the streets
@@ -356,6 +364,14 @@ country_event = {
 		add_war_support = 0.02
 		ai_chance = { factor = 70 }
 	}
+
+	option = {
+		name = eldritch.41.zeal
+		trigger = { check_variable = { eldritch_prophet_zeal > 3 } }
+		eldritch_gain_favor_20 = yes
+		add_war_support = 0.03
+		ai_chance = { factor = 90 }
+	}
 }
 
 # The stars are right
@@ -370,6 +386,19 @@ country_event = {
 	option = {
 		name = eldritch.42.a
 		eldritch_gain_favor_30 = yes
+	}
+
+	option = {
+		name = eldritch.42.lore
+		trigger = { check_variable = { eldritch_prophet_lore > 3 } }
+		eldritch_gain_favor_30 = yes
+		add_tech_bonus = {
+			name = eldritch_prophet_insight
+			bonus = 0.5
+			uses = 1
+			category = electronics
+		}
+		ai_chance = { factor = 90 }
 	}
 }
 
@@ -386,6 +415,14 @@ country_event = {
 		name = eldritch.43.a
 		eldritch_gain_favor_10 = yes
 		army_experience = 10
+	}
+
+	option = {
+		name = eldritch.43.zeal
+		trigger = { check_variable = { eldritch_prophet_zeal > 2 } }
+		eldritch_gain_favor_10 = yes
+		army_experience = 25
+		ai_chance = { factor = 90 }
 	}
 }
 
@@ -489,6 +526,25 @@ country_event = {
 		eldritch_gain_favor_40 = yes
 		ai_chance = { factor = 30 }
 	}
+
+	option = {
+		name = eldritch.70.lore
+		trigger = { check_variable = { eldritch_prophet_lore > 4 } }
+		add_tech_bonus = {
+			name = eldritch_prophet_insight
+			bonus = 1.0
+			uses = 1
+			category = industry
+		}
+		add_tech_bonus = {
+			name = eldritch_prophet_insight
+			bonus = 1.0
+			uses = 1
+			category = land_doctrine
+		}
+		eldritch_gain_favor_10 = yes
+		ai_chance = { factor = 60 }
+	}
 }
 
 # The leader comes back changed.
@@ -512,6 +568,14 @@ country_event = {
 		eldritch_gain_favor_20 = yes
 		add_political_power = -30
 		ai_chance = { factor = 40 }
+	}
+
+	option = {
+		name = eldritch.71.will
+		trigger = { check_variable = { eldritch_prophet_will > 4 } }
+		eldritch_gain_favor_40 = yes
+		add_stability = 0.02
+		ai_chance = { factor = 90 }
 	}
 }
 
@@ -628,6 +692,76 @@ country_event = {
 	option = {
 		name = eldritch.81.keep
 		ai_chance = { factor = 0 }
+	}
+}
+
+# The outcome of a skill check resolved at once (curses, Preach, the
+# incarnation, the Vessel). Commune shows its roll in eldritch.70/71.
+country_event = {
+	id = eldritch.82
+	title = eldritch.82.t
+	desc = {
+		text = eldritch.82.d.curse_pass
+		trigger = {
+			check_variable = { eldritch_check_kind = 2 }
+			eldritch_check_passed = yes
+		}
+	}
+	desc = {
+		text = eldritch.82.d.curse_fail
+		trigger = {
+			check_variable = { eldritch_check_kind = 2 }
+			eldritch_check_passed = no
+		}
+	}
+	desc = {
+		text = eldritch.82.d.preach_pass
+		trigger = {
+			check_variable = { eldritch_check_kind = 3 }
+			eldritch_check_passed = yes
+		}
+	}
+	desc = {
+		text = eldritch.82.d.preach_fail
+		trigger = {
+			check_variable = { eldritch_check_kind = 3 }
+			eldritch_check_passed = no
+		}
+	}
+	desc = {
+		text = eldritch.82.d.incarnate_pass
+		trigger = {
+			check_variable = { eldritch_check_kind = 4 }
+			eldritch_check_passed = yes
+		}
+	}
+	desc = {
+		text = eldritch.82.d.incarnate_fail
+		trigger = {
+			check_variable = { eldritch_check_kind = 4 }
+			eldritch_check_passed = no
+		}
+	}
+	desc = {
+		text = eldritch.82.d.vessel_pass
+		trigger = {
+			check_variable = { eldritch_check_kind = 5 }
+			eldritch_check_passed = yes
+		}
+	}
+	desc = {
+		text = eldritch.82.d.vessel_fail
+		trigger = {
+			check_variable = { eldritch_check_kind = 5 }
+			eldritch_check_passed = no
+		}
+	}
+	picture = GFX_report_event_eldritch_omen
+
+	is_triggered_only = yes
+
+	option = {
+		name = eldritch.82.a
 	}
 }
 

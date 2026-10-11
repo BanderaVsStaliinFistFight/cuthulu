@@ -92,8 +92,10 @@ eldritch_lose_favor_40 = {
 
 # Runs every 30 days for pact holders (hidden event eldritch.100).
 eldritch_monthly_pulse = {
-	# pacts sealed before the Prophet's mantle existed get one now
+	# pacts sealed before the Prophet's mantle existed get one now, and
+	# older mantles get their skill check odds
 	eldritch_prophet_init = yes
+	eldritch_prophet_update_mantle = yes
 
 	if = {
 		limit = { check_variable = { eldritch_pact_tier > 2 } }
@@ -1019,6 +1021,28 @@ eldritch_prophet_update_mantle = {
 	multiply_variable = { eldritch_prophet_zeal_pct = 2 }
 	set_variable = { eldritch_prophet_will_pct = eldritch_prophet_will }
 	multiply_variable = { eldritch_prophet_will_pct = 2 }
+
+	# Skill check odds, in percent (5 to 95). See SKILL CHECKS below.
+	set_variable = { eldritch_odds_commune = eldritch_prophet_will }
+	multiply_variable = { eldritch_odds_commune = 4 }
+	add_to_variable = { eldritch_odds_commune = 60 }
+	set_variable = { eldritch_odds_curse = eldritch_prophet_lore }
+	multiply_variable = { eldritch_odds_curse = 6 }
+	add_to_variable = { eldritch_odds_curse = 45 }
+	set_variable = { eldritch_odds_preach = eldritch_prophet_zeal }
+	multiply_variable = { eldritch_odds_preach = 6 }
+	add_to_variable = { eldritch_odds_preach = 40 }
+	set_variable = { eldritch_odds_incarnate = eldritch_prophet_zeal }
+	multiply_variable = { eldritch_odds_incarnate = 6 }
+	add_to_variable = { eldritch_odds_incarnate = 30 }
+	set_variable = { eldritch_odds_vessel = eldritch_prophet_will }
+	multiply_variable = { eldritch_odds_vessel = 6 }
+	add_to_variable = { eldritch_odds_vessel = 30 }
+	clamp_variable = { var = eldritch_odds_commune min = 5 max = 95 }
+	clamp_variable = { var = eldritch_odds_curse min = 5 max = 95 }
+	clamp_variable = { var = eldritch_odds_preach min = 5 max = 95 }
+	clamp_variable = { var = eldritch_odds_incarnate min = 5 max = 95 }
+	clamp_variable = { var = eldritch_odds_vessel min = 5 max = 95 }
 }
 
 # Spends enough experience for as many levels as it covers; each level
@@ -1107,4 +1131,96 @@ eldritch_prophet_raise_will = {
 		add_to_variable = { eldritch_prophet_will = 1 }
 		eldritch_prophet_update_mantle = yes
 	}
+}
+
+#####################################################################
+# SKILL CHECKS
+#
+# A check rolls d100 against odds that grow with one of the Prophet's
+# stats (eldritch_odds_<check>, kept by eldritch_prophet_update_mantle):
+#
+#   check       stat   odds                  where
+#   commune     Will   60% + 4% per point    Commune: keep the Prophet's mind
+#   curse       Lore   45% + 6% per point    the god's curses land in full
+#   preach      Zeal   40% + 6% per point    Preach stirs the crowd further
+#   incarnate   Zeal   30% + 6% per point    the god is pleased to be called
+#   vessel      Will   30% + 6% per point    the Vessel keeps more of its mind
+#
+# Each check sets these country variables, which the result text shows:
+#   eldritch_check_stat    1 Lore, 2 Zeal, 3 Will
+#   eldritch_check_kind    1 commune, 2 curse, 3 preach, 4 incarnate, 5 vessel
+#   eldritch_check_chance  the odds rolled against
+#   eldritch_check_roll    the roll, 0 to 99
+#   eldritch_check_passed  1 on a success, 0 on a failure
+#
+# Stats count in checks even while the mantle is unclaimed: the cult
+# keeps what it has learned, even when the god's gifts lapse.
+#####################################################################
+
+# Rolls against eldritch_check_chance.
+eldritch_roll_check = {
+	set_variable_to_random = {
+		var = eldritch_check_roll
+		min = 0
+		max = 100
+		integer = yes
+	}
+	if = {
+		limit = {
+			check_variable = {
+				var = eldritch_check_roll
+				value = eldritch_check_chance
+				compare = less_than
+			}
+		}
+		set_variable = { eldritch_check_passed = 1 }
+	}
+	else = {
+		set_variable = { eldritch_check_passed = 0 }
+	}
+}
+
+eldritch_check_commune = {
+	eldritch_prophet_init = yes
+	eldritch_prophet_update_mantle = yes
+	set_variable = { eldritch_check_stat = 3 }
+	set_variable = { eldritch_check_kind = 1 }
+	set_variable = { eldritch_check_chance = eldritch_odds_commune }
+	eldritch_roll_check = yes
+}
+
+eldritch_check_curse = {
+	eldritch_prophet_init = yes
+	eldritch_prophet_update_mantle = yes
+	set_variable = { eldritch_check_stat = 1 }
+	set_variable = { eldritch_check_kind = 2 }
+	set_variable = { eldritch_check_chance = eldritch_odds_curse }
+	eldritch_roll_check = yes
+}
+
+eldritch_check_preach = {
+	eldritch_prophet_init = yes
+	eldritch_prophet_update_mantle = yes
+	set_variable = { eldritch_check_stat = 2 }
+	set_variable = { eldritch_check_kind = 3 }
+	set_variable = { eldritch_check_chance = eldritch_odds_preach }
+	eldritch_roll_check = yes
+}
+
+eldritch_check_incarnate = {
+	eldritch_prophet_init = yes
+	eldritch_prophet_update_mantle = yes
+	set_variable = { eldritch_check_stat = 2 }
+	set_variable = { eldritch_check_kind = 4 }
+	set_variable = { eldritch_check_chance = eldritch_odds_incarnate }
+	eldritch_roll_check = yes
+}
+
+eldritch_check_vessel = {
+	eldritch_prophet_init = yes
+	eldritch_prophet_update_mantle = yes
+	set_variable = { eldritch_check_stat = 3 }
+	set_variable = { eldritch_check_kind = 5 }
+	set_variable = { eldritch_check_chance = eldritch_odds_vessel }
+	eldritch_roll_check = yes
 }

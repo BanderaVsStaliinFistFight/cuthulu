@@ -207,3 +207,8 @@ eldritch_prophet_can_raise_will = {
 	check_variable = { eldritch_prophet_insight > 0 }
 	check_variable = { eldritch_prophet_will < 10 }
 }
+
+# The last skill check succeeded (see SKILL CHECKS in the scripted effects).
+eldritch_check_passed = {
+	check_variable = { eldritch_check_passed = 1 }
+}

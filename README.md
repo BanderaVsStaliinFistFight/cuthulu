@@ -183,6 +183,30 @@ The Prophet levels up like a role-playing character. **The Prophet's Record** (f
 * **The mantle belongs to the cult, not to one leader.** If the leader changes, the stats and levels stay, but the mantle's bonuses lapse until the new leader is marked by **Exalt the Prophet**.
 * **Older saves:** a pact sealed before this update gets a level 1 mantle at its next monthly pulse, or as soon as you open the record.
 
+### 10. Skill checks
+The Prophet's stats decide how some rites turn out. A **rolled check** rolls d100 against odds that grow with one stat. The odds appear in the decision's tooltip and on the character sheet, and the roll and outcome are shown afterwards.
+
+| Check | Stat | Odds at 1 / 5 / 10 | Success | Failure |
+|---|---|---|---|---|
+| **Commune** | Will | 64% / 80% / 95% | the Prophet asks the god for something | the Prophet comes back changed |
+| **Curses** (Send Nightmares, Stage the Play, Whisper Madness) | Lore | 51% / 75% / 95% | the curse lands in full (90 days; Whispers: −8% stability and an ideology push) | it lands weakly (45 days; Whispers: −4% stability only) |
+| **Preach to the Faithful** | Zeal | 46% / 70% / 95% | +3% more war support | the normal effect |
+| **Incarnate the god** | Zeal | 36% / 60% / 90% | the god is pleased: 50 Favor back, +25 army experience | the normal effect |
+| **Become the Vessel** | Will | 36% / 60% / 90% | the nation loses only 5% stability instead of 10% | the normal effect |
+
+Odds never go below 5% or above 95%. Checks use the stats even while the mantle is unclaimed: the cult keeps what it has learned, even when the god's gifts lapse.
+
+**Dialogue checks** are event options that only appear when the Prophet's stat is high enough. They are always a better deal than the ordinary options:
+
+| Event | Needs | Option |
+|---|---|---|
+| The god demands tribute | Will 4 | Refuse, and make the god accept it: +2% stability, no Favor lost |
+| A prophet in the streets | Zeal 4 | Make the street prophet one of ours: +20 Favor, +3% war support |
+| The stars are right | Lore 4 | Read what the stars are really saying: +30 Favor and a 50% electronics research bonus |
+| Dreams of the faithful | Zeal 3 | Turn the dream into a war cry: +10 Favor, +25 army experience |
+| The Prophet communes | Lore 5 | Ask to be taught, not given: 100% research bonuses for an industry and a land doctrine tech, +10 Favor |
+| The Prophet returns changed | Will 5 | The Prophet masters the fever: +40 Favor, +2% stability, no fever |
+
 ---
 
 ## Game rule

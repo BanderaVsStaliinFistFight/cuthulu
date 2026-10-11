@@ -9,6 +9,9 @@
 #   [ROOT.GetEldritchMantleLine]  the Prophet's level and stats, for the
 #                                 category header (empty before a pact)
 #   [ROOT.GetEldritchMantleState] whether the mantle's gifts are in force
+#   [ROOT.GetEldritchCheckTitle]  "A Test of Lore / Zeal / Will" for the
+#                                 last skill check
+#   [ROOT.GetEldritchCheckLine]   the last skill check's roll and outcome
 #####################################################################
 
 defined_text = {
@@ -154,5 +157,72 @@ defined_text = {
 	}
 	text = {
 		localization_key = eldritch_mantle_state_unclaimed
+	}
+}
+
+defined_text = {
+	name = GetEldritchCheckTitle
+
+	text = {
+		trigger = { check_variable = { eldritch_check_stat = 1 } }
+		localization_key = eldritch_check_title_lore
+	}
+	text = {
+		trigger = { check_variable = { eldritch_check_stat = 2 } }
+		localization_key = eldritch_check_title_zeal
+	}
+	text = {
+		trigger = { check_variable = { eldritch_check_stat = 3 } }
+		localization_key = eldritch_check_title_will
+	}
+}
+
+defined_text = {
+	name = GetEldritchCheckLine
+
+	text = {
+		trigger = {
+			check_variable = { eldritch_check_stat = 1 }
+			eldritch_check_passed = yes
+		}
+		localization_key = eldritch_check_line_lore_pass
+	}
+	text = {
+		trigger = {
+			check_variable = { eldritch_check_stat = 1 }
+			eldritch_check_passed = no
+		}
+		localization_key = eldritch_check_line_lore_fail
+	}
+	text = {
+		trigger = {
+			check_variable = { eldritch_check_stat = 2 }
+			eldritch_check_passed = yes
+		}
+		localization_key = eldritch_check_line_zeal_pass
+	}
+	text = {
+		trigger = {
+			check_variable = { eldritch_check_stat = 2 }
+			eldritch_check_passed = no
+		}
+		localization_key = eldritch_check_line_zeal_fail
+	}
+	text = {
+		trigger = {
+			check_variable = { eldritch_check_stat = 3 }
+			eldritch_check_passed = yes
+		}
+		localization_key = eldritch_check_line_will_pass
+	}
+	text = {
+		trigger = {
+			check_variable = { eldritch_check_stat = 3 }
+			eldritch_check_passed = no
+		}
+		localization_key = eldritch_check_line_will_fail
+	}
+	text = {
+		localization_key = eldritch_favor_line_none
 	}
 }

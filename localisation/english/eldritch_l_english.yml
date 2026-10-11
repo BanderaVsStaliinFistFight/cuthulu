@@ -75,7 +75,21 @@
  eldritch_has_anointed_commander_tt:0 "Has an anointed general or admiral, or an avatar"
  eldritch_has_servitors_in_field_tt:0 "Has eldritch servitor battalions in the field"
  eldritch_god_incarnate_deployed_tt:0 "[ROOT.GetEldritchGodName] walks the battlefield in the flesh"
- eldritch_prophet_commune_tt:0 "[ROOT.GetLeader] returns from the trance and asks [ROOT.GetEldritchGodName] for §Ystrength§!, §Yknowledge§! or §YFavor§!.\n§RSometimes the Prophet comes back changed.§!"
+ eldritch_prophet_commune_tt:0 "[ROOT.GetLeader] returns from the trance and asks [ROOT.GetEldritchGodName] for §Ystrength§!, §Yknowledge§! or §YFavor§!.\n§HWill check§! (§Y[?eldritch_odds_commune|0]%§!): on a failure the Prophet comes back changed."
+ eldritch_check_curse_tt:0 "§HLore check§! (§Y[?eldritch_odds_curse|0]%§!): on a success the curse lasts §G90§! days, on a failure only §R45§!."
+ eldritch_check_whisper_tt:0 "§HLore check§! (§Y[?eldritch_odds_curse|0]%§!): on a success the target loses §R8%§! stability and its people drift toward our ideology; on a failure it loses only §R4%§! stability."
+ eldritch_check_preach_tt:0 "§HZeal check§! (§Y[?eldritch_odds_preach|0]%§!): on a success the crowd is roused, for §G+3%§! more war support."
+ eldritch_check_incarnate_tt:0 "§HZeal check§! (§Y[?eldritch_odds_incarnate|0]%§!): on a success the god is pleased to be called: §G50§! Favor back and §G25§! army experience."
+ eldritch_check_vessel_tt:0 "§HWill check§! (§Y[?eldritch_odds_vessel|0]%§!): on a success the Prophet keeps hold of their own mind, and the nation loses only §Y5%§! stability instead of 10%."
+ eldritch_check_title_lore:0 "A Test of Lore"
+ eldritch_check_title_zeal:0 "A Test of Zeal"
+ eldritch_check_title_will:0 "A Test of Will"
+ eldritch_check_line_lore_pass:0 "§HLore check:§! rolled §Y[?eldritch_check_roll|0]§!, needed under §Y[?eldritch_check_chance|0]§!. §GSuccess.§!"
+ eldritch_check_line_lore_fail:0 "§HLore check:§! rolled §Y[?eldritch_check_roll|0]§!, needed under §Y[?eldritch_check_chance|0]§!. §RFailure.§!"
+ eldritch_check_line_zeal_pass:0 "§HZeal check:§! rolled §Y[?eldritch_check_roll|0]§!, needed under §Y[?eldritch_check_chance|0]§!. §GSuccess.§!"
+ eldritch_check_line_zeal_fail:0 "§HZeal check:§! rolled §Y[?eldritch_check_roll|0]§!, needed under §Y[?eldritch_check_chance|0]§!. §RFailure.§!"
+ eldritch_check_line_will_pass:0 "§HWill check:§! rolled §Y[?eldritch_check_roll|0]§!, needed under §Y[?eldritch_check_chance|0]§!. §GSuccess.§!"
+ eldritch_check_line_will_fail:0 "§HWill check:§! rolled §Y[?eldritch_check_roll|0]§!, needed under §Y[?eldritch_check_chance|0]§!. §RFailure.§!"
  eldritch_council_avatar_tt:0 "An §Yavatar§! sits on the council:"
  eldritch_temple_favor_tt:0 "Gain §G3§! more Eldritch Favor every month."
  eldritch_dread_tt:0 "Every nation at war with us is struck by §RDread of the Incarnate§! (-15% morale, -10% organization, -10% war support), renewed every month while the god walks the earth."
@@ -170,7 +184,7 @@
  eldritch_call_servitors:0 "Call Forth the Servitors"
  eldritch_call_servitors_desc:0 "The servants of [ROOT.GetEldritchGodName] are numberless, and the god will lend them to its faithful for a price.\n\n§YTwo veteran divisions of the god's locked template appear near our capital.§!"
  eldritch_incarnate_god:0 "Incarnate [ROOT.GetEldritchGodName] in the Flesh"
- eldritch_incarnate_god_desc:0 "The servants are not enough. Over thirty nights, the full congregation of [ROOT.GetNameDef] will chant [ROOT.GetEldritchGodName] into a body that can walk the earth and fight beside our armies.\n\n§YSpawns the god itself as one veteran division: a colossal god battalion with a thousand strength, enormous organization, attack, defense, breakthrough and piercing, and its own recon and initiative, escorted by its servitors. Two more servitor divisions come with it. While it lives, our armies fight harder and every nation at war with us is gripped by dread. The god cannot be trained or added to other templates. Only one incarnation can walk the earth at a time: once it is destroyed, it can be incarnated again, at most once a year.§!"
+ eldritch_incarnate_god_desc:0 "The servants are not enough. Over thirty nights, the full congregation of [ROOT.GetNameDef] will chant [ROOT.GetEldritchGodName] into a body that can walk the earth and fight beside our armies.\n\n§YSpawns the god itself as one veteran division: a colossal god battalion with a thousand strength, enormous organization, attack, defense, breakthrough and piercing, and its own recon and initiative, escorted by its servitors. Two more servitor divisions come with it. While it lives, our armies fight harder and every nation at war with us is gripped by dread. The god cannot be trained or added to other templates. Only one incarnation can walk the earth at a time: once it is destroyed, it can be incarnated again, at most once a year.§!\n§HZeal§! check: a pleased god returns some of the offering."
 
  ################################################################
  # DECISIONS - CTHULHU
@@ -181,7 +195,7 @@
  eldritch_cthulhu_avatar:0 "Raise Father Dagon and Mother Hydra"
  eldritch_cthulhu_avatar_desc:0 "Two ancient Deep Ones, vast with age, rule the hybrid cities under the waves. They will rise to command our fleets and armies.\n\n§YCreates a unique admiral and a unique field marshal.§!"
  eldritch_cthulhu_send_nightmares:0 "Send Nightmares to [From.GetNameDef]"
- eldritch_cthulhu_send_nightmares_desc:0 "Artists, poets and sensitive souls across [From.GetNameDef] will dream of a green, slimy city of impossible angles. Some of them will not stop screaming.\n\n§YPlaces the 'Dreams of R'lyeh' curse on the enemy for 90 days.§!"
+ eldritch_cthulhu_send_nightmares_desc:0 "Artists, poets and sensitive souls across [From.GetNameDef] will dream of a green, slimy city of impossible angles. Some of them will not stop screaming.\n\n§YPlaces the 'Dreams of R'lyeh' curse on the enemy for 90 days.§!\n§HLore§! check: the curse lasts 90 days in full, or 45 on a failure."
 
  ################################################################
  # DECISIONS - NYARLATHOTEP
@@ -192,7 +206,7 @@
  eldritch_nyarlathotep_avatar:0 "Summon the Black Pharaoh"
  eldritch_nyarlathotep_avatar_desc:0 "Nephren-Ka was the pharaoh whose name was struck from every monument. He has waited a long time to wage war again.\n\n§YCreates a unique field marshal.§!"
  eldritch_nyarlathotep_whispers:0 "Whisper Madness into [From.GetNameDef]"
- eldritch_nyarlathotep_whispers_desc:0 "A charismatic stranger is touring [From.GetNameDef], giving lectures on electricity and the stars. Crowds follow him. Afterwards they cannot remember what he said, but they believe it completely.\n\n§YDestabilizes the target and spreads our ideology there.§!"
+ eldritch_nyarlathotep_whispers_desc:0 "A charismatic stranger is touring [From.GetNameDef], giving lectures on electricity and the stars. Crowds follow him. Afterwards they cannot remember what he said, but they believe it completely.\n\n§YDestabilizes the target and spreads our ideology there.§!\n§HLore§! check: on a failure the whispers only shake the target's stability."
 
  ################################################################
  # DECISIONS - HASTUR
@@ -203,7 +217,7 @@
  eldritch_hastur_avatar:0 "Invite the Stranger in the Pallid Mask"
  eldritch_hastur_avatar_desc:0 "'You, sir, should unmask.' 'Indeed?' 'Indeed it's time. We all have laid aside disguise but you.' 'I wear no mask.'\n\n§YCreates a unique field marshal.§!"
  eldritch_hastur_stage_play:0 "Stage 'The King in Yellow' in [From.GetNameDef]"
- eldritch_hastur_stage_play_desc:0 "A touring company will perform the forbidden play in the theatres of [From.GetNameDef]. The first act is harmless. Nobody who sees the second act is ever the same.\n\n§YPlaces 'The Yellow Madness' curse on the enemy for 90 days.§!"
+ eldritch_hastur_stage_play_desc:0 "A touring company will perform the forbidden play in the theatres of [From.GetNameDef]. The first act is harmless. Nobody who sees the second act is ever the same.\n\n§YPlaces 'The Yellow Madness' curse on the enemy for 90 days.§!\n§HLore§! check: the curse lasts 90 days in full, or 45 on a failure."
 
  ################################################################
  # DECISIONS - SHUB-NIGGURATH
@@ -245,9 +259,9 @@
  eldritch_prophet_record:0 "The Prophet's Record"
  eldritch_prophet_record_desc:0 "Every rite leaves its mark on the one who leads it. The cult keeps a record of what the Prophet has learned, endured and become.\n\n§YOpens the Prophet's character sheet: level, experience and the three stats, Lore, Zeal and Will. Spend Insight there.§!"
  eldritch_prophet_commune:0 "Commune with [ROOT.GetEldritchGodName]"
- eldritch_prophet_commune_desc:0 "[ROOT.GetLeader] will go down alone into the sanctum beneath the capital, and for ten days nobody will see or hear from them. Those who have done this before describe it as drowning in a voice.\n\n§YAfter 10 days the Prophet asks for strength (army and navy experience), knowledge (research bonuses) or simply listens (Favor). One time in four, the Prophet comes back changed.§!"
+ eldritch_prophet_commune_desc:0 "[ROOT.GetLeader] will go down alone into the sanctum beneath the capital, and for ten days nobody will see or hear from them. Those who have done this before describe it as drowning in a voice.\n\n§YAfter 10 days the Prophet asks for strength (army and navy experience), knowledge (research bonuses) or simply listens (Favor). A §HWill§! check decides whether the Prophet comes back changed.§!"
  eldritch_prophet_preach:0 "Preach to the Faithful"
- eldritch_prophet_preach_desc:0 "The pact has frightened the people. [ROOT.GetLeader] will stand on the palace balcony and tell them what [ROOT.GetEldritchGodName] has promised, and the crowd will go home calmer, and a little stranger.\n\n§YStability and war support. The god's Chosen preaches better.§!"
+ eldritch_prophet_preach_desc:0 "The pact has frightened the people. [ROOT.GetLeader] will stand on the palace balcony and tell them what [ROOT.GetEldritchGodName] has promised, and the crowd will go home calmer, and a little stranger.\n\n§YStability and war support. The god's Chosen preaches better.§!\n§HZeal§! check: a roused crowd brings more war support."
  eldritch_prophet_tithe:0 "Demand a Tithe from the Cult"
  eldritch_prophet_tithe_desc:0 "The cult has grown rich on offerings. [ROOT.GetLeader] will remind its priests who leads this nation, and the money will find its way into the treasury.\n\n§YTurns Favor into political power.§!"
  eldritch_prophet_dark_council:0 "Convene the Dark Council"
@@ -261,7 +275,7 @@
  eldritch_prophet_great_temple:0 "Raise the Great Temple"
  eldritch_prophet_great_temple_desc:0 "[ROOT.GetLeader] will lay the first stone of a temple to [ROOT.GetEldritchGodName] in the heart of the capital. Its architects have stopped sleeping, and its angles do not quite meet.\n\n§YA 90-day construction. The Great Temple adds stability and political power, and §G3§! Eldritch Favor every month for the rest of the game. Once per game.§!"
  eldritch_prophet_become_vessel:0 "Become the Vessel"
- eldritch_prophet_become_vessel_desc:0 "[ROOT.GetEldritchGodName] has asked for the last thing [ROOT.GetLeader] has left to give. For sixty days the Prophet will lie in the sanctum while the god pours itself in. What comes out will still lead the nation. It will not be entirely human.\n\n§YNeeds an Ascendant pact and a Chosen leader. The leader gains the god's powerful §YVessel§! trait; the nation loses stability and gains war support, and the whole world will hear of it. Once per game; the trait is lost if the leader is replaced.§!"
+ eldritch_prophet_become_vessel_desc:0 "[ROOT.GetEldritchGodName] has asked for the last thing [ROOT.GetLeader] has left to give. For sixty days the Prophet will lie in the sanctum while the god pours itself in. What comes out will still lead the nation. It will not be entirely human.\n\n§YNeeds an Ascendant pact and a Chosen leader. The leader gains the god's powerful §YVessel§! trait; the nation loses stability and gains war support, and the whole world will hear of it. Once per game; the trait is lost if the leader is replaced.§!\n§HWill§! check: a Prophet who keeps hold of their mind halves the stability loss."
 
  ################################################################
  # NATIONAL SPIRITS
@@ -584,16 +598,20 @@
  eldritch.40.a:0 "Give it blood."
  eldritch.40.b:0 "Our statesmen will make a show of devotion."
  eldritch.40.c:0 "We will not be its cattle!"
+ eldritch.40.will:0 "§Y(Will 4)§! Refuse, and make the god accept it."
  eldritch.41.t:0 "A Prophet in the Streets"
  eldritch.41.d:0 "A ragged preacher is drawing huge crowds in the capital's squares. He claims [ROOT.GetEldritchGodName] speaks to him directly, and he describes our secret rites with frightening accuracy. The police ask whether he should be silenced."
  eldritch.41.a:0 "Silence the prophet. Discretion is everything."
  eldritch.41.b:0 "Let them preach. Let the people know their god."
+ eldritch.41.zeal:0 "§Y(Zeal 4)§! Make the street prophet one of ours."
  eldritch.42.t:0 "The Stars Are Right"
  eldritch.42.d:0 "Astronomers report an alignment of stars not seen in ten thousand years. In every temple of [ROOT.GetEldritchGodName] the candles burn black, and the faithful feel their god's attention like a weight on their shoulders."
  eldritch.42.a:0 "Iä! Iä!"
+ eldritch.42.lore:0 "§Y(Lore 4)§! Read what the stars are really saying."
  eldritch.43.t:0 "Dreams of the Faithful"
  eldritch.43.d:0 "Last night thousands of our soldiers had the same dream: a battle in a strange land, fought and won under the eye of [ROOT.GetEldritchGodName]. They woke knowing tactics they were never taught."
  eldritch.43.a:0 "Our god teaches well."
+ eldritch.43.zeal:0 "§Y(Zeal 3)§! Turn the dream into a war cry."
 
  eldritch.60.t:0 "Nightmares of a Drowned City"
  eldritch.60.d:0 "All over [ROOT.GetNameDef], artists, poets and the sensitive-minded are dreaming the same dream: a city of green stone and impossible angles beneath the sea, and something vast stirring inside it. The asylums are overflowing. Some say the dreams started when [From.GetNameDef] began holding strange rites on its coasts."
@@ -610,14 +628,16 @@
  eldritch.63.a:0 "Make it stop."
 
  eldritch.70.t:0 "The Prophet Communes"
- eldritch.70.d:0 "On the tenth day the sanctum door opened and [ROOT.GetLeader] walked out, grey-faced and steady. [ROOT.GetEldritchGodName] had listened, the Prophet said, and would grant one thing.\n\nThe ministers waited to hear what that one thing should be."
+ eldritch.70.d:0 "On the tenth day the sanctum door opened and [ROOT.GetLeader] walked out, grey-faced and steady. [ROOT.GetEldritchGodName] had listened, the Prophet said, and would grant one thing.\n\nThe ministers waited to hear what that one thing should be.\n\n[ROOT.GetEldritchCheckLine]"
  eldritch.70.a:0 "Ask for strength for our soldiers and sailors."
  eldritch.70.b:0 "Ask for the secrets of machines and of war."
  eldritch.70.c:0 "Ask for nothing. Only listen."
+ eldritch.70.lore:0 "§Y(Lore 5)§! Ask to be taught, not given."
  eldritch.71.t:0 "The Prophet Returns Changed"
- eldritch.71.d:0 "The sanctum door stayed shut two days longer than planned. When the guards forced it, [ROOT.GetLeader] was sitting in the dark, speaking in a language that hurt to hear. The Prophet came out laughing, and has not stopped making speeches since.\n\nThe crowds adore the new fervour. The cabinet is frightened of it."
+ eldritch.71.d:0 "The sanctum door stayed shut two days longer than planned. When the guards forced it, [ROOT.GetLeader] was sitting in the dark, speaking in a language that hurt to hear. The Prophet came out laughing, and has not stopped making speeches since.\n\nThe crowds adore the new fervour. The cabinet is frightened of it.\n\n[ROOT.GetEldritchCheckLine]"
  eldritch.71.a:0 "Let the people see their Prophet."
  eldritch.71.b:0 "Keep the Prophet out of sight until it passes."
+ eldritch.71.will:0 "§Y(Will 5)§! The Prophet masters the fever."
  eldritch.72.t:0 "The Vessel"
  eldritch.72.d.cthulhu:0 "When [ROOT.GetLeader] came up from the sanctum, the guards smelled the sea first. Gills had opened along the Prophet's throat, and the eyes no longer blinked. At the first cabinet meeting the ministers found they had all dreamt the same dream, of a green city under the water, and that the Prophet had been in it.\n\nCthulhu has a voice in [ROOT.GetNameDef] now, and it is our leader's."
  eldritch.72.d.nyarlathotep:0 "[ROOT.GetLeader] walked out of the sanctum looking exactly the same. That was what frightened the guards. The Prophet's face is perfect, unlined and always smiling, and sometimes, at the edge of a room, it is not there at all.\n\nThe Crawling Chaos wears our leader now. It wears the role well."
@@ -628,7 +648,7 @@
  eldritch.72.a:0 "All hail the Vessel."
 
  eldritch.80.t:0 "The Prophet's Record"
- eldritch.80.d:0 "§HThe Mantle of the Prophet§!\n[ROOT.GetEldritchProphetLine]\n[ROOT.GetEldritchMantleState]\n\n§HLevel§! §Y[?eldritch_prophet_level|0]§!   §HExperience§! [?eldritch_prophet_xp|0] / [?eldritch_prophet_xp_next|0]\n§HInsight to spend:§! §G[?eldritch_prophet_insight|0]§!\n\n§YLore§! [?eldritch_prophet_lore|0] / 10: §G+[?eldritch_prophet_lore_pct|0]%§! research speed\nKnowledge of the rites, the old tongues and the angles between the stars.\n\n§YZeal§! [?eldritch_prophet_zeal|0] / 10: §G+[?eldritch_prophet_zeal_pct|0]%§! army attack\nThe fire that sends soldiers into battle beside things that are not human.\n\n§YWill§! [?eldritch_prophet_will|0] / 10: §G+[?eldritch_prophet_will_pct|0]%§! stability\nWhat is left of the Prophet's own mind, and the nation's faith in it.\n\nThe Prophet gains experience from every rite of the pact, and more from the great ones. Each level brings a point of Insight."
+ eldritch.80.d:0 "§HThe Mantle of the Prophet§!\n[ROOT.GetEldritchProphetLine]\n[ROOT.GetEldritchMantleState]\n\n§HLevel§! §Y[?eldritch_prophet_level|0]§!   §HExperience§! [?eldritch_prophet_xp|0] / [?eldritch_prophet_xp_next|0]\n§HInsight to spend:§! §G[?eldritch_prophet_insight|0]§!\n\n§YLore§! [?eldritch_prophet_lore|0] / 10: §G+[?eldritch_prophet_lore_pct|0]%§! research speed\nKnowledge of the rites, the old tongues and the angles between the stars.\n\n§YZeal§! [?eldritch_prophet_zeal|0] / 10: §G+[?eldritch_prophet_zeal_pct|0]%§! army attack\nThe fire that sends soldiers into battle beside things that are not human.\n\n§YWill§! [?eldritch_prophet_will|0] / 10: §G+[?eldritch_prophet_will_pct|0]%§! stability\nWhat is left of the Prophet's own mind, and the nation's faith in it.\n\n§HSkill checks§! (the odds of each roll)\nCommune, §YWill§!: [?eldritch_odds_commune|0]%   Curses, §YLore§!: [?eldritch_odds_curse|0]%\nPreach, §YZeal§!: [?eldritch_odds_preach|0]%   Incarnation, §YZeal§!: [?eldritch_odds_incarnate|0]%   Vessel, §YWill§!: [?eldritch_odds_vessel|0]%\nSome events also offer choices that only a Prophet with enough Lore, Zeal or Will can make.\n\nThe Prophet gains experience from every rite of the pact, and more from the great ones. Each level brings a point of Insight."
  eldritch.80.lore:0 "Study the forbidden texts (+1 Lore)"
  eldritch.80.zeal:0 "Stoke the fire (+1 Zeal)"
  eldritch.80.will:0 "Steel the mind (+1 Will)"
@@ -639,6 +659,16 @@
  eldritch.81.zeal:0 "Stoke the fire (+1 Zeal)"
  eldritch.81.will:0 "Steel the mind (+1 Will)"
  eldritch.81.keep:0 "Keep the Insight for later."
+ eldritch.82.t:0 "[ROOT.GetEldritchCheckTitle]"
+ eldritch.82.d.curse_pass:0 "[ROOT.GetEldritchCheckLine]\n\n[ROOT.GetLeader] spoke every word of the rite without a stumble, in a voice that did not sound like the Prophet's own. Far away, the curse has settled over its target in full."
+ eldritch.82.d.curse_fail:0 "[ROOT.GetEldritchCheckLine]\n\nHalfway through the rite, [ROOT.GetLeader] faltered over a name no human tongue was made to say. The curse took hold, but weakly. It will not last."
+ eldritch.82.d.preach_pass:0 "[ROOT.GetEldritchCheckLine]\n\nBy the end of the speech the crowd was chanting with the Prophet, and then ahead of the Prophet. Recruiting offices report queues around the block."
+ eldritch.82.d.preach_fail:0 "[ROOT.GetEldritchCheckLine]\n\nThe crowd listened politely and went home calmer. Nobody cheered."
+ eldritch.82.d.incarnate_pass:0 "[ROOT.GetEldritchCheckLine]\n\n[ROOT.GetLeader] led the final chant alone, and [ROOT.GetEldritchGodName] came at once. The god is pleased to have been called by so devoted a voice, and some of our offering has been returned."
+ eldritch.82.d.incarnate_fail:0 "[ROOT.GetEldritchCheckLine]\n\nThe god came, but slowly, and it did not seem pleased by the voice that called it."
+ eldritch.82.d.vessel_pass:0 "[ROOT.GetEldritchCheckLine]\n\nThrough the whole of the change, [ROOT.GetLeader] held on to one memory: their own name. It is still there. The nation is frightened, but not as frightened as it might be."
+ eldritch.82.d.vessel_fail:0 "[ROOT.GetEldritchCheckLine]\n\nSomewhere in the change, [ROOT.GetLeader] let go. The Vessel remembers being our leader the way one remembers a book. The nation has noticed."
+ eldritch.82.a:0 "So it is written."
 
  eldritch_news.1.t:0 "Something Has Answered [From.GetNameDef]"
  eldritch_news.1.d.cthulhu:0 "Ships off the coast of [From.GetNameDef] report the sea boiling green, and coastal villages have been taken over by strange, fish-eyed people who walk out of the surf. Intelligence services confirm the unthinkable: [From.GetNameDef] has made a pact with Cthulhu, the Dreamer in R'lyeh."
