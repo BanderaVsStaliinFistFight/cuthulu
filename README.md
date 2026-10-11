@@ -272,7 +272,7 @@ Hastur's quests also unlock six new battalions, one per quest, for the division 
 
 **Proclaim Carcosa** (100 PP, needs 25% stability) is the formable. It works for any country, as a cosmetic tag:
 
-* **Name:** the nation is renamed by ideology: the **Kingdom of Carcosa** (non-aligned), the **Yellow Dominion of Carcosa** (fascist), the **Carcosan Commune** (communist) or the **Commonwealth of Carcosa** (democratic). Its adjective becomes *Carcosan*.
+* **Name:** the nation is called **Carcosa**, whatever its ideology. Its adjective becomes *Carcosan*.
 * **Flag:** the King in Yellow, crowned and antlered with the Yellow Sign on its robe, between two sigils, in gold on a black field between two gold bands.
 * **Map colour:** deep yellow.
 * **The King walks:** only now can a follower of Hastur incarnate the King in Yellow (see 5).
