@@ -95,6 +95,8 @@ eldritch_monthly_pulse = {
 	# older mantles get their skill check odds
 	eldritch_prophet_init = yes
 	eldritch_prophet_update_mantle = yes
+	# followers of Hastur from before the chapters had goals get theirs
+	eldritch_carcosa_catch_up = yes
 
 	# Apostolic Succession: the god marks each new leader itself
 	if = {
@@ -1234,6 +1236,86 @@ eldritch_unlock_halis_drowned = {
 # for the AI, which would not build it, puts the building down (in
 # the first province of the state: the buildings are provincial).
 #####################################################################
+
+# Catch-up, run when a game is loaded and every month: a follower of
+# Hastur whose pact was sealed before the chapters had goals never had
+# a chapter opened, so it gets the first one it has not finished (the
+# earlier ones count as opened), and every opened chapter's building
+# stays unlocked.
+eldritch_carcosa_catch_up = {
+	if = {
+		limit = {
+			has_country_flag = eldritch_god_hastur
+			NOT = { has_country_flag = eldritch_carcosa_1_open }
+		}
+		if = {
+			limit = { NOT = { has_country_flag = eldritch_carcosa_1_done } }
+			eldritch_carcosa_open_1 = yes
+		}
+		else_if = {
+			limit = { NOT = { has_country_flag = eldritch_carcosa_2_done } }
+			set_country_flag = eldritch_carcosa_1_open
+			eldritch_carcosa_open_2 = yes
+		}
+		else_if = {
+			limit = { NOT = { has_country_flag = eldritch_carcosa_3_done } }
+			set_country_flag = eldritch_carcosa_1_open
+			set_country_flag = eldritch_carcosa_2_open
+			eldritch_carcosa_open_3 = yes
+		}
+		else_if = {
+			limit = { NOT = { has_country_flag = eldritch_carcosa_4_done } }
+			set_country_flag = eldritch_carcosa_1_open
+			set_country_flag = eldritch_carcosa_2_open
+			set_country_flag = eldritch_carcosa_3_open
+			eldritch_carcosa_open_4 = yes
+		}
+		else_if = {
+			limit = { NOT = { has_country_flag = eldritch_carcosa_5_done } }
+			set_country_flag = eldritch_carcosa_1_open
+			set_country_flag = eldritch_carcosa_2_open
+			set_country_flag = eldritch_carcosa_3_open
+			set_country_flag = eldritch_carcosa_4_open
+			eldritch_carcosa_open_5 = yes
+		}
+		else = {
+			set_country_flag = eldritch_carcosa_1_open
+			set_country_flag = eldritch_carcosa_2_open
+			set_country_flag = eldritch_carcosa_3_open
+			set_country_flag = eldritch_carcosa_4_open
+			set_country_flag = eldritch_carcosa_5_open
+			eldritch_carcosa_open_6 = yes
+		}
+	}
+	if = {
+		limit = {
+			has_country_flag = eldritch_carcosa_1_open
+			NOT = { has_tech = eldritch_carcosa_theatre }
+		}
+		set_technology = { eldritch_carcosa_theatre = 1 popup = no }
+	}
+	if = {
+		limit = {
+			has_country_flag = eldritch_carcosa_3_open
+			NOT = { has_tech = eldritch_carcosa_masque_hall }
+		}
+		set_technology = { eldritch_carcosa_masque_hall = 1 popup = no }
+	}
+	if = {
+		limit = {
+			has_country_flag = eldritch_carcosa_4_open
+			NOT = { has_tech = eldritch_carcosa_observatory }
+		}
+		set_technology = { eldritch_carcosa_observatory = 1 popup = no }
+	}
+	if = {
+		limit = {
+			has_country_flag = eldritch_carcosa_6_open
+			NOT = { has_tech = eldritch_carcosa_palace }
+		}
+		set_technology = { eldritch_carcosa_palace = 1 popup = no }
+	}
+}
 
 eldritch_carcosa_open_1 = {
 	set_country_flag = eldritch_carcosa_1_open

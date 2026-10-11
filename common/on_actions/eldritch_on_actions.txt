@@ -15,6 +15,12 @@ on_actions = {
 					country_event = { id = eldritch.2 days = 1 }
 				}
 			}
+			# Followers of Hastur from saves made before the chapters had goals
+			# get their chapter and buildings (also checked every month).
+			every_country = {
+				limit = { has_country_flag = eldritch_god_hastur }
+				eldritch_carcosa_catch_up = yes
+			}
 			# Every nation's capital at the start of the game, for Chapter V of
 			# the Road to Carcosa: a nation moves its capital when it falls, so
 			# the goal asks for an old capital rather than the current one.

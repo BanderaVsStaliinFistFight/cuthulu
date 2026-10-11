@@ -18,8 +18,8 @@ catches the mistakes that are easy to make by hand:
     three sizes as uncompressed TGA, and a map colour in
     common/countries/cosmetic.txt (the only file the game reads them from)
   * buildings: names, descriptions, special icons (two 36x36 frames, on a
-    provincial building), hidden until a technology unlocks them, and only
-    unlocked by technologies that exist
+    provincial building), unlocked by a technology that exists, and a
+    tooltip (missing_tech_loc) for while they are locked
   * text icons (£name£) in localisation point to sprites that exist
   * doctrines: folders, tracks, grand doctrines and sub-doctrines refer to
     each other correctly, have names, icons and reward names, one milestone
@@ -334,10 +334,16 @@ def main():
                             h, w = int.from_bytes(head[12:16], "little"), int.from_bytes(head[16:20], "little")
                             if (w, h) != (72, 36):
                                 problems.append(f"{tex}: {icon} must be 72x36 (two 36x36 frames), is {w}x{h}")
-                    if fields.get("hide_if_missing_tech") != "yes":
-                        problems.append(f"{path}: {building} must be hidden until its technology unlocks it")
+                    # shown to everyone but locked until a technology unlocks it, with a tooltip saying how
+                    locked = fields.get("missing_tech_loc")
+                    key = {k: v for k, _, v in locked}.get("localization_key") if isinstance(locked, list) else None
+                    if not key:
+                        problems.append(f"{path}: {building} needs missing_tech_loc = {{ localization_key = ... }}")
+                    else:
+                        need_loc(key, f"{path} {building}")
 
     techs = set()
+    unlocked = set()
     for path, items in load_script("common/technologies/*.txt", problems).items():
         for key, _, value in items:
             if key == "technologies":
@@ -347,6 +353,7 @@ def main():
                     for k, _, v in body:
                         if k == "enable_building":
                             b = {kk: vv for kk, _, vv in v}.get("building")
+                            unlocked.add(b)
                             if b and b.startswith("eldritch_") and b not in buildings:
                                 problems.append(f"{path}: {tech} unlocks unknown building {b}")
                         if k == "enable_subunits":
@@ -355,6 +362,8 @@ def main():
                                     problems.append(f"{path}: {tech} enables unknown sub-unit {unit}")
                         elif isinstance(v, list) and k.startswith("eldritch_") and k not in subunits:
                             problems.append(f"{path}: {tech} modifies unknown sub-unit {k}")
+    for building in sorted(buildings - unlocked):
+        problems.append(f"common/buildings: {building} is not unlocked by any technology (enable_building)")
 
     events = set()
     event_files = load_script("events/*.txt", problems)

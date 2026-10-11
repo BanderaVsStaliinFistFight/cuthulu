@@ -1,17 +1,19 @@
 #####################################################################
 # Eldritch Pacts - the buildings of the Road to Carcosa
 #
-# Hidden until a Road to Carcosa chapter unlocks them through its
-# technology (eldritch_carcosa_*, see common/technologies), so only
-# Hastur's followers can build them. One per state.
+# Every country sees them in the construction menu, locked (with a
+# tooltip saying so) until a Road to Carcosa chapter unlocks them
+# through its technology (eldritch_carcosa_*, see common/technologies),
+# so only Hastur's followers can build them. One per state.
 #
 # Each has its own icon (special_icon, gfx/interface/buildings),
 # added as new sprites: nothing of the game's is overridden. Like the
 # game's own special buildings (facilities, dams, canals, landmarks)
 # they are built in a province (province_max), which is what puts
-# the special icon in the state view; state_max still allows only one
-# per state. icon_frame, which every building needs, is a frame of
-# the game's own building strip, left as it is.
+# the special icon in the province's view, and only where one stands
+# (only_display_if_exists); state_max still allows only one per
+# state. icon_frame, which every building needs, is a frame of the
+# game's own building strip, left as it is.
 #####################################################################
 
 buildings = {
@@ -21,9 +23,10 @@ buildings = {
 		base_cost = 3000
 		icon_frame = 23
 		special_icon = GFX_eldritch_building_yellow_theatre
+		only_display_if_exists = yes
 		value = 1
 		disabled_in_dmz = yes
-		hide_if_missing_tech = yes
+		missing_tech_loc = { localization_key = eldritch_yellow_theatre_locked }
 		show_modifier = yes
 		level_cap = {
 			province_max = 1
@@ -44,9 +47,10 @@ buildings = {
 		base_cost = 6000
 		icon_frame = 23
 		special_icon = GFX_eldritch_building_masque_hall
+		only_display_if_exists = yes
 		value = 1
 		disabled_in_dmz = yes
-		hide_if_missing_tech = yes
+		missing_tech_loc = { localization_key = eldritch_masque_hall_locked }
 		show_modifier = yes
 		level_cap = {
 			province_max = 1
@@ -64,9 +68,10 @@ buildings = {
 		base_cost = 8000
 		icon_frame = 14
 		special_icon = GFX_eldritch_building_black_star_observatory
+		only_display_if_exists = yes
 		value = 1
 		disabled_in_dmz = yes
-		hide_if_missing_tech = yes
+		missing_tech_loc = { localization_key = eldritch_black_star_observatory_locked }
 		show_modifier = yes
 		level_cap = {
 			province_max = 1
@@ -85,9 +90,10 @@ buildings = {
 		base_cost = 15000
 		icon_frame = 23
 		special_icon = GFX_eldritch_building_yellow_palace
+		only_display_if_exists = yes
 		value = 1
 		disabled_in_dmz = yes
-		hide_if_missing_tech = yes
+		missing_tech_loc = { localization_key = eldritch_yellow_palace_locked }
 		show_modifier = yes
 		level_cap = {
 			province_max = 1
