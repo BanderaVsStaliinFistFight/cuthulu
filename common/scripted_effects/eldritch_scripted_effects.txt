@@ -1305,7 +1305,7 @@ eldritch_unlock_halis_drowned = {
 # Hastur whose pact was sealed before the chapters had goals never had
 # a chapter opened, so it gets the first one it has not finished (the
 # earlier ones count as opened), and every opened chapter's building
-# stays unlocked.
+# stays unlocked, and a Chapter III without a Stranger gets one.
 eldritch_carcosa_catch_up = {
 	if = {
 		limit = {
@@ -1350,6 +1350,15 @@ eldritch_carcosa_catch_up = {
 			set_country_flag = eldritch_carcosa_5_open
 			eldritch_carcosa_open_6 = yes
 		}
+	}
+	# Chapter III opened before it had the Stranger's state to hold
+	if = {
+		limit = {
+			has_country_flag = eldritch_carcosa_3_open
+			NOT = { has_country_flag = eldritch_carcosa_3_done }
+			NOT = { has_variable = eldritch_carcosa_stranger }
+		}
+		eldritch_carcosa_pick_stranger = yes
 	}
 	if = {
 		limit = {
@@ -1409,10 +1418,57 @@ eldritch_carcosa_open_3 = {
 	set_country_flag = eldritch_carcosa_3_open
 	set_variable = { eldritch_carcosa_3_states = num_controlled_states }
 	add_to_variable = { eldritch_carcosa_3_states = 5 }
+	eldritch_carcosa_pick_stranger = yes
 	set_technology = { eldritch_carcosa_masque_hall = 1 popup = no }
 	if = {
 		limit = { is_ai = yes }
 		capital_scope = { add_building_construction = { type = eldritch_masque_hall level = 1 instant_build = yes province = { all_provinces = yes first = yes } } }
+	}
+}
+
+# Chapter 3: where the Stranger in the Pallid Mask was last seen. A state
+# on our border held by an enemy, or failing that by anyone outside our
+# alliance, or failing that a foreign state on our continent.
+eldritch_carcosa_pick_stranger = {
+	clear_variable = eldritch_carcosa_stranger
+	random_state = {
+		limit = {
+			NOT = { is_controlled_by = ROOT }
+			controller = { has_war_with = ROOT }
+			any_neighbor_state = { is_controlled_by = ROOT }
+		}
+		ROOT = { set_variable = { eldritch_carcosa_stranger = PREV } }
+	}
+	if = {
+		limit = { NOT = { has_variable = eldritch_carcosa_stranger } }
+		random_state = {
+			limit = {
+				NOT = { is_owned_by = ROOT }
+				NOT = { is_controlled_by = ROOT }
+				NOT = { owner = { is_in_faction_with = ROOT } }
+				NOT = { owner = { is_subject_of = ROOT } }
+				any_neighbor_state = { is_controlled_by = ROOT }
+			}
+			ROOT = { set_variable = { eldritch_carcosa_stranger = PREV } }
+		}
+	}
+	if = {
+		limit = { NOT = { has_variable = eldritch_carcosa_stranger } }
+		random_state = {
+			limit = {
+				NOT = { is_owned_by = ROOT }
+				NOT = { is_controlled_by = ROOT }
+				is_on_continent = ROOT
+			}
+			ROOT = { set_variable = { eldritch_carcosa_stranger = PREV } }
+		}
+	}
+	if = {
+		limit = { NOT = { has_variable = eldritch_carcosa_stranger } }
+		random_state = {
+			limit = { NOT = { is_controlled_by = ROOT } }
+			ROOT = { set_variable = { eldritch_carcosa_stranger = PREV } }
+		}
 	}
 }
 

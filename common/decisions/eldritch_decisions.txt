@@ -2426,6 +2426,16 @@ eldritch_road_to_carcosa = {
 		custom_cost_text = eldritch_cost_favor_50
 		fire_only_once = yes
 
+		highlight_states = {
+			highlight_states_trigger = {
+				is_capital = yes
+				OR = {
+					is_owned_by = ROOT
+					is_on_continent = ROOT
+				}
+			}
+		}
+
 		visible = {
 			has_country_flag = eldritch_carcosa_1_open
 			NOT = { has_country_flag = eldritch_carcosa_1_done }
@@ -2437,6 +2447,10 @@ eldritch_road_to_carcosa = {
 				capital_scope = { eldritch_yellow_theatre > 0 }
 			}
 			has_war_support > 0.39
+			custom_trigger_tooltip = {
+				tooltip = eldritch_carcosa_goal_sign_tt
+				has_country_flag = eldritch_carcosa_sign_shown
+			}
 		}
 
 		complete_effect = {
@@ -2470,6 +2484,13 @@ eldritch_road_to_carcosa = {
 		custom_cost_text = eldritch_cost_favor_75
 		fire_only_once = yes
 
+		highlight_states = {
+			highlight_states_trigger = {
+				is_controlled_by = ROOT
+				eldritch_yellow_theatre > 0
+			}
+		}
+
 		visible = {
 			has_country_flag = eldritch_carcosa_2_open
 			NOT = { has_country_flag = eldritch_carcosa_2_done }
@@ -2479,6 +2500,13 @@ eldritch_road_to_carcosa = {
 			custom_trigger_tooltip = {
 				tooltip = eldritch_carcosa_goal_theatres_tt
 				eldritch_yellow_theatre > 2
+			}
+			custom_trigger_tooltip = {
+				tooltip = eldritch_carcosa_goal_song_tt
+				OR = {
+					has_country_flag = eldritch_carcosa_song_sung
+					is_ai = yes
+				}
 			}
 			custom_trigger_tooltip = {
 				tooltip = eldritch_carcosa_goal_zealots_tt
@@ -2517,6 +2545,10 @@ eldritch_road_to_carcosa = {
 		custom_cost_text = eldritch_cost_favor_100
 		fire_only_once = yes
 
+		highlight_states = {
+			highlight_state_targets = { state = var:eldritch_carcosa_stranger }
+		}
+
 		visible = {
 			has_country_flag = eldritch_carcosa_3_open
 			NOT = { has_country_flag = eldritch_carcosa_3_done }
@@ -2525,8 +2557,14 @@ eldritch_road_to_carcosa = {
 		available = {
 			eldritch_pact_tier_at_least_2 = yes
 			custom_trigger_tooltip = {
-				tooltip = eldritch_carcosa_goal_states_3_tt
-				check_variable = { var = num_controlled_states value = eldritch_carcosa_3_states compare = greater_than_or_equals }
+				tooltip = eldritch_carcosa_goal_stranger_tt
+				OR = {
+					var:eldritch_carcosa_stranger = { is_controlled_by = ROOT }
+					AND = {
+						is_ai = yes
+						check_variable = { var = num_controlled_states value = eldritch_carcosa_3_states compare = greater_than_or_equals }
+					}
+				}
 			}
 			custom_trigger_tooltip = {
 				tooltip = eldritch_carcosa_goal_masque_tt
@@ -2564,6 +2602,13 @@ eldritch_road_to_carcosa = {
 		}
 		custom_cost_text = eldritch_cost_favor_100
 		fire_only_once = yes
+
+		highlight_states = {
+			highlight_states_trigger = {
+				is_controlled_by = ROOT
+				eldritch_black_star_observatory > 0
+			}
+		}
 
 		visible = {
 			has_country_flag = eldritch_carcosa_4_open
@@ -2608,6 +2653,13 @@ eldritch_road_to_carcosa = {
 		custom_cost_text = eldritch_cost_favor_150
 		fire_only_once = yes
 
+		highlight_states = {
+			highlight_states_trigger = {
+				has_state_flag = eldritch_original_capital
+				NOT = { is_core_of = ROOT }
+			}
+		}
+
 		visible = {
 			has_country_flag = eldritch_carcosa_5_open
 			NOT = { has_country_flag = eldritch_carcosa_5_done }
@@ -2619,11 +2671,8 @@ eldritch_road_to_carcosa = {
 				check_variable = { var = num_controlled_states value = eldritch_carcosa_5_states compare = greater_than_or_equals }
 			}
 			custom_trigger_tooltip = {
-				tooltip = eldritch_carcosa_goal_capital_tt
-				any_controlled_state = {
-					has_state_flag = eldritch_original_capital
-					NOT = { is_core_of = ROOT }
-				}
+				tooltip = eldritch_carcosa_goal_king_walked_tt
+				has_country_flag = eldritch_carcosa_king_walked
 			}
 		}
 
@@ -2658,6 +2707,13 @@ eldritch_road_to_carcosa = {
 		custom_cost_text = eldritch_cost_favor_200
 		fire_only_once = yes
 
+		highlight_states = {
+			highlight_states_trigger = {
+				is_owned_by = ROOT
+				is_capital = yes
+			}
+		}
+
 		visible = {
 			has_country_flag = eldritch_carcosa_6_open
 			NOT = { has_country_flag = eldritch_carcosa_6_done }
@@ -2689,6 +2745,175 @@ eldritch_road_to_carcosa = {
 			eldritch_unlock_halis_drowned = yes
 			eldritch_prophet_gain_xp_100 = yes
 			eldritch_prophet_gain_insight = yes
+		}
+
+		ai_will_do = {
+			factor = 10
+		}
+	}
+
+	# The chapters' goals on the map: decisions clicked at a state.
+
+	# Chapter 1: show the Yellow Sign in a foreign capital on our continent.
+	eldritch_carcosa_yellow_sign = {
+		icon = eldritch_hastur
+		state_target = yes
+		on_map_mode = map_and_decisions_view
+		custom_cost_trigger = {
+			check_variable = { eldritch_favor > 24 }
+		}
+		custom_cost_text = eldritch_cost_favor_25
+		fire_only_once = no
+
+		target_root_trigger = {
+			has_country_flag = eldritch_carcosa_1_open
+			NOT = { has_country_flag = eldritch_carcosa_1_done }
+			NOT = { has_country_flag = eldritch_carcosa_sign_shown }
+		}
+
+		target_trigger = {
+			FROM = {
+				is_capital = yes
+				NOT = { is_owned_by = ROOT }
+				is_on_continent = ROOT
+			}
+		}
+
+		visible = {
+			has_country_flag = eldritch_carcosa_1_open
+			NOT = { has_country_flag = eldritch_carcosa_sign_shown }
+		}
+
+		days_remove = 30
+
+		complete_effect = {
+			hidden_effect = { subtract_from_variable = { eldritch_favor = 25 } }
+		}
+
+		remove_effect = {
+			custom_effect_tooltip = eldritch_carcosa_sign_shown_tt
+			hidden_effect = {
+				set_country_flag = eldritch_carcosa_sign_shown
+				FROM = { owner = { add_stability = -0.02 } }
+			}
+		}
+
+		ai_will_do = {
+			factor = 10
+		}
+	}
+
+	# Chapter 2: sing Cassilda's Song across the border, from a state of
+	# ours with a Theatre of the Yellow Sign.
+	eldritch_carcosa_song = {
+		icon = eldritch_hastur
+		state_target = yes
+		on_map_mode = map_and_decisions_view
+		cost = 25
+		fire_only_once = no
+
+		target_root_trigger = {
+			has_country_flag = eldritch_carcosa_2_open
+			NOT = { has_country_flag = eldritch_carcosa_2_done }
+			NOT = { has_country_flag = eldritch_carcosa_song_sung }
+		}
+
+		target_trigger = {
+			FROM = {
+				NOT = { is_owned_by = ROOT }
+				NOT = { is_controlled_by = ROOT }
+				any_neighbor_state = {
+					is_controlled_by = ROOT
+					eldritch_yellow_theatre > 0
+				}
+			}
+		}
+
+		visible = {
+			has_country_flag = eldritch_carcosa_2_open
+			NOT = { has_country_flag = eldritch_carcosa_song_sung }
+		}
+
+		days_remove = 21
+
+		remove_effect = {
+			custom_effect_tooltip = eldritch_carcosa_song_sung_tt
+			hidden_effect = {
+				set_country_flag = eldritch_carcosa_song_sung
+				FROM = { owner = { add_war_support = -0.02 } }
+			}
+		}
+
+		ai_will_do = {
+			factor = 10
+		}
+	}
+
+	# Chapter 3: the Stranger moves on, if the state he was seen in is
+	# beyond our reach.
+	eldritch_carcosa_follow_stranger = {
+		icon = eldritch_hastur
+		cost = 50
+		fire_only_once = no
+		days_re_enable = 90
+
+		visible = {
+			has_country_flag = eldritch_carcosa_3_open
+			NOT = { has_country_flag = eldritch_carcosa_3_done }
+		}
+
+		complete_effect = {
+			custom_effect_tooltip = eldritch_carcosa_stranger_moves_tt
+			hidden_effect = { eldritch_carcosa_pick_stranger = yes }
+		}
+
+		ai_will_do = {
+			factor = 0
+		}
+	}
+
+	# Chapter 5: the King walks through a city that was another nation's
+	# capital when the game began, once we hold it.
+	eldritch_carcosa_king_walks = {
+		icon = eldritch_carcosa
+		state_target = yes
+		on_map_mode = map_and_decisions_view
+		fire_only_once = no
+
+		target_root_trigger = {
+			has_country_flag = eldritch_carcosa_5_open
+			NOT = { has_country_flag = eldritch_carcosa_5_done }
+			NOT = { has_country_flag = eldritch_carcosa_king_walked }
+		}
+
+		target_trigger = {
+			FROM = {
+				has_state_flag = eldritch_original_capital
+				NOT = { is_core_of = ROOT }
+			}
+		}
+
+		visible = {
+			has_country_flag = eldritch_carcosa_5_open
+			NOT = { has_country_flag = eldritch_carcosa_king_walked }
+		}
+
+		available = {
+			custom_trigger_tooltip = {
+				tooltip = eldritch_carcosa_king_holds_tt
+				FROM = { is_controlled_by = ROOT }
+			}
+		}
+
+		cancel_trigger = {
+			FROM = { NOT = { is_controlled_by = ROOT } }
+		}
+
+		days_remove = 7
+
+		remove_effect = {
+			custom_effect_tooltip = eldritch_carcosa_king_walked_tt
+			hidden_effect = { set_country_flag = eldritch_carcosa_king_walked }
 		}
 
 		ai_will_do = {

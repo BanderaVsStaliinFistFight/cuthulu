@@ -231,15 +231,15 @@ A third category, **The Prophet's Quests**, holds multi-stage quests. Every cult
 The category description and the character sheet count your completed quests.
 
 ### 13. The Road to Carcosa: Hastur's questline and formable
-Hastur's cults get their own category, **The Road to Carcosa**: six chapters. Chapter I opens when the pact is sealed, and each chapter opens the next. A chapter is a single decision whose requirements are its **goals**: lands to **conquer**, the cult's own **buildings** to raise, and other aims. The decision's tooltip ticks off each goal as you meet it. When all are met, complete the chapter (it costs Favor) to collect its rewards: experience and Insight for the Prophet, and the next stage of the national spirit **The Road to Carcosa** (I to V). There is no time limit and no dice roll; the goals are the challenge.
+Hastur's cults get their own category, **The Road to Carcosa**: six chapters. Chapter I opens when the pact is sealed, and each chapter opens the next. A chapter is a single decision whose requirements are its **goals**: lands to **conquer**, the cult's own **buildings** to raise, and other aims. The decision's tooltip ticks off each goal as you meet it. Each chapter highlights its places on the map when you hover over it, and some goals are decisions you click at a state on the map (they show on the map and in the decisions view). When all are met, complete the chapter (it costs Favor) to collect its rewards: experience and Insight for the Prophet, and the next stage of the national spirit **The Road to Carcosa** (I to V). There is no time limit and no dice roll; the goals are the challenge.
 
 | Chapter | Cost | Goals | Rewards |
 |---|---|---|---|
-| **I. Have You Seen the Yellow Sign?** | 50 Favor | A **Theatre of the Yellow Sign** in your capital; at least 40% war support | Road I (+5% war support, +3% morale), +3% war support, the **Lidless** |
-| **II. Cassilda's Song** | 75 Favor | **Theatres of the Yellow Sign** in at least 3 of your states; at least 9 Zealot battalions in the field | Road II (adds +3% research), +30 Favor, **Cassilda's Choir** |
-| **III. The Stranger in the Pallid Mask** | 100 Favor | Tier II pact; **conquer 5 more states** than you controlled when the chapter opened; build the **Hall of the Pallid Masque** | Road III (adds +3% organization), +50 command power, the **Pallid Masks** |
+| **I. Have You Seen the Yellow Sign?** | 50 Favor | A **Theatre of the Yellow Sign** in your capital; at least 40% war support; the **Yellow Sign** shown in a foreign capital on your continent (a decision on the map: 25 Favor, 30 days; its nation loses 2% stability) | Road I (+5% war support, +3% morale), +3% war support, the **Lidless** |
+| **II. Cassilda's Song** | 75 Favor | **Theatres of the Yellow Sign** in at least 3 of your states; **Cassilda's Song** sung across your border from one of them (a decision on the map: 25 PP, 21 days; the state's nation loses 2% war support); at least 9 Zealot battalions in the field | Road II (adds +3% research), +30 Favor, **Cassilda's Choir** |
+| **III. The Stranger in the Pallid Mask** | 100 Favor | Tier II pact; **hold the state where the Stranger was last seen**, marked when the chapter opens (on your border, an enemy's if you're at war; **Follow the Stranger**, 50 PP every 90 days, marks another); build the **Hall of the Pallid Masque** | Road III (adds +3% organization), +50 command power, the **Pallid Masks** |
 | **IV. Black Stars Rise** | 100 Favor | Tier III pact; **Black Star Observatories** in at least 2 of your states | Road IV (adds political power), +5% war support |
-| **V. The King Walks** | 150 Favor | **Conquer 10 more states** than you controlled when the chapter opened; **hold a state that was another nation's capital** when the game began (a nation moves its capital when it falls, so the old capital counts) | Road V (adds +5% stability), +50 army experience, the **King's Tatters** |
+| **V. The King Walks** | 150 Favor | **Conquer 10 more states** than you controlled when the chapter opened; **the King walks** through a city that was another nation's capital when the game began, once you hold it (a decision on the map, 7 days) | Road V (adds +5% stability), +50 army experience, the **King's Tatters** |
 | **VI. The Throne of Carcosa** | 200 Favor | The **Palace of the Yellow King** in your capital; the Prophet is Hastur's Vessel or Chosen | unlocks **Proclaim Carcosa**, **Hali's Drowned** |
 
 #### The cult's buildings
@@ -254,7 +254,7 @@ The chapters unlock four buildings. Every country sees them in the construction 
 | **Black Star Observatory** | Chapter IV | 8,000 | +2% research speed, −10% air night penalty |
 | **Palace of the Yellow King** | Chapter VI | 15,000 | +10% political power, +3% stability |
 
-The AI doesn't build special buildings by itself, so an AI follower of Hastur gets each chapter's buildings placed for free when the chapter opens. It still has to do the conquering.
+The AI doesn't build special buildings by itself, so an AI follower of Hastur gets each chapter's buildings placed for free when the chapter opens. It still has to do the conquering, though in Chapter III it may conquer any 5 states instead of the Stranger's, and it is spared Cassilda's Song.
 
 **Older saves:** a follower of Hastur whose pact was sealed before the chapters had goals gets the first chapter it hasn't finished (and the buildings of every chapter before it) when the game is loaded, or at the next monthly pulse.
 
