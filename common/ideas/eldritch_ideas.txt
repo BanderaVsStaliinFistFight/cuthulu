@@ -17,6 +17,9 @@
 #   eldritch_stars_wrong       the rest of the world, from Act III, while a
 #                              Carcosa at Act III stands
 #   eldritch_investigators     Carcosa's enemies, from Act IV, likewise
+#   eldritch_shadow_1-4        the rest of the world, as deep as Carcosa's
+#                              Lost Carcosa project (Act V)
+#   eldritch_king_reigns       Carcosa, once Lost Carcosa has returned
 #####################################################################
 
 ideas = {
@@ -439,6 +442,69 @@ ideas = {
 				army_attack_factor = 0.05
 				army_defence_factor = 0.05
 				stability_factor = 0.05
+			}
+		}
+
+		eldritch_shadow_1 = {
+			picture = eldritch_curse_yellow
+			removal_cost = -1
+			cancel = {
+				NOT = { any_country = { check_variable = { eldritch_carcosa_stage > 0 } } }
+			}
+			modifier = {
+				stability_factor = -0.10
+			}
+		}
+
+		eldritch_shadow_2 = {
+			picture = eldritch_curse_yellow
+			removal_cost = -1
+			cancel = {
+				NOT = { any_country = { check_variable = { eldritch_carcosa_stage > 0 } } }
+			}
+			modifier = {
+				stability_factor = -0.10
+				industrial_capacity_factory = -0.10
+			}
+		}
+
+		eldritch_shadow_3 = {
+			picture = eldritch_curse_yellow
+			removal_cost = -1
+			cancel = {
+				NOT = { any_country = { check_variable = { eldritch_carcosa_stage > 0 } } }
+			}
+			modifier = {
+				stability_factor = -0.10
+				industrial_capacity_factory = -0.10
+				war_support_factor = -0.05
+			}
+		}
+
+		eldritch_shadow_4 = {
+			picture = eldritch_curse_yellow
+			removal_cost = -1
+			cancel = {
+				NOT = { any_country = { check_variable = { eldritch_carcosa_stage > 0 } } }
+			}
+			modifier = {
+				stability_factor = -0.15
+				industrial_capacity_factory = -0.10
+				war_support_factor = -0.05
+				army_org_factor = -0.10
+				army_morale_factor = -0.10
+			}
+		}
+
+		eldritch_king_reigns = {
+			picture = eldritch_yellow_throne
+			removal_cost = -1
+			allowed_civil_war = { always = yes }
+			modifier = {
+				stability_factor = 0.20
+				war_support_factor = 0.20
+				political_power_factor = 0.20
+				industrial_capacity_factory = 0.10
 			}
 		}
 	}

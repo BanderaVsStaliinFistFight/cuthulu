@@ -43,3 +43,10 @@ eldritch_black_stars = {
 	state_production_speed_buildings_factor = -0.3
 	local_factory_sabotage = 0.2
 }
+
+# The Elder Sign Accord's Exorcise: the Yellow Sign has no power here for
+# a year (its Theatre doesn't count for Carcosa).
+eldritch_exorcised = {
+	icon = GFX_idea_eldritch_council
+	local_supplies = 0.1
+}

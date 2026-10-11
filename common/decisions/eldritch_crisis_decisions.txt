@@ -2,7 +2,8 @@
 # Eldritch Pacts - The King's Play: the powers of Carcosa's Acts
 #
 # The crisis itself (Dread, the Acts, the world's answer) is in
-# common/scripted_effects/eldritch_crisis_effects.txt.
+# common/scripted_effects/eldritch_crisis_effects.txt. The Elder Sign
+# Accord's own decision (Exorcise) is at the end of this file.
 #####################################################################
 
 eldritch_kings_play = {
@@ -111,6 +112,301 @@ eldritch_kings_play = {
 		remove_effect = {
 			custom_effect_tooltip = eldritch_crisis_unmask_tt
 			hidden_effect = { eldritch_crisis_do_unmask = yes }
+		}
+
+		ai_will_do = {
+			factor = 5
+		}
+	}
+
+	#################################################################
+	# Act V: Raise Lost Carcosa, five stages in order. Each needs the
+	# Palace of the Yellow King held for as long as it takes, and falls
+	# if the Palace is lost. The fifth ends the play.
+	#################################################################
+
+	eldritch_carcosa_stage_1 = {
+		icon = eldritch_carcosa
+		custom_cost_trigger = {
+			check_variable = { eldritch_favor > 99 }
+		}
+		custom_cost_text = eldritch_cost_favor_100
+		fire_only_once = no
+
+		visible = {
+			has_country_flag = eldritch_crisis_act_5
+			check_variable = { eldritch_carcosa_stage = 0 }
+			NOT = { has_country_flag = eldritch_carcosa_returned }
+		}
+
+		available = {
+			custom_trigger_tooltip = {
+				tooltip = eldritch_carcosa_stage_palace_tt
+				any_controlled_state = { eldritch_yellow_palace > 0 }
+			}
+		}
+
+		cancel_trigger = {
+			NOT = { any_controlled_state = { eldritch_yellow_palace > 0 } }
+		}
+
+		days_remove = 60
+
+		complete_effect = {
+			hidden_effect = { subtract_from_variable = { eldritch_favor = 100 } }
+		}
+
+		remove_effect = {
+			custom_effect_tooltip = eldritch_carcosa_stage_1_tt
+			hidden_effect = {
+				set_variable = { eldritch_carcosa_stage = 1 }
+				eldritch_crisis_stage_done = yes
+			}
+		}
+
+		ai_will_do = {
+			factor = 10
+		}
+	}
+
+	eldritch_carcosa_stage_2 = {
+		icon = eldritch_carcosa
+		custom_cost_trigger = {
+			check_variable = { eldritch_favor > 149 }
+		}
+		custom_cost_text = eldritch_cost_favor_150
+		fire_only_once = no
+
+		visible = {
+			has_country_flag = eldritch_crisis_act_5
+			check_variable = { eldritch_carcosa_stage = 1 }
+			NOT = { has_country_flag = eldritch_carcosa_returned }
+		}
+
+		available = {
+			custom_trigger_tooltip = {
+				tooltip = eldritch_carcosa_stage_palace_tt
+				any_controlled_state = { eldritch_yellow_palace > 0 }
+			}
+			custom_trigger_tooltip = {
+				tooltip = eldritch_carcosa_stage_capitals_tt
+				check_variable = { eldritch_capitals_held > 2 }
+			}
+		}
+
+		cancel_trigger = {
+			NOT = { any_controlled_state = { eldritch_yellow_palace > 0 } }
+		}
+
+		days_remove = 60
+
+		complete_effect = {
+			hidden_effect = { subtract_from_variable = { eldritch_favor = 150 } }
+		}
+
+		remove_effect = {
+			custom_effect_tooltip = eldritch_carcosa_stage_2_tt
+			hidden_effect = {
+				set_variable = { eldritch_carcosa_stage = 2 }
+				eldritch_crisis_stage_done = yes
+			}
+		}
+
+		ai_will_do = {
+			factor = 10
+		}
+	}
+
+	eldritch_carcosa_stage_3 = {
+		icon = eldritch_carcosa
+		custom_cost_trigger = {
+			check_variable = { eldritch_favor > 149 }
+		}
+		custom_cost_text = eldritch_cost_favor_150
+		fire_only_once = no
+
+		visible = {
+			has_country_flag = eldritch_crisis_act_5
+			check_variable = { eldritch_carcosa_stage = 2 }
+			NOT = { has_country_flag = eldritch_carcosa_returned }
+		}
+
+		available = {
+			custom_trigger_tooltip = {
+				tooltip = eldritch_carcosa_stage_palace_tt
+				any_controlled_state = { eldritch_yellow_palace > 0 }
+			}
+			custom_trigger_tooltip = {
+				tooltip = eldritch_carcosa_stage_king_tt
+				check_variable = { num_battalions_with_type@eldritch_hastur_incarnate > 0 }
+			}
+			custom_trigger_tooltip = {
+				tooltip = eldritch_carcosa_stage_theatres_tt
+				eldritch_yellow_theatre > 7
+			}
+		}
+
+		cancel_trigger = {
+			NOT = { any_controlled_state = { eldritch_yellow_palace > 0 } }
+		}
+
+		days_remove = 60
+
+		complete_effect = {
+			hidden_effect = { subtract_from_variable = { eldritch_favor = 150 } }
+		}
+
+		remove_effect = {
+			custom_effect_tooltip = eldritch_carcosa_stage_3_tt
+			hidden_effect = {
+				set_variable = { eldritch_carcosa_stage = 3 }
+				eldritch_crisis_stage_done = yes
+			}
+		}
+
+		ai_will_do = {
+			factor = 10
+		}
+	}
+
+	eldritch_carcosa_stage_4 = {
+		icon = eldritch_carcosa
+		custom_cost_trigger = {
+			check_variable = { eldritch_favor > 199 }
+		}
+		custom_cost_text = eldritch_cost_favor_200
+		fire_only_once = no
+
+		visible = {
+			has_country_flag = eldritch_crisis_act_5
+			check_variable = { eldritch_carcosa_stage = 3 }
+			NOT = { has_country_flag = eldritch_carcosa_returned }
+		}
+
+		available = {
+			custom_trigger_tooltip = {
+				tooltip = eldritch_carcosa_stage_palace_tt
+				any_controlled_state = { eldritch_yellow_palace > 0 }
+			}
+			custom_trigger_tooltip = {
+				tooltip = eldritch_carcosa_stage_dread_900_tt
+				check_variable = { eldritch_dread > 899 }
+			}
+		}
+
+		cancel_trigger = {
+			NOT = { any_controlled_state = { eldritch_yellow_palace > 0 } }
+		}
+
+		days_remove = 90
+
+		complete_effect = {
+			hidden_effect = { subtract_from_variable = { eldritch_favor = 200 } }
+		}
+
+		remove_effect = {
+			custom_effect_tooltip = eldritch_carcosa_stage_4_tt
+			hidden_effect = {
+				set_variable = { eldritch_carcosa_stage = 4 }
+				eldritch_crisis_stage_done = yes
+			}
+		}
+
+		ai_will_do = {
+			factor = 10
+		}
+	}
+
+	eldritch_carcosa_stage_5 = {
+		icon = eldritch_carcosa
+		custom_cost_trigger = {
+			check_variable = { eldritch_favor > 249 }
+		}
+		custom_cost_text = eldritch_cost_favor_250
+		fire_only_once = no
+
+		visible = {
+			has_country_flag = eldritch_crisis_act_5
+			check_variable = { eldritch_carcosa_stage = 4 }
+			NOT = { has_country_flag = eldritch_carcosa_returned }
+		}
+
+		available = {
+			custom_trigger_tooltip = {
+				tooltip = eldritch_carcosa_stage_palace_tt
+				any_controlled_state = { eldritch_yellow_palace > 0 }
+			}
+			custom_trigger_tooltip = {
+				tooltip = eldritch_carcosa_stage_dread_1000_tt
+				check_variable = { eldritch_dread > 999 }
+			}
+		}
+
+		cancel_trigger = {
+			NOT = { any_controlled_state = { eldritch_yellow_palace > 0 } }
+		}
+
+		days_remove = 90
+
+		complete_effect = {
+			hidden_effect = { subtract_from_variable = { eldritch_favor = 250 } }
+		}
+
+		remove_effect = {
+			custom_effect_tooltip = eldritch_carcosa_stage_5_tt
+			hidden_effect = {
+				set_variable = { eldritch_carcosa_stage = 5 }
+				eldritch_crisis_stage_done = yes
+			}
+		}
+
+		ai_will_do = {
+			factor = 10
+		}
+	}
+}
+
+#####################################################################
+# The Elder Sign Accord: the nations that stand against Carcosa
+#####################################################################
+
+eldritch_elder_sign = {
+
+	# Exorcise a state we control where a Theatre of the Yellow Sign
+	# stands: every Carcosa loses 15 Dread, and the Theatre no longer
+	# counts for it for a year.
+	eldritch_accord_exorcise = {
+		icon = eldritch_rites
+		state_target = yes
+		on_map_mode = map_and_decisions_view
+		cost = 25
+		fire_only_once = no
+
+		target_root_trigger = {
+			has_country_flag = eldritch_elder_sign_accord
+		}
+
+		target_trigger = {
+			FROM = {
+				is_controlled_by = ROOT
+				eldritch_yellow_theatre > 0
+				NOT = { has_dynamic_modifier = { modifier = eldritch_exorcised } }
+			}
+		}
+
+		visible = {
+			has_country_flag = eldritch_elder_sign_accord
+		}
+
+		cancel_trigger = {
+			FROM = { NOT = { is_controlled_by = ROOT } }
+		}
+
+		days_remove = 30
+
+		remove_effect = {
+			custom_effect_tooltip = eldritch_accord_exorcise_tt
+			hidden_effect = { eldritch_crisis_exorcise = yes }
 		}
 
 		ai_will_do = {

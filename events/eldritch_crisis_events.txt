@@ -7,8 +7,14 @@
 #                         Act III; FROM is Carcosa)
 #   eldritch_crisis.11    a nation is unmasked: Carcosa's puppet
 #   eldritch_crisis.12    a nation is unmasked: the cult rises in civil war
+#   eldritch_crisis.6     Act V: Lost Carcosa (to Carcosa)
+#   eldritch_crisis.20    a stage of Lost Carcosa is raised (to Carcosa)
+#   eldritch_crisis.25    Carcosa returns: the end of the play (to Carcosa)
+#   eldritch_crisis.26    the Palace is lost and the project falls back
+#   eldritch_crisis.28    a nation at war with Carcosa kneels as its puppet
 #
-# The world news for Acts II-IV are eldritch_news.6-8.
+# The world news: Acts II-V are eldritch_news.6-9, a stage raised 10,
+# Carcosa returns 14, the project falls back 15.
 #####################################################################
 
 add_namespace = eldritch_crisis
@@ -130,5 +136,85 @@ country_event = {
 
 	option = {
 		name = eldritch_crisis.12.a
+	}
+}
+
+country_event = {
+	id = eldritch_crisis.6
+	title = eldritch_crisis.6.t
+	desc = eldritch_crisis.6.d
+	picture = GFX_report_event_eldritch_hastur
+
+	is_triggered_only = yes
+
+	option = {
+		name = eldritch_crisis.6.a
+	}
+}
+
+country_event = {
+	id = eldritch_crisis.20
+	title = eldritch_crisis.20.t
+	desc = {
+		text = eldritch_crisis.20.d1
+		trigger = { check_variable = { eldritch_carcosa_stage = 1 } }
+	}
+	desc = {
+		text = eldritch_crisis.20.d2
+		trigger = { check_variable = { eldritch_carcosa_stage = 2 } }
+	}
+	desc = {
+		text = eldritch_crisis.20.d3
+		trigger = { check_variable = { eldritch_carcosa_stage = 3 } }
+	}
+	desc = {
+		text = eldritch_crisis.20.d4
+		trigger = { check_variable = { eldritch_carcosa_stage = 4 } }
+	}
+	picture = GFX_report_event_eldritch_omen
+
+	is_triggered_only = yes
+
+	option = {
+		name = eldritch_crisis.20.a
+	}
+}
+
+country_event = {
+	id = eldritch_crisis.25
+	title = eldritch_crisis.25.t
+	desc = eldritch_crisis.25.d
+	picture = GFX_report_event_eldritch_hastur
+
+	is_triggered_only = yes
+
+	option = {
+		name = eldritch_crisis.25.a
+	}
+}
+
+country_event = {
+	id = eldritch_crisis.26
+	title = eldritch_crisis.26.t
+	desc = eldritch_crisis.26.d
+	picture = GFX_report_event_eldritch_omen
+
+	is_triggered_only = yes
+
+	option = {
+		name = eldritch_crisis.26.a
+	}
+}
+
+country_event = {
+	id = eldritch_crisis.28
+	title = eldritch_crisis.28.t
+	desc = eldritch_crisis.28.d
+	picture = GFX_report_event_eldritch_hastur
+
+	is_triggered_only = yes
+
+	option = {
+		name = eldritch_crisis.28.a
 	}
 }

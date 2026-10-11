@@ -66,3 +66,16 @@ eldritch_kings_play = {
 	}
 	visible_when_empty = yes
 }
+
+# The Elder Sign Accord: the nations that stand against Carcosa.
+eldritch_elder_sign = {
+	icon = eldritch_rites
+	priority = 145
+	allowed = {
+		always = yes
+	}
+	visible = {
+		has_country_flag = eldritch_elder_sign_accord
+	}
+	visible_when_empty = yes
+}

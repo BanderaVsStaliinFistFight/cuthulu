@@ -66,8 +66,16 @@ on_actions = {
 				}
 			}
 			if = {
-				limit = { has_country_flag = eldritch_carcosa_proclaimed }
+				limit = {
+					has_country_flag = eldritch_carcosa_proclaimed
+					NOT = { has_country_flag = eldritch_carcosa_returned }
+				}
 				divide_variable = { eldritch_dread = 2 }
+				if = {
+					limit = { check_variable = { eldritch_carcosa_stage > 0 } }
+					set_variable = { eldritch_carcosa_stage = 0 }
+					eldritch_crisis_update_shadow = yes
+				}
 			}
 		}
 	}

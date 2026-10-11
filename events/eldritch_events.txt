@@ -25,7 +25,9 @@
 #   eldritch_news.1-3 world news: a god is summoned / ascends / incarnates
 #   eldritch_news.4   world news: a leader becomes a god's Vessel
 #   eldritch_news.5   world news: a nation proclaims itself Carcosa
-#   eldritch_news.6-8 world news: Carcosa's play reaches Acts II-IV
+#   eldritch_news.6-9 world news: Carcosa's play reaches Acts II-V
+#   eldritch_news.10  world news: a stage of Lost Carcosa is raised
+#   eldritch_news.14/15 world news: Carcosa returns / its project falls back
 #####################################################################
 
 add_namespace = eldritch
@@ -1313,5 +1315,72 @@ news_event = {
 
 	option = {
 		name = eldritch_news.8.a
+	}
+}
+
+news_event = {
+	id = eldritch_news.9
+	title = eldritch_news.9.t
+	desc = eldritch_news.9.d
+	picture = GFX_news_event_eldritch_stars
+
+	is_triggered_only = yes
+
+	option = {
+		name = eldritch_news.9.a
+	}
+}
+
+news_event = {
+	id = eldritch_news.10
+	title = eldritch_news.10.t
+	desc = {
+		text = eldritch_news.10.d1
+		trigger = { FROM = { check_variable = { eldritch_carcosa_stage = 1 } } }
+	}
+	desc = {
+		text = eldritch_news.10.d2
+		trigger = { FROM = { check_variable = { eldritch_carcosa_stage = 2 } } }
+	}
+	desc = {
+		text = eldritch_news.10.d3
+		trigger = { FROM = { check_variable = { eldritch_carcosa_stage = 3 } } }
+	}
+	desc = {
+		text = eldritch_news.10.d4
+		trigger = { FROM = { check_variable = { eldritch_carcosa_stage = 4 } } }
+	}
+	picture = GFX_news_event_eldritch_stars
+
+	is_triggered_only = yes
+
+	option = {
+		name = eldritch_news.10.a
+	}
+}
+
+news_event = {
+	id = eldritch_news.14
+	title = eldritch_news.14.t
+	desc = eldritch_news.14.d
+	picture = GFX_news_event_eldritch_stars
+
+	is_triggered_only = yes
+
+	option = {
+		name = eldritch_news.14.a
+	}
+}
+
+news_event = {
+	id = eldritch_news.15
+	title = eldritch_news.15.t
+	desc = eldritch_news.15.d
+	picture = GFX_news_event_eldritch_stars
+
+	is_triggered_only = yes
+
+	option = {
+		name = eldritch_news.15.a
 	}
 }

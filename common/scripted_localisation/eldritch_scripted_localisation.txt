@@ -226,6 +226,10 @@ defined_text = {
 	name = GetEldritchCrisisAct
 
 	text = {
+		trigger = { has_country_flag = eldritch_crisis_act_5 }
+		localization_key = eldritch_crisis_act_5_name
+	}
+	text = {
 		trigger = { has_country_flag = eldritch_crisis_act_4 }
 		localization_key = eldritch_crisis_act_4_name
 	}
@@ -246,8 +250,12 @@ defined_text = {
 	name = GetEldritchCrisisNext
 
 	text = {
-		trigger = { has_country_flag = eldritch_crisis_act_4 }
+		trigger = { has_country_flag = eldritch_crisis_act_5 }
 		localization_key = eldritch_crisis_next_none
+	}
+	text = {
+		trigger = { has_country_flag = eldritch_crisis_act_4 }
+		localization_key = eldritch_crisis_next_5
 	}
 	text = {
 		trigger = { has_country_flag = eldritch_crisis_act_3 }
