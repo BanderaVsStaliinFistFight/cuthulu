@@ -1279,3 +1279,151 @@ eldritch_check_vessel = {
 	set_variable = { eldritch_check_chance = eldritch_odds_vessel }
 	eldritch_roll_check = yes
 }
+
+#####################################################################
+# QUESTS (see THE PROPHET'S QUESTS in the decisions file)
+#####################################################################
+
+# The finale's skill check: eldritch_quest_base (set by the quest, with
+# +20 for a dialogue-check approach) + 7% per point of the stat in
+# eldritch_quest_stat (1 Lore, 2 Zeal, 3 Will), +10% with the stat's
+# perk. Rolls like every other check (kind 6), so the result events can
+# show the roll with [ROOT.GetEldritchCheckLine].
+eldritch_quest_check = {
+	eldritch_prophet_init = yes
+	set_variable = { eldritch_check_stat = eldritch_quest_stat }
+	set_variable = { eldritch_check_kind = 6 }
+	if = {
+		limit = { check_variable = { eldritch_quest_stat = 1 } }
+		set_variable = { eldritch_check_chance = eldritch_prophet_lore }
+		multiply_variable = { eldritch_check_chance = 7 }
+		if = {
+			limit = { has_country_flag = eldritch_perk_lore_1 }
+			add_to_variable = { eldritch_check_chance = 10 }
+		}
+	}
+	else_if = {
+		limit = { check_variable = { eldritch_quest_stat = 2 } }
+		set_variable = { eldritch_check_chance = eldritch_prophet_zeal }
+		multiply_variable = { eldritch_check_chance = 7 }
+		if = {
+			limit = { has_country_flag = eldritch_perk_zeal_2 }
+			add_to_variable = { eldritch_check_chance = 10 }
+		}
+	}
+	else = {
+		set_variable = { eldritch_check_chance = eldritch_prophet_will }
+		multiply_variable = { eldritch_check_chance = 7 }
+		if = {
+			limit = { has_country_flag = eldritch_perk_will_1 }
+			add_to_variable = { eldritch_check_chance = 10 }
+		}
+	}
+	add_to_variable = { eldritch_check_chance = eldritch_quest_base }
+	clamp_variable = { var = eldritch_check_chance min = 5 max = 95 }
+	eldritch_roll_check = yes
+}
+
+eldritch_prophet_gain_insight = {
+	custom_effect_tooltip = eldritch_prophet_insight_1_tt
+	hidden_effect = {
+		eldritch_prophet_init = yes
+		add_to_variable = { eldritch_prophet_insight = 1 }
+	}
+}
+
+# Stage the Full Play: every enemy at war with us sees it (90 days).
+eldritch_quest_hastur_curse_all = {
+	custom_effect_tooltip = eldritch_quest_hastur_curse_all_tt
+	hidden_effect = {
+		every_country = {
+			limit = {
+				has_war_with = ROOT
+				NOT = { has_country_flag = eldritch_perk_will_2 }
+			}
+			if = {
+				limit = { has_idea = eldritch_curse_yellow_madness }
+				modify_timed_idea = { idea = eldritch_curse_yellow_madness days = 90 }
+			}
+			else = {
+				add_timed_idea = { idea = eldritch_curse_yellow_madness days = 90 }
+			}
+			country_event = { id = eldritch.61 }
+		}
+	}
+}
+
+# Quest progress: the rites mark the quests that are underway.
+eldritch_quest_note_worship = {
+	if = {
+		limit = { has_country_flag = eldritch_quest_necronomicon_active }
+		set_country_flag = eldritch_quest_necronomicon_worship
+	}
+}
+
+eldritch_quest_note_commune = {
+	if = {
+		limit = { has_country_flag = eldritch_quest_necronomicon_active }
+		set_country_flag = eldritch_quest_necronomicon_commune
+	}
+	if = {
+		limit = { has_country_flag = eldritch_quest_yog_sothoth_active }
+		set_country_flag = eldritch_quest_yog_sothoth_commune
+	}
+}
+
+eldritch_quest_note_preach = {
+	if = {
+		limit = { has_country_flag = eldritch_quest_mountains_active }
+		set_country_flag = eldritch_quest_mountains_preach
+	}
+}
+
+eldritch_quest_note_council = {
+	if = {
+		limit = { has_country_flag = eldritch_quest_mountains_active }
+		set_country_flag = eldritch_quest_mountains_council
+	}
+}
+
+eldritch_quest_note_servitors = {
+	if = {
+		limit = { has_country_flag = eldritch_quest_cthulhu_active }
+		set_country_flag = eldritch_quest_cthulhu_servitors
+	}
+}
+
+eldritch_quest_note_whispers = {
+	if = {
+		limit = { has_country_flag = eldritch_quest_nyarlathotep_active }
+		add_to_variable = { eldritch_quest_nyarlathotep_whispers = 1 }
+	}
+}
+
+eldritch_quest_note_stage_play = {
+	if = {
+		limit = { has_country_flag = eldritch_quest_hastur_active }
+		set_country_flag = eldritch_quest_hastur_stage_play
+	}
+}
+
+eldritch_quest_note_thousand_young = {
+	if = {
+		limit = { has_country_flag = eldritch_quest_shub_niggurath_active }
+		set_country_flag = eldritch_quest_shub_niggurath_young
+	}
+}
+
+eldritch_quest_note_open_gate = {
+	if = {
+		limit = { has_country_flag = eldritch_quest_yog_sothoth_active }
+		set_country_flag = eldritch_quest_yog_sothoth_gate
+	}
+}
+
+eldritch_quest_note_nuclear_chaos = {
+	if = {
+		limit = { has_country_flag = eldritch_quest_azathoth_active }
+		set_country_flag = eldritch_quest_azathoth_chaos
+	}
+}

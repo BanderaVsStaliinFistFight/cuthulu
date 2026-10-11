@@ -610,6 +610,22 @@ def sym_path(size, color=None):
     return glow_under(c.done(size, size), (255, 220, 150), size / 14, 0.6)
 
 
+def sym_quest(size, color=None):
+    """A torn map with a dotted route to a red mark."""
+    c = Canvas(size, size)
+    c.poly([(0.12, 0.20), (0.88, 0.14), (0.84, 0.86), (0.16, 0.84)], (205, 185, 140, 255))
+    c.poly([(0.12, 0.20), (0.88, 0.14), (0.87, 0.20), (0.13, 0.26)], (170, 150, 105, 255))
+    route = [(0.24, 0.74), (0.34, 0.60), (0.30, 0.46), (0.46, 0.40), (0.58, 0.52), (0.70, 0.36)]
+    for i in range(len(route) - 1):
+        (x0, y0), (x1, y1) = route[i], route[i + 1]
+        for t in (0.15, 0.5, 0.85):
+            c.ellipse(x0 + (x1 - x0) * t, y0 + (y1 - y0) * t, 0.014, 0.014, (90, 60, 40, 255))
+    c.line([(0.64, 0.30), (0.76, 0.42)], (200, 30, 30, 255), 0.04)
+    c.line([(0.76, 0.30), (0.64, 0.42)], (200, 30, 30, 255), 0.04)
+    c.ellipse(0.26, 0.76, 0.035, 0.035, (120, 255, 170, 255))
+    return glow_under(c.done(size, size), (255, 220, 150), size / 16, 0.5)
+
+
 def sym_temple(size, color=None):
     c = Canvas(size, size)
     stone = [(70, 66, 74, 255), (88, 84, 92, 255), (106, 102, 110, 255)]
@@ -649,6 +665,19 @@ SYMBOLS = {
     "march": sym_march,
     "dread": sym_dread,
     "path": sym_path,
+    "quest": sym_quest,
+}
+
+# Relics won by the Prophet's quests: picture name -> symbol.
+RELICS = {
+    "relic_necronomicon": "tome",
+    "relic_elder_archive": "rites",
+    "relic_rlyeh": "cthulhu",
+    "relic_masks": "nyarlathotep",
+    "relic_full_play": "hastur",
+    "relic_brood": "shub_niggurath",
+    "relic_silver_key": "yog_sothoth",
+    "relic_engine": "azathoth",
 }
 
 # The Prophet's Path: one icon per branch (symbol, border colour).
@@ -725,6 +754,11 @@ def make_ideas():
              "gfx/interface/ideas/eldritch_curse_yellow.dds")
     for name, (symbol, inner, outer, border) in EXTRA_SPIRITS.items():
         save_dds(framed(IDEA_SIZE, inner, outer, SYMBOLS[symbol], border), f"gfx/interface/ideas/eldritch_{name}.dds")
+    for name, symbol in RELICS.items():
+        pal = PALETTE.get(symbol, {"bg": (22, 14, 30), "glow": (255, 210, 120)})
+        inner = tuple(min(255, int(v * 2.2 + 10)) for v in pal["bg"])
+        save_dds(framed(IDEA_SIZE, inner, pal["bg"], SYMBOLS[symbol], (235, 195, 90), border_width=2,
+                        aura=(255, 210, 120)), f"gfx/interface/ideas/eldritch_{name}.dds")
 
 
 def make_decisions():
@@ -744,6 +778,9 @@ def make_decisions():
     img = framed(DECISION_SIZE, (40, 30, 60), (12, 8, 20), SYMBOLS["path"], (190, 160, 90), border_width=1,
                  sym_scale=0.9)
     save_dds(img, "gfx/interface/decisions/eldritch_category_path.dds")
+    img = framed(DECISION_SIZE, (40, 30, 60), (12, 8, 20), SYMBOLS["quest"], (190, 160, 90), border_width=1,
+                 sym_scale=0.9)
+    save_dds(img, "gfx/interface/decisions/eldritch_category_quests.dds")
 
 
 # ---------------------------------------------------------------------------
@@ -1197,6 +1234,8 @@ def write_gfx():
         sprite(f"GFX_idea_eldritch_curse_{curse}", f"gfx/interface/ideas/eldritch_curse_{curse}.dds")
     for name in EXTRA_SPIRITS:
         sprite(f"GFX_idea_eldritch_{name}", f"gfx/interface/ideas/eldritch_{name}.dds")
+    for name in RELICS:
+        sprite(f"GFX_idea_eldritch_{name}", f"gfx/interface/ideas/eldritch_{name}.dds")
 
     section("Decisions")
     for name in DECISION_ICONS + GODS:
@@ -1206,6 +1245,7 @@ def write_gfx():
     sprite("GFX_decision_category_eldritch_rites", "gfx/interface/decisions/eldritch_category_rites.dds")
     sprite("GFX_decision_eldritch_rites", "gfx/interface/decisions/eldritch_category_rites.dds")
     sprite("GFX_decision_category_eldritch_path", "gfx/interface/decisions/eldritch_category_path.dds")
+    sprite("GFX_decision_category_eldritch_quests", "gfx/interface/decisions/eldritch_category_quests.dds")
     for name in PATH_ICONS:
         sprite(f"GFX_decision_eldritch_{name}", f"gfx/interface/decisions/eldritch_{name}.dds")
 

@@ -289,6 +289,7 @@ eldritch_forbidden_rites = {
 		complete_effect = {
 			eldritch_gain_favor_15 = yes
 			eldritch_prophet_gain_xp_10 = yes
+			hidden_effect = { eldritch_quest_note_worship = yes }
 		}
 
 		ai_will_do = {
@@ -484,6 +485,7 @@ eldritch_forbidden_rites = {
 			hidden_effect = { subtract_from_variable = { eldritch_favor = 60 } }
 			eldritch_spawn_servitors = yes
 			eldritch_prophet_gain_xp_10 = yes
+			hidden_effect = { eldritch_quest_note_servitors = yes }
 		}
 
 		ai_will_do = {
@@ -819,6 +821,7 @@ eldritch_forbidden_rites = {
 				country_event = { id = eldritch.82 }
 			}
 			eldritch_prophet_gain_xp_10 = yes
+			hidden_effect = { eldritch_quest_note_whispers = yes }
 		}
 
 		ai_will_do = {
@@ -948,6 +951,7 @@ eldritch_forbidden_rites = {
 				country_event = { id = eldritch.82 }
 			}
 			eldritch_prophet_gain_xp_10 = yes
+			hidden_effect = { eldritch_quest_note_stage_play = yes }
 		}
 
 		ai_will_do = {
@@ -1044,6 +1048,7 @@ eldritch_forbidden_rites = {
 			hidden_effect = { subtract_from_variable = { eldritch_favor = 50 } }
 			add_manpower = 25000
 			eldritch_prophet_gain_xp_10 = yes
+			hidden_effect = { eldritch_quest_note_thousand_young = yes }
 		}
 
 		ai_will_do = {
@@ -1151,6 +1156,7 @@ eldritch_forbidden_rites = {
 				category = electronics
 			}
 			eldritch_prophet_gain_xp_10 = yes
+			hidden_effect = { eldritch_quest_note_open_gate = yes }
 		}
 
 		ai_will_do = {
@@ -1252,6 +1258,7 @@ eldritch_forbidden_rites = {
 			add_nuclear_bombs = 1
 			add_stability = -0.03
 			eldritch_prophet_gain_xp_10 = yes
+			hidden_effect = { eldritch_quest_note_nuclear_chaos = yes }
 		}
 
 		ai_will_do = {
@@ -1319,6 +1326,7 @@ eldritch_forbidden_rites = {
 				}
 			}
 			eldritch_prophet_gain_xp_25 = yes
+			hidden_effect = { eldritch_quest_note_commune = yes }
 		}
 
 		ai_will_do = {
@@ -1362,6 +1370,7 @@ eldritch_forbidden_rites = {
 				country_event = { id = eldritch.82 }
 			}
 			eldritch_prophet_gain_xp_10 = yes
+			hidden_effect = { eldritch_quest_note_preach = yes }
 		}
 
 		ai_will_do = {
@@ -1445,6 +1454,7 @@ eldritch_forbidden_rites = {
 				add_command_power = 25
 			}
 			eldritch_prophet_gain_xp_25 = yes
+			hidden_effect = { eldritch_quest_note_council = yes }
 		}
 
 		ai_will_do = {
@@ -2018,6 +2028,806 @@ eldritch_prophet_path = {
 				eldritch_mark_herald_effect = yes
 			}
 			hidden_effect = { eldritch_prophet_update_mantle = yes }
+		}
+
+		ai_will_do = {
+			factor = 1
+		}
+	}
+}
+
+#####################################################################
+# THE PROPHET'S QUESTS
+#
+# Every cult has three: Recover the Necronomicon and At the Mountains of
+# Madness, which any pact can undertake, and its patron's own great work.
+#   1. eldritch_quest_<key>          begin: a cost and a ritual
+#   2. eldritch.<n>                   choose the approach, which picks the
+#                                     stat the finale tests (one option is
+#                                     a dialogue check worth +20%), and
+#                                     start the timed task
+#   3. eldritch_quest_<key>_task      a mission: use the pact's rites within
+#                                     the time limit; the rites mark their
+#                                     progress (eldritch_quest_note_*)
+#   4. the finale: a skill check (eldritch_quest_check); success brings a
+#      relic spirit, experience and Insight (eldritch.<n+1>), failure a
+#      cost (eldritch.<n+2>). A failed quest can be begun again a year
+#      after the last attempt began.
+#####################################################################
+
+eldritch_prophet_quests = {
+
+	# necronomicon: begin the quest. After the ritual, eldritch.201 picks the
+	# approach and starts the timed task (eldritch_quest_necronomicon_task).
+	eldritch_quest_necronomicon = {
+		icon = eldritch_tome
+		custom_cost_trigger = {
+			has_political_power > 49
+			check_variable = { eldritch_favor > 24 }
+		}
+		custom_cost_text = eldritch_cost_quest_necronomicon
+		fire_only_once = no
+		days_re_enable = 365
+
+		visible = {
+			eldritch_has_pact = yes
+			NOT = { has_country_flag = eldritch_quest_necronomicon_done }
+		}
+
+		available = {
+			custom_trigger_tooltip = {
+				tooltip = eldritch_quest_underway_tt
+				NOT = { has_country_flag = eldritch_quest_necronomicon_active }
+			}
+		}
+
+		days_remove = 30
+
+		complete_effect = {
+			hidden_effect = {
+				add_political_power = -50
+				subtract_from_variable = { eldritch_favor = 25 }
+				set_country_flag = eldritch_quest_necronomicon_active
+				clr_country_flag = eldritch_quest_necronomicon_worship
+				clr_country_flag = eldritch_quest_necronomicon_commune
+			}
+		}
+
+		remove_effect = {
+			custom_effect_tooltip = eldritch_quest_begin_tt
+			hidden_effect = { country_event = { id = eldritch.201 } }
+		}
+
+		ai_will_do = {
+			factor = 1
+		}
+	}
+
+	# necronomicon: the timed task. Completes by itself when the objective is met.
+	eldritch_quest_necronomicon_task = {
+		icon = eldritch_tome
+		activation = { always = no }
+		selectable_mission = no
+		is_good = yes
+		fire_only_once = no
+		days_mission_timeout = 120
+
+		visible = {
+			has_country_flag = eldritch_quest_necronomicon_active
+		}
+
+		available = {
+			custom_trigger_tooltip = {
+				tooltip = eldritch_quest_necronomicon_task_tt
+				has_country_flag = eldritch_quest_necronomicon_worship
+				has_country_flag = eldritch_quest_necronomicon_commune
+			}
+		}
+
+		complete_effect = {
+			custom_effect_tooltip = eldritch_quest_finale_tt
+			hidden_effect = {
+				set_variable = { eldritch_quest_stat = eldritch_quest_necronomicon_stat }
+				set_variable = { eldritch_quest_base = 40 }
+				add_to_variable = { eldritch_quest_base = eldritch_quest_necronomicon_bonus }
+				eldritch_quest_check = yes
+				clr_country_flag = eldritch_quest_necronomicon_active
+				if = {
+					limit = { eldritch_check_passed = yes }
+					set_country_flag = eldritch_quest_necronomicon_done
+					add_to_variable = { eldritch_quests_done = 1 }
+					country_event = { id = eldritch.202 }
+				}
+				else = {
+					country_event = { id = eldritch.203 }
+				}
+			}
+		}
+
+		timeout_effect = {
+			custom_effect_tooltip = eldritch_quest_timeout_tt
+			hidden_effect = {
+				clr_country_flag = eldritch_quest_necronomicon_active
+				country_event = { id = eldritch.290 }
+			}
+		}
+
+		ai_will_do = {
+			factor = 1
+		}
+	}
+
+	# mountains: begin the quest. After the ritual, eldritch.271 picks the
+	# approach and starts the timed task (eldritch_quest_mountains_task).
+	eldritch_quest_mountains = {
+		icon = eldritch_deepen
+		cost = 75
+		fire_only_once = no
+		days_re_enable = 365
+
+		visible = {
+			eldritch_has_pact = yes
+			NOT = { has_country_flag = eldritch_quest_mountains_done }
+		}
+
+		available = {
+			custom_trigger_tooltip = {
+				tooltip = eldritch_quest_underway_tt
+				NOT = { has_country_flag = eldritch_quest_mountains_active }
+			}
+			eldritch_pact_tier_at_least_2 = yes
+		}
+
+		days_remove = 45
+
+		complete_effect = {
+			hidden_effect = {
+				set_country_flag = eldritch_quest_mountains_active
+				clr_country_flag = eldritch_quest_mountains_council
+				clr_country_flag = eldritch_quest_mountains_preach
+			}
+		}
+
+		remove_effect = {
+			custom_effect_tooltip = eldritch_quest_begin_tt
+			hidden_effect = { country_event = { id = eldritch.271 } }
+		}
+
+		ai_will_do = {
+			factor = 1
+		}
+	}
+
+	# mountains: the timed task. Completes by itself when the objective is met.
+	eldritch_quest_mountains_task = {
+		icon = eldritch_deepen
+		activation = { always = no }
+		selectable_mission = no
+		is_good = yes
+		fire_only_once = no
+		days_mission_timeout = 150
+
+		visible = {
+			has_country_flag = eldritch_quest_mountains_active
+		}
+
+		available = {
+			custom_trigger_tooltip = {
+				tooltip = eldritch_quest_mountains_task_tt
+				has_country_flag = eldritch_quest_mountains_council
+				has_country_flag = eldritch_quest_mountains_preach
+			}
+		}
+
+		complete_effect = {
+			custom_effect_tooltip = eldritch_quest_finale_tt
+			hidden_effect = {
+				set_variable = { eldritch_quest_stat = eldritch_quest_mountains_stat }
+				set_variable = { eldritch_quest_base = 35 }
+				add_to_variable = { eldritch_quest_base = eldritch_quest_mountains_bonus }
+				eldritch_quest_check = yes
+				clr_country_flag = eldritch_quest_mountains_active
+				if = {
+					limit = { eldritch_check_passed = yes }
+					set_country_flag = eldritch_quest_mountains_done
+					add_to_variable = { eldritch_quests_done = 1 }
+					country_event = { id = eldritch.272 }
+				}
+				else = {
+					country_event = { id = eldritch.273 }
+				}
+			}
+		}
+
+		timeout_effect = {
+			custom_effect_tooltip = eldritch_quest_timeout_tt
+			hidden_effect = {
+				clr_country_flag = eldritch_quest_mountains_active
+				country_event = { id = eldritch.290 }
+			}
+		}
+
+		ai_will_do = {
+			factor = 1
+		}
+	}
+
+	# cthulhu: begin the quest. After the ritual, eldritch.211 picks the
+	# approach and starts the timed task (eldritch_quest_cthulhu_task).
+	eldritch_quest_cthulhu = {
+		icon = eldritch_cthulhu
+		custom_cost_trigger = {
+			check_variable = { eldritch_favor > 99 }
+		}
+		custom_cost_text = eldritch_cost_favor_100
+		fire_only_once = no
+		days_re_enable = 365
+
+		visible = {
+			has_country_flag = eldritch_god_cthulhu
+			NOT = { has_country_flag = eldritch_quest_cthulhu_done }
+		}
+
+		available = {
+			custom_trigger_tooltip = {
+				tooltip = eldritch_quest_underway_tt
+				NOT = { has_country_flag = eldritch_quest_cthulhu_active }
+			}
+			eldritch_pact_tier_at_least_2 = yes
+		}
+
+		days_remove = 60
+
+		complete_effect = {
+			hidden_effect = {
+				subtract_from_variable = { eldritch_favor = 100 }
+				set_country_flag = eldritch_quest_cthulhu_active
+				clr_country_flag = eldritch_quest_cthulhu_servitors
+			}
+		}
+
+		remove_effect = {
+			custom_effect_tooltip = eldritch_quest_begin_tt
+			hidden_effect = { country_event = { id = eldritch.211 } }
+		}
+
+		ai_will_do = {
+			factor = 1
+		}
+	}
+
+	# cthulhu: the timed task. Completes by itself when the objective is met.
+	eldritch_quest_cthulhu_task = {
+		icon = eldritch_cthulhu
+		activation = { always = no }
+		selectable_mission = no
+		is_good = yes
+		fire_only_once = no
+		days_mission_timeout = 180
+
+		visible = {
+			has_country_flag = eldritch_quest_cthulhu_active
+		}
+
+		available = {
+			custom_trigger_tooltip = {
+				tooltip = eldritch_quest_cthulhu_task_tt
+				has_country_flag = eldritch_quest_cthulhu_servitors
+				OR = {
+					eldritch_god_incarnate_deployed = yes
+					check_variable = { num_battalions_with_type@eldritch_deep_one_brood > 11 }
+				}
+			}
+		}
+
+		complete_effect = {
+			custom_effect_tooltip = eldritch_quest_finale_tt
+			hidden_effect = {
+				set_variable = { eldritch_quest_stat = eldritch_quest_cthulhu_stat }
+				set_variable = { eldritch_quest_base = 30 }
+				add_to_variable = { eldritch_quest_base = eldritch_quest_cthulhu_bonus }
+				eldritch_quest_check = yes
+				clr_country_flag = eldritch_quest_cthulhu_active
+				if = {
+					limit = { eldritch_check_passed = yes }
+					set_country_flag = eldritch_quest_cthulhu_done
+					add_to_variable = { eldritch_quests_done = 1 }
+					country_event = { id = eldritch.212 }
+				}
+				else = {
+					country_event = { id = eldritch.213 }
+				}
+			}
+		}
+
+		timeout_effect = {
+			custom_effect_tooltip = eldritch_quest_timeout_tt
+			hidden_effect = {
+				clr_country_flag = eldritch_quest_cthulhu_active
+				country_event = { id = eldritch.290 }
+			}
+		}
+
+		ai_will_do = {
+			factor = 1
+		}
+	}
+
+	# nyarlathotep: begin the quest. After the ritual, eldritch.221 picks the
+	# approach and starts the timed task (eldritch_quest_nyarlathotep_task).
+	eldritch_quest_nyarlathotep = {
+		icon = eldritch_nyarlathotep
+		custom_cost_trigger = {
+			check_variable = { eldritch_favor > 99 }
+		}
+		custom_cost_text = eldritch_cost_favor_100
+		fire_only_once = no
+		days_re_enable = 365
+
+		visible = {
+			has_country_flag = eldritch_god_nyarlathotep
+			NOT = { has_country_flag = eldritch_quest_nyarlathotep_done }
+		}
+
+		available = {
+			custom_trigger_tooltip = {
+				tooltip = eldritch_quest_underway_tt
+				NOT = { has_country_flag = eldritch_quest_nyarlathotep_active }
+			}
+		}
+
+		days_remove = 45
+
+		complete_effect = {
+			hidden_effect = {
+				subtract_from_variable = { eldritch_favor = 100 }
+				set_country_flag = eldritch_quest_nyarlathotep_active
+				set_variable = { eldritch_quest_nyarlathotep_whispers = 0 }
+			}
+		}
+
+		remove_effect = {
+			custom_effect_tooltip = eldritch_quest_begin_tt
+			hidden_effect = { country_event = { id = eldritch.221 } }
+		}
+
+		ai_will_do = {
+			factor = 1
+		}
+	}
+
+	# nyarlathotep: the timed task. Completes by itself when the objective is met.
+	eldritch_quest_nyarlathotep_task = {
+		icon = eldritch_nyarlathotep
+		activation = { always = no }
+		selectable_mission = no
+		is_good = yes
+		fire_only_once = no
+		days_mission_timeout = 180
+
+		visible = {
+			has_country_flag = eldritch_quest_nyarlathotep_active
+		}
+
+		available = {
+			custom_trigger_tooltip = {
+				tooltip = eldritch_quest_nyarlathotep_task_tt
+				check_variable = { eldritch_quest_nyarlathotep_whispers > 1 }
+			}
+		}
+
+		complete_effect = {
+			custom_effect_tooltip = eldritch_quest_finale_tt
+			hidden_effect = {
+				set_variable = { eldritch_quest_stat = eldritch_quest_nyarlathotep_stat }
+				set_variable = { eldritch_quest_base = 35 }
+				add_to_variable = { eldritch_quest_base = eldritch_quest_nyarlathotep_bonus }
+				eldritch_quest_check = yes
+				clr_country_flag = eldritch_quest_nyarlathotep_active
+				if = {
+					limit = { eldritch_check_passed = yes }
+					set_country_flag = eldritch_quest_nyarlathotep_done
+					add_to_variable = { eldritch_quests_done = 1 }
+					country_event = { id = eldritch.222 }
+				}
+				else = {
+					country_event = { id = eldritch.223 }
+				}
+			}
+		}
+
+		timeout_effect = {
+			custom_effect_tooltip = eldritch_quest_timeout_tt
+			hidden_effect = {
+				clr_country_flag = eldritch_quest_nyarlathotep_active
+				country_event = { id = eldritch.290 }
+			}
+		}
+
+		ai_will_do = {
+			factor = 1
+		}
+	}
+
+	# hastur: begin the quest. After the ritual, eldritch.231 picks the
+	# approach and starts the timed task (eldritch_quest_hastur_task).
+	eldritch_quest_hastur = {
+		icon = eldritch_hastur
+		custom_cost_trigger = {
+			check_variable = { eldritch_favor > 99 }
+		}
+		custom_cost_text = eldritch_cost_favor_100
+		fire_only_once = no
+		days_re_enable = 365
+
+		visible = {
+			has_country_flag = eldritch_god_hastur
+			NOT = { has_country_flag = eldritch_quest_hastur_done }
+		}
+
+		available = {
+			custom_trigger_tooltip = {
+				tooltip = eldritch_quest_underway_tt
+				NOT = { has_country_flag = eldritch_quest_hastur_active }
+			}
+			has_war = yes
+		}
+
+		days_remove = 30
+
+		complete_effect = {
+			hidden_effect = {
+				subtract_from_variable = { eldritch_favor = 100 }
+				set_country_flag = eldritch_quest_hastur_active
+				clr_country_flag = eldritch_quest_hastur_stage_play
+			}
+		}
+
+		remove_effect = {
+			custom_effect_tooltip = eldritch_quest_begin_tt
+			hidden_effect = { country_event = { id = eldritch.231 } }
+		}
+
+		ai_will_do = {
+			factor = 1
+		}
+	}
+
+	# hastur: the timed task. Completes by itself when the objective is met.
+	eldritch_quest_hastur_task = {
+		icon = eldritch_hastur
+		activation = { always = no }
+		selectable_mission = no
+		is_good = yes
+		fire_only_once = no
+		days_mission_timeout = 150
+
+		visible = {
+			has_country_flag = eldritch_quest_hastur_active
+		}
+
+		available = {
+			custom_trigger_tooltip = {
+				tooltip = eldritch_quest_hastur_task_tt
+				has_country_flag = eldritch_quest_hastur_stage_play
+				has_war_support > 0.5
+			}
+		}
+
+		complete_effect = {
+			custom_effect_tooltip = eldritch_quest_finale_tt
+			hidden_effect = {
+				set_variable = { eldritch_quest_stat = eldritch_quest_hastur_stat }
+				set_variable = { eldritch_quest_base = 30 }
+				add_to_variable = { eldritch_quest_base = eldritch_quest_hastur_bonus }
+				eldritch_quest_check = yes
+				clr_country_flag = eldritch_quest_hastur_active
+				if = {
+					limit = { eldritch_check_passed = yes }
+					set_country_flag = eldritch_quest_hastur_done
+					add_to_variable = { eldritch_quests_done = 1 }
+					country_event = { id = eldritch.232 }
+				}
+				else = {
+					country_event = { id = eldritch.233 }
+				}
+			}
+		}
+
+		timeout_effect = {
+			custom_effect_tooltip = eldritch_quest_timeout_tt
+			hidden_effect = {
+				clr_country_flag = eldritch_quest_hastur_active
+				country_event = { id = eldritch.290 }
+			}
+		}
+
+		ai_will_do = {
+			factor = 1
+		}
+	}
+
+	# shub_niggurath: begin the quest. After the ritual, eldritch.241 picks the
+	# approach and starts the timed task (eldritch_quest_shub_niggurath_task).
+	eldritch_quest_shub_niggurath = {
+		icon = eldritch_shub_niggurath
+		custom_cost_trigger = {
+			has_manpower > 24999
+		}
+		custom_cost_text = eldritch_cost_manpower_25k
+		fire_only_once = no
+		days_re_enable = 365
+
+		visible = {
+			has_country_flag = eldritch_god_shub_niggurath
+			NOT = { has_country_flag = eldritch_quest_shub_niggurath_done }
+		}
+
+		available = {
+			custom_trigger_tooltip = {
+				tooltip = eldritch_quest_underway_tt
+				NOT = { has_country_flag = eldritch_quest_shub_niggurath_active }
+			}
+		}
+
+		days_remove = 30
+
+		complete_effect = {
+			hidden_effect = {
+				add_manpower = -25000
+				set_country_flag = eldritch_quest_shub_niggurath_active
+				clr_country_flag = eldritch_quest_shub_niggurath_young
+			}
+		}
+
+		remove_effect = {
+			custom_effect_tooltip = eldritch_quest_begin_tt
+			hidden_effect = { country_event = { id = eldritch.241 } }
+		}
+
+		ai_will_do = {
+			factor = 1
+		}
+	}
+
+	# shub_niggurath: the timed task. Completes by itself when the objective is met.
+	eldritch_quest_shub_niggurath_task = {
+		icon = eldritch_shub_niggurath
+		activation = { always = no }
+		selectable_mission = no
+		is_good = yes
+		fire_only_once = no
+		days_mission_timeout = 120
+
+		visible = {
+			has_country_flag = eldritch_quest_shub_niggurath_active
+		}
+
+		available = {
+			custom_trigger_tooltip = {
+				tooltip = eldritch_quest_shub_niggurath_task_tt
+				has_country_flag = eldritch_quest_shub_niggurath_young
+				has_manpower > 49999
+			}
+		}
+
+		complete_effect = {
+			custom_effect_tooltip = eldritch_quest_finale_tt
+			hidden_effect = {
+				set_variable = { eldritch_quest_stat = eldritch_quest_shub_niggurath_stat }
+				set_variable = { eldritch_quest_base = 35 }
+				add_to_variable = { eldritch_quest_base = eldritch_quest_shub_niggurath_bonus }
+				eldritch_quest_check = yes
+				clr_country_flag = eldritch_quest_shub_niggurath_active
+				if = {
+					limit = { eldritch_check_passed = yes }
+					set_country_flag = eldritch_quest_shub_niggurath_done
+					add_to_variable = { eldritch_quests_done = 1 }
+					country_event = { id = eldritch.242 }
+				}
+				else = {
+					country_event = { id = eldritch.243 }
+				}
+			}
+		}
+
+		timeout_effect = {
+			custom_effect_tooltip = eldritch_quest_timeout_tt
+			hidden_effect = {
+				clr_country_flag = eldritch_quest_shub_niggurath_active
+				country_event = { id = eldritch.290 }
+			}
+		}
+
+		ai_will_do = {
+			factor = 1
+		}
+	}
+
+	# yog_sothoth: begin the quest. After the ritual, eldritch.251 picks the
+	# approach and starts the timed task (eldritch_quest_yog_sothoth_task).
+	eldritch_quest_yog_sothoth = {
+		icon = eldritch_yog_sothoth
+		cost = 100
+		fire_only_once = no
+		days_re_enable = 365
+
+		visible = {
+			has_country_flag = eldritch_god_yog_sothoth
+			NOT = { has_country_flag = eldritch_quest_yog_sothoth_done }
+		}
+
+		available = {
+			custom_trigger_tooltip = {
+				tooltip = eldritch_quest_underway_tt
+				NOT = { has_country_flag = eldritch_quest_yog_sothoth_active }
+			}
+		}
+
+		days_remove = 45
+
+		complete_effect = {
+			hidden_effect = {
+				set_country_flag = eldritch_quest_yog_sothoth_active
+				clr_country_flag = eldritch_quest_yog_sothoth_gate
+				clr_country_flag = eldritch_quest_yog_sothoth_commune
+			}
+		}
+
+		remove_effect = {
+			custom_effect_tooltip = eldritch_quest_begin_tt
+			hidden_effect = { country_event = { id = eldritch.251 } }
+		}
+
+		ai_will_do = {
+			factor = 1
+		}
+	}
+
+	# yog_sothoth: the timed task. Completes by itself when the objective is met.
+	eldritch_quest_yog_sothoth_task = {
+		icon = eldritch_yog_sothoth
+		activation = { always = no }
+		selectable_mission = no
+		is_good = yes
+		fire_only_once = no
+		days_mission_timeout = 180
+
+		visible = {
+			has_country_flag = eldritch_quest_yog_sothoth_active
+		}
+
+		available = {
+			custom_trigger_tooltip = {
+				tooltip = eldritch_quest_yog_sothoth_task_tt
+				has_country_flag = eldritch_quest_yog_sothoth_gate
+				has_country_flag = eldritch_quest_yog_sothoth_commune
+			}
+		}
+
+		complete_effect = {
+			custom_effect_tooltip = eldritch_quest_finale_tt
+			hidden_effect = {
+				set_variable = { eldritch_quest_stat = eldritch_quest_yog_sothoth_stat }
+				set_variable = { eldritch_quest_base = 30 }
+				add_to_variable = { eldritch_quest_base = eldritch_quest_yog_sothoth_bonus }
+				eldritch_quest_check = yes
+				clr_country_flag = eldritch_quest_yog_sothoth_active
+				if = {
+					limit = { eldritch_check_passed = yes }
+					set_country_flag = eldritch_quest_yog_sothoth_done
+					add_to_variable = { eldritch_quests_done = 1 }
+					country_event = { id = eldritch.252 }
+				}
+				else = {
+					country_event = { id = eldritch.253 }
+				}
+			}
+		}
+
+		timeout_effect = {
+			custom_effect_tooltip = eldritch_quest_timeout_tt
+			hidden_effect = {
+				clr_country_flag = eldritch_quest_yog_sothoth_active
+				country_event = { id = eldritch.290 }
+			}
+		}
+
+		ai_will_do = {
+			factor = 1
+		}
+	}
+
+	# azathoth: begin the quest. After the ritual, eldritch.261 picks the
+	# approach and starts the timed task (eldritch_quest_azathoth_task).
+	eldritch_quest_azathoth = {
+		icon = eldritch_azathoth
+		custom_cost_trigger = {
+			check_variable = { eldritch_favor > 149 }
+		}
+		custom_cost_text = eldritch_cost_favor_150
+		fire_only_once = no
+		days_re_enable = 365
+
+		visible = {
+			has_country_flag = eldritch_god_azathoth
+			NOT = { has_country_flag = eldritch_quest_azathoth_done }
+		}
+
+		available = {
+			custom_trigger_tooltip = {
+				tooltip = eldritch_quest_underway_tt
+				NOT = { has_country_flag = eldritch_quest_azathoth_active }
+			}
+			eldritch_pact_tier_at_least_2 = yes
+		}
+
+		days_remove = 60
+
+		complete_effect = {
+			hidden_effect = {
+				subtract_from_variable = { eldritch_favor = 150 }
+				set_country_flag = eldritch_quest_azathoth_active
+				clr_country_flag = eldritch_quest_azathoth_chaos
+			}
+		}
+
+		remove_effect = {
+			custom_effect_tooltip = eldritch_quest_begin_tt
+			hidden_effect = { country_event = { id = eldritch.261 } }
+		}
+
+		ai_will_do = {
+			factor = 1
+		}
+	}
+
+	# azathoth: the timed task. Completes by itself when the objective is met.
+	eldritch_quest_azathoth_task = {
+		icon = eldritch_azathoth
+		activation = { always = no }
+		selectable_mission = no
+		is_good = yes
+		fire_only_once = no
+		days_mission_timeout = 180
+
+		visible = {
+			has_country_flag = eldritch_quest_azathoth_active
+		}
+
+		available = {
+			custom_trigger_tooltip = {
+				tooltip = eldritch_quest_azathoth_task_tt
+				has_country_flag = eldritch_quest_azathoth_chaos
+			}
+		}
+
+		complete_effect = {
+			custom_effect_tooltip = eldritch_quest_finale_tt
+			hidden_effect = {
+				set_variable = { eldritch_quest_stat = eldritch_quest_azathoth_stat }
+				set_variable = { eldritch_quest_base = 30 }
+				add_to_variable = { eldritch_quest_base = eldritch_quest_azathoth_bonus }
+				eldritch_quest_check = yes
+				clr_country_flag = eldritch_quest_azathoth_active
+				if = {
+					limit = { eldritch_check_passed = yes }
+					set_country_flag = eldritch_quest_azathoth_done
+					add_to_variable = { eldritch_quests_done = 1 }
+					country_event = { id = eldritch.262 }
+				}
+				else = {
+					country_event = { id = eldritch.263 }
+				}
+			}
+		}
+
+		timeout_effect = {
+			custom_effect_tooltip = eldritch_quest_timeout_tt
+			hidden_effect = {
+				clr_country_flag = eldritch_quest_azathoth_active
+				country_event = { id = eldritch.290 }
+			}
 		}
 
 		ai_will_do = {

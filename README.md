@@ -218,6 +218,27 @@ A second decision category, **The Prophet's Path**, holds three paths of three p
 
 The category description and the character sheet show your Insight and how far along each path you are. AI Prophets sometimes bank Insight and walk the paths too.
 
+### 12. The Prophet's Quests
+A third category, **The Prophet's Quests**, holds multi-stage quests. Every cult can undertake three: two that any pact may attempt, and its patron's own great work.
+
+1. **Begin.** The quest decision has a cost and a ritual of 30 to 60 days.
+2. **Choose an approach.** An event decides which stat the finale will test. One approach is a dialogue check (Lore, or Zeal for Yog-Sothoth and Azathoth) worth **+20%** to the finale.
+3. **The task.** A timed mission with a countdown in the mission bar asks you to use the pact's rites before time runs out. Rites performed since the quest began count, and only toward quests that are underway.
+4. **The finale.** A skill check of **base + 7% per point** of the chosen stat, plus 10% with the perk that boosts that stat's checks (The Pnakotic Fragments, The Prophet's Banner or Iron Composure). Success brings a permanent **relic** spirit, 100 experience and 1 Insight. Failure has a price, gives 25 experience, and the quest can be begun again a year after that attempt began. Running out of time also fails the quest.
+
+| Quest | Who | Begin | Task | Finale base | Relic (on success) | Failure |
+|---|---|---|---|---|---|---|
+| **Recover the Necronomicon** | any pact | 50 PP + 25 Favor, 30 days | Rite of Worship and Commune, within 120 days | 40% | **The Necronomicon**: +5% research, +0.1 PP a day | −3% stability, +20 Favor |
+| **At the Mountains of Madness** | any pact, Tier II | 75 PP, 45 days | Dark Council and Preach, within 150 days | 35% | **The Elder Things' Archive**: +5% research, +5% factory output | −10k manpower, −3% stability |
+| **Raise R'lyeh** | Cthulhu, Tier II | 100 Favor, 60 days | Call Forth the Servitors, then have Great Cthulhu walking or 12+ Deep One Brood battalions, within 180 days | 30% | **R'lyeh Risen**: naval damage, dockyards, invasions; plus two servitor divisions | −5% stability, −40 Favor |
+| **The Thousand Masks** | Nyarlathotep | 100 Favor, 45 days | Whisper Madness twice, within 180 days | 35% | **The Thousand Masks**: +0.25 PP a day, ideology defence, faster war goals; plus 100 PP | −100 PP, −3% stability |
+| **Stage the Full Play** | Hastur, at war | 100 Favor, 30 days | Stage the play in an enemy nation with war support above 50%, within 150 days | 30% | **The Full Play Performed**: morale, organization, war support; plus the Yellow Madness on every enemy | the Yellow Madness on yourself for 60 days |
+| **The Hunt of the Thousand Young** | Shub-Niggurath | 25k manpower, 30 days | Rite of the Thousand Young with 50k manpower in reserve, within 120 days | 35% | **The Black Goat's Brood**: population, recruitment, reinforcement; plus two servitor divisions | −30k manpower, −3% stability |
+| **Find the Silver Key** | Yog-Sothoth | 100 PP, 45 days | Open the Gate and Commune, within 180 days | 30% | **The Silver Key**: +10% research and planning; plus two 100% research bonuses | −5% stability, −40 Favor |
+| **The Daemon Sultan's Engine** | Azathoth, Tier II | 150 Favor, 60 days | Bottle the Nuclear Chaos, within 180 days | 30% | **The Daemon Engine**: +15% factory output, +5% efficiency, −5% stability; plus two nuclear bombs | −8% stability, −5% war support |
+
+The category description and the character sheet count your completed quests.
+
 ---
 
 ## Game rule

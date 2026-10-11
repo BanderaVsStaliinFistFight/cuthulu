@@ -138,6 +138,38 @@ spriteTypes = {
 		name = "GFX_idea_eldritch_mantle"
 		texturefile = "gfx/interface/ideas/eldritch_mantle.dds"
 	}
+	spriteType = {
+		name = "GFX_idea_eldritch_relic_necronomicon"
+		texturefile = "gfx/interface/ideas/eldritch_relic_necronomicon.dds"
+	}
+	spriteType = {
+		name = "GFX_idea_eldritch_relic_elder_archive"
+		texturefile = "gfx/interface/ideas/eldritch_relic_elder_archive.dds"
+	}
+	spriteType = {
+		name = "GFX_idea_eldritch_relic_rlyeh"
+		texturefile = "gfx/interface/ideas/eldritch_relic_rlyeh.dds"
+	}
+	spriteType = {
+		name = "GFX_idea_eldritch_relic_masks"
+		texturefile = "gfx/interface/ideas/eldritch_relic_masks.dds"
+	}
+	spriteType = {
+		name = "GFX_idea_eldritch_relic_full_play"
+		texturefile = "gfx/interface/ideas/eldritch_relic_full_play.dds"
+	}
+	spriteType = {
+		name = "GFX_idea_eldritch_relic_brood"
+		texturefile = "gfx/interface/ideas/eldritch_relic_brood.dds"
+	}
+	spriteType = {
+		name = "GFX_idea_eldritch_relic_silver_key"
+		texturefile = "gfx/interface/ideas/eldritch_relic_silver_key.dds"
+	}
+	spriteType = {
+		name = "GFX_idea_eldritch_relic_engine"
+		texturefile = "gfx/interface/ideas/eldritch_relic_engine.dds"
+	}
 
 	### Decisions ###
 	spriteType = {
@@ -237,6 +269,10 @@ spriteTypes = {
 	spriteType = {
 		name = "GFX_decision_category_eldritch_path"
 		texturefile = "gfx/interface/decisions/eldritch_category_path.dds"
+	}
+	spriteType = {
+		name = "GFX_decision_category_eldritch_quests"
+		texturefile = "gfx/interface/decisions/eldritch_category_quests.dds"
 	}
 	spriteType = {
 		name = "GFX_decision_eldritch_path_lore"

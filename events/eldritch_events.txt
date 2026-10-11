@@ -14,6 +14,11 @@
 #   eldritch.80       the Prophet's record: the character sheet
 #   eldritch.81       the Prophet reaches a new level
 #   eldritch.82       the result of a skill check (roll, odds, outcome)
+#   eldritch.201-273  the Prophet's quests: approach, success, failure
+#                     (201 Necronomicon, 211 Cthulhu, 221 Nyarlathotep,
+#                     231 Hastur, 241 Shub-Niggurath, 251 Yog-Sothoth,
+#                     261 Azathoth, 271 At the Mountains of Madness)
+#   eldritch.290      a quest's task ran out of time
 #   eldritch.100      hidden monthly pulse (Favor income, random whims)
 #   eldritch_news.1-3 world news: a god is summoned / ascends / incarnates
 #   eldritch_news.4   world news: a leader becomes a god's Vessel
@@ -762,6 +767,683 @@ country_event = {
 
 	option = {
 		name = eldritch.82.a
+	}
+}
+
+#####################################################################
+# THE PROPHET'S QUESTS (see the decisions file for the structure)
+#####################################################################
+
+# necronomicon: choose the approach, then the finale (success / failure)
+country_event = {
+	id = eldritch.201
+	title = eldritch.201.t
+	desc = eldritch.201.d
+	picture = GFX_report_event_eldritch_tome
+
+	is_triggered_only = yes
+
+	option = {
+		name = eldritch.201.a
+		custom_effect_tooltip = eldritch_quest_tests_will_tt
+		add_political_power = -25
+		custom_effect_tooltip = eldritch_quest_necronomicon_task_tt
+		hidden_effect = {
+			set_variable = { eldritch_quest_necronomicon_stat = 3 }
+			set_variable = { eldritch_quest_necronomicon_bonus = 0 }
+			activate_mission = eldritch_quest_necronomicon_task
+		}
+		ai_chance = { factor = 20 }
+	}
+
+	option = {
+		name = eldritch.201.b
+		custom_effect_tooltip = eldritch_quest_tests_zeal_tt
+		custom_effect_tooltip = eldritch_quest_necronomicon_task_tt
+		hidden_effect = {
+			set_variable = { eldritch_quest_necronomicon_stat = 2 }
+			set_variable = { eldritch_quest_necronomicon_bonus = 0 }
+			activate_mission = eldritch_quest_necronomicon_task
+		}
+		ai_chance = { factor = 20 }
+	}
+
+	option = {
+		name = eldritch.201.c
+		trigger = { check_variable = { eldritch_prophet_lore > 2 } }
+		custom_effect_tooltip = eldritch_quest_tests_lore_tt
+		custom_effect_tooltip = eldritch_quest_bonus_tt
+		custom_effect_tooltip = eldritch_quest_necronomicon_task_tt
+		hidden_effect = {
+			set_variable = { eldritch_quest_necronomicon_stat = 1 }
+			set_variable = { eldritch_quest_necronomicon_bonus = 20 }
+			activate_mission = eldritch_quest_necronomicon_task
+		}
+		ai_chance = { factor = 60 }
+	}
+}
+
+country_event = {
+	id = eldritch.202
+	title = eldritch.202.t
+	desc = eldritch.202.d
+	picture = GFX_report_event_eldritch_tome
+
+	is_triggered_only = yes
+
+	option = {
+		name = eldritch.202.a
+		add_ideas = eldritch_relic_necronomicon
+		eldritch_prophet_gain_xp_100 = yes
+		eldritch_prophet_gain_insight = yes
+	}
+}
+
+country_event = {
+	id = eldritch.203
+	title = eldritch.203.t
+	desc = eldritch.203.d
+	picture = GFX_report_event_eldritch_tome
+
+	is_triggered_only = yes
+
+	option = {
+		name = eldritch.203.a
+		add_stability = -0.03
+		eldritch_gain_favor_20 = yes
+		eldritch_prophet_gain_xp_25 = yes
+	}
+}
+
+# mountains: choose the approach, then the finale (success / failure)
+country_event = {
+	id = eldritch.271
+	title = eldritch.271.t
+	desc = eldritch.271.d
+	picture = GFX_report_event_eldritch_omen
+
+	is_triggered_only = yes
+
+	option = {
+		name = eldritch.271.a
+		custom_effect_tooltip = eldritch_quest_tests_zeal_tt
+		add_manpower = -5000
+		custom_effect_tooltip = eldritch_quest_mountains_task_tt
+		hidden_effect = {
+			set_variable = { eldritch_quest_mountains_stat = 2 }
+			set_variable = { eldritch_quest_mountains_bonus = 0 }
+			activate_mission = eldritch_quest_mountains_task
+		}
+		ai_chance = { factor = 20 }
+	}
+
+	option = {
+		name = eldritch.271.b
+		custom_effect_tooltip = eldritch_quest_tests_will_tt
+		custom_effect_tooltip = eldritch_quest_mountains_task_tt
+		hidden_effect = {
+			set_variable = { eldritch_quest_mountains_stat = 3 }
+			set_variable = { eldritch_quest_mountains_bonus = 0 }
+			activate_mission = eldritch_quest_mountains_task
+		}
+		ai_chance = { factor = 20 }
+	}
+
+	option = {
+		name = eldritch.271.c
+		trigger = { check_variable = { eldritch_prophet_lore > 3 } }
+		custom_effect_tooltip = eldritch_quest_tests_lore_tt
+		custom_effect_tooltip = eldritch_quest_bonus_tt
+		custom_effect_tooltip = eldritch_quest_mountains_task_tt
+		hidden_effect = {
+			set_variable = { eldritch_quest_mountains_stat = 1 }
+			set_variable = { eldritch_quest_mountains_bonus = 20 }
+			activate_mission = eldritch_quest_mountains_task
+		}
+		ai_chance = { factor = 60 }
+	}
+}
+
+country_event = {
+	id = eldritch.272
+	title = eldritch.272.t
+	desc = eldritch.272.d
+	picture = GFX_report_event_eldritch_omen
+
+	is_triggered_only = yes
+
+	option = {
+		name = eldritch.272.a
+		add_ideas = eldritch_relic_elder_archive
+		eldritch_prophet_gain_xp_100 = yes
+		eldritch_prophet_gain_insight = yes
+	}
+}
+
+country_event = {
+	id = eldritch.273
+	title = eldritch.273.t
+	desc = eldritch.273.d
+	picture = GFX_report_event_eldritch_omen
+
+	is_triggered_only = yes
+
+	option = {
+		name = eldritch.273.a
+		add_manpower = -10000
+		add_stability = -0.03
+		eldritch_prophet_gain_xp_25 = yes
+	}
+}
+
+# cthulhu: choose the approach, then the finale (success / failure)
+country_event = {
+	id = eldritch.211
+	title = eldritch.211.t
+	desc = eldritch.211.d
+	picture = GFX_report_event_eldritch_cthulhu
+
+	is_triggered_only = yes
+
+	option = {
+		name = eldritch.211.a
+		custom_effect_tooltip = eldritch_quest_tests_zeal_tt
+		custom_effect_tooltip = eldritch_quest_cthulhu_task_tt
+		hidden_effect = {
+			set_variable = { eldritch_quest_cthulhu_stat = 2 }
+			set_variable = { eldritch_quest_cthulhu_bonus = 0 }
+			activate_mission = eldritch_quest_cthulhu_task
+		}
+		ai_chance = { factor = 20 }
+	}
+
+	option = {
+		name = eldritch.211.b
+		custom_effect_tooltip = eldritch_quest_tests_will_tt
+		custom_effect_tooltip = eldritch_quest_cthulhu_task_tt
+		hidden_effect = {
+			set_variable = { eldritch_quest_cthulhu_stat = 3 }
+			set_variable = { eldritch_quest_cthulhu_bonus = 0 }
+			activate_mission = eldritch_quest_cthulhu_task
+		}
+		ai_chance = { factor = 20 }
+	}
+
+	option = {
+		name = eldritch.211.c
+		trigger = { check_variable = { eldritch_prophet_lore > 3 } }
+		custom_effect_tooltip = eldritch_quest_tests_lore_tt
+		custom_effect_tooltip = eldritch_quest_bonus_tt
+		custom_effect_tooltip = eldritch_quest_cthulhu_task_tt
+		hidden_effect = {
+			set_variable = { eldritch_quest_cthulhu_stat = 1 }
+			set_variable = { eldritch_quest_cthulhu_bonus = 20 }
+			activate_mission = eldritch_quest_cthulhu_task
+		}
+		ai_chance = { factor = 60 }
+	}
+}
+
+country_event = {
+	id = eldritch.212
+	title = eldritch.212.t
+	desc = eldritch.212.d
+	picture = GFX_report_event_eldritch_cthulhu
+
+	is_triggered_only = yes
+
+	option = {
+		name = eldritch.212.a
+		add_ideas = eldritch_relic_rlyeh
+		eldritch_spawn_servitors = yes
+		eldritch_prophet_gain_xp_100 = yes
+		eldritch_prophet_gain_insight = yes
+	}
+}
+
+country_event = {
+	id = eldritch.213
+	title = eldritch.213.t
+	desc = eldritch.213.d
+	picture = GFX_report_event_eldritch_cthulhu
+
+	is_triggered_only = yes
+
+	option = {
+		name = eldritch.213.a
+		add_stability = -0.05
+		eldritch_lose_favor_40 = yes
+		eldritch_prophet_gain_xp_25 = yes
+	}
+}
+
+# nyarlathotep: choose the approach, then the finale (success / failure)
+country_event = {
+	id = eldritch.221
+	title = eldritch.221.t
+	desc = eldritch.221.d
+	picture = GFX_report_event_eldritch_nyarlathotep
+
+	is_triggered_only = yes
+
+	option = {
+		name = eldritch.221.a
+		custom_effect_tooltip = eldritch_quest_tests_will_tt
+		add_political_power = -25
+		custom_effect_tooltip = eldritch_quest_nyarlathotep_task_tt
+		hidden_effect = {
+			set_variable = { eldritch_quest_nyarlathotep_stat = 3 }
+			set_variable = { eldritch_quest_nyarlathotep_bonus = 0 }
+			activate_mission = eldritch_quest_nyarlathotep_task
+		}
+		ai_chance = { factor = 20 }
+	}
+
+	option = {
+		name = eldritch.221.b
+		custom_effect_tooltip = eldritch_quest_tests_zeal_tt
+		custom_effect_tooltip = eldritch_quest_nyarlathotep_task_tt
+		hidden_effect = {
+			set_variable = { eldritch_quest_nyarlathotep_stat = 2 }
+			set_variable = { eldritch_quest_nyarlathotep_bonus = 0 }
+			activate_mission = eldritch_quest_nyarlathotep_task
+		}
+		ai_chance = { factor = 20 }
+	}
+
+	option = {
+		name = eldritch.221.c
+		trigger = { check_variable = { eldritch_prophet_lore > 3 } }
+		custom_effect_tooltip = eldritch_quest_tests_lore_tt
+		custom_effect_tooltip = eldritch_quest_bonus_tt
+		custom_effect_tooltip = eldritch_quest_nyarlathotep_task_tt
+		hidden_effect = {
+			set_variable = { eldritch_quest_nyarlathotep_stat = 1 }
+			set_variable = { eldritch_quest_nyarlathotep_bonus = 20 }
+			activate_mission = eldritch_quest_nyarlathotep_task
+		}
+		ai_chance = { factor = 60 }
+	}
+}
+
+country_event = {
+	id = eldritch.222
+	title = eldritch.222.t
+	desc = eldritch.222.d
+	picture = GFX_report_event_eldritch_nyarlathotep
+
+	is_triggered_only = yes
+
+	option = {
+		name = eldritch.222.a
+		add_ideas = eldritch_relic_masks
+		add_political_power = 100
+		eldritch_prophet_gain_xp_100 = yes
+		eldritch_prophet_gain_insight = yes
+	}
+}
+
+country_event = {
+	id = eldritch.223
+	title = eldritch.223.t
+	desc = eldritch.223.d
+	picture = GFX_report_event_eldritch_nyarlathotep
+
+	is_triggered_only = yes
+
+	option = {
+		name = eldritch.223.a
+		add_political_power = -100
+		add_stability = -0.03
+		eldritch_prophet_gain_xp_25 = yes
+	}
+}
+
+# hastur: choose the approach, then the finale (success / failure)
+country_event = {
+	id = eldritch.231
+	title = eldritch.231.t
+	desc = eldritch.231.d
+	picture = GFX_report_event_eldritch_hastur
+
+	is_triggered_only = yes
+
+	option = {
+		name = eldritch.231.a
+		custom_effect_tooltip = eldritch_quest_tests_zeal_tt
+		custom_effect_tooltip = eldritch_quest_hastur_task_tt
+		hidden_effect = {
+			set_variable = { eldritch_quest_hastur_stat = 2 }
+			set_variable = { eldritch_quest_hastur_bonus = 0 }
+			activate_mission = eldritch_quest_hastur_task
+		}
+		ai_chance = { factor = 20 }
+	}
+
+	option = {
+		name = eldritch.231.b
+		custom_effect_tooltip = eldritch_quest_tests_will_tt
+		custom_effect_tooltip = eldritch_quest_hastur_task_tt
+		hidden_effect = {
+			set_variable = { eldritch_quest_hastur_stat = 3 }
+			set_variable = { eldritch_quest_hastur_bonus = 0 }
+			activate_mission = eldritch_quest_hastur_task
+		}
+		ai_chance = { factor = 20 }
+	}
+
+	option = {
+		name = eldritch.231.c
+		trigger = { check_variable = { eldritch_prophet_lore > 3 } }
+		custom_effect_tooltip = eldritch_quest_tests_lore_tt
+		custom_effect_tooltip = eldritch_quest_bonus_tt
+		custom_effect_tooltip = eldritch_quest_hastur_task_tt
+		hidden_effect = {
+			set_variable = { eldritch_quest_hastur_stat = 1 }
+			set_variable = { eldritch_quest_hastur_bonus = 20 }
+			activate_mission = eldritch_quest_hastur_task
+		}
+		ai_chance = { factor = 60 }
+	}
+}
+
+country_event = {
+	id = eldritch.232
+	title = eldritch.232.t
+	desc = eldritch.232.d
+	picture = GFX_report_event_eldritch_hastur
+
+	is_triggered_only = yes
+
+	option = {
+		name = eldritch.232.a
+		add_ideas = eldritch_relic_full_play
+		eldritch_quest_hastur_curse_all = yes
+		eldritch_prophet_gain_xp_100 = yes
+		eldritch_prophet_gain_insight = yes
+	}
+}
+
+country_event = {
+	id = eldritch.233
+	title = eldritch.233.t
+	desc = eldritch.233.d
+	picture = GFX_report_event_eldritch_hastur
+
+	is_triggered_only = yes
+
+	option = {
+		name = eldritch.233.a
+		add_timed_idea = { idea = eldritch_curse_yellow_madness days = 60 }
+		eldritch_prophet_gain_xp_25 = yes
+	}
+}
+
+# shub_niggurath: choose the approach, then the finale (success / failure)
+country_event = {
+	id = eldritch.241
+	title = eldritch.241.t
+	desc = eldritch.241.d
+	picture = GFX_report_event_eldritch_shub_niggurath
+
+	is_triggered_only = yes
+
+	option = {
+		name = eldritch.241.a
+		custom_effect_tooltip = eldritch_quest_tests_zeal_tt
+		custom_effect_tooltip = eldritch_quest_shub_niggurath_task_tt
+		hidden_effect = {
+			set_variable = { eldritch_quest_shub_niggurath_stat = 2 }
+			set_variable = { eldritch_quest_shub_niggurath_bonus = 0 }
+			activate_mission = eldritch_quest_shub_niggurath_task
+		}
+		ai_chance = { factor = 20 }
+	}
+
+	option = {
+		name = eldritch.241.b
+		custom_effect_tooltip = eldritch_quest_tests_will_tt
+		custom_effect_tooltip = eldritch_quest_shub_niggurath_task_tt
+		hidden_effect = {
+			set_variable = { eldritch_quest_shub_niggurath_stat = 3 }
+			set_variable = { eldritch_quest_shub_niggurath_bonus = 0 }
+			activate_mission = eldritch_quest_shub_niggurath_task
+		}
+		ai_chance = { factor = 20 }
+	}
+
+	option = {
+		name = eldritch.241.c
+		trigger = { check_variable = { eldritch_prophet_lore > 3 } }
+		custom_effect_tooltip = eldritch_quest_tests_lore_tt
+		custom_effect_tooltip = eldritch_quest_bonus_tt
+		custom_effect_tooltip = eldritch_quest_shub_niggurath_task_tt
+		hidden_effect = {
+			set_variable = { eldritch_quest_shub_niggurath_stat = 1 }
+			set_variable = { eldritch_quest_shub_niggurath_bonus = 20 }
+			activate_mission = eldritch_quest_shub_niggurath_task
+		}
+		ai_chance = { factor = 60 }
+	}
+}
+
+country_event = {
+	id = eldritch.242
+	title = eldritch.242.t
+	desc = eldritch.242.d
+	picture = GFX_report_event_eldritch_shub_niggurath
+
+	is_triggered_only = yes
+
+	option = {
+		name = eldritch.242.a
+		add_ideas = eldritch_relic_brood
+		eldritch_spawn_servitors = yes
+		eldritch_prophet_gain_xp_100 = yes
+		eldritch_prophet_gain_insight = yes
+	}
+}
+
+country_event = {
+	id = eldritch.243
+	title = eldritch.243.t
+	desc = eldritch.243.d
+	picture = GFX_report_event_eldritch_shub_niggurath
+
+	is_triggered_only = yes
+
+	option = {
+		name = eldritch.243.a
+		add_manpower = -30000
+		add_stability = -0.03
+		eldritch_prophet_gain_xp_25 = yes
+	}
+}
+
+# yog_sothoth: choose the approach, then the finale (success / failure)
+country_event = {
+	id = eldritch.251
+	title = eldritch.251.t
+	desc = eldritch.251.d
+	picture = GFX_report_event_eldritch_yog_sothoth
+
+	is_triggered_only = yes
+
+	option = {
+		name = eldritch.251.a
+		custom_effect_tooltip = eldritch_quest_tests_lore_tt
+		custom_effect_tooltip = eldritch_quest_yog_sothoth_task_tt
+		hidden_effect = {
+			set_variable = { eldritch_quest_yog_sothoth_stat = 1 }
+			set_variable = { eldritch_quest_yog_sothoth_bonus = 0 }
+			activate_mission = eldritch_quest_yog_sothoth_task
+		}
+		ai_chance = { factor = 20 }
+	}
+
+	option = {
+		name = eldritch.251.b
+		custom_effect_tooltip = eldritch_quest_tests_will_tt
+		custom_effect_tooltip = eldritch_quest_yog_sothoth_task_tt
+		hidden_effect = {
+			set_variable = { eldritch_quest_yog_sothoth_stat = 3 }
+			set_variable = { eldritch_quest_yog_sothoth_bonus = 0 }
+			activate_mission = eldritch_quest_yog_sothoth_task
+		}
+		ai_chance = { factor = 20 }
+	}
+
+	option = {
+		name = eldritch.251.c
+		trigger = { check_variable = { eldritch_prophet_zeal > 3 } }
+		custom_effect_tooltip = eldritch_quest_tests_zeal_tt
+		custom_effect_tooltip = eldritch_quest_bonus_tt
+		custom_effect_tooltip = eldritch_quest_yog_sothoth_task_tt
+		hidden_effect = {
+			set_variable = { eldritch_quest_yog_sothoth_stat = 2 }
+			set_variable = { eldritch_quest_yog_sothoth_bonus = 20 }
+			activate_mission = eldritch_quest_yog_sothoth_task
+		}
+		ai_chance = { factor = 60 }
+	}
+}
+
+country_event = {
+	id = eldritch.252
+	title = eldritch.252.t
+	desc = eldritch.252.d
+	picture = GFX_report_event_eldritch_yog_sothoth
+
+	is_triggered_only = yes
+
+	option = {
+		name = eldritch.252.a
+		add_ideas = eldritch_relic_silver_key
+		add_tech_bonus = {
+			name = eldritch_silver_key_insight
+			bonus = 1.0
+			uses = 1
+			category = industry
+		}
+		add_tech_bonus = {
+			name = eldritch_silver_key_insight
+			bonus = 1.0
+			uses = 1
+			category = electronics
+		}
+		eldritch_prophet_gain_xp_100 = yes
+		eldritch_prophet_gain_insight = yes
+	}
+}
+
+country_event = {
+	id = eldritch.253
+	title = eldritch.253.t
+	desc = eldritch.253.d
+	picture = GFX_report_event_eldritch_yog_sothoth
+
+	is_triggered_only = yes
+
+	option = {
+		name = eldritch.253.a
+		add_stability = -0.05
+		eldritch_lose_favor_40 = yes
+		eldritch_prophet_gain_xp_25 = yes
+	}
+}
+
+# azathoth: choose the approach, then the finale (success / failure)
+country_event = {
+	id = eldritch.261
+	title = eldritch.261.t
+	desc = eldritch.261.d
+	picture = GFX_report_event_eldritch_azathoth
+
+	is_triggered_only = yes
+
+	option = {
+		name = eldritch.261.a
+		custom_effect_tooltip = eldritch_quest_tests_lore_tt
+		custom_effect_tooltip = eldritch_quest_azathoth_task_tt
+		hidden_effect = {
+			set_variable = { eldritch_quest_azathoth_stat = 1 }
+			set_variable = { eldritch_quest_azathoth_bonus = 0 }
+			activate_mission = eldritch_quest_azathoth_task
+		}
+		ai_chance = { factor = 20 }
+	}
+
+	option = {
+		name = eldritch.261.b
+		custom_effect_tooltip = eldritch_quest_tests_will_tt
+		custom_effect_tooltip = eldritch_quest_azathoth_task_tt
+		hidden_effect = {
+			set_variable = { eldritch_quest_azathoth_stat = 3 }
+			set_variable = { eldritch_quest_azathoth_bonus = 0 }
+			activate_mission = eldritch_quest_azathoth_task
+		}
+		ai_chance = { factor = 20 }
+	}
+
+	option = {
+		name = eldritch.261.c
+		trigger = { check_variable = { eldritch_prophet_zeal > 3 } }
+		custom_effect_tooltip = eldritch_quest_tests_zeal_tt
+		custom_effect_tooltip = eldritch_quest_bonus_tt
+		custom_effect_tooltip = eldritch_quest_azathoth_task_tt
+		hidden_effect = {
+			set_variable = { eldritch_quest_azathoth_stat = 2 }
+			set_variable = { eldritch_quest_azathoth_bonus = 20 }
+			activate_mission = eldritch_quest_azathoth_task
+		}
+		ai_chance = { factor = 60 }
+	}
+}
+
+country_event = {
+	id = eldritch.262
+	title = eldritch.262.t
+	desc = eldritch.262.d
+	picture = GFX_report_event_eldritch_azathoth
+
+	is_triggered_only = yes
+
+	option = {
+		name = eldritch.262.a
+		add_ideas = eldritch_relic_engine
+		add_nuclear_bombs = 2
+		eldritch_prophet_gain_xp_100 = yes
+		eldritch_prophet_gain_insight = yes
+	}
+}
+
+country_event = {
+	id = eldritch.263
+	title = eldritch.263.t
+	desc = eldritch.263.d
+	picture = GFX_report_event_eldritch_azathoth
+
+	is_triggered_only = yes
+
+	option = {
+		name = eldritch.263.a
+		add_stability = -0.08
+		add_war_support = -0.05
+		eldritch_prophet_gain_xp_25 = yes
+	}
+}
+
+# A quest's task ran out of time.
+country_event = {
+	id = eldritch.290
+	title = eldritch.290.t
+	desc = eldritch.290.d
+	picture = GFX_report_event_eldritch_omen
+
+	is_triggered_only = yes
+
+	option = {
+		name = eldritch.290.a
 	}
 }
 

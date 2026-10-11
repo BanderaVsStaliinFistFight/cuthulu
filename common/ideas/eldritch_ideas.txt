@@ -10,6 +10,7 @@
 #   eldritch_great_temple      permanent, from Raise the Great Temple
 #   eldritch_god_walks         while the incarnate god is on the map
 #   eldritch_dread_of_the_god  on every nation at war with an incarnate god
+#   eldritch_relic_*           permanent, the rewards of the Prophet's quests
 #####################################################################
 
 ideas = {
@@ -409,6 +410,94 @@ ideas = {
 				army_morale_factor = -0.15
 				army_org_factor = -0.10
 				war_support_factor = -0.10
+			}
+		}
+
+		### RELICS OF THE QUESTS #####################################
+
+		eldritch_relic_necronomicon = {
+			picture = eldritch_relic_necronomicon
+			removal_cost = -1
+			allowed_civil_war = { always = yes }
+			modifier = {
+				research_speed_factor = 0.05
+				political_power_gain = 0.10
+			}
+		}
+
+		eldritch_relic_elder_archive = {
+			picture = eldritch_relic_elder_archive
+			removal_cost = -1
+			allowed_civil_war = { always = yes }
+			modifier = {
+				research_speed_factor = 0.05
+				industrial_capacity_factory = 0.05
+			}
+		}
+
+		eldritch_relic_rlyeh = {
+			picture = eldritch_relic_rlyeh
+			removal_cost = -1
+			allowed_civil_war = { always = yes }
+			modifier = {
+				naval_damage_factor = 0.10
+				industrial_capacity_dockyard = 0.10
+				amphibious_invasion = 0.20
+				naval_invasion_capacity = 20
+			}
+		}
+
+		eldritch_relic_masks = {
+			picture = eldritch_relic_masks
+			removal_cost = -1
+			allowed_civil_war = { always = yes }
+			modifier = {
+				political_power_gain = 0.25
+				drift_defence_factor = 0.20
+				justify_war_goal_time = -0.20
+			}
+		}
+
+		eldritch_relic_full_play = {
+			picture = eldritch_relic_full_play
+			removal_cost = -1
+			allowed_civil_war = { always = yes }
+			modifier = {
+				army_morale_factor = 0.10
+				army_org_factor = 0.05
+				war_support_factor = 0.10
+			}
+		}
+
+		eldritch_relic_brood = {
+			picture = eldritch_relic_brood
+			removal_cost = -1
+			allowed_civil_war = { always = yes }
+			modifier = {
+				monthly_population = 0.20
+				conscription = 0.02
+				land_reinforce_rate = 0.02
+			}
+		}
+
+		eldritch_relic_silver_key = {
+			picture = eldritch_relic_silver_key
+			removal_cost = -1
+			allowed_civil_war = { always = yes }
+			modifier = {
+				research_speed_factor = 0.10
+				planning_speed = 0.10
+			}
+		}
+
+		eldritch_relic_engine = {
+			picture = eldritch_relic_engine
+			removal_cost = -1
+			allowed_civil_war = { always = yes }
+			modifier = {
+				industrial_capacity_factory = 0.15
+				production_factory_max_efficiency_factor = 0.05
+				stability_factor = -0.05
 			}
 		}
 	}

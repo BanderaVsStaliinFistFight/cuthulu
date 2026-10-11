@@ -28,3 +28,15 @@ eldritch_prophet_path = {
 		has_country_flag = eldritch_pact_made
 	}
 }
+
+# The Prophet's quests: two any cult can undertake, and the patron's own.
+eldritch_prophet_quests = {
+	icon = eldritch_quests
+	priority = 148
+	allowed = {
+		always = yes
+	}
+	visible = {
+		has_country_flag = eldritch_pact_made
+	}
+}

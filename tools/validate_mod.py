@@ -315,11 +315,13 @@ def main():
             icon = {k: v for k, _, v in body}.get("icon")
             if icon:
                 need_sprite("GFX_decision_category_" + icon, f"{path} {cat}")
+    decision_names = set()
     for path, items in decision_files.items():
         for cat, _, decisions in items:
             if cat not in categories:
                 problems.append(f"{path}: unknown decision category {cat}")
             for dec, _, body in decisions:
+                decision_names.add(dec)
                 need_loc(dec, path)
                 need_loc(dec + "_desc", path)
                 fields = {k: v for k, _, v in body}
@@ -346,6 +348,8 @@ def main():
             if key in ("add_ideas", "has_idea", "remove_idea", "add_idea") and isinstance(value, str):
                 if value.startswith("eldritch_") and value not in ideas:
                     problems.append(f"{path}: unknown idea {value}")
+            if key == "activate_mission" and isinstance(value, str) and value not in decision_names:
+                problems.append(f"{path}: activate_mission names unknown mission {value}")
             if key in ("add_dynamic_modifier", "remove_dynamic_modifier") and isinstance(value, list):
                 mod = {k: v for k, _, v in value}.get("modifier")
                 if mod not in dynamic_modifiers:
