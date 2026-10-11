@@ -1,0 +1,5 @@
+# written on your computer by tools/install_building_icons.py (from the game's own strip)
+gfx/interface/buildings/eldritch_building_icon_strip.dds
+interface/zz_eldritch_buildings_strip.gfx
+
+__pycache__/

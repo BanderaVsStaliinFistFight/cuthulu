@@ -1235,6 +1235,8 @@ def sym_bld_palace(size, color=None):
 
 BUILDING_ICON_SIZE = (36, 36)      # one frame of the special icon: fits the state view's province building slot
 BUILDING_TEXT_ICON_SIZE = (20, 20)  # the text icon, inline in descriptions and tooltips
+BUILDING_STRIP_FRAME = (46, 46)    # a frame of the game's building strip (construction menu), for
+                                   # tools/install_building_icons.py, which adds these to that strip
 BUILDING_ICONS = {
     "yellow_theatre": sym_bld_theatre,
     "masque_hall": sym_bld_masque,
@@ -1261,6 +1263,13 @@ def make_building_icons():
         strip.paste(dim, (w, 0))
         save_dds(strip, f"gfx/interface/buildings/eldritch_{name}.dds")
         save_dds(building_icon(BUILDING_TEXT_ICON_SIZE, symbol), f"gfx/interface/buildings/eldritch_{name}_text.dds")
+    # the construction menu's pictures, in the order the installer appends them (no sprite of
+    # their own: tools/install_building_icons.py adds them to the game's building strip)
+    fw, fh = BUILDING_STRIP_FRAME
+    frames = Image.new("RGBA", (fw * len(BUILDING_ICONS), fh), (0, 0, 0, 0))
+    for i, symbol in enumerate(BUILDING_ICONS.values()):
+        frames.paste(building_icon(BUILDING_STRIP_FRAME, symbol), (i * fw, 0))
+    save_dds(frames, "gfx/interface/buildings/eldritch_building_strip_frames.dds")
 
 
 # ---------------------------------------------------------------------------
