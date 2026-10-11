@@ -17,7 +17,8 @@ catches the mistakes that are easy to make by hand:
   * formables (set_cosmetic_tag): names for every ideology, flags in all
     three sizes as uncompressed TGA, and a map colour in
     common/countries/cosmetic.txt (the only file the game reads them from)
-  * buildings: names, plurals, descriptions, construction speed modifier names, special icons (two 36x36 frames, on a
+  * buildings: names, plurals, descriptions, construction speed modifier names, their own frame of
+    the building strip (whose texture must match its noOfFrames), special icons (two 36x36 frames, on a
     provincial building), unlocked by a technology that exists, and a
     tooltip (missing_tech_loc) for while they are locked
   * text icons (£name£) in localisation point to sprites that exist
@@ -306,6 +307,21 @@ def main():
                         problems.append(f"{path}: {unit} uses sprite {sprite} but {sprite}_entity is not defined")
 
     # ------------------------------------------------------------- buildings
+    # The construction menu's pictures: a building's icon_frame (from 1) is a 46x46 frame of
+    # GFX_buildings_strip. The mod replaces that strip (the game's frames plus its own), so its
+    # texture must hold exactly noOfFrames frames, and the mod's buildings need frames of their own.
+    strip_frames = None
+    if "GFX_buildings_strip" in sprites:
+        strip_frames = frames.get("GFX_buildings_strip", 1)
+        tex = sprites["GFX_buildings_strip"]
+        if os.path.exists(os.path.join(ROOT, tex)):
+            with open(os.path.join(ROOT, tex), "rb") as f:
+                head = f.read(20)
+            h, w = int.from_bytes(head[12:16], "little"), int.from_bytes(head[16:20], "little")
+            if (w, h) != (46 * strip_frames, 46):
+                problems.append(f"{tex}: GFX_buildings_strip has {strip_frames} frames, so it must be "
+                                f"{46 * strip_frames}x46, is {w}x{h}")
+    icon_frames = {}
     buildings = set()
     for path, items in load_script("common/buildings/*.txt", problems).items():
         for key, _, value in items:
@@ -318,6 +334,13 @@ def main():
                     for modifier in ("production_speed_{}_factor", "state_production_speed_{}_factor"):
                         need_loc("modifier_" + modifier.format(building), path)
                     fields = {k: v for k, _, v in body}
+                    frame = int(fields.get("icon_frame", 0))
+                    if strip_frames and not 1 <= frame <= strip_frames:
+                        problems.append(f"{path}: {building} icon_frame {frame} is outside GFX_buildings_strip "
+                                        f"(1 to {strip_frames})")
+                    if frame in icon_frames:
+                        problems.append(f"{path}: {building} shares icon_frame {frame} with {icon_frames[frame]}")
+                    icon_frames[frame] = building
                     if "special_icon" in fields:
                         icon = fields["special_icon"]
                         need_sprite(icon, f"{path} {building}")

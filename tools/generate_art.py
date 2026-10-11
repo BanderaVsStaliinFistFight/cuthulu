@@ -1235,8 +1235,162 @@ def sym_bld_palace(size, color=None):
 
 BUILDING_ICON_SIZE = (36, 36)      # one frame of the special icon: fits the state view's province building slot
 BUILDING_TEXT_ICON_SIZE = (20, 20)  # the text icon, inline in descriptions and tooltips
-BUILDING_STRIP_FRAME = (46, 46)    # a frame of the game's building strip (construction menu), for
-                                   # tools/install_building_icons.py, which adds these to that strip
+
+# The construction menu draws each building's picture from the game's building strip
+# (GFX_buildings_strip, a 46x46 frame per building, picked by icon_frame, counted from 1).
+# The mod's copy is the game's strip (tools/art_sources/building_icon_strip.dds, 31 frames in
+# 1.16) with the four buildings' pictures appended, drawn in the game's style: a bold glyph
+# with cut-out details, shaded orange top to bottom, with a lighter accent, on the game's tile.
+VANILLA_BUILDING_STRIP = os.path.join(ROOT, "tools", "art_sources", "building_icon_strip.dds")
+STRIP_FRAME = 46
+STRIP_GLYPH = 34
+STRIP_ORANGE = ((240, 186, 52), (228, 86, 14))      # the game's glyph colours, top and bottom
+STRIP_GOLD = ((255, 236, 120), (238, 196, 48))
+STRIP_BONE = ((240, 236, 224), (168, 158, 140))
+G_FILL, G_CUT = (255, 255, 255, 255), (0, 0, 0, 0)
+
+
+def glyph_theatre(c, accent):
+    """A playhouse front, its arch open on the Yellow Sign (accent)."""
+    c.poly([(0.06, 0.87), (0.94, 0.87), (0.94, 0.95), (0.06, 0.95)], G_FILL)
+    c.poly([(0.14, 0.38), (0.86, 0.38), (0.86, 0.87), (0.14, 0.87)], G_FILL)
+    c.poly([(0.05, 0.35), (0.95, 0.35), (0.5, 0.07)], G_FILL)
+    c.poly([(0.25, 0.30), (0.75, 0.30), (0.5, 0.15)], G_CUT)
+    c.poly([(0.05, 0.35), (0.95, 0.35), (0.95, 0.39), (0.05, 0.39)], G_CUT)
+    c.poly([(0.06, 0.87), (0.94, 0.87), (0.94, 0.885), (0.06, 0.885)], G_CUT)
+    for x in (0.22, 0.78):
+        c.poly([(x - 0.012, 0.44), (x + 0.012, 0.44), (x + 0.012, 0.83), (x - 0.012, 0.83)], G_CUT)
+    _arch(c, 0.31, 0.69, 0.58, 0.87, G_CUT)
+    for k in range(3):
+        base = math.radians(90 + k * 120)
+        pts = []
+        for i in range(40):
+            t = i / 39
+            r = 0.03 + 0.14 * t
+            a = base + t * math.radians(150)
+            pts.append((0.5 + r * math.cos(a), 0.70 - r * math.sin(a)))
+        accent.stroke(pts, G_FILL, 0.035, 0.015)
+    accent.ellipse(0.5, 0.70, 0.035, 0.035, G_FILL)
+
+
+def glyph_masque(c, accent):
+    """The pallid mask (accent) in a pointed ballroom window, ribbons trailing."""
+    _arch(c, 0.12, 0.88, 0.42, 0.95, G_FILL, pointed=True)
+    _arch(c, 0.20, 0.80, 0.45, 0.95, G_CUT, pointed=True)
+    for side in (-1, 1):
+        c.stroke([(0.5 + side * (0.25 + 0.03 * t), 0.52 + 0.36 * t + 0.03 * math.sin(t * 7))
+                  for t in [i / 30 for i in range(31)]], G_FILL, 0.04, 0.016)
+    accent.ellipse(0.5, 0.52, 0.25, 0.32, G_FILL)
+    for side in (-1, 1):
+        x = 0.5 + side * 0.105
+        accent.poly([(x - 0.08, 0.46 - side * 0.012), (x, 0.41), (x + 0.08, 0.46 + side * 0.012), (x, 0.505)], G_CUT)
+    accent.poly([(0.41, 0.70), (0.59, 0.70), (0.59, 0.725), (0.41, 0.725)], G_CUT)
+    accent.poly([(0.47, 0.52), (0.53, 0.52), (0.51, 0.62), (0.49, 0.62)], G_CUT)
+
+
+def glyph_observatory(c, accent):
+    """A domed tower, its telescope raised to three black stars (rings)."""
+    for x, y, r in ((0.82, 0.15, 0.085), (0.18, 0.20, 0.065), (0.52, 0.09, 0.05)):
+        c.ellipse(x, y, r, r, G_FILL)
+        c.ellipse(x, y, r * 0.55, r * 0.55, G_CUT)
+    c.ellipse(0.5, 0.60, 0.30, 0.30, G_FILL)
+    c.poly([(0.15, 0.585), (0.85, 0.585), (0.85, 0.95), (0.15, 0.95)], G_CUT)
+    c.poly([(0.46, 0.585), (0.555, 0.585), (0.60, 0.33), (0.52, 0.31)], G_CUT)
+    c.line([(0.53, 0.52), (0.71, 0.30)], G_FILL, 0.10)
+    c.poly([(0.22, 0.62), (0.78, 0.62), (0.78, 0.87), (0.22, 0.87)], G_FILL)
+    _arch(c, 0.43, 0.57, 0.76, 0.87, G_CUT)
+    c.poly([(0.10, 0.895), (0.90, 0.895), (0.90, 0.95), (0.10, 0.95)], G_FILL)
+
+
+def _glyph_castle(layer, fill, grow=0.0):
+    for x in (0.19, 0.81):
+        layer.poly([(x - 0.08 - grow, 0.50), (x + 0.08 + grow, 0.50), (x + 0.08 + grow, 0.88),
+                    (x - 0.08 - grow, 0.88)], fill)
+        layer.poly([(x - 0.10 - grow, 0.50 + grow), (x + 0.10 + grow, 0.50 + grow), (x, 0.28 - grow * 1.5)], fill)
+    layer.poly([(0.19, 0.64 - grow), (0.81, 0.64 - grow), (0.81, 0.88), (0.19, 0.88)], fill)
+    layer.poly([(0.35 - grow, 0.40), (0.65 + grow, 0.40), (0.65 + grow, 0.88), (0.35 - grow, 0.88)], fill)
+    layer.poly([(0.33 - grow, 0.40 + grow), (0.67 + grow, 0.40 + grow), (0.5, 0.15 - grow * 1.5)], fill)
+
+
+def glyph_palace(c, accent):
+    """The palace's spires, crowned, before the twin suns (accent)."""
+    accent.ellipse(0.26, 0.29, 0.16, 0.16, G_FILL)
+    accent.ellipse(0.81, 0.16, 0.065, 0.065, G_FILL)
+    _glyph_castle(accent, G_CUT, 0.045)
+    _glyph_castle(c, G_FILL)
+    for k in range(5):
+        x = 0.27 + k * 0.105
+        if not 0.33 < x < 0.67:
+            c.poly([(x, 0.64), (x + 0.04, 0.64), (x + 0.04, 0.60), (x, 0.60)], G_FILL)
+    c.poly([(0.06, 0.885), (0.94, 0.885), (0.94, 0.95), (0.06, 0.95)], G_FILL)
+    _arch(c, 0.43, 0.57, 0.77, 0.885, G_CUT)
+    for x, y in ((0.19, 0.60), (0.81, 0.60), (0.455, 0.50), (0.545, 0.50)):
+        c.poly([(x - 0.017, y), (x + 0.017, y), (x + 0.017, y + 0.08), (x - 0.017, y + 0.08)], G_CUT)
+    accent.poly([(0.43, 0.13), (0.57, 0.13), (0.60, 0.03), (0.545, 0.085), (0.5, 0.01), (0.455, 0.085),
+                 (0.40, 0.03)], G_FILL)
+
+
+# glyph, accent colours, in BUILDING_ICONS order
+STRIP_GLYPHS = {
+    "yellow_theatre": (glyph_theatre, STRIP_GOLD),
+    "masque_hall": (glyph_masque, STRIP_BONE),
+    "black_star_observatory": (glyph_observatory, None),
+    "yellow_palace": (glyph_palace, STRIP_GOLD),
+}
+
+
+def _shade_vertical(layer, colours):
+    a = np.array(layer).astype(float)
+    t = np.linspace(0, 1, a.shape[0])[:, None, None]
+    rgb = np.array(colours[0]) * (1 - t) + np.array(colours[1]) * t
+    rgb = np.broadcast_to(rgb, a.shape[:2] + (3,))
+    return Image.fromarray(np.concatenate([rgb, a[..., 3:4]], axis=2).astype(np.uint8), "RGBA")
+
+
+def strip_tile_background(tiles):
+    """The game's empty tile: per pixel, the median of every tile where no glyph covers it."""
+    plain = ((tiles[..., 0] - tiles[..., 2]) < 25) & (tiles[..., :3].max(axis=3) < 90)
+    bg = np.median(tiles, axis=0)
+    for y in range(STRIP_FRAME):
+        for x in range(STRIP_FRAME):
+            px = tiles[:, y, x][plain[:, y, x]]
+            if len(px):
+                bg[y, x] = np.median(px, axis=0)
+    return Image.fromarray(bg.clip(0, 255).astype(np.uint8), "RGBA")
+
+
+def strip_tile(background, name):
+    draw, accent_colours = STRIP_GLYPHS[name]
+    c, accent = Canvas(STRIP_GLYPH, STRIP_GLYPH), Canvas(STRIP_GLYPH, STRIP_GLYPH)
+    draw(c, accent)
+    glyph = _shade_vertical(c.done(STRIP_GLYPH, STRIP_GLYPH), STRIP_ORANGE)
+    if accent_colours:
+        glyph.alpha_composite(_shade_vertical(accent.done(STRIP_GLYPH, STRIP_GLYPH), accent_colours))
+    shadow = Image.new("RGBA", glyph.size, (0, 0, 0, 0))
+    shadow.putalpha(glyph.split()[3].filter(ImageFilter.GaussianBlur(1.0)).point(lambda v: int(v * 0.85)))
+    tile = background.copy()
+    pad = (STRIP_FRAME - STRIP_GLYPH) // 2
+    tile.alpha_composite(shadow, (pad + 1, pad + 1))
+    tile.alpha_composite(glyph, (pad, pad))
+    return tile
+
+
+def vanilla_strip_frames():
+    return Image.open(VANILLA_BUILDING_STRIP).width // STRIP_FRAME
+
+
+def make_building_strip():
+    """The game's building strip with the four buildings appended (frames 32 to 35 in 1.16)."""
+    strip = Image.open(VANILLA_BUILDING_STRIP).convert("RGBA")
+    n = strip.width // STRIP_FRAME
+    a = np.array(strip).astype(float)
+    tiles = np.stack([a[:, i * STRIP_FRAME:(i + 1) * STRIP_FRAME] for i in range(n)])
+    background = strip_tile_background(tiles)
+    out = Image.new("RGBA", (STRIP_FRAME * (n + len(BUILDING_ICONS)), STRIP_FRAME), (0, 0, 0, 0))
+    out.paste(strip, (0, 0))
+    for i, name in enumerate(BUILDING_ICONS):
+        out.paste(strip_tile(background, name), (STRIP_FRAME * (n + i), 0))
+    save_dds(out, "gfx/interface/buildings/eldritch_building_icon_strip.dds")
 BUILDING_ICONS = {
     "yellow_theatre": sym_bld_theatre,
     "masque_hall": sym_bld_masque,
@@ -1263,13 +1417,7 @@ def make_building_icons():
         strip.paste(dim, (w, 0))
         save_dds(strip, f"gfx/interface/buildings/eldritch_{name}.dds")
         save_dds(building_icon(BUILDING_TEXT_ICON_SIZE, symbol), f"gfx/interface/buildings/eldritch_{name}_text.dds")
-    # the construction menu's pictures, in the order the installer appends them (no sprite of
-    # their own: tools/install_building_icons.py adds them to the game's building strip)
-    fw, fh = BUILDING_STRIP_FRAME
-    frames = Image.new("RGBA", (fw * len(BUILDING_ICONS), fh), (0, 0, 0, 0))
-    for i, symbol in enumerate(BUILDING_ICONS.values()):
-        frames.paste(building_icon(BUILDING_STRIP_FRAME, symbol), (i * fw, 0))
-    save_dds(frames, "gfx/interface/buildings/eldritch_building_strip_frames.dds")
+    make_building_strip()
 
 
 # ---------------------------------------------------------------------------
@@ -1367,6 +1515,11 @@ def write_gfx():
     for name in BUILDING_ICONS:
         sprite(f"GFX_eldritch_building_{name}", f"gfx/interface/buildings/eldritch_{name}.dds", 2)
         sprite(f"GFX_eldritch_building_{name}_text", f"gfx/interface/buildings/eldritch_{name}_text.dds")
+
+    section("The construction menu's building strip: the game's, with the four buildings appended (replaces "
+            "GFX_buildings_strip from countrystateview.gfx, which loads before this file)")
+    sprite("GFX_buildings_strip", "gfx/interface/buildings/eldritch_building_icon_strip.dds",
+           vanilla_strip_frames() + len(BUILDING_ICONS))
 
     section("The Eldritch doctrine folder: tab, grand doctrines, sub-doctrines (per track), track backgrounds")
     sprite("GFX_eldritch_doctrine_tab", "gfx/interface/doctrines/eldritch_doctrine_tab.dds", 2)

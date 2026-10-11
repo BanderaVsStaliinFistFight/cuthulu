@@ -6,14 +6,16 @@
 # through its technology (eldritch_carcosa_*, see common/technologies),
 # so only Hastur's followers can build them. One per state.
 #
-# Each has its own icon (special_icon, gfx/interface/buildings),
-# added as new sprites: nothing of the game's is overridden. Like the
-# game's own special buildings (facilities, dams, canals, landmarks)
-# they are built in a province (province_max), which is what puts
-# the special icon in the province's view, and only where one stands
-# (only_display_if_exists); state_max still allows only one per
-# state. icon_frame, which every building needs, is a frame of the
-# game's own building strip, left as it is.
+# Each has its own pictures:
+# - icon_frame: its frame in the construction menu's building strip
+#   (GFX_buildings_strip, counted from 1). The mod's strip is the
+#   game's 31 frames with these four appended as 32 to 35 (drawn by
+#   tools/generate_art.py, sprite in interface/eldritch.gfx).
+# - special_icon: its icon in the view of the province where one
+#   stands (only_display_if_exists). Like the game's own special
+#   buildings (facilities, dams, canals, landmarks) they are built in
+#   a province (province_max) for that; state_max still allows only
+#   one per state.
 #####################################################################
 
 buildings = {
@@ -21,7 +23,7 @@ buildings = {
 	eldritch_yellow_theatre = {
 		show_on_map = 0
 		base_cost = 3000
-		icon_frame = 23
+		icon_frame = 32
 		special_icon = GFX_eldritch_building_yellow_theatre
 		only_display_if_exists = yes
 		value = 1
@@ -45,7 +47,7 @@ buildings = {
 	eldritch_masque_hall = {
 		show_on_map = 0
 		base_cost = 6000
-		icon_frame = 23
+		icon_frame = 33
 		special_icon = GFX_eldritch_building_masque_hall
 		only_display_if_exists = yes
 		value = 1
@@ -66,7 +68,7 @@ buildings = {
 	eldritch_black_star_observatory = {
 		show_on_map = 0
 		base_cost = 8000
-		icon_frame = 14
+		icon_frame = 34
 		special_icon = GFX_eldritch_building_black_star_observatory
 		only_display_if_exists = yes
 		value = 1
@@ -88,7 +90,7 @@ buildings = {
 	eldritch_yellow_palace = {
 		show_on_map = 0
 		base_cost = 15000
-		icon_frame = 23
+		icon_frame = 35
 		special_icon = GFX_eldritch_building_yellow_palace
 		only_display_if_exists = yes
 		value = 1

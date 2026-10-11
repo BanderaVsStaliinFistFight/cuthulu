@@ -481,6 +481,13 @@ spriteTypes = {
 		texturefile = "gfx/interface/buildings/eldritch_yellow_palace_text.dds"
 	}
 
+	### The construction menu's building strip: the game's, with the four buildings appended (replaces GFX_buildings_strip from countrystateview.gfx, which loads before this file) ###
+	spriteType = {
+		name = "GFX_buildings_strip"
+		texturefile = "gfx/interface/buildings/eldritch_building_icon_strip.dds"
+		noOfFrames = 35
+	}
+
 	### The Eldritch doctrine folder: tab, grand doctrines, sub-doctrines (per track), track backgrounds ###
 	spriteType = {
 		name = "GFX_eldritch_doctrine_tab"
