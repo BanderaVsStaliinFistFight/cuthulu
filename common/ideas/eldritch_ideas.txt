@@ -8,6 +8,8 @@
 #   eldritch_prophets_fever, eldritch_dark_council,
 #   eldritch_prophet_marches   timed spirits from the Prophet's rites
 #   eldritch_great_temple      permanent, from Raise the Great Temple
+#   eldritch_god_walks         while the incarnate god is on the map
+#   eldritch_dread_of_the_god  on every nation at war with an incarnate god
 #####################################################################
 
 ideas = {
@@ -382,6 +384,31 @@ ideas = {
 			modifier = {
 				stability_factor = 0.05
 				political_power_gain = 0.15
+			}
+		}
+
+		### THE GOD INCARNATE ########################################
+
+		eldritch_god_walks = {
+			picture = eldritch_god_walks
+			removal_cost = -1
+			allowed_civil_war = { always = yes }
+			modifier = {
+				army_attack_factor = 0.10
+				army_defence_factor = 0.10
+				army_morale_factor = 0.10
+				war_support_factor = 0.10
+			}
+		}
+
+		eldritch_dread_of_the_god = {
+			picture = eldritch_dread
+			removal_cost = -1
+			allowed_civil_war = { always = yes }
+			modifier = {
+				army_morale_factor = -0.15
+				army_org_factor = -0.10
+				war_support_factor = -0.10
 			}
 		}
 	}

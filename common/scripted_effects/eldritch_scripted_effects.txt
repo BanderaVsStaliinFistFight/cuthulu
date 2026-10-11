@@ -107,6 +107,17 @@ eldritch_monthly_pulse = {
 	}
 	eldritch_clamp_favor = yes
 
+	# While the god walks the earth our armies take heart and our enemies
+	# despair; once its division is destroyed the spirit goes.
+	if = {
+		limit = { eldritch_god_incarnate_deployed = yes }
+		eldritch_god_walks_effect = yes
+	}
+	else_if = {
+		limit = { has_idea = eldritch_god_walks }
+		remove_ideas = eldritch_god_walks
+	}
+
 	# The gods are not silent partners.
 	random_list = {
 		88 = { }
@@ -551,10 +562,34 @@ eldritch_incarnate_god_effect = {
 			country_event = { id = eldritch.36 }
 		}
 	}
+	# The god never comes alone, and the whole battlefield feels it.
+	eldritch_spawn_servitors = yes
+	eldritch_god_walks_effect = yes
 	hidden_effect = {
 		set_country_flag = eldritch_incarnate_template_made
 		every_other_country = {
 			news_event = { id = eldritch_news.3 hours = 6 }
+		}
+	}
+}
+
+# Our armies fight beside a god; every nation at war with us is struck with
+# dread for the next 35 days. Renewed by the monthly pulse while the god's
+# division lives.
+eldritch_god_walks_effect = {
+	if = {
+		limit = { NOT = { has_idea = eldritch_god_walks } }
+		add_ideas = eldritch_god_walks
+	}
+	custom_effect_tooltip = eldritch_dread_tt
+	hidden_effect = {
+		every_country = {
+			limit = { has_war_with = ROOT }
+			if = {
+				limit = { has_idea = eldritch_dread_of_the_god }
+				remove_ideas = eldritch_dread_of_the_god
+			}
+			add_timed_idea = { idea = eldritch_dread_of_the_god days = 35 }
 		}
 	}
 }

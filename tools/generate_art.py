@@ -592,6 +592,10 @@ def sym_march(size, color=None):
     return glow_under(c.done(size, size), (255, 90, 70), size / 14, 0.7)
 
 
+def sym_dread(size, color=None):
+    return tint(sym_incarnate(size), (220, 40, 30), 0.5)
+
+
 def sym_temple(size, color=None):
     c = Canvas(size, size)
     stone = [(70, 66, 74, 255), (88, 84, 92, 255), (106, 102, 110, 255)]
@@ -629,18 +633,22 @@ SYMBOLS = {
     "vessel": sym_vessel,
     "fever": sym_fever,
     "march": sym_march,
+    "dread": sym_dread,
 }
 
 # Decision icons beyond the gods' own (GFX_decision_eldritch_<name>).
 DECISION_ICONS = ["tome", "altar", "sacrifice", "deepen", "anoint", "crown", "servitors", "curse", "incarnate",
                   "commune", "preach", "tithe", "council", "temple", "vessel"]
 
-# The Prophet's national spirits: picture name -> (inner, outer, border colour).
-PROPHET_SPIRITS = {
-    "fever": ((90, 40, 20), (28, 10, 6), (230, 120, 50)),
-    "council": ((45, 30, 70), (14, 8, 22), (165, 150, 215)),
-    "march": ((80, 22, 24), (24, 6, 8), (200, 60, 50)),
-    "temple": ((40, 50, 45), (10, 14, 12), (235, 195, 90)),
+# National spirits that belong to no single god (the Prophet's rites, the
+# god incarnate): picture name -> (symbol, inner, outer, border colour).
+EXTRA_SPIRITS = {
+    "fever": ("fever", (90, 40, 20), (28, 10, 6), (230, 120, 50)),
+    "council": ("council", (45, 30, 70), (14, 8, 22), (165, 150, 215)),
+    "march": ("march", (80, 22, 24), (24, 6, 8), (200, 60, 50)),
+    "temple": ("temple", (40, 50, 45), (10, 14, 12), (235, 195, 90)),
+    "god_walks": ("incarnate", (60, 50, 30), (18, 14, 8), (235, 195, 90)),
+    "dread": ("dread", (70, 15, 20), (22, 4, 6), (200, 40, 40)),
 }
 
 
@@ -692,8 +700,8 @@ def make_ideas():
              "gfx/interface/ideas/eldritch_curse_dreams.dds")
     save_dds(framed(IDEA_SIZE, (80, 20, 10), (25, 5, 5), yellow, (200, 40, 40)),
              "gfx/interface/ideas/eldritch_curse_yellow.dds")
-    for name, (inner, outer, border) in PROPHET_SPIRITS.items():
-        save_dds(framed(IDEA_SIZE, inner, outer, SYMBOLS[name], border), f"gfx/interface/ideas/eldritch_{name}.dds")
+    for name, (symbol, inner, outer, border) in EXTRA_SPIRITS.items():
+        save_dds(framed(IDEA_SIZE, inner, outer, SYMBOLS[symbol], border), f"gfx/interface/ideas/eldritch_{name}.dds")
 
 
 def make_decisions():
@@ -1157,7 +1165,7 @@ def write_gfx():
             sprite(f"GFX_idea_eldritch_{god}_{suffix}", f"gfx/interface/ideas/eldritch_{god}_{suffix}.dds")
     for curse in ("dreams", "yellow"):
         sprite(f"GFX_idea_eldritch_curse_{curse}", f"gfx/interface/ideas/eldritch_curse_{curse}.dds")
-    for name in PROPHET_SPIRITS:
+    for name in EXTRA_SPIRITS:
         sprite(f"GFX_idea_eldritch_{name}", f"gfx/interface/ideas/eldritch_{name}.dds")
 
     section("Decisions")

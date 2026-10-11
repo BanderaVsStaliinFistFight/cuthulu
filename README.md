@@ -99,7 +99,20 @@ From Tier II, **Incarnate [God] in the Flesh** brings the god onto the battlefie
 | Yog-Sothoth | **The All-in-One** | 3 Wardens of the Gate, 2 Dunwich Horrors | plains, hills, cities |
 | Azathoth | **Fragment of Azathoth** | 4 Spawn of the Nuclear Chaos, 1 Void Pipers | plains, desert, cities |
 
-A god battalion has 400 strength, 150+ organization, 80% morale and +200% attack / +300% defense and breakthrough, rising further at Tier III. It takes 8 combat width. You can't put it in your own templates or train it: it only arrives through the ritual. Losses are reinforced from your normal stockpile.
+A god battalion is a division in itself:
+
+* **1,000 strength** (forty infantry battalions' worth) and **220 organization**, plus 50 more from the incarnation and 30 more at Tier III, recovering at 100%.
+* **+500% soft and hard attack, +600% defense and breakthrough, +100% piercing** and **+50% speed**, rising to +600% / +700% at Tier III.
+* Its own **recon (2)**, **initiative (+25%)** and field-hospital recovery (half its casualties return, half the experience loss).
+* **Large bonuses in its favoured terrain** from the table above, for example +200% attack in sea landings for Great Cthulhu and +120% attack in forest and jungle for the Black Goat.
+* It takes 8 combat width. You can't put it in your own templates or train it: it only arrives through the ritual. Losses are reinforced from your normal stockpile.
+
+The god never comes alone. Every incarnation also brings **two veteran servitor divisions** of the god's template. While the god's division is on the map:
+
+* your country has **A God Walks Among Us**: +10% attack, defense, morale and war support;
+* every nation at war with you suffers **Dread of the Incarnate**: −15% morale, −10% organization, −10% war support.
+
+Both are renewed every month and fade within a month of the god's division being destroyed.
 
 ### 6. 3D models for the King in Yellow's forces
 Hastur's units have their own detailed map models instead of reusing vanilla infantry:
@@ -216,5 +229,6 @@ The script is written against the standard HoI4 modding syntax. It passes the bu
 * `create_unit` (servitor and god spawning) and the locked `division_template`.
 * **The 3D models.** They're written in Paradox's binary `.mesh` and `.anim` formats by `tools/generate_models.py`, read back and checked, and compared byte for byte against animated units that work in game (Millennium Dawn's infantry). They follow the same conventions: the `PdxMeshAdvanced` shader that HoI4's own skinned units use, up to four bone weights per vertex, at most 44 bones, a `Collision` box shape, animation definitions that name each `.anim` file relative to their own folder, and the size set by `scale` on the entity rather than on the mesh. The textures use normal map X in green, Y in alpha and an emissive mask in blue; specular R mask, G specular, B metalness, A roughness. If surfaces look oddly lit, inverted or glowing, the in-game layout differs from that. If units look too big or too small, change `scale` in `gfx/entities/eldritch_hastur_units.asset` (default 3.0; vanilla-sized infantry stands about 6 units tall). If a unit stands in its rest pose without moving, the game didn't accept the animation files or the state names; `error.log` will name the file. If they cause any problem, set `sprite = infantry` again on `eldritch_yellow_zealots`, `eldritch_byakhee_riders` and `eldritch_hastur_incarnate` in `common/units/eldritch_units.txt` to go back to vanilla models.
 * The god battalions are deliberately never unlocked for the designer. If the game refuses to spawn a template that contains them, the god division will not appear. `error.log` will say so.
+* The god battalions carry `recon`, `initiative`, `casualty_trickleback` and `experience_loss_factor`, which vanilla normally gives only to support companies. If a future version stops reading them on a line battalion, the god loses just those extras.
 * The hidden rite technologies, which have no tech-tree folder and are granted with `set_technology`.
 * Icon sizes. The textures are 64×67 (spirits), 46×46 (decisions), 60×40 (battalions), 40×40 (traits), 156×210 (portraits) and 210×176 / 397×153 (events). If the UI expects different sizes, change the constants at the top of `tools/generate_art.py` (battalions: `ICON_SIZE` in `tools/art_units.py`) and regenerate.

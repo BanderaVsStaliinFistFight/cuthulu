@@ -126,6 +126,14 @@ spriteTypes = {
 		name = "GFX_idea_eldritch_temple"
 		texturefile = "gfx/interface/ideas/eldritch_temple.dds"
 	}
+	spriteType = {
+		name = "GFX_idea_eldritch_god_walks"
+		texturefile = "gfx/interface/ideas/eldritch_god_walks.dds"
+	}
+	spriteType = {
+		name = "GFX_idea_eldritch_dread"
+		texturefile = "gfx/interface/ideas/eldritch_dread.dds"
+	}
 
 	### Decisions ###
 	spriteType = {

@@ -572,6 +572,10 @@ sub_units = {
 	# takes the field when summoned. Their combat bonuses come from
 	# the hidden eldritch_<god>_incarnation technology.
 	#
+	# A god is a division in itself: a thousand strength, recon, initiative
+	# and field-hospital recovery of its own, and terrain bonuses twice
+	# those of any mortal unit.
+	#
 	# The very high priority makes the god's model represent its whole
 	# division on the map (the battalion with the highest priority wins).
 	#################################################################
@@ -596,10 +600,15 @@ sub_units = {
 
 		combat_width = 8
 
-		max_strength = 400
-		max_organisation = 150
-		default_morale = 0.8
+		max_strength = 1000
+		max_organisation = 220
+		default_morale = 1.0
 		manpower = 100
+
+		recon = 2
+		initiative = 0.25
+		casualty_trickleback = 0.5
+		experience_loss_factor = -0.5
 
 		training_time = 3650
 		suppression = 10
@@ -614,15 +623,15 @@ sub_units = {
 		}
 
 		amphibious = {
-			attack = 1.0
+			attack = 2.0
 		}
 		river = {
-			attack = 0.5
-			movement = 0.5
+			attack = 1.0
+			movement = 1.0
 		}
 		marsh = {
-			attack = 0.4
-			movement = 0.4
+			attack = 0.8
+			movement = 0.8
 		}
 	}
 
@@ -646,10 +655,15 @@ sub_units = {
 
 		combat_width = 8
 
-		max_strength = 400
-		max_organisation = 150
-		default_morale = 0.8
+		max_strength = 1000
+		max_organisation = 220
+		default_morale = 1.0
 		manpower = 100
+
+		recon = 2
+		initiative = 0.25
+		casualty_trickleback = 0.5
+		experience_loss_factor = -0.5
 
 		training_time = 3650
 		suppression = 10
@@ -664,12 +678,12 @@ sub_units = {
 		}
 
 		urban = {
-			attack = 0.5
-			defence = 0.5
+			attack = 1.0
+			defence = 1.0
 		}
 		desert = {
-			attack = 0.4
-			movement = 0.3
+			attack = 0.8
+			movement = 0.6
 		}
 	}
 
@@ -693,10 +707,15 @@ sub_units = {
 
 		combat_width = 8
 
-		max_strength = 400
-		max_organisation = 150
-		default_morale = 0.8
+		max_strength = 1000
+		max_organisation = 220
+		default_morale = 1.0
 		manpower = 100
+
+		recon = 2
+		initiative = 0.25
+		casualty_trickleback = 0.5
+		experience_loss_factor = -0.5
 
 		training_time = 3650
 		suppression = 10
@@ -711,15 +730,15 @@ sub_units = {
 		}
 
 		urban = {
-			attack = 0.3
+			attack = 0.6
 		}
 		hills = {
-			attack = 0.3
-			movement = 0.3
+			attack = 0.6
+			movement = 0.6
 		}
 		mountain = {
-			attack = 0.3
-			movement = 0.3
+			attack = 0.6
+			movement = 0.6
 		}
 	}
 
@@ -743,10 +762,15 @@ sub_units = {
 
 		combat_width = 8
 
-		max_strength = 400
-		max_organisation = 150
-		default_morale = 0.8
+		max_strength = 1000
+		max_organisation = 220
+		default_morale = 1.0
 		manpower = 100
+
+		recon = 2
+		initiative = 0.25
+		casualty_trickleback = 0.5
+		experience_loss_factor = -0.5
 
 		training_time = 3650
 		suppression = 10
@@ -761,14 +785,14 @@ sub_units = {
 		}
 
 		forest = {
-			attack = 0.6
-			defence = 0.4
-			movement = 0.3
+			attack = 1.2
+			defence = 0.8
+			movement = 0.6
 		}
 		jungle = {
-			attack = 0.6
-			defence = 0.4
-			movement = 0.3
+			attack = 1.2
+			defence = 0.8
+			movement = 0.6
 		}
 	}
 
@@ -792,10 +816,15 @@ sub_units = {
 
 		combat_width = 8
 
-		max_strength = 400
-		max_organisation = 150
-		default_morale = 0.8
+		max_strength = 1000
+		max_organisation = 220
+		default_morale = 1.0
 		manpower = 100
+
+		recon = 2
+		initiative = 0.25
+		casualty_trickleback = 0.5
+		experience_loss_factor = -0.5
 
 		training_time = 3650
 		suppression = 10
@@ -810,14 +839,14 @@ sub_units = {
 		}
 
 		plains = {
-			attack = 0.3
+			attack = 0.6
 		}
 		hills = {
-			attack = 0.3
-			defence = 0.3
+			attack = 0.6
+			defence = 0.6
 		}
 		urban = {
-			defence = 0.4
+			defence = 0.8
 		}
 	}
 
@@ -841,10 +870,15 @@ sub_units = {
 
 		combat_width = 8
 
-		max_strength = 400
-		max_organisation = 150
-		default_morale = 0.8
+		max_strength = 1000
+		max_organisation = 220
+		default_morale = 1.0
 		manpower = 100
+
+		recon = 2
+		initiative = 0.25
+		casualty_trickleback = 0.5
+		experience_loss_factor = -0.5
 
 		training_time = 3650
 		suppression = 10
@@ -859,13 +893,13 @@ sub_units = {
 		}
 
 		plains = {
-			attack = 0.4
+			attack = 0.8
 		}
 		desert = {
-			attack = 0.4
+			attack = 0.8
 		}
 		urban = {
-			attack = 0.4
+			attack = 0.8
 		}
 	}
 }
